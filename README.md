@@ -14,10 +14,8 @@ O branch _dev_ vai conter as implementações atualizadas até a data.
   - `git push` para enviar o commit para o branch.
 
 - Agora é necessário colocar as alterações no branch _dev_: 
-  - `git checkout dev` para mudar de branch (em vez de _dev_ pode ser outro branch);
-  - `git merge nova_funcionalidade` para juntar o conteúdo do branch _nova_funcionalidade_ com o _dev_;
-  - `git push` para enviar estas novas alterações.
+  - Criar um novo pull-request referindo o branch que contém a nova funcionalidade e aguardar a aprovação do mesmo.
 
-- Agora o branch _dev_ já contém todas as alterações! Não esquecer de mudar de branch após este último passo.
+- Agora o branch _dev_ já contém todas as alterações!
 
 > Para passar de um branch para o anterior basta fazer `git checkout -` (git checkout seguido de um traço).
