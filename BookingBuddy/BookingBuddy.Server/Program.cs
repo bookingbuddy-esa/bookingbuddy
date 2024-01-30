@@ -1,4 +1,17 @@
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using BookingBuddy.Server.Data;
+using BookingBuddy.Server.Models;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ?? throw new InvalidOperationException("Connection string 'BookingBuddyServerContext' not found.")));
+
+builder.Services.AddAuthorization();
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddEntityFrameworkStores<BookingBuddyServerContext>();
 
 // Add services to the container.
 
