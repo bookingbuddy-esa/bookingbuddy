@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBuddy.Server", "BookingBuddy.Server\BookingBuddy.Server.csproj", "{1CE7CED7-610A-4C3F-8B3C-E30D2E5E5551}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "bookingbuddy.client", "bookingbuddy.client\bookingbuddy.client.esproj", "{3718ED08-AA19-4B64-A272-F290F52EB188}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CE7CED7-610A-4C3F-8B3C-E30D2E5E5551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CE7CED7-610A-4C3F-8B3C-E30D2E5E5551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CE7CED7-610A-4C3F-8B3C-E30D2E5E5551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CE7CED7-610A-4C3F-8B3C-E30D2E5E5551}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3718ED08-AA19-4B64-A272-F290F52EB188}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3718ED08-AA19-4B64-A272-F290F52EB188}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3718ED08-AA19-4B64-A272-F290F52EB188}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{3718ED08-AA19-4B64-A272-F290F52EB188}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3718ED08-AA19-4B64-A272-F290F52EB188}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3718ED08-AA19-4B64-A272-F290F52EB188}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5BF4F529-FD3D-403B-942E-99008EFF8FEA}
+	EndGlobalSection
+EndGlobal
