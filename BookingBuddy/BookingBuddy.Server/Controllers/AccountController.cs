@@ -21,6 +21,12 @@ namespace BookingBuddy.Server.Controllers
         [Route("api/register")]
         public async Task<IActionResult> Register([FromBody] AccountRegisterModel model)
         {
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                return BadRequest("E-mail já está em uso.");
+            }
+
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
             var result = await _userManager.CreateAsync(user, model.Password);
 
