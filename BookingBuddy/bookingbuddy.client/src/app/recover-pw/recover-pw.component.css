@@ -1,0 +1,40 @@
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.alignment{
+    text-align:center;
+}
+
+.margin-top2 {
+  margin-top: 2%
+}
+
+.margin10 {
+  margin-top: 20%;
+  margin-bottom: 1%;
+}
+
+.size{
+    width:50%;
+}
+.inputCaixaRegister {
+  width: 300px;
+  height: 60px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border-color: grey;
+  font-family: 'Times New Roman', Times, serif;
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+.btnRecoverPW {
+  width: 300px;
+  height: 60px;
+  border-radius: 15px;
+  background-color: #9DC78A;
+  border:none;
+
+}
