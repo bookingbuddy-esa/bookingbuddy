@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthorizeService } from "../authorize.service";
+//import { AuthorizeService } from "../authorize.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 @Component({

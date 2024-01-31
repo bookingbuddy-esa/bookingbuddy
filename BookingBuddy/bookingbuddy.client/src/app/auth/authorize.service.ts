@@ -47,20 +47,6 @@ export class AuthorizeService {
       }));
   }
 
-  // register new user - não funciona para um novo tipo de IdentityUser com propriedades extra
-  public register(email: string, password: string) {
-    return this.http.post('/register', {
-      email: email,
-      password: password
-    }, {
-      observe: 'response',
-      responseType: 'text'
-    })
-      .pipe<boolean>(map((res: HttpResponse<string>) => {
-        return res.ok;
-      }));
-  }
-
   // sign out - não aparece como um serviço
   public signOut() {
     return this.http.post('/logout', {}, {

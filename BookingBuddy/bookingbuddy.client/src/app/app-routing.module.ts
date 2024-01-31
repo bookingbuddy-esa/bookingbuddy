@@ -4,8 +4,9 @@ import { RegisterComponent } from './register/register.component';
 import { RecoverPWComponent } from './recover-pw/recover-pw.component';
 
 const routes: Routes = [
-  { path: 'register', component: RegisterComponent },
-  { path: 'recoverpassword', component: RecoverPWComponent }
+  //{ path: 'register', component: RegisterComponent },
+  //{ path: 'recoverpassword', component: RecoverPWComponent }
+  { path: '', component: RegisterComponent }
 ];
 
 @NgModule({
