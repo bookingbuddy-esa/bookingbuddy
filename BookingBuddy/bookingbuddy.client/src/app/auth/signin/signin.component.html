@@ -1,1 +1,59 @@
-<p>signin works!</p>
+<div class="d-flex flex-column align-items-center justify-content-center" >
+  <h3 class="margin7">Olá mais uma vez! Sentimos a sua falta.</h3>
+  <form class="form w-50" [formGroup]="signinForm" (submit)="signin($event)">
+    <div class="row m-3">
+      <input class="col form-field inputCaixaRegister" name="name" formControlName="email" placeholder="Insira o seu e-mail" />
+    </div>
+    <div class="row m-3">
+      <input class="col form-field inputCaixaRegister" type="password" name="password" formControlName="password" placeholder="Insira a sua palavra-passe" />
+    </div>
+    <div class="row m-3">
+      <p style="text-align:right"> <a href="">Esqueceu-se da sua palavra passe ?</a></p>
+    </div>
+
+    <div class="row m-3" *ngIf="">
+      <label style="color: red">Login falhou.</label>
+    </div>
+    <div class="row m-3" *ngFor="let error of errors">
+      <label style="color: red">{{error}}</label>
+    </div>
+    <div class="row m-3">
+      <button class="col btnRegister" type="submit">Login</button>
+    </div>
+  </form>
+
+  <div class="divhr1">
+    <hr class="hr1 margin-top2">
+    <div> &nbsp; Ou faça login com &nbsp;</div>
+    <hr class="hr1 margin-top2">
+  </div>
+
+  <div class="registerExtra">
+    <button class="botao-imagem">
+      <img class="google" src="../assets/img/googleIcon.png">
+    </button>
+
+    <button class="botao-imagem">
+      <img class="microsoft" src="../assets/img/microsoftLogo.png">
+    </button>
+  </div>
+
+  <div style="">
+    <p>Ainda não se registou? <a href="/login" style="font-weight:bold">Criar conta</a></p>
+  </div>
+</div>
+
+
+<!--<div *ngIf="registerSucceeded">
+  <h4>Registration succeeded</h4>
+  <div>
+    Please <a href="signin">sign in</a> to continue.
+  </div>
+</div>-->
+
+<!--<div *ngIf="signedIn">
+  <h4>Signed in</h4>
+  <div>
+    Please log out of your current session to create a new user account.
+  </div>-->
+<!--</div>-->

@@ -1,21 +1,17 @@
 <div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn && !registerSucceeded">
-  <div>Please create your user account to continue.</div>
+  <h3 class="margin7">Bem-vindo ao Booking Buddy!</h3>
   <form class="form w-50" [formGroup]="registerForm" (submit)="register($event)">
     <div class="row m-3">
-      <label for="name">Name*</label>
-      <input class="col form-field" name="name" formControlName="name" />
+      <input class="col form-field inputCaixaRegister" name="name" formControlName="name" placeholder="Insira o seu nome"/>
     </div>
     <div class="row m-3">
-      <label for="email">Email*</label>
-      <input class="col form-field" name="email" formControlName="email" />
+      <input class="col form-field inputCaixaRegister" name="email" formControlName="email" placeholder="Insira o seu endereço e-mail"/>
     </div>
     <div class="row m-3">
-      <label for="password">Password*</label>
-      <input class="col form-field" type="password" name="password" formControlName="password" autocomplete="on" />
+      <input class="col form-field inputCaixaRegister" type="password" name="password" formControlName="password" autocomplete="on" placeholder="Insira a sua palavra-passe"/>
     </div>
     <div class="row m-3">
-      <label for="confirmPassword">Confirm password*</label>
-      <input class="col form-field" type="password" name="confirmPassword" formControlName="confirmPassword" autocomplete="on" />
+      <input class="col form-field inputCaixaRegister" type="password" name="confirmPassword" formControlName="confirmPassword" autocomplete="on" placeholder="Confirme a sua palavra-passe" />
     </div>
     <div class="row m-3" *ngIf="registerFailed">
       <label style="color: red">Registration failed.</label>
@@ -24,10 +20,31 @@
       <label style="color: red">{{error}}</label>
     </div>
     <div class="row m-3">
-      <button class="col btn btn-primary" [disabled]="!registerForm.valid" type="submit">Register</button>
+      <button class="col btnRegister" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
     </div>
   </form>
+
+  <div class="divhr1">
+    <hr class="hr1 margin-top2">
+    <div> &nbsp; Ou criar conta com &nbsp;</div>
+    <hr class="hr1 margin-top2">
+  </div>
+
+  <div class="registerExtra">
+    <button class="botao-imagem">
+      <img class="google" src="../assets/img/googleIcon.png">
+    </button>
+
+    <button class="botao-imagem">
+      <img class="microsoft" src="../assets/img/microsoftLogo.png">
+    </button>
+  </div>
+
+  <div style="">
+    <p>Já tem conta? <a href="/login" style="font-weight:bold">Faça login</a></p>
+  </div>
 </div>
+
 
 <div *ngIf="registerSucceeded">
   <h4>Registration succeeded</h4>
@@ -36,9 +53,9 @@
   </div>
 </div>
 
-<div *ngIf="signedIn">
+<!--<div *ngIf="signedIn">
   <h4>Signed in</h4>
   <div>
     Please log out of your current session to create a new user account.
-  </div>
-</div>
+  </div>-->
+<!--</div>-->
