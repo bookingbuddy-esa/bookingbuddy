@@ -1,0 +1,60 @@
+.inputCaixaRegister {
+  width: 300px;
+  height: 60px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border-color: grey;
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+.btnRegister {
+  background-color: #9DC78A;
+  width: 300px;
+  height: 60px;
+  /*font-family: 'Times New Roman', Times, serif;*/
+  border-radius: 15px;
+  margin-top: 5%;
+  border: none;
+  outline: none;
+  color:black;
+}
+.margin7 {
+  margin: 7%;
+  margin-bottom: 5%;
+}
+
+.hr1 {
+  border: 1px solid black;
+  width: 100px;
+  
+}
+.divhr1 {
+  display: flex;
+  margin: 2%;
+}
+.registerExtra {
+  display: flex;
+  text-align: center;
+}
+
+.botao-imagem {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  border: 1px solid #9DC78A;
+  border-radius: 15px;
+  margin: 10px;
+  width: 70px;
+  height: 60px;
+}
+
+.google {
+  width: 50px;
+  height: 50px;
+}
+
+.microsoft {
+  width: 30px;
+  height: 30px;
+}
