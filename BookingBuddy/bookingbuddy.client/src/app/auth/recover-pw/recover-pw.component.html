@@ -1,13 +1,13 @@
 <div class="center">
   <h2 class="margin10">Recuperar Palavra-Passe</h2>
 
-  <form [formGroup]="recoverPWForm" class="center alignment" (submit)="revocer($event)">
+  <form [formGroup]="recoverPWForm" class="center alignment" (submit)="recover($event)">
     <p class="size">Se existir uma conta associada a um endereço de e-mail enviaremos uma hiperligação para recuperar a sua palavra passe. </p>
     <div class="margin-top2">
-      <input class="inputCaixaRegister" type="password" id="confirmPass" name="confirmPass" formControlName="email" placeholder="Insira o seu endereço de e-mail" required>
+      <input class="inputCaixaRegister" type="text" id="confirmPass" name="email" formControlName="email" placeholder="Insira o seu endereço de e-mail" required>
     </div>
 
-    <button type="button" class="margin-top2 btnRecoverPW" [disabled]="!recoverForm.valid">Enviar</button>
+    <button type="button" class="margin-top2 btnRecoverPW" > Enviar</button>
   </form>
 
   <div style="margin-top:5%;">

@@ -5,8 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RegisterComponent } from './register/register.component';
-import { RecoverPWComponent } from './recover-pw/recover-pw.component';
 import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/authorize.interceptor';
 import { AuthGuard } from './auth/authorize.guard';
@@ -15,9 +13,7 @@ import { AuthorizeService } from './auth/authorize.service';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    RegisterComponent,
-    RecoverPWComponent
+    AppComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

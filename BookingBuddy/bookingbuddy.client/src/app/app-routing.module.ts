@@ -5,7 +5,7 @@ import { RecoverPwComponent } from './auth/recover-pw/recover-pw.component';
 
 const routes: Routes = [
   //{ path: 'register', component: RegisterComponent },
-  { path: 'recoverpassword', component: RecoverPwComponent },
+  //{ path: 'recoverpassword', component: RecoverPwComponent },
   { path: '', component: RegisterComponent }
 ];
 

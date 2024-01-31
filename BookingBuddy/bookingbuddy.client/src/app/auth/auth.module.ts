@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RegisterComponent } from './register/register.component';
 import { SigninComponent } from './signin/signin.component';
 import { RecoverPwComponent } from './recover-pw/recover-pw.component';
+
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -15,12 +16,13 @@ import { ReactiveFormsModule } from '@angular/forms';
     RouterModule.forChild(
       [
         //{ path: 'sigin', component: SignInComponent },
+        { path: 'recover-password', component: RecoverPwComponent },
         { path: 'register', component: RegisterComponent },
       ]
     )
   ],
-  declarations: [/*LoginMenuComponent, SignInComponent,*/ RegisterComponent],
-  exports: [/*LoginMenuComponent, SignInComponent,*/ RegisterComponent]
+  declarations: [/*LoginMenuComponent, SignInComponent,*/ RegisterComponent, RecoverPwComponent],
+  exports: [/*LoginMenuComponent, SignInComponent,*/ RegisterComponent, RecoverPwComponent]
 })
 export class AuthModule { }
 
