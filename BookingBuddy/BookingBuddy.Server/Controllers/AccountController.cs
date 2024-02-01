@@ -4,6 +4,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using BookingBuddy.Server.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SendGrid.Helpers.Mail;
+using SendGrid;
+using System.CodeDom.Compiler;
+using BookingBuddy.Server.Services;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -11,12 +16,12 @@ namespace BookingBuddy.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
-            _emailSender = emailSender;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
@@ -35,17 +40,32 @@ namespace BookingBuddy.Server.Controllers
             if (result.Succeeded)
             {
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
-                var message = new Message(new string[] { user.Email }, "Confirmação de e-mail", confirmationLink, null);
-                await _emailSender.SendEmailAsync(message);
+                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { token, email = user.Email }, Request.Scheme);
+                EmailSender emailSender = new EmailSender();
+                await emailSender.SendEmail("Confirmação Email", user.Email, user.Name, confirmationLink);
                 return Ok();
             }
 
             return BadRequest(result.Errors);
         }
 
+        [HttpPost]
+        [Route("api/signin")]
+        public async Task<IActionResult> SignIn([FromBody] AccountLoginModel model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                return Ok(new { message = "Login successful" });
+            }
+
+            return BadRequest(new { message = "Login failed" });
+        }
+
+
         [HttpPost("api/logout")]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
@@ -56,6 +76,11 @@ namespace BookingBuddy.Server.Controllers
     }
 }
 
+public class AccountLoginModel
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+}
 public class AccountRegisterModel
 {
     public string Name { get; set; }

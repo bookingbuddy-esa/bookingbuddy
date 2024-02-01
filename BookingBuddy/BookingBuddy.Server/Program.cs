@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 var builder = WebApplication.CreateBuilder(args);
@@ -11,12 +12,15 @@ builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-    .AddEntityFrameworkStores<BookingBuddyServerContext>();
+    .AddEntityFrameworkStores<BookingBuddyServerContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
 });
+
+
 
 // Add services to the container.
 
