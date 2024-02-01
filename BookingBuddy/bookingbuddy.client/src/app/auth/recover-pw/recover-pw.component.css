@@ -38,3 +38,12 @@
   background-color: #9DC78A;
   border: none;
 }
+
+.imagemCentro{
+    width: 30%;
+    height: 75%;
+}
+
+h1{
+    font-weight:bold;
+}

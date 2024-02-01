@@ -10,6 +10,7 @@ using SendGrid;
 using System.CodeDom.Compiler;
 using BookingBuddy.Server.Services;
 using NuGet.Protocol;
+using System.Web;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -87,8 +88,9 @@ namespace BookingBuddy.Server.Controllers
             if (existingUser != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-                var recoverLink = $"https://localhost:4200/reset-password?token={token}&uid={existingUser.Id}";
+                var recoverLink = $"https://localhost:4200/reset-password?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
                 await EmailSender.SendTemplateEmail("d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email, existingUser.Name, new { recoverLink });
+                Console.WriteLine(recoverLink);
                 return Ok();
             }
             return BadRequest("Email fornecido não está registado!");

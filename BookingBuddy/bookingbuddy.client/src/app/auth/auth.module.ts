@@ -17,10 +17,10 @@ import { ResetPwComponent } from './reset-pw/reset-pw.component';
     RouterModule.forChild(
       [
         //{ path: 'sigin', component: SignInComponent },
-        { path: 'recover-password', component: RecoverPwComponent },
         { path: 'register', component: RegisterComponent },
         { path: 'signin', component: SignInComponent },
-        { path: 'reset-pw', component: ResetPwComponent },
+        { path: 'recover-password', component: RecoverPwComponent },
+        { path: 'reset-password', component: ResetPwComponent },
       ]
     )
   ],

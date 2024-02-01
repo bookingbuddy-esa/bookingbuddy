@@ -1,18 +1,25 @@
 <div class="center">
-  <h2 class="margin10">Recuperar Palavra-Passe</h2>
-  <form [formGroup]="resetPWForm" class="center alignment" (submit)="reset($event)">
-    <p class="size">Estamos quase! <br /> </p>
-    <div class="margin-top2">
-      <input class="inputCaixaRegister" type="password" id="pass" name="email" formControlName="pass" placeholder="Insira a sua nova palavra-passe" required>
+  <div *ngIf="validUrl">
+    <h2 class="margin10">Recuperar Palavra-Passe</h2>
+    <form [formGroup]="resetPWForm" class="center alignment" (submit)="reset($event)">
+      <p class="size">Estamos quase! <br /> </p>
+      <div class="margin-top2">
+        <input class="inputCaixaRegister" type="password" id="pass" name="password" formControlName="password" placeholder="Insira a sua nova palavra-passe" required>
+      </div>
+      <div class="margin-top2">
+        <input class="inputCaixaRegister" type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" placeholder="Reescreva a palavra-passe" required>
+      </div>
+      <button type="submit" class="margin-top2 btnRecoverPW">Enviar</button>
+    </form>
+    <div class="center" style="margin-top:5%;">
+      <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
     </div>
-    <div class="margin-top2">
-      <input class="inputCaixaRegister" type="password" id="confirmPass" name="email" formControlName="confirmPass" placeholder="Reescreva a palavra-passe" required>
-    </div>
-    <button type="submit" class="margin-top2 btnRecoverPW">Enviar</button>
-  </form>
-  
-  <div style="margin-top:5%;">
-    <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
+  </div>
+  <div class="margin10 center" *ngIf="!validUrl">
+    <h1>Pedido Inválido</h1>
+    <p>Não foi possível validar o pedido!</p>
+    <br />
+    <button class="btn btn-primary btn-lg btn-block" onclick="location.href = '/signin';">Voltar ao login</button>
   </div>
 </div>
 
