@@ -63,6 +63,39 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(new { message = "Login failed" });
         }
 
+        [HttpPost]
+        [Route("api/forgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] PasswordRecoveryModel model)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+                var recoverLink = $"https://localhost:4200/reset-password?token={token}&uid={existingUser.Id}";
+                EmailSender emailSender = new();
+                await emailSender.SendEmail("Recuperar Password", existingUser.Email, existingUser.Name, recoverLink);
+                return Ok();
+            }
+            return BadRequest("Email fornecido não está registado!");
+        }
+
+        [HttpPost]
+        [Route("api/resetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] PasswordResetModel model)
+        {
+            var existingUser = await _userManager.FindByIdAsync(model.Id);
+            if (existingUser != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(existingUser, model.Token, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                return BadRequest(result.Errors);
+            }
+            return BadRequest("Email fornecido não está registado!");
+        }
+
 
         [HttpPost("api/logout")]
         [Authorize]
@@ -89,4 +122,16 @@ public class AccountRegisterModel
 
     // todo: mudar depois ?
     public enum AccountType;
+}
+
+public class PasswordRecoveryModel
+{
+    public string Email { get; set; }
+}
+
+public class PasswordResetModel
+{
+    public string Id { get; set; }
+    public string Token { get; set; }
+    public string NewPassword { get; set; }
 }
