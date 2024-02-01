@@ -49,19 +49,6 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(result.Errors);
         }
 
-        [HttpPost]
-        [Route("api/signin")]
-        public async Task<IActionResult> SignIn([FromBody] AccountLoginModel model)
-        {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: false);
-
-            if (result.Succeeded)
-            {
-                return Ok(new { message = "Login successful" });
-            }
-
-            return BadRequest(new { message = "Login failed" });
-        }
 
 
         [HttpPost("api/logout")]
@@ -76,11 +63,6 @@ namespace BookingBuddy.Server.Controllers
     }
 }
 
-public class AccountLoginModel
-{
-    public string Email { get; set; }
-    public string Password { get; set; }
-}
 public class AccountRegisterModel
 {
     public string Name { get; set; }
