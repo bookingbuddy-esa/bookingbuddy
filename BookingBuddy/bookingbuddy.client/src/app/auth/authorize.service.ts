@@ -18,7 +18,7 @@ export class AuthorizeService {
 
   // cookie-based login
   public signIn(email: string, password: string) {
-    return this.http.post('api/signin', {
+    return this.http.post('/login?useCookies=true', {
       email: email,
       password: password
     }, {
