@@ -41,12 +41,41 @@ namespace BookingBuddy.Server.Controllers
             if (result.Succeeded)
             {
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = Url.Action("ConfirmEmail", "Account", new { token, email = user.Email }, Request.Scheme);
+                var confirmationLink = Url.Action("confirmEmail", "Account", new {userId = user.Id , code = token}, Request.Scheme);
+                var message = "Clique no link " + confirmationLink;
                 EmailSender emailSender = new EmailSender();
+                await emailSender.SendEmail("Confirmação Email", user.Email, user.Name, message);
                 return Ok();
             }
 
             return BadRequest(result.Errors);
+        }
+        
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("api/confirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return BadRequest("Parâmetros inválidos para a confirmação de e-mail.");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+            {
+                return Ok("E-mail confirmado com sucesso.");
+            }
+            else
+            {
+                return BadRequest("Falha ao confirmar o e-mail.");
+            }
         }
 
 

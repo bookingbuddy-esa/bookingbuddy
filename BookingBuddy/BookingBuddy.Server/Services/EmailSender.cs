@@ -7,7 +7,7 @@ namespace BookingBuddy.Server.Services
     {
         public async Task SendEmail(string subject, string toEmail, string name, string message)
         {
-            var apiKey = "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";
+            var apiKey = "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";
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("bookingbuddy.bb@gmail.com", "BookingBuddy");
             //var subject = "Sending with SendGrid is Fun";
