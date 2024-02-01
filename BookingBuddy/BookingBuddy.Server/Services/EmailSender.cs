@@ -17,5 +17,15 @@ namespace BookingBuddy.Server.Services
             var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
             var response = await client.SendEmailAsync(msg);
         }
+
+        public static async Task<Response> SendTemplateEmail(string templateId, string toEmail, string toName, object data)
+        {
+            var apiKey = "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";
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("bookingbuddy.bb@gmail.com", "BookingBuddy");
+            var to = new EmailAddress(toEmail, toName);
+            var msg = MailHelper.CreateSingleTemplateEmail(from, to, templateId, data);
+            return await client.SendEmailAsync(msg);
+        }
     }
 }
