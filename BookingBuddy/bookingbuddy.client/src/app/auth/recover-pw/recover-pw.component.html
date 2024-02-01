@@ -1,18 +1,18 @@
 <div class="center">
   <h2 class="margin10">Recuperar Palavra-Passe</h2>
-
-  <form [formGroup]="recoverPWForm" class="center alignment" (submit)="recover($event)">
+  <form *ngIf="!emailSent" [formGroup]="recoverPWForm" class="center alignment" (submit)="recover($event)">
     <p class="size">Se existir uma conta associada a um endereço de e-mail enviaremos uma hiperligação para recuperar a sua palavra passe. </p>
     <div class="margin-top2">
       <input class="inputCaixaRegister" type="text" id="confirmPass" name="email" formControlName="email" placeholder="Insira o seu endereço de e-mail" required>
     </div>
-
-    <button type="button" class="margin-top2 btnRecoverPW" > Enviar</button>
+    <button type="submit" class="margin-top2 btnRecoverPW">Enviar</button>
   </form>
-
+  <div *ngIf="emailSent" class="center">
+    <p>Um email foi enviado com instruções sobre como redefinir a sua palavra passe.</p>
+    <p>Confira a sua caixa de entrada.</p>
+  </div>
   <div style="margin-top:5%;">
     <p>Já tem conta? <a href="/login" style="font-weight:bold">Faça login</a></p>
   </div>
-
 </div>
 
