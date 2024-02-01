@@ -1,3 +1,10 @@
+<!--<div *ngIf="registerSucceeded">
+  <h4>Registado com sucesso</h4>
+  <div>
+    Por favor <a href="signin">efetue login</a> para continuar.
+  </div>
+</div>-->
+
 <div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn && !registerSucceeded">
   <h3 class="margin7">Bem-vindo ao Booking Buddy!</h3>
   <form class="form w-50" [formGroup]="registerForm" (submit)="register($event)">
@@ -46,16 +53,38 @@
 </div>
 
 
-<div *ngIf="registerSucceeded">
-  <h4>Registration succeeded</h4>
+<!--A div abaixo é para ser mostrada quando o email for enviado, falta acrescentar o ngIf-->
+<!--<div class="d-flex flex-column align-items-center justify-content-center margin7">
+  <img class="carta" src="../assets/img/envelope.png">
   <div>
-    Please <a href="signin">sign in</a> to continue.
+    <p class="validarText">
+      Estamos quase lá...<br>
+      Por favor, confirme o seu endereço de e-mail para ativar a sua conta.
+    </p>
+  </div>
+  <div class="bottom-div">
+    <p>Não recebeu e-mail de confirmação? <a href="#" style="font-weight:bold">Clique aqui</a></p>
+  </div>
+</div>-->
+
+
+<!--A div abaixo é para ser mostrada quando o email for validado-->
+<div *ngIf="registerSucceeded" class="d-flex flex-column align-items-center justify-content-center margin7" >
+  <img style="margin-bottom:10%" class="carta" src="../assets/img/certo.png">
+  <div>
+    <p class="validarText">
+      O seu endereço de e-mail foi confirmado com sucesso.<br />
+      A sua conta está pronta para uso.
+    </p>
+  </div>
+  <div>
+    <p class="validarText" >
+      Agradecemos por escolher o Booking Buddy.
+    </p>
+  </div>
+  
+  <div class="bottom-div">
+    <p>Clique aqui para ser redirecionado para a página de <a href="/login" style="font-weight:bold">Login</a></p>
   </div>
 </div>
 
-<!--<div *ngIf="signedIn">
-  <h4>Signed in</h4>
-  <div>
-    Please log out of your current session to create a new user account.
-  </div>-->
-<!--</div>-->
