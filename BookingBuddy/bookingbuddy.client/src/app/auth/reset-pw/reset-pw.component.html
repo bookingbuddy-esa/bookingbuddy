@@ -1,0 +1,18 @@
+<div class="center">
+  <h2 class="margin10">Recuperar Palavra-Passe</h2>
+  <form [formGroup]="resetPWForm" class="center alignment" (submit)="reset($event)">
+    <p class="size">Estamos quase! <br /> </p>
+    <div class="margin-top2">
+      <input class="inputCaixaRegister" type="password" id="pass" name="email" formControlName="pass" placeholder="Insira a sua nova palavra-passe" required>
+    </div>
+    <div class="margin-top2">
+      <input class="inputCaixaRegister" type="password" id="confirmPass" name="email" formControlName="confirmPass" placeholder="Reescreva a palavra-passe" required>
+    </div>
+    <button type="submit" class="margin-top2 btnRecoverPW">Enviar</button>
+  </form>
+  
+  <div style="margin-top:5%;">
+    <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
+  </div>
+</div>
+

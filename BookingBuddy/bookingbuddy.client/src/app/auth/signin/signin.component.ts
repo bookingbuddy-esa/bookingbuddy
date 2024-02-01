@@ -5,6 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.css'
 })
-export class SigninComponent {
+export class SignInComponent {
 
 }
