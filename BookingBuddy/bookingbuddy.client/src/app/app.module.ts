@@ -9,11 +9,13 @@ import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/authorize.interceptor';
 import { AuthGuard } from './auth/authorize.guard';
 import { AuthorizeService } from './auth/authorize.service';
+import { HomepageComponent } from './homepage/homepage.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomepageComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
