@@ -1,4 +1,4 @@
-<div class="d-flex flex-column align-items-center justify-content-center" >
+<div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn">
   <h3 class="margin7">Olá mais uma vez! Sentimos a sua falta.</h3>
   <form class="form w-50" [formGroup]="signinForm" (submit)="signin($event)">
     <div class="row m-3">
@@ -39,17 +39,17 @@
   </div>
 
   <div style="">
-    <p>Ainda não se registou? <a href="/login" style="font-weight:bold">Criar conta</a></p>
+    <p>Ainda não se registou? <a href="/register" style="font-weight:bold">Criar conta</a></p>
   </div>
 </div>
 
 
-<!--<div *ngIf="registerSucceeded">
-  <h4>Registration succeeded</h4>
+<<div *ngIf="signedIn">
+  <h4>SignIn succeeded</h4>
   <div>
-    Please <a href="signin">sign in</a> to continue.
+    You are already SignedIn!
   </div>
-</div>-->
+</div>
 
 <!--<div *ngIf="signedIn">
   <h4>Signed in</h4>
