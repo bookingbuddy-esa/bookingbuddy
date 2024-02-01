@@ -11,10 +11,12 @@ namespace BookingBuddy.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(UserManager<ApplicationUser> userManager)
+        public AccountController(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         [HttpPost]
@@ -31,7 +33,11 @@ namespace BookingBuddy.Server.Controllers
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
-            {                
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { token, email = user.Email }, Request.Scheme);
+                var message = new Message(new string[] { user.Email }, "Confirmação de e-mail", confirmationLink, null);
+                await _emailSender.SendEmailAsync(message);
                 return Ok();
             }
 
