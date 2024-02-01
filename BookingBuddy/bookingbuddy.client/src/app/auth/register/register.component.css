@@ -58,3 +58,19 @@
   width: 30px;
   height: 30px;
 }
+.carta {
+  width: 150px;
+  height: 150px;
+}
+.validarText{
+    text-align:center;
+    width:300px;
+    font-weight:bold;
+}
+
+.bottom-div {
+  position: fixed; /* ou absolute, dependendo do seu layout */
+  bottom: 0;
+  width: 100%;
+  padding: 10px; /* espaçamento interno opcional */
+  text-align: center; /* alinhar o texto ao centro opcional */
