@@ -83,7 +83,7 @@ namespace BookingBuddy.Server.Controllers
         [Route("api/resetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordResetModel model)
         {
-            var existingUser = await _userManager.FindByIdAsync(model.Id);
+            var existingUser = await _userManager.FindByIdAsync(model.Uid);
             if (existingUser != null)
             {
                 var result = await _userManager.ResetPasswordAsync(existingUser, model.Token, model.NewPassword);
@@ -131,7 +131,7 @@ public class PasswordRecoveryModel
 
 public class PasswordResetModel
 {
-    public string Id { get; set; }
+    public string Uid { get; set; }
     public string Token { get; set; }
     public string NewPassword { get; set; }
 }

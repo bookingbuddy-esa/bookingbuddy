@@ -31,6 +31,31 @@ export class AuthorizeService {
       }));
   }
 
+  // recover user password by sending an email to the specified email
+  public recoverPassword(email: string) {
+    return this.http.post('api/forgotPassword', {
+      email: email
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
+  // reset user password
+  public resetPassword(uid: string, token: string, newPassword: string) {
+    return this.http.post('api/resetPassword', {
+      uid: uid,
+      token: token,
+      newPassword: newPassword
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
 
   // register new user
   public registerCustom(name: string, email: string, password: string) {
