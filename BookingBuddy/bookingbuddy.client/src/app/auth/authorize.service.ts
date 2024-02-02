@@ -72,22 +72,8 @@ export class AuthorizeService {
       }));
   }
 
-  // sign out - não aparece como um serviço
-  public signOut() {
-    return this.http.post('/logout', {}, {
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'text'
-    }).pipe<boolean>(map((res: HttpResponse<string>) => {
-      if (res.ok) {
-        this._authStateChanged.next(false);
-      }
-      return res.ok;
-    }));
-  }
-
   // logout
-  public signOutCustom() {
+  public signOut() {
     return this.http.post('/api/logout', {}, {
       withCredentials: true,
       observe: 'response',
