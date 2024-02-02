@@ -11,6 +11,10 @@ using System.CodeDom.Compiler;
 using BookingBuddy.Server.Services;
 using NuGet.Protocol;
 using System.Web;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Net;
+using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -116,12 +120,9 @@ namespace BookingBuddy.Server.Controllers
 
         [HttpPost("api/logout")]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public async Task Logout()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
-
-            // Retorna uma resposta apropriada, como um status 200 OK
-            return Ok(new { message = "Logout successful" });
         }
     }
 }
