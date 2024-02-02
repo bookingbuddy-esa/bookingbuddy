@@ -113,7 +113,7 @@ namespace BookingBuddy.Server.Controllers
                 }
                 return BadRequest(result.Errors);
             }
-            return BadRequest("Email fornecido não está registado!");
+            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code="UserNotFound", Description="O utilizador não se encontra registado."}));
         }
 
 
