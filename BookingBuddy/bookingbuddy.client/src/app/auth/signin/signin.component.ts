@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AuthorizeService } from "../authorize.service";
+import { Router } from '@angular/router';
 
 @Component(
   {
@@ -16,7 +17,7 @@ export class SignInComponent implements OnInit {
   signinSucceeded: boolean = false;
   signedIn: boolean = false;
 
-  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder) {
+  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private router: Router) {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
@@ -50,6 +51,7 @@ export class SignInComponent implements OnInit {
         if (response) {
           this.signinSucceeded = true;
           this.signedIn = true;
+          this.router.navigateByUrl('');
         }
       }).catch(
       error => {
