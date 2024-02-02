@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { AuthorizeService } from "../authorize.service";
-import { ActivatedRoute } from '@angular/router';
-import { query } from '@angular/animations';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-reset-pw',
@@ -13,72 +12,72 @@ export class ResetPwComponent {
   errors: string[] = [];
   resetPWForm!: FormGroup;
   emailSent: boolean = false;
+  submitting: boolean = false;
   token: string = "";
   uid: string = "";
   validUrl: boolean = false;
 
-  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder) { }
+  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.errors = [];
-    this.resetPWForm = this.formBuilder.group(
-      {
-        password: ['', [Validators.required]],
-        confirmPassword: ['', [Validators.required]]
-      });
-
-    // implementação sem o Router
-    var url = location.href;
-    var query = url.split('?')[1];
-    if (query !== undefined) {
-      query.split('&').forEach(param => {
-        var elem = param.split('=');
-        if (elem[0] === "uid") {
-          this.uid = decodeURIComponent(elem[1]);
-        }
-        if (elem[0] === "token") {
-          this.token = decodeURIComponent(elem[1]);
-        }
-      });
-    }
-    if (this.uid !== "" && this.token !== "") {
+    this.resetPWForm = new FormGroup({
+      password: new FormControl<string>('', {
+        validators: [Validators.required, Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/)],
+      }),
+      confirmPassword: new FormControl<string>('', {
+        validators: [Validators.required]
+      })
+    });
+    var urlUid = this.route.snapshot.queryParamMap.get("uid");
+    var urlToken = this.route.snapshot.queryParamMap.get("token");
+    if (urlUid !== null && urlToken !== null) {
+      this.uid = urlUid;
+      this.token = urlToken;
       this.validUrl = true
     }
   }
 
+  get passwordFormField() {
+    return this.resetPWForm.get('password');
+  }
+
   public reset(_: any) {
+    this.submitting = true;
     if (!this.resetPWForm.valid) {
+      this.submitting = false;
       return;
     }
     this.errors = [];
     const password = this.resetPWForm.get('password')?.value;
     const confirmPassword = this.resetPWForm.get('confirmPassword')?.value;
     if (password !== confirmPassword) {
-      this.errors.push('Passwords do not match.');
+      this.errors.push('As palavras-passe não são iguais.');
+      this.submitting = false;
       return;
     }
     this.authService.resetPassword(this.uid, this.token, password).forEach(
       response => {
         if (response) {
-          location.href = "/signin"
+          this.submitting = false;
+          this.router.navigateByUrl("/signin")
         }
       }).catch(
         error => {
           if (error.error) {
             const errorObj = JSON.parse(error.error);
-            if (errorObj && errorObj.errors) {
-              // problem details { "field1": [ "error1", "error2" ], "field2": [ "error1", "error2" ]}
-              const errorList = errorObj.errors;
-              for (let field in errorList) {
-                if (Object.hasOwn(errorList, field)) {
-                  let list: string[] = errorList[field];
-                  for (let idx = 0; idx < list.length; idx += 1) {
-                    this.errors.push(`${field}: ${list[idx]}`);
-                  }
-                }
+            Object.entries(errorObj).forEach((entry) => {
+              const [key, value] = entry;
+              var code = (value as any)["code"]
+              var description = (value as any)["description"];
+              if (code === "InvalidToken" || code === "UserNotFound") {
+                //em caso de o token ou o user serem inválidos
+                //this.validUrl = false;
               }
-            }
+              this.errors.push(description);
+            });
           }
+          this.submitting = false;
         });
   }
 }

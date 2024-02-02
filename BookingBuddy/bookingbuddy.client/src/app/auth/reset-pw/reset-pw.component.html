@@ -1,25 +1,51 @@
-<div class="center">
-  <div *ngIf="validUrl">
-    <h2 class="margin10">Recuperar Palavra-Passe</h2>
-    <form [formGroup]="resetPWForm" class="center alignment" (submit)="reset($event)">
-      <p class="size">Estamos quase! <br /> </p>
-      <div class="margin-top2">
-        <input class="inputCaixaRegister" type="password" id="pass" name="password" formControlName="password" placeholder="Insira a sua nova palavra-passe" required>
+<div *ngIf="!submitting">
+  <div class="flex-row d-flex-center justify-content-center align-items-center">
+    <div *ngIf="validUrl" class="center d-flex flex-column align-items-center">
+      <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show alertSize" role="alert">
+        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="d-flex flex-column align-items-start">
+          <span *ngFor="let error of errors">{{error}}</span>
+        </div>
       </div>
-      <div class="margin-top2">
-        <input class="inputCaixaRegister" type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" placeholder="Reescreva a palavra-passe" required>
+      <form [formGroup]="resetPWForm" class="center d-flex flex-column align-items-center" (submit)="reset($event)">
+        <h2 class="textAlignmentCenter">Recuperar palavra-passe</h2>
+        <p class="size textAlignmentCenter">Estamos quase! <br /> </p>
+        <div>
+          <input class="inputCaixaRegister space-around-input" type="password" id="pass" name="password" formControlName="password" placeholder="Insira a sua nova palavra-passe" required>
+          <div *ngIf="!passwordFormField?.valid && passwordFormField?.dirty" class="center d-flex flex-column align-items-start passwordErrorsDiv">
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')">
+              ❌ Pelo menos uma letra maiúscula.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')">
+              ❌ Pelo menos uma letra minúscula.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')">
+              ❌ Pelo menos um número.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')">
+              ❌ Pelo menos um caractere especial.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('.{6,}')">
+              ❌ Pelo menos 6 caracteres.
+            </span>
+          </div>
+        </div>
+        <input class="inputCaixaRegister space-around-input" type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" placeholder="Reescreva a palavra-passe" required>
+        <button type="submit" [disabled]="!resetPWForm.valid" class="space-around-input btnRecoverPW">Enviar</button>
+      </form>
+      <div class="fixed-bottom" style="margin-top:auto;">
+        <p class="textAlignmentCenter space-around-input mt-auto">Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
       </div>
-      <button type="submit" class="margin-top2 btnRecoverPW">Enviar</button>
-    </form>
-    <div class="center" style="margin-top:5%;">
-      <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
     </div>
-  </div>
-  <div class="margin10 center" *ngIf="!validUrl">
-    <h1>Pedido Inválido</h1>
-    <p>Não foi possível validar o pedido!</p>
-    <br />
-    <button class="btn btn-primary btn-lg btn-block" onclick="location.href = '/signin';">Voltar ao login</button>
+    <div class="center d-flex flex-column align-items-center" *ngIf="!validUrl">
+      <h1>Pedido Inválido</h1>
+      <p>Não foi possível validar o pedido!</p>
+      <br />
+      <button class="btn btn-primary btn-lg btn-block" onclick="location.href = '/signin';">Voltar ao login</button>
+    </div>
   </div>
 </div>
 
+<div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
+  <span class="loader"></span>
+</div>
