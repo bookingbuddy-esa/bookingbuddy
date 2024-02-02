@@ -47,7 +47,7 @@ export class RegisterComponent implements OnInit {
     const confirmPassword = this.registerForm.get('confirmPassword')?.value;
     if (password !== confirmPassword) {
       this.registerFailed = true;
-      this.errors.push('Passwords do not match.');
+      this.errors.push('As palavras-passe não coincidem.');
       return;
     }
     this.authService.registerCustom(name, userName, password).forEach(
@@ -59,19 +59,28 @@ export class RegisterComponent implements OnInit {
         error => {
           this.registerFailed = true;
           if (error.error) {
+            console.log(error.error);
             const errorObj = JSON.parse(error.error);
-            if (errorObj && errorObj.errors) {
-              // problem details { "field1": [ "error1", "error2" ], "field2": [ "error1", "error2" ]}
-              const errorList = errorObj.errors;
-              for (let field in errorList) {
-                if (Object.hasOwn(errorList, field)) {
-                  let list: string[] = errorList[field];
-                  for (let idx = 0; idx < list.length; idx += 1) {
-                    this.errors.push(`${field}: ${list[idx]}`);
-                  }
-                }
+            console.log(errorObj);
+            Object.entries(errorObj).forEach((entry) => {
+              const [key, value] = entry;
+
+              if (value && typeof value === 'object' && 'description' in value) {
+                const description = value.description as string;
+                this.errors.push(description);
               }
-            }
+              /*var code = (value as any)["code"]
+              switch (code) {
+                case "InvalidToken": {
+                  this.validUrl = false;
+
+                  break;
+                }
+                default: {
+                  this.errors.push("Erro desconhecido!")
+                }
+              }*/
+            });
           }
         });
   }

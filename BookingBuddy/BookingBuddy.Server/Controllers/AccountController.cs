@@ -37,7 +37,7 @@ namespace BookingBuddy.Server.Controllers
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
             {
-                return BadRequest("E-mail já está em uso.");
+                return BadRequest(new[] { new { code = "EmailInUse", description = "O e-mail inserido já está em uso." } });
             }
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
@@ -46,10 +46,9 @@ namespace BookingBuddy.Server.Controllers
             if (result.Succeeded)
             {
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = Url.Action("confirmEmail", "Account", new {userId = user.Id , code = token}, Request.Scheme);
-                var message = "Clique no link " + confirmationLink;
-                EmailSender emailSender = new EmailSender();
-                await emailSender.SendEmail("Confirmação Email", user.Email, user.Name, message);
+                var confirmationLink = $"https://localhost:4200/confirmation-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
+                await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", user.Email, user.Name, new { confirmationLink });
+                Console.WriteLine(confirmationLink);
                 return Ok();
             }
 

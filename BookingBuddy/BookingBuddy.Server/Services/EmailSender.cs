@@ -5,7 +5,7 @@ namespace BookingBuddy.Server.Services
 {
     public class EmailSender
     {
-        public async Task SendEmail(string subject, string toEmail, string name, string message)
+        /*public async Task SendEmail(string subject, string toEmail, string name, string message)
         {
             var apiKey = "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";
             var client = new SendGridClient(apiKey);
@@ -16,7 +16,7 @@ namespace BookingBuddy.Server.Services
             //var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
             var response = await client.SendEmailAsync(msg);
-        }
+        }*/
 
         public static async Task<Response> SendTemplateEmail(string templateId, string toEmail, string toName, object data)
         {

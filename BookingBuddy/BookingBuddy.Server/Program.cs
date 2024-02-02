@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
+using BookingBuddy.Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<BookingBuddyServerContext>()
+    .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
     .AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
