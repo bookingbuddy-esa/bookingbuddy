@@ -1,5 +1,8 @@
-<div class="d-flex flex-column mx-auto align-items-center justify-content-center" style="width: 200px;margin-top:30%">
-  <button class="btn btn-primary" onclick="location.href = '/register';">Registar</button>
-  <br/>
-  <button class="btn btn-primary" onclick="location.href = '/signin';">Login</button>
+<h3 class="mx-auto" style="width:70%;margin-top:40px;" *ngIf="signedIn && user !== undefined"> Utilizador {{user.email}} com sessão iniciada!</h3>
+<div class="d-flex flex-column mx-auto align-items-center justify-content-center" style="width: 500px;margin-top:20%">
+  <button class="btn btn-primary btn-lg btn-block" [disabled]="signedIn" onclick="location.href = '/register';">Registar</button>
+  <br />
+  <button class="btn btn-primary btn-lg btn-block" [disabled]="signedIn" onclick="location.href = '/signin';">Login</button>
+  <br />
+  <button *ngIf="signedIn" class="btn btn-danger btn-lg btn-block" (click)="logout()">Logout</button>
 </div>
