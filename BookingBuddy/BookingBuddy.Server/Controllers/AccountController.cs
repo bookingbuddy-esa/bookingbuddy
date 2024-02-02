@@ -169,6 +169,24 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
         }
 
+        [HttpPost]
+        [Route("api/manage/changePassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
+        {
+            var existingUser = await _userManager.GetUserAsync(User);
+            if (existingUser != null)
+            {
+                var resultPasswordChange = await _userManager.ChangePasswordAsync(existingUser, model.OldPassword, model.NewPassword);
+                if (!resultPasswordChange.Succeeded)
+                {
+                    return BadRequest(resultPasswordChange.Errors);
+                }
+                return Ok();
+            }
+            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+        }
+
         [HttpPost("api/logout")]
         [Authorize]
         public async Task Logout()
@@ -176,35 +194,15 @@ namespace BookingBuddy.Server.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
         }
     }
-}
+    public record AccountRegisterModel(string Name, string Email, string Password);
+    /* // todo: mudar depois ?
+       public enum AccountType; */
 
-public class AccountRegisterModel
-{
-    public string Name { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public record PasswordRecoveryModel(string Email);
 
-    // todo: mudar depois ?
-    public enum AccountType;
-}
+    public record PasswordResetModel(string Uid, string Token, string NewPassword);
 
-public class PasswordRecoveryModel
-{
-    public string Email { get; set; }
-}
+    public record AccountManageModel(string NewName, string NewUserName, string NewEmail, string NewPassword, string OldPassword);
 
-public class PasswordResetModel
-{
-    public string Uid { get; set; }
-    public string Token { get; set; }
-    public string NewPassword { get; set; }
-}
-
-public class AccountManageModel
-{
-    public string NewName { get; set; }
-    public string NewUserName { get; set; }
-    public string NewEmail { get; set; }
-    public string NewPassword { get; set; }
-    public string OldPassword { get; set; }
+    public record PasswordChangeModel(string NewPassword, string OldPassword);
 }

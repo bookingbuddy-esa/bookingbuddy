@@ -1,8 +1,47 @@
-<h3 class="mx-auto" style="width:70%;margin-top:40px;" *ngIf="signedIn && user !== undefined"> Utilizador {{user.email}} com sessão iniciada!</h3>
-<div class="d-flex flex-column mx-auto align-items-center justify-content-center" style="width: 500px;margin-top:20%">
-  <button class="btn btn-primary btn-lg btn-block" [disabled]="signedIn" onclick="location.href = '/register';">Registar</button>
-  <br />
-  <button class="btn btn-primary btn-lg btn-block" [disabled]="signedIn" onclick="location.href = '/signin';">Login</button>
-  <br />
-  <button *ngIf="signedIn" class="btn btn-danger btn-lg btn-block" (click)="logout()">Logout</button>
+<h3 class="fixed-top mx-auto" style="width:70%;margin-top:40px;text-align:center;" *ngIf="signedIn && user !== undefined"> Utilizador '{{user.name}}' com sessão iniciada!</h3>
+<div *ngIf="!submitting">
+  <div *ngIf="!editPassword" class="mx-auto d-flex-center justify-content-center flex-column align-items-center">
+    <button *ngIf="!signedIn" class="btn btn-primary btn-lg btn-block buttonSize space-around-input" onclick="location.href = '/register';">Registar</button>
+    <button *ngIf="!signedIn" class="btn btn-primary btn-lg btn-block buttonSize space-around-input" onclick="location.href = '/signin';">Login</button>
+    <button *ngIf="signedIn" class="btn btn-info btn-lg btn-block buttonSize space-around-input" (click)="editPassword=true">Mudar palavra-passe</button>
+    <button *ngIf="signedIn" class="btn btn-danger btn-lg btn-block buttonSize space-around-input" (click)="logout()">Logout</button>
+  </div>
+  <div class="flex-row d-flex-center justify-content-center align-items-center">
+    <div *ngIf="editPassword">
+      <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show alertSize" role="alert">
+        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="d-flex flex-column align-items-start">
+          <span *ngFor="let error of errors">{{error}}</span>
+        </div>
+      </div>
+      <form [formGroup]="changePWForm" class="center d-flex flex-column align-items-center" (submit)="changePassword($event)">
+        <h2 class="textAlignmentCenter">Alterar palavra-passe</h2>
+        <br />
+        <div>
+          <input class="inputCaixaRegister space-around-input" type="password" id="pass" name="password" formControlName="password" placeholder="Insira a sua nova palavra-passe" required>
+          <div *ngIf="!passwordFormField?.valid && passwordFormField?.dirty" class="center d-flex flex-column align-items-start passwordErrorsDiv">
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')">
+              ❌ Pelo menos uma letra maiúscula.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')">
+              ❌ Pelo menos uma letra minúscula.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')">
+              ❌ Pelo menos um número.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')">
+              ❌ Pelo menos um caractere especial.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('.{6,}')">
+              ❌ Pelo menos 6 caracteres.
+            </span>
+          </div>
+        </div>
+        <input class="inputCaixaRegister space-around-input" type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" placeholder="Reescreva a palavra-passe" required>
+        <input class="inputCaixaRegister space-around-input" type="password" id="oldPassword" name="oldPassword" formControlName="oldPassword" placeholder="Palavra-passe antiga" required>
+        <button type="submit" [disabled]="!changePWForm.valid" [ngClass]="{'btn-dark':!changePWForm.valid}" class="space-around-input btn btn-success customButton">Confirmar</button>
+        <button type="reset" class="space-around-input btn btn-danger customButton" (click)="editPassword=false">Cancelar</button>
+      </form>
+    </div>
+  </div>
 </div>

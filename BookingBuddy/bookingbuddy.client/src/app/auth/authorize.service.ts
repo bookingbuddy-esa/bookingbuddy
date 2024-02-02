@@ -88,12 +88,36 @@ export class AuthorizeService {
 
   // check if the user is authenticated. the endpoint is protected so 401 if not.
   public user() {
-    return this.http.get<UserInfo>('/manage/info', {
+    return this.http.get<UserInfo>('api/manage/info', {
       withCredentials: true
-    }).pipe(
-      catchError((_: HttpErrorResponse, __: Observable<UserInfo>) => {
-        return of({} as UserInfo);
-      }));
+    }).pipe(catchError((_: HttpErrorResponse, __: Observable<UserInfo>) => {
+      return of({} as UserInfo);
+    }));
+  }
+
+  public manageUser(newName: string, newUserName: string, newEmail: string, newPassword: string, oldPassword: string) {
+    return this.http.post<UserInfo>('api/manage/info', {
+      withCredentials: true,
+      newName: newName,
+      newUserName: newUserName,
+      newEmail: newEmail,
+      newPassword: newPassword,
+      oldPassword: oldPassword
+    }).pipe(catchError((_: HttpErrorResponse, __: Observable<UserInfo>) => {
+      return of({} as UserInfo);
+    }));
+  }
+
+  public changePassword(newPassword: string, oldPassword: string) {
+    return this.http.post('api/manage/changePassword', {
+      newPassword: newPassword,
+      oldPassword: oldPassword
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
   }
 
   // is signed in when the call completes without error and the user has an email

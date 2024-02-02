@@ -17,7 +17,7 @@ export class ResetPwComponent {
   uid: string = "";
   validUrl: boolean = false;
 
-  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(private authService: AuthorizeService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.errors = [];
