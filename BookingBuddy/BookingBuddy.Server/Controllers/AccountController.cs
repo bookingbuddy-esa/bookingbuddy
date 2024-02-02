@@ -54,7 +54,7 @@ namespace BookingBuddy.Server.Controllers
 
             return BadRequest(result.Errors);
         }
-        
+
         [HttpGet]
         [AllowAnonymous]
         [Route("api/confirmEmail")]
@@ -113,9 +113,61 @@ namespace BookingBuddy.Server.Controllers
                 }
                 return BadRequest(result.Errors);
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code="UserNotFound", Description="O utilizador não se encontra registado."}));
+            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
         }
 
+        [HttpGet]
+        [Route("api/manage/info")]
+        [Authorize]
+        public async Task<IActionResult> ManageInfo()
+        {
+            var existingUser = await _userManager.GetUserAsync(User);
+            if (existingUser != null)
+            {
+                return Ok(new { existingUser.Name, existingUser.UserName, existingUser.Email, isEmailConfirmed = existingUser.EmailConfirmed });
+            }
+            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+        }
+
+        [HttpPost]
+        [Route("api/manage/info")]
+        [Authorize]
+        public async Task<IActionResult> ManageInfo([FromBody] AccountManageModel model)
+        {
+            var existingUser = await _userManager.GetUserAsync(User);
+            if (existingUser != null)
+            {
+                var resultPasswordChange = await _userManager.ChangePasswordAsync(existingUser, model.OldPassword, model.NewPassword);
+                if (!resultPasswordChange.Succeeded)
+                {
+                    return BadRequest(resultPasswordChange.Errors);
+                }
+                if (existingUser.UserName != model.NewUserName)
+                {
+                    var resultUserNameChange = await _userManager.SetUserNameAsync(existingUser, model.NewUserName);
+                    if (!resultUserNameChange.Succeeded)
+                    {
+                        return BadRequest(resultUserNameChange.Errors);
+                    }
+                }
+                if (existingUser.Email != model.NewEmail)
+                {
+                    var emailToken = await _userManager.GenerateChangeEmailTokenAsync(existingUser, model.NewEmail);
+                    var resultEmailChange = await _userManager.ChangeEmailAsync(existingUser, model.NewEmail, emailToken);
+                    if (!resultEmailChange.Succeeded)
+                    {
+                        return BadRequest(resultEmailChange.Errors);
+                    }
+                }
+                if (existingUser.Name != model.NewName)
+                {
+                    existingUser.Name = model.NewName;
+                    await _userManager.UpdateAsync(existingUser);
+                }
+                return Ok(new { existingUser.Name, existingUser.UserName, existingUser.Email, isEmailConfirmed = existingUser.EmailConfirmed });
+            }
+            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+        }
 
         [HttpPost("api/logout")]
         [Authorize]
@@ -146,4 +198,13 @@ public class PasswordResetModel
     public string Uid { get; set; }
     public string Token { get; set; }
     public string NewPassword { get; set; }
+}
+
+public class AccountManageModel
+{
+    public string NewName { get; set; }
+    public string NewUserName { get; set; }
+    public string NewEmail { get; set; }
+    public string NewPassword { get; set; }
+    public string OldPassword { get; set; }
 }
