@@ -33,7 +33,7 @@
         <input class="inputCaixaRegister space-around-input" type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" placeholder="Reescreva a palavra-passe" required>
         <button type="submit" [disabled]="!resetPWForm.valid" class="space-around-input btnRecoverPW">Enviar</button>
       </form>
-      <div class="fixed-bottom" style="margin-top:auto;">
+      <div class="fixed-bottom bottom-text">
         <p class="textAlignmentCenter space-around-input mt-auto">Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
       </div>
     </div>
@@ -47,5 +47,5 @@
 </div>
 
 <div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
-  <span class="loader"></span>
+  <app-loader></app-loader>
 </div>
