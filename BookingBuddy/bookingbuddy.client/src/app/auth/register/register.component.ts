@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit {
       this.errors.push('As palavras-passe não coincidem.');
       return;
     }
-    this.authService.registerCustom(name, userName, password).forEach(
+    this.authService.register(name, userName, password).forEach(
       response => {
         if (response) {
           this.registerSucceeded = true;

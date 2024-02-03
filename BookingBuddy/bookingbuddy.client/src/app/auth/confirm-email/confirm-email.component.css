@@ -2,8 +2,26 @@
   text-align: center;
 }
 
-.space-around-input {
+.center-text {
+  font-weight: bolder;
+  text-align: center;
+}
+
+.image-center {
+  width: 30%;
+  height: 30%;
+}
+
+.last-text {
+  margin-top: 7%;
+}
+
+.space-around {
   margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.bottom-text {
   margin-bottom: 1%;
 }
 
@@ -20,10 +38,6 @@
   border-color: grey;
   border: 1px solid grey;
   padding: 10px;
-}
-
-.bottom-text {
-  margin-bottom: 1%;
 }
 
 .btnRecoverPW {
