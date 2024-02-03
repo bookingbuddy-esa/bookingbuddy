@@ -1,0 +1,17 @@
+<div *ngIf="!submitting">
+  <div class="flex-row d-flex-center justify-content-center align-items-center">
+    <div class="center d-flex flex-column align-items-center">
+      <img class="image-center" src="../assets/img/certo.png">
+      <h2 class="center-text space-around">O seu endereço de e-mail foi confirmado com sucesso.</h2>
+      <h2 class="center-text space-around">A sua conta está pronta para uso.</h2>
+      <h2 class="center-text last-text">Agradecemos por escolher o Booking Buddy.</h2>
+    </div>
+  </div>
+  <div class="fixed-bottom bottom-text">
+    <p class="textAlignmentCenter space-around-input mt-auto">Clique aqui para ser redirecionado para a página de <a href="/signin" style="font-weight:bold">login</a></p>
+  </div>
+</div>
+
+<div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
+  <app-loader></app-loader>
+</div>
