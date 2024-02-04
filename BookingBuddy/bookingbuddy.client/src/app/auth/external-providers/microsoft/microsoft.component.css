@@ -1,0 +1,17 @@
+#microsoftButton {
+  width: 72px;
+  height: 72px;
+  background-color: transparent;
+  border: 2.9px solid #E6E7EA;
+  border-radius: 7px;
+}
+
+  #microsoftButton:hover {
+    background-color: #F8FAFF;
+    border: 2.9px solid #DCE9FD;
+  }
+
+.buttonImage {
+  max-height: 70%;
+  max-height: 70%;
+}
