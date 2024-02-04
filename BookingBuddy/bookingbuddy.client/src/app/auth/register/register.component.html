@@ -22,22 +22,18 @@
   </form>
 
   <div class="divhr1">
-    <hr class="hr1 margin-top2">
-    <div> &nbsp; Ou criar conta com &nbsp;</div>
-    <hr class="hr1 margin-top2">
+    <hr class="hr1">
+    <span> &nbsp; Ou criar conta com &nbsp;</span>
+    <hr class="hr1">
   </div>
 
-  <div class="registerExtra">
-    <button class="botao-imagem">
-      <img class="google" src="../assets/img/googleIcon.png">
-    </button>
-
-    <button class="botao-imagem">
-      <img class="microsoft" src="../assets/img/microsoftLogo.png">
-    </button>
+  <div class="flex-row d-flex-center justify-content-center align-items-center">
+    <div class="externalLoginButton">
+      <app-google></app-google>
+    </div>
   </div>
 
-  <div style="">
+  <div class="fixed-bottom mx-auto" style="text-align:center;">
     <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
   </div>
 </div>

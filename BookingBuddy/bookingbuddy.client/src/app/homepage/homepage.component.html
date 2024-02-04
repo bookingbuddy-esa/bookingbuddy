@@ -6,8 +6,7 @@
     <button *ngIf="signedIn" class="btn btn-info btn-lg btn-block buttonSize space-around-input" (click)="editPassword=true">Mudar palavra-passe</button>
     <button *ngIf="signedIn" class="btn btn-danger btn-lg btn-block buttonSize space-around-input" (click)="logout()">Logout</button>
   </div>
-  <div class="flex-row d-flex-center justify-content-center align-items-center">
-    <div *ngIf="editPassword">
+  <div *ngIf="editPassword" class="flex-row d-flex-center justify-content-center align-items-center">
       <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show alertSize" role="alert">
         <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"></button>
         <div class="d-flex flex-column align-items-start">
@@ -42,6 +41,5 @@
         <button type="submit" [disabled]="!changePWForm.valid" [ngClass]="{'btn-dark':!changePWForm.valid}" class="space-around-input btn btn-success customButton">Confirmar</button>
         <button type="reset" class="space-around-input btn btn-danger customButton" (click)="editPassword=false">Cancelar</button>
       </form>
-    </div>
   </div>
 </div>

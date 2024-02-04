@@ -31,12 +31,16 @@
 
 .divhr1 {
   display: flex;
-  margin: 2%;
 }
 
-.registerExtra {
+.d-flex-center {
   display: flex;
-  text-align: center;
+  min-height: 10vh;
+}
+
+.externalLoginButton {
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 .botao-imagem {
@@ -45,7 +49,6 @@
   cursor: pointer;
   border: 1px solid #9DC78A;
   border-radius: 15px;
-  margin: 10px;
   width: 70px;
   height: 60px;
 }
