@@ -84,7 +84,42 @@ namespace BookingBuddy.Server.Controllers
             if (exsistingUser == null)
             {
                 var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
-                var user = new ApplicationUser() { Email = email, UserName = email, Name = name};
+                var user = new ApplicationUser() { Email = email, UserName = email, Name = name };
+                var userCreateResult = await _userManager.CreateAsync(user);
+                if (userCreateResult.Succeeded)
+                {
+                    var addClaimsResult = await _userManager.AddClaimsAsync(user, jwtSecurityToken.Claims);
+                    if (addClaimsResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, true);
+                        return Redirect("https://localhost:4200/");
+                    }
+                    BadRequest(addClaimsResult.Errors);
+                }
+                return BadRequest(userCreateResult.Errors);
+            }
+            else
+            {
+                await _signInManager.SignInAsync(exsistingUser, true);
+                return Redirect("https://localhost:4200/");
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Consumes("application/x-www-form-urlencoded")]
+        [Route("api/microsoft")]
+        public async Task<IActionResult> MicrosoftLogin([FromForm] MicrosoftSignInModel model)
+        {
+            var token = model.Id_token;
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var email = jwtSecurityToken.Claims.Where(claim => claim.Type == "email").First().Value;
+            var exsistingUser = await _userManager.FindByEmailAsync(email);
+            if (exsistingUser == null)
+            {
+                var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
+                var user = new ApplicationUser() { Email = email, UserName = email, Name = name };
                 var userCreateResult = await _userManager.CreateAsync(user);
                 if (userCreateResult.Succeeded)
                 {
@@ -234,4 +269,6 @@ namespace BookingBuddy.Server.Controllers
     public record PasswordChangeModel(string NewPassword, string OldPassword);
 
     public record GoogleSignInModel(string ClientId, string Client_id, string Credential, string Select_by, string G_csrf_token);
+
+    public record MicrosoftSignInModel(string Id_token,string Session_state);
 }
