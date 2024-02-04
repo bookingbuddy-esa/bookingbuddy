@@ -70,7 +70,7 @@ export class SignInComponent implements OnInit {
     this.errors = [];
 
     const userName = this.signinForm.get('email')?.value;
-    const password = this.signinForm.get('password')?.value;
+    const password = this.signinForm.get('password')?.value
 
     this.authService.signIn(userName, password).forEach(
       response => {

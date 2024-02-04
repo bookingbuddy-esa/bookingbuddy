@@ -79,3 +79,18 @@
   padding: 10px; /* espaçamento interno opcional */
   text-align: center; /* alinhar o texto ao centro opcional */
 }
+
+.passwordErrors {
+  color: red;
+  display: block;
+  font-size: 13px;
+  margin-left: 3%;
+}
+
+.passwordErrorsDiv {
+  margin-bottom: 5%;
+}
+
+.alertSize {
+  width: 100%;
+}
