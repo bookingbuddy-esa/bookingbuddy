@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ResetPwComponent } from './reset-pw/reset-pw.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
+import { GoogleComponent } from './external-providers/google/google.component';
 
 @NgModule({
   imports: [
@@ -24,11 +25,11 @@ import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
         { path: 'signin', component: SignInComponent },
         { path: 'recover-password', component: RecoverPwComponent },
         { path: 'reset-password', component: ResetPwComponent },
-        { path: 'confirm-email', component: ConfirmEmailComponent }
+        { path: 'confirm-email', component: ConfirmEmailComponent },
       ]
     )
   ],
-  declarations: [/*LoginMenuComponent,*/ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent],
+  declarations: [/*LoginMenuComponent,*/ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent],
   exports: [/*LoginMenuComponent, */ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent]
 })
 export class AuthModule { }

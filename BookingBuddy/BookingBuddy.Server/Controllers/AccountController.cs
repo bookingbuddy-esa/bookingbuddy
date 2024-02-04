@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 using System.Web;
+using Microsoft.IdentityModel.JsonWebTokens;
+using System.IdentityModel.Tokens.Jwt;
+using NuGet.Common;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -64,6 +67,41 @@ namespace BookingBuddy.Server.Controllers
             else
             {
                 return BadRequest(result.Errors);
+            }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Consumes("application/x-www-form-urlencoded")]
+        [Route("api/google")]
+        public async Task<IActionResult> GoogleLogin([FromForm] GoogleSignInModel model)
+        {
+            var token = model.Credential;
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var email = jwtSecurityToken.Claims.Where(claim => claim.Type == "email").First().Value;
+            var exsistingUser = await _userManager.FindByEmailAsync(email);
+            if (exsistingUser == null)
+            {
+                var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
+                var user = new ApplicationUser() { Email = email, UserName = email, Name = name};
+                var userCreateResult = await _userManager.CreateAsync(user);
+                if (userCreateResult.Succeeded)
+                {
+                    var addClaimsResult = await _userManager.AddClaimsAsync(user, jwtSecurityToken.Claims);
+                    if (addClaimsResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, true);
+                        return Redirect("https://localhost:4200/");
+                    }
+                    BadRequest(addClaimsResult.Errors);
+                }
+                return BadRequest(userCreateResult.Errors);
+            }
+            else
+            {
+                await _signInManager.SignInAsync(exsistingUser, true);
+                return Redirect("https://localhost:4200/");
             }
         }
 
@@ -194,4 +232,6 @@ namespace BookingBuddy.Server.Controllers
     public record AccountManageModel(string NewName, string NewUserName, string NewEmail, string NewPassword, string OldPassword);
 
     public record PasswordChangeModel(string NewPassword, string OldPassword);
+
+    public record GoogleSignInModel(string ClientId, string Client_id, string Credential, string Select_by, string G_csrf_token);
 }
