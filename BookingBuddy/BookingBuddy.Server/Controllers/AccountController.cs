@@ -5,23 +5,23 @@ using Microsoft.AspNetCore.Mvc;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 using System.Web;
-using Microsoft.IdentityModel.JsonWebTokens;
 using System.IdentityModel.Tokens.Jwt;
-using NuGet.Common;
 
 namespace BookingBuddy.Server.Controllers
 {
+    /// <summary>
+    /// Classe que representa o controlador de gestão de contas.
+    /// </summary>
+    /// <remarks>
+    /// Construtor da classe AccountController.
+    /// </remarks>
+    /// <param name="userManager">Gestor de Utilizadores</param>
+    /// <param name="signInManager">Gestor de logins</param>
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager) : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
 
         [HttpPost]
         [AllowAnonymous]
@@ -70,9 +70,29 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Login com uma conta Google.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// </remarks>
+        /// <example>
+        ///     POST /api/google
+        ///     
+        ///     Form:
+        ///         clientId=780...5nv.apps.googleusercontent.com&amp;
+        ///         client_id=780...5nv.apps.googleusercontent.com&amp;
+        ///         credential=eyJ...xrQ&amp;
+        ///         select_by=btn&amp;
+        ///         g_csrf_token=b228...ab5
+        /// </example>
+        /// <param name="model">Modelo de login com a Google</param>
+        /// <returns>Redireciona para o link fornecido, se o pedido for concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/google")]
         public async Task<IActionResult> GoogleLogin([FromForm] GoogleSignInModel model)
         {
@@ -105,9 +125,27 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Login com uma conta Microsoft.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// </remarks>
+        /// <example>
+        ///     POST /api/microsoft
+        ///     
+        ///     Form:
+        ///         id_token=eyJ...Iew&amp;
+        ///         session_state=5d4...6ac
+        ///       
+        /// </example>
+        /// <param name="model">Modelo de login com a Microsoft</param>
+        /// <returns>Redireciona para o link fornecido, se o pedido for concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
+        [ProducesResponseType(StatusCodes.Status302Found)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/microsoft")]
         public async Task<IActionResult> MicrosoftLogin([FromForm] MicrosoftSignInModel model)
         {
@@ -140,8 +178,28 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Recuperação da password através de um email.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// 
+        /// NOTA: É enviado um email com um link para dar reset à password para o email fornecido, se este estiver associado a um utilizador.
+        /// </remarks>
+        /// <example>
+        ///     POST /api/forgotPassword
+        ///     
+        ///     {
+        ///        "email": bookingbuddy@bookingbuddy.com,
+        ///     } 
+        ///     
+        /// </example>
+        /// <param name="model">Modelo de recuperação de palavra-passe</param>
+        /// <returns>Resposta do pedido de recuperar a palavra-passe, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/forgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] PasswordRecoveryModel model)
         {
@@ -154,11 +212,30 @@ namespace BookingBuddy.Server.Controllers
                 Console.WriteLine(recoverLink);
                 return Ok();
             }
-            return BadRequest("Email fornecido não está registado!");
+            return BadRequest(IdentityResult.Failed().Errors.Append(new PortugueseIdentityErrorDescriber().InvalidEmail(model.Email)));
         }
 
+        /// <summary>
+        /// Reset da password através de um token e do id do utilizador.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null. 
+        /// </remarks>
+        /// <example>
+        ///     POST /api/resetPassword
+        ///     
+        ///     {
+        ///        "uid": 9ba9b407-...-0e8576fc82eb,
+        ///        "token": CfDJ8F07Dx+8jTJPhU/.../ICT9WBiXAN43PM1Da5Na,
+        ///        "newPassword": novapassword123!
+        ///     } 
+        /// </example>
+        /// <param name="model">Modelo de reset da palavra-passe</param>
+        /// <returns>Resposta do pedido de reset da password, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/resetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordResetModel model)
         {
@@ -175,8 +252,20 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
         }
 
+        /// <summary>
+        /// Obter informação do utilizador autenticado.
+        /// </summary>
+        /// <remarks>
+        /// NOTA: É necessário estar autenticado para fazer este pedido.
+        /// </remarks>
+        /// <example>
+        ///     GET /api/manage/info
+        /// </example>
+        /// <returns>Infromação do utilizador autenticado.</returns>
         [HttpGet]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/manage/info")]
         public async Task<IActionResult> ManageInfo()
         {
@@ -188,8 +277,31 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
         }
 
+        /// <summary>
+        /// Alterar informação do utilizador autenticado.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// 
+        /// NOTA: É necessário estar autenticado para fazer este pedido.
+        /// </remarks>
+        /// <example>
+        ///     POST /api/manage/info
+        ///     
+        ///     {
+        ///         "newName": Booking Buddy,
+        ///         "newUserName": bookingbuddy@bookingbuddy,
+        ///         "newEmail": bookingbuddy@bookingbuddy,
+        ///         "newPassword": BookingBuddy123!,
+        ///         "oldPassword": BookingBuddy123!
+        ///     }
+        /// </example>
+        /// <param name="model">Modelo de alteração de informação do utilizador</param>
+        /// <returns>Ressposta do pedido de alteração de informação, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/manage/info")]
         public async Task<IActionResult> ManageInfo([FromBody] AccountManageModel model)
         {
@@ -228,8 +340,28 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
         }
 
+        /// <summary>
+        /// Mudar de palavra-passe.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null. 
+        /// 
+        /// NOTA: É necessário estar autenticado para fazer este pedido.
+        /// </remarks>
+        /// <example>
+        ///     POST /api/manage/changePassword
+        ///     
+        ///     {
+        ///        "newPassword": BookingBuddy123#,
+        ///        "oldPassword": BookingBuddy123!
+        ///     } 
+        /// </example>
+        /// <param name="model">Modelo de mudança de palavra-passe</param>
+        /// <returns>Resposta do pedido de mudança da palavra-passe, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/manage/changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
         {
@@ -246,6 +378,16 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
         }
 
+        /// <summary>
+        /// Sair da conta.
+        /// </summary>
+        /// <remarks>
+        /// NOTA: É necessário estar autenticado para fazer este pedido.
+        /// </remarks>
+        /// <example>
+        /// POST /api/logout
+        /// </example>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [Route("api/logout")]
@@ -260,15 +402,51 @@ namespace BookingBuddy.Server.Controllers
 
     public record EmailConfirmModel(string Uid, string Token);
 
+    /// <summary>
+    /// Modelo de recuperação de palavra-passe.
+    /// </summary>
+    /// <param name="Email">Email do utilizador</param>
     public record PasswordRecoveryModel(string Email);
 
+    /// <summary>
+    /// Modelo de reset da palavra-passe.
+    /// </summary>
+    /// <param name="Uid">Id do utilizador</param>
+    /// <param name="Token">Token de reset da palavra-passe</param>
+    /// <param name="NewPassword">Nova palavra-passe</param>
     public record PasswordResetModel(string Uid, string Token, string NewPassword);
 
+    /// <summary>
+    /// Modelo de gestão de conta.
+    /// </summary>
+    /// <param name="NewName">Novo nome</param>
+    /// <param name="NewUserName">Novo nome de utilizador</param>
+    /// <param name="NewEmail">Novo email</param>
+    /// <param name="NewPassword">Nova palavra-passe</param>
+    /// <param name="OldPassword">Palavra-passe antiga</param>
     public record AccountManageModel(string NewName, string NewUserName, string NewEmail, string NewPassword, string OldPassword);
 
+    /// <summary>
+    /// Modelo de mudança de palavra-passe.
+    /// </summary>
+    /// <param name="NewPassword">Nova palavra-passe</param>
+    /// <param name="OldPassword">Palavra-passe antiga</param>
     public record PasswordChangeModel(string NewPassword, string OldPassword);
 
+    /// <summary>
+    /// Modelo de login com a Google.
+    /// </summary>
+    /// <param name="ClientId">Id do cliente</param>
+    /// <param name="Client_id">Id do cliente</param>
+    /// <param name="Credential">Credencial</param>
+    /// <param name="Select_by">Selecionado por</param>
+    /// <param name="G_csrf_token">Token CSRF</param>
     public record GoogleSignInModel(string ClientId, string Client_id, string Credential, string Select_by, string G_csrf_token);
 
-    public record MicrosoftSignInModel(string Id_token,string Session_state);
+    /// <summary>
+    /// Modelo de login com a Microsoft.
+    /// </summary>
+    /// <param name="Id_token">Token de login</param>
+    /// <param name="Session_state">Estado da sessão</param>
+    public record MicrosoftSignInModel(string Id_token, string Session_state);
 }
