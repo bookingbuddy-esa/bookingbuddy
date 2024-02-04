@@ -4,7 +4,9 @@
 
 ### 1.1. *Definition of Done* do UC em questão
 
-- For possível, após entrar na plataforma, e preencher o formulário com as informações (email e password), efetuar o registo na plataforma.
+- 1: For possível, após entrar na plataforma, e preencher o formulário com as informações (email e password), efetuar o registo na plataforma;
+
+- 2: For possível, após entrar na plataforma, efetuar registo (criar conta) utilizando plataformas externas (Google e Microsoft).
 
 ### 1.2. Requisitos de Qualidade, adaptados para o UC em questão
 
@@ -18,7 +20,9 @@
 
 ## 2. Critérios em concordância com os critérios definidos e porquê
 
-- DoD, uma vez que é possível efetuar o registo na plataforma, através de um email e password;
+- DoD 1, uma vez que é possível efetuar o registo na plataforma, através de um email e password;
+
+- DoD 2, uma vez que é possível efetuar o registo na plataforma, através de uma conta Google/Microsoft, utilizando provedores externos dessas mesmas plataformas;
 
 - BS1-RQ1, uma vez que é possível efetuar o registo de várias contas na plataforma e para além de vir a existir a possibilidade de efetuar o registo com recurso a provedores externos (Google e Microsoft), também é possível escalar para possíveis outros;
 
