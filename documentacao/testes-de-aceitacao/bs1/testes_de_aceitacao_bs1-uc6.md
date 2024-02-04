@@ -1,4 +1,4 @@
-# Testes de Aceitação BS1-UC4
+# Testes de Aceitação BS1-UC6
 
 ## 1. Critérios de aceitação, de acordo com o DoD e os RQ's definidos
 

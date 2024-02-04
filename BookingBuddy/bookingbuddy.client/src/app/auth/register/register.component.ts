@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from "@angular/forms";
 import { AuthorizeService } from "../authorize.service";
 
 @Component({
@@ -13,6 +13,7 @@ export class RegisterComponent implements OnInit {
   registerFailed: boolean = false;
   registerSucceeded: boolean = false;
   signedIn: boolean = false;
+  submitting: boolean = false;
 
   constructor(private authService: AuthorizeService,
     private formBuilder: FormBuilder) {
@@ -34,9 +35,14 @@ export class RegisterComponent implements OnInit {
         confirmPassword: ['', [Validators.required]]
       });
   }
+  get passwordFormField() {
+    return this.registerForm.get('password');
+  }
 
   public register(_: any) {
+    this.submitting = true;
     if (!this.registerForm.valid) {
+      this.submitting = false;
       return;
     }
     this.registerFailed = false;
@@ -54,6 +60,7 @@ export class RegisterComponent implements OnInit {
       response => {
         if (response) {
           this.registerSucceeded = true;
+          this.submitting = false;
         }
       }).catch(
         error => {
@@ -69,19 +76,9 @@ export class RegisterComponent implements OnInit {
                 const description = value.description as string;
                 this.errors.push(description);
               }
-              /*var code = (value as any)["code"]
-              switch (code) {
-                case "InvalidToken": {
-                  this.validUrl = false;
-
-                  break;
-                }
-                default: {
-                  this.errors.push("Erro desconhecido!")
-                }
-              }*/
             });
           }
+          this.submitting = false;
         });
   }
 }
