@@ -10,12 +10,14 @@ import { AuthInterceptor } from './auth/authorize.interceptor';
 import { AuthGuard } from './auth/authorize.guard';
 import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
+import { MenuComponent } from './menu/menu.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomepageComponent
+    HomepageComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

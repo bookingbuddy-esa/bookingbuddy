@@ -10,7 +10,7 @@ O branch _dev_ vai conter as implementações atualizadas até a data.
 - Acabada a implementação: 
   - `git status` para ver os ficheiros que foram modificados;
   - `git add nome_do_ficheiro_que_quiserem_adicionar` (ou `git add .` com especial cuidado para não adicionarem coisas que não devem) para adicionarem os ficheiros alterados;
-  - `git commit -m "Mensagem explicativa como referido a cima"` para adicionar mensagem ao commit;
+  - `git commit -m "Mensagem explicativa como referido acima"` para adicionar mensagem ao commit;
   - `git push` para enviar o commit para o branch.
 
 - Agora é necessário colocar as alterações no branch _dev_: 
