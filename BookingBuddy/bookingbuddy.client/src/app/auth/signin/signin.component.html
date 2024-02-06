@@ -1,4 +1,4 @@
-<div class="main d-flex flex-column align-items-center justify-content-between">
+<div *ngIf="!submitting" class="main d-flex flex-column align-items-center justify-content-between">
   <div></div>
   <div class="d-flex flex-column align-items-center justify-content-center mb-5" [ngClass]="{'mt-2':errors.length !== 0}" style="width:100%">
     <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-2" role="alert" style="width:50%">
@@ -27,4 +27,8 @@
     </div>
   </div>
   <span class="bottom-text mb-3">Ainda não se registou? <a [routerLink]="['/register']">Criar conta</a></span>
+</div>
+
+<div *ngIf="submitting" class="main d-flex flex-column align-items-center justify-content-center">
+  <app-loader></app-loader>
 </div>

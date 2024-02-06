@@ -23,6 +23,7 @@ export class SignInComponent implements OnInit {
   errors: string[] = [];
   signinForm!: FormGroup;
   signedIn: boolean = false;
+  submitting: boolean = false;
 
 
   /**
@@ -63,7 +64,9 @@ export class SignInComponent implements OnInit {
    * @param _ 
    */
   public signin(_: any) {
+    this.submitting = true;
     if (!this.signinForm.valid) {
+      this.submitting = false;
       return;
     }
     this.errors = [];
@@ -74,11 +77,13 @@ export class SignInComponent implements OnInit {
       response => {
         if (response) {
           this.signedIn = true;
+          this.submitting = false;
           this.router.navigateByUrl('');
         }
       }).catch(
         error => {
           this.errors.push("Acesso negado. Verifique as credenciais.");
+          this.submitting = false;
         }
       );
   }
