@@ -1,0 +1,125 @@
+
+<div class="main d-flex flex-column align-items-center justify-content-between ">
+  <div class="d-flex flex-column align-items-center justify-content-center" style="width:100%">
+    <div class="page-title mt-5">Criação de Anúncio</div>
+    <h5 class="p-2 mb-4">Preencha os seguintes campos:</h5>
+    <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="createPropertyAdForm" (submit)="create($event)">
+
+      <div class="input-group row">
+        <div class="col">
+          <label> Nome do anúncio: </label>
+        </div>
+        <div class="col">
+          <input class="form-control mb-3" name="name" formControlName="name" />
+        </div>
+      </div>
+
+      <div class="input-group row text-right">
+        <div class="col">
+          <label> Descrição do anúncio: </label>
+        </div>
+        <div class="col">
+          <textarea class="form-control mb-3" name="description" formControlName="description"> </textarea>
+        </div>
+      </div>
+
+      <div class="input-group row">
+        <div class="col">
+          <label> Localização </label>
+        </div>
+        <div class="col">
+          <input class=" form-control mb-3" name="location" formControlName="location" />
+        </div>
+      </div>
+
+      <div class="input-group row">
+        <div class="col">
+          <label> Preço p/noite em €</label>
+        </div>
+        <div class="col">
+          <input class=" form-control mb-3" name="priceNight" formControlName="priceNight" />
+
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-outline-success">Registar Propriedade</button>
+    </form>
+
+
+    <h3 class="p-2 mb-4">Comodidades</h3>
+
+    <div class="container">
+      <div class="row ">
+        <div class="col" align="left">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Estacionamento</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Wifi</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Cozinha</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Varanda</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Frigorífico</label>
+          </div>
+        </div>
+        <div class="col" align="left">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Micro-ondas</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Quintal</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Máquina de lavar</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Piscina Partilhada</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Piscina Índividual</label>
+          </div>
+        </div>
+        <div class="col" align="left">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Permitido Animais</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Varanda</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Câmaras de segurança</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Televisão</label>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input m-2" id="customCheckDisabled">
+            <label class="custom-control-label" for="customCheckDisabled">Wifi</label>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+
+  </div>
+  
+</div>

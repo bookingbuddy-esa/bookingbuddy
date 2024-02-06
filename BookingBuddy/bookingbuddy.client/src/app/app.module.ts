@@ -11,13 +11,15 @@ import { AuthGuard } from './auth/authorize.guard';
 import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
+import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
-    MenuComponent
+    MenuComponent,
+    PropertyAdCreateComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
