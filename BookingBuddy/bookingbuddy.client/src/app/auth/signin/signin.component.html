@@ -1,45 +1,30 @@
-<div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn">
-  <h3 class="margin7">Olá mais uma vez! Sentimos a sua falta.</h3>
-  <form class="form w-50" [formGroup]="signinForm" (submit)="signin($event)">
-    <div class="row m-3">
-      <input class="col form-field inputCaixaRegister" name="name" formControlName="email" placeholder="Insira o seu e-mail" />
+<div class="main d-flex flex-column align-items-center justify-content-between">
+  <div></div>
+  <div class="d-flex flex-column align-items-center justify-content-center mb-5" [ngClass]="{'mt-2':errors.length !== 0}" style="width:100%">
+    <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-2" role="alert" style="width:60%">
+      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
+      <div class="d-flex flex-column align-items-start">
+        <span *ngFor="let error of errors">{{error}}</span>
+      </div>
     </div>
-    <div class="row m-3">
-      <input class="col form-field inputCaixaRegister" type="password" name="password" formControlName="password" placeholder="Insira a sua palavra-passe" />
+    <div class="p-2 mb-4 page-title">Olá mais uma vez! Sentimos a sua falta.</div>
+    <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="signinForm" (submit)="signin($event)">
+      <input class="form-field form-input mb-3" name="email" formControlName="email" placeholder="Insira o seu e-mail" />
+      <input class="form-field form-input mb-1" type="password" name="password" formControlName="password" placeholder="Insira a sua palavra-passe" />
+      <div class="flex-row recover recovery-link mb-5">
+        <a [routerLink]="['/recover-password']">Esqueceu-se da sua palavra passe ?</a>
+      </div>
+      <button class="mb-5 login-button" type="submit">Login</button>
+    </form>
+    <div class="other-logins d-flex flex-row align-items-center justify-content-center mb-3 mt-4">
+      <hr class="flex-grow-1" />
+      <span class="mx-4">Ou faça login com</span>
+      <hr class="flex-grow-1" />
     </div>
-    <div class="row m-3">
-      <p style="text-align:right"> <a href="recover-password">Esqueceu-se da sua palavra passe ?</a></p>
-    </div>
-
-    <div class="row m-3" *ngIf="">
-      <label style="color: red">Login falhou.</label>
-    </div>
-    <div class="row m-3" *ngFor="let error of errors">
-      <label style="color: red">{{error}}</label>
-    </div>
-    <div class="row m-3">
-      <button class="col btnRegister" type="submit">Login</button>
-    </div>
-  </form>
-
-  <div class="divhr1">
-    <hr class="hr1 margin-top2">
-    <span> &nbsp; Ou faça login com &nbsp;</span>
-    <hr class="hr1 margin-top2">
-  </div>
-
-  <div class="flex-row d-flex-center justify-content-center align-items-center">
-    <div class="externalLoginButton">
-      <app-google></app-google>
-    </div>
-    <div class="externalLoginButton">
-      <app-microsoft></app-microsoft>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+      <div class="mx-4"><app-google></app-google></div>
+      <div class="mx-4"><app-microsoft></app-microsoft></div>
     </div>
   </div>
-
-  <div class="fixed-bottom mx-auto" style="text-align:center;">
-    <p>Ainda não se registou? <a href="/register" style="font-weight:bold">Criar conta</a></p>
-  </div>
+  <span class="bottom-text mb-3">Ainda não se registou? <a [routerLink]="['/register']">Criar conta</a></span>
 </div>
-
-

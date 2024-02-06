@@ -64,14 +64,13 @@ export class SignInComponent implements OnInit {
    */
   public signin(_: any) {
     if (!this.signinForm.valid) {
+      this.errors.push("Erro genérico");
       return;
     }
-
     this.errors = [];
 
     const userName = this.signinForm.get('email')?.value;
     const password = this.signinForm.get('password')?.value
-
     this.authService.signIn(userName, password).forEach(
       response => {
         if (response) {
