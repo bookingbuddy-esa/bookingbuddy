@@ -64,7 +64,6 @@ export class SignInComponent implements OnInit {
    */
   public signin(_: any) {
     if (!this.signinForm.valid) {
-      this.errors.push("Erro genérico");
       return;
     }
     this.errors = [];

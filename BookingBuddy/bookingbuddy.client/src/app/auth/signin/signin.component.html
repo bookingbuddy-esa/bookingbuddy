@@ -14,7 +14,7 @@
       <div class="flex-row recover recovery-link mb-5">
         <a [routerLink]="['/recover-password']">Esqueceu-se da sua palavra passe ?</a>
       </div>
-      <button class="mb-5 login-button" type="submit">Login</button>
+      <button class="mb-5 login-button btn" [disabled]="!signinForm.valid" type="submit">Login</button>
     </form>
     <div class="other-logins d-flex flex-row align-items-center justify-content-center mb-3 mt-4">
       <hr class="flex-grow-1" />
