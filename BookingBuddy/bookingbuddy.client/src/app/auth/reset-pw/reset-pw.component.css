@@ -1,0 +1,51 @@
+.textAlignmentCenter {
+  text-align: center;
+}
+
+.space-around-input {
+  margin-top: 1%;
+  margin-bottom: 1%;
+}
+
+.d-flex-center {
+  display: flex;
+  min-height: 90vh;
+}
+
+.inputCaixaRegister {
+  width: 300px;
+  height: 60px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border-color: grey;
+  border: 1px solid grey;
+  padding: 10px;
+}
+
+.bottom-text {
+  margin-bottom: 1%;
+}
+
+.btnRecoverPW {
+  width: 300px;
+  height: 60px;
+  border-radius: 15px;
+  background-color: #9DC78A;
+  border: none;
+  margin-top: 5%;
+}
+
+.passwordErrors {
+  color: red;
+  display: block;
+  font-size: 13px;
+  margin-left: 3%;
+}
+
+.passwordErrorsDiv {
+  margin-bottom: 5%;
+}
+
+.alertSize {
+  width: 100%;
+}

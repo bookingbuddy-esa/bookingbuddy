@@ -1,0 +1,105 @@
+<div *ngIf="!submitting">
+  <div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn && !registerSucceeded">
+    <h3 class="p-4 mt-3">Bem-vindo ao Booking Buddy!</h3>
+    <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show alertSize" role="alert">
+      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="d-flex flex-column align-items-start">
+        <span *ngFor="let error of errors">{{error}}</span>
+      </div>
+    </div>
+    <form class="form w-50" [formGroup]="registerForm" (submit)="register($event)">
+      <div class="row m-3">
+        <input class="col form-field inputCaixaRegister" name="name" formControlName="name" placeholder="Insira o seu nome" />
+      </div>
+      <div class="row m-3">
+        <input class="col form-field inputCaixaRegister" name="email" formControlName="email" placeholder="Insira o seu endereço e-mail" required />
+      </div>
+      <div>
+        <div class="row m-3">
+          <input class="col form-field inputCaixaRegister" type="password" name="password" formControlName="password" autocomplete="on" placeholder="Insira a sua palavra-passe" required />
+          <div *ngIf="!passwordFormField?.valid && passwordFormField?.dirty" class="center d-flex flex-column align-items-start passwordErrorsDiv">
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')">
+              ❌ Pelo menos uma letra maiúscula.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')">
+              ❌ Pelo menos uma letra minúscula.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')">
+              ❌ Pelo menos um número.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')">
+              ❌ Pelo menos um caractere especial.
+            </span>
+            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('.{6,}')">
+              ❌ Pelo menos 6 caracteres.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row m-3">
+        <input class="col form-field inputCaixaRegister" type="password" name="confirmPassword" formControlName="confirmPassword" autocomplete="on" placeholder="Confirme a sua palavra-passe" />
+      </div>
+      <div class="row m-3">
+        <button class="col btnRegister" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
+      </div>
+    </form>
+
+    <div class="divhr1">
+      <hr class="hr1">
+      <span> &nbsp; Ou criar conta com &nbsp;</span>
+      <hr class="hr1">
+    </div>
+
+    <div class="flex-row d-flex-center justify-content-center align-items-center">
+      <div class="externalLoginButton">
+        <app-google></app-google>
+      </div>
+      <div class="externalLoginButton">
+        <app-microsoft></app-microsoft>
+      </div>
+    </div>
+
+    <div class="fixed-bottom mx-auto" style="text-align:center;">
+      <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="registerSucceeded" class="d-flex flex-column align-items-center justify-content-center margin7">
+  <img class="carta" src="../assets/img/envelope.png">
+  <div>
+    <p class="validarText">
+      Estamos quase lá...<br>
+      Por favor, confirme o seu endereço de e-mail para ativar a sua conta.
+    </p>
+  </div>
+  <div class="bottom-div">
+    <p>Não recebeu e-mail de confirmação? <a href="#" style="font-weight:bold">Clique aqui</a></p>
+  </div>
+</div>
+
+<div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
+  <app-loader></app-loader>
+</div>
+
+
+
+<!--A div abaixo é para ser mostrada quando o email for validado
+<div *ngIf="registerSucceeded" class="d-flex flex-column align-items-center justify-content-center margin7" >
+  <img style="margin-bottom:10%" class="carta" src="../assets/img/certo.png">
+  <div>
+    <p class="validarText">
+      O seu endereço de e-mail foi confirmado com sucesso.<br />
+      A sua conta está pronta para uso.
+    </p>
+  </div>
+  <div>
+    <p class="validarText" >
+      Agradecemos por escolher o Booking Buddy.
+    </p>
+  </div>
+
+  <div class="bottom-div">
+    <p>Clique aqui para ser redirecionado para a página de <a href="/signin" style="font-weight:bold">Login</a></p>
+  </div>
+</div>-->
