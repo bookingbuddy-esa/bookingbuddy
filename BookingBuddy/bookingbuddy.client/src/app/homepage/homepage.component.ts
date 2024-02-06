@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthorizeService } from '../auth/authorize.service';
 import { UserInfo } from '../auth/authorize.dto';
 import { Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Property } from '../models/property';
 
 @Component({
   selector: 'app-homepage',
@@ -13,6 +13,7 @@ export class HomepageComponent implements OnInit {
   signedIn: boolean = false;
   submitting: boolean = false;
   user: UserInfo | undefined;
+  property_list: Property[] = [];
 
   constructor(private authService: AuthorizeService, private router: Router) { }
 
@@ -30,6 +31,9 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
+    for (let i = 0; i < 25; i++) {
+      this.property_list.push({ name: "propriedade " + i.toString(), location: "Setúbal", pricePerNight: 100 + i });
+    }
   }
 
   public logout() {

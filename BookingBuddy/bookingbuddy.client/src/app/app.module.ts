@@ -11,18 +11,19 @@ import { AuthGuard } from './auth/authorize.guard';
 import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
-
+import { AuxiliaryModule } from './auxiliary/auxiliary.module';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
-    MenuComponent
+    MenuComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
-    ReactiveFormsModule, AuthModule
+    ReactiveFormsModule, AuthModule,
+    AuxiliaryModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
