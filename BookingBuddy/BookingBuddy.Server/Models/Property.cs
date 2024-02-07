@@ -12,7 +12,17 @@ namespace BookingBuddy.Server.Models
         /// Propriedade que diz respeito ao identificador da propriedade física a anunciar.
         /// </summary>
         [Key]
-        public Guid PropertyId { get; set; }
+        public string PropertyId { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito ao identificador do proprietário da propriedade.
+        /// </summary>
+        public string LandlordId { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito aos identificadores das comodidades da propriedade.
+        /// </summary>
+        public List<string>? AmenityIds { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito ao nome da propriedade física a anunciar.
@@ -38,11 +48,10 @@ namespace BookingBuddy.Server.Models
         public decimal PricePerNight { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito às comodidades da propriedade física a anunciar.
+        /// Propriedade de navegação que diz respeito às comodidades da propriedade física a anunciar.
         /// </summary>
-        [Required(ErrorMessage = "As comodidades da propriedade são obrigatórias")]
         [Display(Name = "Comodidades")]
-        public List<Amenity> Amenities { get; set; }
+        public List<Amenity>? Amenities { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito à localização da propriedade física a anunciar.
@@ -60,10 +69,9 @@ namespace BookingBuddy.Server.Models
         public List<string> ImagesUrl { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito ao proprietário da propriedade física a anunciar.
+        /// Propriedade de navegação que diz respeito ao proprietário da propriedade física a anunciar.
         /// </summary>
-        [Required(ErrorMessage = "O proprietário da propriedade é obrigatório")]
         [Display(Name = "Proprietário")]
-        public Landlord Landlord { get; set; }
+        public Landlord? Landlord { get; set; }
     }
 }

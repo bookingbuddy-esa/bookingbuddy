@@ -11,7 +11,7 @@ namespace BookingBuddy.Server.Models
         /// Propriedade que diz respeito ao identificador de uma comodidade de uma propriedade física a anunciar.
         /// </summary>
         [Key]
-        public Guid AmenityId { get; set; }
+        public string AmenityId { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito ao nome de uma comodidade de uma propriedade física a anunciar.

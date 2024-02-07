@@ -11,7 +11,17 @@ namespace BookingBuddy.Server.Models
         /// Propriedade que diz respeito ao identificador do proprietário.
         /// </summary>
         [Key]
-        public Guid LandlordId { get; set; }
+        public string LandlordId { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito ao identificador do utilizador do proprietário.
+        /// </summary>
+        public string ApplicationUserId { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito aos identificadores das propriedades do proprietário.
+        /// </summary>
+        public List<string>? PropertyIds { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito ao nome do proprietário.
@@ -21,16 +31,15 @@ namespace BookingBuddy.Server.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito às propriedades físicas do proprietário.
+        /// Propriedade de navegação que diz respeito às propriedades físicas do proprietário.
         /// </summary>
         [Display(Name = "Propriedades")]
-        public List<Property> Properties { get; set; }
+        public List<Property>? Properties { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito ao utilizador associado ao proprietário.
+        /// Propriedade de navegação que diz respeito ao utilizador associado ao proprietário.
         /// </summary>
-        [Required(ErrorMessage = "O utilizador associado ao proprietário é obrigatório")]
         [Display(Name = "Utilizador")]
-        public ApplicationUser User { get; set; }
+        public ApplicationUser? User { get; set; }
     }
 }

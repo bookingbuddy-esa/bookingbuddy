@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BookingBuddy.Server.Models
 {
@@ -17,6 +18,6 @@ namespace BookingBuddy.Server.Models
         /// Propriedade que diz respeito ao url da imagem de perfil do utilizador.
         /// </summary>
         [PersonalData]
-        public string PictureUrl { get; set; }
+        public string? PictureUrl { get; set; }
     }
 }
