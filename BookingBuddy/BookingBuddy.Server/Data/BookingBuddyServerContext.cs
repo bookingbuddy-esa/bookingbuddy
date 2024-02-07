@@ -1,17 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Models;
+using System;
 
 namespace BookingBuddy.Server.Data
 {
-    public class BookingBuddyServerContext : IdentityDbContext<ApplicationUser>
+    public class BookingBuddyServerContext(DbContextOptions<BookingBuddyServerContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
-        public BookingBuddyServerContext(DbContextOptions<BookingBuddyServerContext> options)
-            : base(options)
-        {
+        public DbSet<Amenity> PropertyAmenity { get; set; } = default!;
 
-        }
+        public DbSet<Landlord> Landlord { get; set; } = default!;
 
-        //public DbSet<Person> Person { get; set; } = default!;
+        public DbSet<Property> Property { get; set; } = default!;
     }
 }
