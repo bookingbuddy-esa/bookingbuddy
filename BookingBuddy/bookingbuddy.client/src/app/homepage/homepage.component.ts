@@ -46,7 +46,7 @@ export class HomepageComponent implements OnInit {
       "Funchal, Portugal",
       "Portimão, Portugal"
     ];
-    for (let i = 0; i < 17; i++) {
+    for (let i = 0; i < 30; i++) {
       const number = Math.floor(Math.random() * 5);
       this.property_list.push({
         propertyId: i.toString(),
