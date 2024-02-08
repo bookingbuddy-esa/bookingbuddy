@@ -2,8 +2,6 @@
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace BookingBuddyTest
 {
@@ -23,18 +21,18 @@ namespace BookingBuddyTest
             ApplicationUser? appUser = _context.Users.FirstOrDefault(u => u.UserName == "landlord@bookingbuddy.com");
             Landlord? landlord = _context.Landlord.FirstOrDefault(l => l.LandlordId == "landlord");
 
-            var property = new Property
-            {
-                PropertyId = "propertyTest",
-                Name = "Propriedade de teste",
-                Description = "Descrição da propriedade de teste",
-                PricePerNight = 20,
-                Location = "penacony",
-                ImagesUrl = new List<string>(),
-                LandlordId = landlord.LandlordId
-            };
+            var property = new PropertyCreateModel
+            (
+                LandlordId: landlord.LandlordId,
+                AmenityIds: new List<string>(),
+                Name: "Propriedade de teste",
+                Description: "Descrição da propriedade de teste",
+                PricePerNight: 20,
+                Location: "penacony",
+                ImagesUrl: new List<string>()
+            );
 
-            var result = await controller.PostProperty(property);
+            var result = await controller.CreateProperty(property);
 
             Assert.NotNull(result);
         }
@@ -47,22 +45,22 @@ namespace BookingBuddyTest
             ApplicationUser? appUser = _context.Users.FirstOrDefault(u => u.UserName == "landlord@bookingbuddy.com");
             Landlord? landlord = _context.Landlord.FirstOrDefault(l => l.LandlordId == "landlord");
 
-            var property2 = new Property
-            {
-                PropertyId = "propertyTest2",
-                Name = "Propriedade de teste",
-                Description = "Descrição da propriedade de teste",
-                PricePerNight = 20,
-                Location = "penacony",
-                ImagesUrl = new List<string>(),
-                LandlordId = landlord.LandlordId
-            };
+            var property2 = new PropertyCreateModel
+            (
+                LandlordId: landlord.LandlordId,
+                AmenityIds: new List<string>(),
+                Name: "Propriedade de teste",
+                Description: "Descrição da propriedade de teste",
+                PricePerNight: 20,
+                Location: "penacony",
+                ImagesUrl: new List<string>()
+            );
 
-            var result = await controller.PostProperty(property2);
+            var result = await controller.CreateProperty(property2);
 
             Assert.NotNull(result);
 
-            var propertyFromDb = await controller.GetProperty("propertyTest2");
+            var propertyFromDb = await controller.GetProperty($"{result.Value?.PropertyId}");
 
             Assert.NotNull(propertyFromDb);
         }
@@ -74,39 +72,41 @@ namespace BookingBuddyTest
 
             var propertyFromDb = await controller.GetProperty("tdsad");
 
-            Assert.IsAssignableFrom<ActionResult<Property>>(propertyFromDb);
+            Assert.IsAssignableFrom<ActionResult<BookingBuddy.Server.Models.Property>>(propertyFromDb);
         }
 
         [Fact]
-        public async Task Edit_PropertyFromApi()
+        public async Task Edit_PropertyFromApi_ReturnsError_IfProperty_DoesNotHave_TheGivenId()
         {
             var controller = new PropertyController(_context);
             ApplicationUser? appUser = _context.Users.FirstOrDefault(u => u.UserName == "landlord@bookingbuddy.com");
             Landlord? landlord = _context.Landlord.FirstOrDefault(l => l.LandlordId == "landlord");
 
-            var property3 = new Property
-            {
-                PropertyId = "propertyTest3",
-                Name = "Propriedade de teste para editar",
-                Description = "Descrição da propriedade de teste",
-                PricePerNight = 20,
-                Location = "penacony",
-                ImagesUrl = new List<string>(),
-                LandlordId = landlord.LandlordId
-            };
+            var property3 = new PropertyEditModel
+            (
+                PropertyId: "propertyTest3",
+                LandlordId: landlord.LandlordId,
+                AmenityIds: new List<string>(),
+                Name: "Propriedade de teste",
+                Description: "Descrição da propriedade de teste",
+                PricePerNight: 20,
+                Location: "penacony",
+                ImagesUrl: new List<string>()
+            );
 
-            var property4 = new Property
-            {
-                PropertyId = "propertyTest4",
-                Name = "Propriedade de teste para editar",
-                Description = "Descrição da propriedade de teste",
-                PricePerNight = 20,
-                Location = "penacony",
-                ImagesUrl = new List<string>(),
-                LandlordId = landlord.LandlordId
-            };
+            var property4 = new PropertyEditModel
+            (
+                PropertyId: "propertyTest4",
+                LandlordId: landlord.LandlordId,
+                AmenityIds: new List<string>(),
+                Name: "Propriedade de teste",
+                Description: "Descrição da propriedade de teste",
+                PricePerNight: 20,
+                Location: "penacony",
+                ImagesUrl: new List<string>()
+            );
 
-            var result = await controller.PutProperty(property3.PropertyId, property4);
+            var result = await controller.EditProperty(property3.PropertyId, property4);
 
             Assert.IsType<BadRequestResult>(result);
         }
@@ -118,18 +118,20 @@ namespace BookingBuddyTest
             ApplicationUser? appUser = _context.Users.FirstOrDefault(u => u.UserName == "landlord@bookingbuddy.com");
             Landlord? landlord = _context.Landlord.FirstOrDefault(l => l.LandlordId == "landlord");
 
-            var property5 = new Property
-            {
-                PropertyId = "propertyTest5",
-                Name = "Propriedade de teste para remover",
-                Description = "Descrição da propriedade de teste",
-                PricePerNight = 20,
-                Location = "penacony",
-                ImagesUrl = new List<string>(),
-                LandlordId = landlord.LandlordId
-            };
+            var property5 = new PropertyCreateModel
+            (
+                LandlordId: landlord.LandlordId,
+                AmenityIds: new List<string>(),
+                Name: "Propriedade de teste",
+                Description: "Descrição da propriedade de teste",
+                PricePerNight: 20,
+                Location: "penacony",
+                ImagesUrl: new List<string>()
+            );
 
-            var result = await controller.DeleteProperty(property5.PropertyId);
+            var createResult = await controller.CreateProperty(property5);
+
+            var result = await controller.DeleteProperty($"{createResult.Value?.PropertyId}");
 
             Assert.IsType<NotFoundResult>(result);
         }
