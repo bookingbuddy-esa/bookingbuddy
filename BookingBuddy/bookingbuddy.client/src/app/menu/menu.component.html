@@ -1,22 +1,55 @@
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm sticky-top navbar-light bg-white border-bottom box-shadow">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="../../assets/img/logo.png" width="64" height="64" alt="">
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" [ngClass]="{ show: isExpanded }">
-              <ul class="navbar-nav flex-grow">
-                <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
-                  <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-                </li>
-                <li class="nav-item" [routerLinkActive]="['link-active']">
-                  <a class="nav-link text-dark" [routerLink]="['/signin']">Login</a>
-                </li>
-              </ul>
-            </div>
+  <nav class="navbar navbar-expand-sm navbar-toggleable-sm sticky-top navbar-light bg-white border-bottom box-shadow">
+    <div class="container-fluid mx-5 px-5">
+      <a class="navbar-brand" href="#">
+        <img src="../../assets/img/logo.png" width="64" height="64" alt="">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+              aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" [ngClass]="{ show: isExpanded }">
+        <ul class="navbar-nav flex-grow d-flex">
+          <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
+            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+          </li>
+        </ul>
+        <div *ngIf="!signedIn" class="btn-group">
+          <button type="button" class="btn btn-lg-border" disabled>
+            <span class="material-symbols-outlined profile-without-hover p-2">
+            account_circle
+            </span>
+          </button>
+          <button type="button" class="btn btn-lg-border btn-outline-dark dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+            <span class="material-symbols-outlined py-2">menu</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" [routerLink]="['register']">Registar</a></li>
+            <li><a class="dropdown-item" [routerLink]="['signin']">Login</a></li>
+          </ul>
         </div>
-    </nav>
+        <div *ngIf="signedIn" class="btn-group">
+          <button type="button" class="btn btn-lg-border" disabled>
+            <span class="material-symbols-outlined profile-without-hover p-2">
+            account_circle
+            </span>
+          </button>
+          <button type="button" class="btn btn-lg-border btn-outline-dark dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+            <span class="material-symbols-outlined py-2">menu</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li class="mx-auto text-center"><span>{{ user?.name }}</span></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item logout" (click)="signOut()">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
 </header>
