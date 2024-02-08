@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Host, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -11,6 +11,8 @@ import { AuthGuard } from './auth/authorize.guard';
 import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
+import { HostingModule } from './hosting/hosting.module';
+import { cA } from '@fullcalendar/core/internal-common';
 
 
 @NgModule({
@@ -22,7 +24,8 @@ import { MenuComponent } from './menu/menu.component';
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
-    ReactiveFormsModule, AuthModule
+    ReactiveFormsModule, AuthModule,
+    HostingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
