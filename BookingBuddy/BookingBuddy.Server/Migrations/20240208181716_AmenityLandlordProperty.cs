@@ -5,19 +5,13 @@
 namespace BookingBuddy.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class PropertyLandlordAmenity : Migration
+    public partial class AmenityLandlordProperty : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Person");
-
-            migrationBuilder.AddColumn<string>(
-                name: "PictureUrl",
-                table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Landlord",
@@ -108,10 +102,6 @@ namespace BookingBuddy.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Landlord");
-
-            migrationBuilder.DropColumn(
-                name: "PictureUrl",
-                table: "AspNetUsers");
 
             migrationBuilder.CreateTable(
                 name: "Person",
