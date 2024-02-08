@@ -1,6 +1,9 @@
 export interface Property {
+  propertyId: string;
+  landlordId: string;
   name: string,
   location: string;
   pricePerNight: number;
-  thumbnailUrl: string;
+  amenityIds?: string[];
+  imagesUrl?: string[];
 }
