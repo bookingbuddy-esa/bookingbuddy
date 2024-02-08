@@ -1,0 +1,36 @@
+
+:host {
+  flex-grow: inherit;
+  display: flex;
+  width: 100%;
+}
+
+.main {
+  flex-grow: inherit;
+}
+
+.color{
+    color: black;
+}
+
+.fc-day-header {
+  background-color: red; 
+  color: red; 
+}
+
+.colorForDiv {
+  background-color: #9DC78A !important;
+}
+
+
+
+/*.fc-daygrid-day-frame {*/
+    /*atribuir cor de fundo aos dias*/
+  /*background-color: #9DC78A !important;
+}
+
+.fc .fc-daygrid-day-top {*/
+    /*atribuir cor aos números dos dias*/
+    /*color:red !important;
+}*/
+
