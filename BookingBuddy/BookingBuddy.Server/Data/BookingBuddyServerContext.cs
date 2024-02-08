@@ -4,14 +4,25 @@ using BookingBuddy.Server.Models;
 
 namespace BookingBuddy.Server.Data
 {
-    public class BookingBuddyServerContext : IdentityDbContext<ApplicationUser>
+    /// <summary>
+    /// Classe que representa o contexto da base de dados da aplicação.
+    /// </summary>
+    /// <param name="options">As opções para a criação do contexto</param>
+    public class BookingBuddyServerContext(DbContextOptions<BookingBuddyServerContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
-        public BookingBuddyServerContext(DbContextOptions<BookingBuddyServerContext> options)
-            : base(options)
-        {
+        /// <summary>
+        /// Propriedade que diz respeito à comodidade da propriedade física.
+        /// </summary>
+        public DbSet<Amenity> PropertyAmenity { get; set; } = default!;
 
-        }
+        /// <summary>
+        /// Propriedade que diz respeito ao proprietário da propriedade física.
+        /// </summary>
+        public DbSet<Landlord> Landlord { get; set; } = default!;
 
-        //public DbSet<Person> Person { get; set; } = default!;
+        /// <summary>
+        /// Propriedade que diz respeito à propriedade física.
+        /// </summary>
+        public DbSet<Property> Property { get; set; } = default!;
     }
 }

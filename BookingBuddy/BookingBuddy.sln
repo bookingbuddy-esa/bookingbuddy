@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookingBuddy.Server", "Book
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "bookingbuddy.client", "bookingbuddy.client\bookingbuddy.client.esproj", "{3718ED08-AA19-4B64-A272-F290F52EB188}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookingBuddyTest", "BookingBuddyTest\BookingBuddyTest.csproj", "{06A4BC41-77F2-4C83-AE79-D95D1509FFE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingBuddyTest", "BookingBuddyTest\BookingBuddyTest.csproj", "{04A95ECA-8D62-46F7-BB0E-F34D1D180E40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,10 @@ Global
 		{3718ED08-AA19-4B64-A272-F290F52EB188}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3718ED08-AA19-4B64-A272-F290F52EB188}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3718ED08-AA19-4B64-A272-F290F52EB188}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{06A4BC41-77F2-4C83-AE79-D95D1509FFE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06A4BC41-77F2-4C83-AE79-D95D1509FFE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06A4BC41-77F2-4C83-AE79-D95D1509FFE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06A4BC41-77F2-4C83-AE79-D95D1509FFE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04A95ECA-8D62-46F7-BB0E-F34D1D180E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A95ECA-8D62-46F7-BB0E-F34D1D180E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A95ECA-8D62-46F7-BB0E-F34D1D180E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A95ECA-8D62-46F7-BB0E-F34D1D180E40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
