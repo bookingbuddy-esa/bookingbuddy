@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthorizeService } from '../auth/authorize.service';
-import { UserInfo } from '../auth/authorize.dto';
-import { Router } from '@angular/router';
-import { Property } from '../models/property';
+import {Component, OnInit} from '@angular/core';
+import {AuthorizeService} from '../auth/authorize.service';
+import {UserInfo} from '../auth/authorize.dto';
+import {Router} from '@angular/router';
+import {Property} from '../models/property';
 
 @Component({
   selector: 'app-homepage',
@@ -15,7 +15,8 @@ export class HomepageComponent implements OnInit {
   user: UserInfo | undefined;
   property_list: Property[] = [];
 
-  constructor(private authService: AuthorizeService, private router: Router) { }
+  constructor(private authService: AuthorizeService, private router: Router) {
+  }
 
   ngOnInit(): void {
     this.authService.isSignedIn().forEach(
@@ -45,13 +46,16 @@ export class HomepageComponent implements OnInit {
       "Funchal, Portugal",
       "Portimão, Portugal"
     ];
-    for (let i = 0; i < 27; i++) {
+    for (let i = 0; i < 17; i++) {
       const number = Math.floor(Math.random() * 5);
       this.property_list.push({
-        name: "propriedade " + i.toString(),
+        propertyId: i.toString(),
+        landlordId: "landlord",
+        name: "Property " + i,
         location: testLocation[number],
-        pricePerNight: 100 + i,
-        thumbnailUrl: testPhotosUrl[number]
+        pricePerNight: Math.floor(Math.random() * 1000),
+        amenityIds: [],
+        imagesUrl: [testPhotosUrl[number]]
       });
     }
   }

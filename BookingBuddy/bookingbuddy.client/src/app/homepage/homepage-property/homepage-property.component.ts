@@ -8,4 +8,5 @@ import {Property} from "../../models/property";
 })
 export class HomepagePropertyComponent {
   @Input() property: Property | undefined;
+  protected readonly console = console;
 }
