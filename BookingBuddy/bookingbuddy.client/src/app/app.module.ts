@@ -14,6 +14,7 @@ import { MenuComponent } from './menu/menu.component';
 import { AuxiliaryModule } from './auxiliary/auxiliary.module';
 import { HomepagePropertyComponent } from './homepage/homepage-property/homepage-property.component';
 import {NgOptimizedImage} from "@angular/common";
+import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {NgOptimizedImage} from "@angular/common";
     HomepageComponent,
     MenuComponent,
     HomepagePropertyComponent,
+    PropertyAdCreateComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
