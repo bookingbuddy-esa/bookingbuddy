@@ -31,8 +31,28 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
-    for (let i = 0; i < 25; i++) {
-      this.property_list.push({ name: "propriedade " + i.toString(), location: "Setúbal", pricePerNight: 100 + i });
+    const testPhotosUrl = [
+      "https://www.usatoday.com/gcdn/-mm-/05b227ad5b8ad4e9dcb53af4f31d7fbdb7fa901b/c=0-64-2119-1259/local/-/media/USATODAY/USATODAY/2014/08/13/1407953244000-177513283.jpg",
+      "https://png.pngtree.com/thumb_back/fh260/background/20230425/pngtree-living-room-with-window-and-wooden-furniture-image_2514066.jpg",
+      "https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc=",
+      "https://upload.wikimedia.org/wikipedia/commons/7/79/Ponta_Negra_Beach_Hotel.jpg",
+      "https://digital.ihg.com/is/image/ihg/ihg-lp-refresh-hero-imea-gben-lvp-1440x617"
+    ];
+    const testLocation = [
+      "Atouguia da Baleia, Portugal",
+      "Lisboa, Portugal",
+      "Porto, Portugal",
+      "Funchal, Portugal",
+      "Portimão, Portugal"
+    ];
+    for (let i = 0; i < 27; i++) {
+      const number = Math.floor(Math.random() * 5);
+      this.property_list.push({
+        name: "propriedade " + i.toString(),
+        location: testLocation[number],
+        pricePerNight: 100 + i,
+        thumbnailUrl: testPhotosUrl[number]
+      });
     }
   }
 

@@ -1,0 +1,15 @@
+:host {
+  display: flex;
+  width: 16.66%;
+  height: inherit;
+}
+
+.details {
+  white-space: nowrap;
+  overflow: clip;
+  text-overflow-mode: "ellipsis";
+}
+
+.compare{
+  scale: 1.25;
+}

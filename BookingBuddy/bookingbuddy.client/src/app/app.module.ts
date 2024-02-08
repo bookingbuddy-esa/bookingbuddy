@@ -12,18 +12,21 @@ import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
 import { AuxiliaryModule } from './auxiliary/auxiliary.module';
+import { HomepagePropertyComponent } from './homepage/homepage-property/homepage-property.component';
+import {NgOptimizedImage} from "@angular/common";
 
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
     MenuComponent,
+    HomepagePropertyComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
     ReactiveFormsModule, AuthModule,
-    AuxiliaryModule
+    AuxiliaryModule, NgOptimizedImage
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

@@ -1,15 +1,7 @@
-<div *ngIf="!submitting" class="main d-flex flex-column align-items-center justify-content-center">
-    <div class="d-flex flex-row align-items-start justify-content-between p-4 flex-md-wrap">
-      <div class="d-flex flex-column p-3 property" *ngFor="let property of property_list">
-        <img class="property-image" src="https://png.pngtree.com/thumb_back/fh260/background/20230425/pngtree-living-room-with-window-and-wooden-furniture-image_2514066.jpg" />
-        <div class="d-flex flex-column">
-          <p>{{property.location}}</p>
-          <p>{{property.pricePerNight}}€ noite</p>
-        </div>
-      </div>
-  </div>
+<div *ngIf="!submitting" class="d-flex p-3 w-100 flex-row flex-wrap align-content-start justify-content-start">
+  <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
 </div>
 
-<div *ngIf="submitting" class="main d-flex flex-column align-items-center justify-content-center">
+<div *ngIf="submitting" class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">
   <app-loader></app-loader>
 </div>
