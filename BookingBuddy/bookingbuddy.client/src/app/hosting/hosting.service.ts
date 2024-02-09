@@ -23,5 +23,14 @@ export class HostingService {
       return res.ok;
     }));
   }
+
+  public unblockDates(id: string): Observable<boolean> {
+    return this.http.delete(`/api/blockedDates/unblock/${id}`, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(
+      map((res: HttpResponse<string>) => res.ok)
+    );
+  }
 }
 

@@ -45,6 +45,22 @@ namespace BookingBuddy.Server.Controllers
 
             return Ok("Dates blocked successfully");
         }
+
+        [HttpDelete("unblock/{id}")]
+        public async Task<IActionResult> UnblockDates(int id)
+        {
+            var blockedDate = await _context.BlockedDate.FindAsync(id);
+
+            if (blockedDate == null)
+            {
+                return NotFound();
+            }
+
+            _context.BlockedDate.Remove(blockedDate);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 
     public class BlockDateInputModel

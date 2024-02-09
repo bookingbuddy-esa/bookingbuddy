@@ -36,8 +36,11 @@ export class CalendarComponent implements OnInit {
 
   handleEventClick(info: any) {
     if (info.event.groupId == 'blocked') {
-      this.selectedStartDate = info.event.start;
-      this.selectedEndDate = info.event.start;
+      const startDate = new Date(info.event.start);
+      const endDate = new Date(info.event.end);
+
+      this.selectedStartDate = `${startDate.getFullYear() }-${startDate.getMonth() + 1}-${startDate.getDate() }`;
+      this.selectedEndDate = `${startDate.getFullYear() }-${endDate.getMonth() + 1}-${endDate.getDate() }`;
     }
   }
 
