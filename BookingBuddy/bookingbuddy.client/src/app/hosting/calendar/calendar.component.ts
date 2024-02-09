@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/core';
+import { FullCalendarComponent } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { HostingService } from '../hosting.service'; 
@@ -10,10 +11,11 @@ import { HostingService } from '../hosting.service';
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
+  @ViewChild(FullCalendarComponent, { static: false }) fullcalendar!: FullCalendarComponent;
   calendarOptions: any;
   selectedStartDate: string | null = null;
   selectedEndDate: string | null = null;
-
+  selectedEventId: number | null = null;
   constructor(private hostingService: HostingService) { }
 
   ngOnInit(): void {
@@ -31,20 +33,21 @@ export class CalendarComponent implements OnInit {
   }
 
   handleDateClick(info: any) {
-    console.log("Data: " + info.dateStr);
+    //console.log("Data: " + info.dateStr);
   }
 
   handleEventClick(info: any) {
     if (info.event.groupId == 'blocked') {
       const startDate = new Date(info.event.start);
       const endDate = new Date(info.event.end);
-
+      this.selectedEventId = info.event.id;
       this.selectedStartDate = `${startDate.getFullYear() }-${startDate.getMonth() + 1}-${startDate.getDate() }`;
       this.selectedEndDate = `${startDate.getFullYear() }-${endDate.getMonth() + 1}-${endDate.getDate() }`;
     }
   }
 
   handleSelect(info: any) {
+    this.selectedEventId = null;
     this.selectedStartDate = info.startStr;
     this.selectedEndDate = info.endStr;
     console.log("Selecionado entre " + this.selectedStartDate + " a " + this.selectedEndDate);
@@ -55,7 +58,7 @@ export class CalendarComponent implements OnInit {
       this.hostingService.blockDates(this.selectedStartDate, this.selectedEndDate).forEach(
         response => {
           if (response) {
-            
+            this.fullcalendar.getApi().refetchEvents();
           }
         }).catch(
           error => {
@@ -64,6 +67,22 @@ export class CalendarComponent implements OnInit {
         );
     } else {
       console.warn('Selecione as datas antes de bloquear.');
+    }
+  }
+
+  unblockDates() {
+    if (this.selectedEventId) {
+      this.hostingService.unblockDates(this.selectedEventId).subscribe(
+        response => {
+          if (response) {
+            console.log('Datas desbloqueadas com sucesso.');
+            this.fullcalendar.getApi().refetchEvents();
+          }
+        },
+        error => {
+          console.error('Erro ao desbloquear datas:', error);
+        }
+      );
     }
   }
 

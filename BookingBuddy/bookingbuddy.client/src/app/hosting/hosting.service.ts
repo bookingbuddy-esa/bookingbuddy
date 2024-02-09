@@ -24,7 +24,7 @@ export class HostingService {
     }));
   }
 
-  public unblockDates(id: string): Observable<boolean> {
+  public unblockDates(id: number): Observable<boolean> {
     return this.http.delete(`/api/blockedDates/unblock/${id}`, {
       observe: 'response',
       responseType: 'text'
