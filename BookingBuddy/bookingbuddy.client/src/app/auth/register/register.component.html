@@ -70,7 +70,7 @@
       </div>
     </div>
   </div>
-  <span class="bottom-text mb-3">Já tem conta? <a [routerLink]="['/signin']">Faça login</a></span>
+  <span class="bottom-text mb-3">Já tem conta?  <button class="btn btn-link p-0" type="button" [routerLink]="['/signin']">Faça login</button></span>
 </div>
 
 <div *ngIf="registerSucceeded && !submitting"
@@ -80,9 +80,8 @@
     <p class="h2 fw-bolder">Estamos quase lá...</p>
     <p class="h2 fw-bolder">Por favor, confirme o seu endereço de e-mail para ativar a sua conta.</p>
   </div>
-  <span class="bottom-text mb-3">Não recebeu e-mail de recuperação? <button class="btn btn-link p-0" type="button"
+  <span class="bottom-text mb-3">Não recebeu e-mail de confirmação? <button class="btn btn-link p-0" type="button"
                                                                             (click)="resendEmail()">Clique aqui</button></span>
 </div>
 
 <app-loader *ngIf="submitting" class="m-auto"></app-loader>
-
