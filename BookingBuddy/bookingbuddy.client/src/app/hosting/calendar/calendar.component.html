@@ -1,6 +1,6 @@
 <div class="main flex-column align-items-center color custom-calendar">
   <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
-  <div *ngIf="selectedStartDate || selectedEndDate" class="selected-dates">
+  <div *ngIf="selectedStartDate || selectedEndDate" class="selected-dates mt-4">
     <p>Data de Início: {{ selectedStartDate }}</p>
     <p>Data de Fim: {{ selectedEndDate }}</p>
     <button *ngIf="selectedEventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
