@@ -48,8 +48,20 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest(result.Errors);
         }
 
+        /// <summary>
+        /// Reenvia o email de confirmação da conta.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// 
+        /// NOTA: A conta do utilizador já deve ter sido criada previamente.
+        /// </remarks>
+        /// <param name="model">Modelo de reenvio de email</param>
+        /// <returns>Reenvia o email de confirmação da conta, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/resendConfirmation")]
         public async Task<IActionResult> ResendConfirmationEmail([FromBody] EmailResendModel model)
         {
@@ -416,6 +428,10 @@ namespace BookingBuddy.Server.Controllers
     /* // todo: mudar depois ?
        public enum AccountType; */
 
+    /// <summary>
+    /// Modelo de reenvio de email.
+    /// </summary>
+    /// <param name="Email">Email do utilizador</param>
     public record EmailResendModel(string Email);
 
     public record EmailConfirmModel(string Uid, string Token);
