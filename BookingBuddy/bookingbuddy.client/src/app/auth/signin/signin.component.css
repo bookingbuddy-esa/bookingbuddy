@@ -1,89 +1,12 @@
-/*.inputCaixaRegister {
-  width: 300px;
-  height: 60px;
-  margin-bottom: 10px;
-  border-radius: 15px;
-  border-color: grey;
-  border: 1px solid grey;
-  padding: 10px;
-}
-
-.btnRegister {
-  background-color: #9DC78A;
-  width: 300px;
-  height: 60px;
-  border-radius: 15px;
-  margin-top: 5%;
-  border: none;
-  outline: none;
-  color: black;
-}
-
-.margin7 {
-  margin: 7%;
-  margin-bottom: 5%;
-}
-
-.hr1 {
-  border: 1px solid black;
-  width: 100px;
-}
-
-.divhr1 {
+:host{
   display: flex;
-}
-
-.d-flex-center {
-  display: flex;
-  min-height: 10vh;
-}
-
-.externalLoginButton {
-  margin-left: 20%;
-  margin-right: 20%;
-}
-
-.botao-imagem {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  border: 1px solid #9DC78A;
-  border-radius: 15px;
-  width: 70px;
-  height: 60px;
-}
-
-.google {
-  width: 50px;
-  height: 50px;
-}
-
-.microsoft {
-  width: 30px;
-  height: 30px;
-}
-*/
-
-:host {
-  flex-grow: inherit;
-  display: flex;
-  width: 100%;
-}
-
-.main {
-  flex-grow: inherit;
-}
-
-.center-form {
-  width: 100%;
-  text-align: center;
+  width: inherit;
+  height: inherit;
 }
 
 .form-input {
-  border-color: grey;
-  border: 1.5px solid grey;
+  border: 2px solid grey;
   border-radius: 5px;
-  width: 45%;
   min-height: 20%;
   padding-left: 1%;
   font-weight: bold;
@@ -94,11 +17,6 @@
   font-weight: bold;
 }
 
-.recovery-link {
-  text-align: right;
-  width: 45%;
-}
-
   .recovery-link a {
     text-decoration: none;
     color: black;
@@ -107,7 +25,6 @@
 
 .login-button {
   border-radius: 5px;
-  width: 45%;
   min-height: 20%;
   font-weight: bold;
   background-color: #9DC78A;
@@ -120,7 +37,7 @@
   }
 
 .other-logins {
-  width: 45%;
+  width: 60%;
   font-size: 100%;
   font-weight: bolder;
   color: #757171;
