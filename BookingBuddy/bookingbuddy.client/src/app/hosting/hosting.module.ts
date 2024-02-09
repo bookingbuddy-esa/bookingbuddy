@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { BrowserModule } from '@angular/platform-browser';
 import { CalendarComponent } from './calendar/calendar.component';
-import { HostingService } from './hosting.service'; 
-
+import { HostingService } from './hosting.service';
+//import { RouterModule } from '@angular/router';
 
 
 @NgModule({

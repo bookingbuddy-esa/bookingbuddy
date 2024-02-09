@@ -21,7 +21,7 @@ export class CalendarComponent implements OnInit {
       plugins: [dayGridPlugin, interactionPlugin],
       dateClick: this.handleDateClick.bind(this),
       select: this.handleSelect.bind(this),
-      events: this.getEventRanges.bind(this), // Chama a função que obtém os eventos
+      events: this.getEventRanges.bind(this), 
       selectable: true,
       eventClick: this.handleEventClick.bind(this),
       selectOverlap: function (event: { groupId: string; }) {
@@ -32,36 +32,36 @@ export class CalendarComponent implements OnInit {
 
   handleDateClick(info: any) {
     console.log("Data: " + info.dateStr);
-    /*if (this.selectedStartDate) {
-      this.selectedEndDate = info.dateStr;
-      if (this.selectedEndDate) {
-        const endDate = new Date(this.selectedEndDate);
-        endDate.setDate(endDate.getDate() + 1);
-
-        console.log('Destacar datas entre', this.selectedStartDate, 'e', this.selectedEndDate);
-
-        // Adicione as datas no intervalo selecionado ao objeto events
-        this.calendarOptions.events = [{
-          start: this.selectedStartDate,
-          end: endDate.toISOString().split('T')[0],
-          rendering: 'background',
-          color: 'rgba(0, 123, 255, 0.3)',
-        }];
-
-        this.selectedStartDate = null;
-      }
-    } else {
-      this.selectedStartDate = info.dateStr;
-    }*/
   }
 
   handleEventClick(info: any) {
-    alert("ID: " + info.event.id);
+    if (info.event.groupId == 'blocked') {
+      this.selectedStartDate = info.event.start;
+      this.selectedEndDate = info.event.start;
+    }
   }
 
   handleSelect(info: any) {
-    console.log("Selecionado entre " + info.startStr + " a " + info.endStr);
+    this.selectedStartDate = info.startStr;
+    this.selectedEndDate = info.endStr;
+    console.log("Selecionado entre " + this.selectedStartDate + " a " + this.selectedEndDate);
+  }
 
+  blockSelectedDates() {
+    if (this.selectedStartDate && this.selectedEndDate) {
+      this.hostingService.blockDates(this.selectedStartDate, this.selectedEndDate).forEach(
+        response => {
+          if (response) {
+            
+          }
+        }).catch(
+          error => {
+            console.error('Erro ao bloquear datas:', error);
+          }
+        );
+    } else {
+      console.warn('Selecione as datas antes de bloquear.');
+    }
   }
 
   async getEventRanges(info: any) {
