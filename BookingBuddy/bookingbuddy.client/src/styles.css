@@ -14,7 +14,6 @@ body {
 
 .fc {
   background-color: white;
-
 }
 
 .fc .fc-daygrid-day-number {
@@ -41,4 +40,25 @@ body {
 
 .fc .fc-toolbar.fc-header-toolbar {
   margin-top: 5%;
+}
+
+.btn-outline-success{
+    background-color:black;
+}
+
+/*Cor botão today*/
+.fc .fc-button-primary:disabled {
+  background: #176b17;
+}
+.fc .fc-button:not(:disabled) {
+  background: #176b17;
+}
+
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
+  background-color: #176b17;
+}
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+  background-color: #176b17;
 }

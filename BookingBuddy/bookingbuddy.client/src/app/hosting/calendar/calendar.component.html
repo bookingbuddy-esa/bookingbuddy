@@ -3,7 +3,7 @@
   <div *ngIf="selectedStartDate || selectedEndDate" class="selected-dates mt-4">
     <p>Data de Início: {{ selectedStartDate }}</p>
     <p>Data de Fim: {{ selectedEndDate }}</p>
-    <button *ngIf="selectedEventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
-    <button *ngIf="selectedEventId" (click)="unblockDates()">Desbloquear Datas</button>
+    <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
+    <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId" (click)="unblockDates()">Desbloquear Datas</button>
   </div>
 </div>
