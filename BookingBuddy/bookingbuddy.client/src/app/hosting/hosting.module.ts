@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { BrowserModule } from '@angular/platform-browser';
 import { CalendarComponent } from './calendar/calendar.component';
+import { HostingService } from './hosting.service'; 
 
 
 
@@ -14,7 +15,7 @@ import { CalendarComponent } from './calendar/calendar.component';
     CommonModule, BrowserModule,
     FullCalendarModule
   ],
-  providers: [],
+  providers: [HostingService],
   bootstrap: [CalendarComponent]
 })
 export class HostingModule { }
