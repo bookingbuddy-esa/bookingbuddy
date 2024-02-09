@@ -50,6 +50,22 @@ namespace BookingBuddy.Server.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [Route("api/resendConfirmation")]
+        public async Task<IActionResult> ResendConfirmationEmail([FromBody] EmailResendModel model)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(existingUser);
+                var confirmationLink = $"https://localhost:4200/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
+                await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email, existingUser.Name, new { confirmationLink });
+                return Ok();
+            }
+            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
         [Route("api/confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] EmailConfirmModel model)
         {
@@ -399,6 +415,8 @@ namespace BookingBuddy.Server.Controllers
     public record AccountRegisterModel(string Name, string Email, string Password);
     /* // todo: mudar depois ?
        public enum AccountType; */
+
+    public record EmailResendModel(string Email);
 
     public record EmailConfirmModel(string Uid, string Token);
 
