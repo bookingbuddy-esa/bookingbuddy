@@ -57,6 +57,17 @@ export class AuthorizeService {
     }));
   }
 
+  public resendConfirmationEmail(email: string) {
+    return this.http.post('api/resendConfirmation', {
+      email: email
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
   // recover user password by sending an email to the specified email
   public recoverPassword(email: string) {
     return this.http.post('api/forgotPassword', {
