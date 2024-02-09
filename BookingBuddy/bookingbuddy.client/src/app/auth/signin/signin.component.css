@@ -47,8 +47,8 @@
   color: #636363;
 }
 
-  .bottom-text a {
-    font-weight: bolder;
-    text-decoration: none;
-    color: #636363;
-  }
+.bottom-text button {
+  font-weight: bolder;
+  text-decoration: none;
+  color: #636363;
+}
