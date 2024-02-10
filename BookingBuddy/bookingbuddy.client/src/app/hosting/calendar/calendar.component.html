@@ -1,9 +1,36 @@
-<div class="main flex-column align-items-center color custom-calendar">
-  <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
-  <div *ngIf="selectedStartDate || selectedEndDate" class="selected-dates mt-4">
-    <p>Data de Início: {{ selectedStartDate }}</p>
-    <p>Data de Fim: {{ selectedEndDate }}</p>
-    <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
-    <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId" (click)="unblockDates()">Desbloquear Datas</button>
+<!--<div class="d-flex">
+  < Barra lateral fixa à esquerda
+  <div class="fixed-left-sidebar p-3">
+    <p class="text-dark">Conteúdo da Barra Lateral</p>
+  </div>
+
+  <div class="main flex-column align-items-center color custom-calendar">
+    <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
+    <div *ngIf="selectedStartDate || selectedEndDate" class="selected-dates mt-4">
+      <p>Data de Início: {{ selectedStartDate }}</p>
+      <p>Data de Fim: {{ selectedEndDate }}</p>
+      <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
+      <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId" (click)="unblockDates()">Desbloquear Datas</button>
+    </div>
+  </div>
+</div>-->
+
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
+      <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark min-vh-100">
+        <h4>Propriedades</h4>
+        <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
+      </div>
+    </div>
+    <div class="col py-3">
+      <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
+      <div *ngIf="selectedStartDate || selectedEndDate" class="selected-dates mt-4">
+        <p>Data de Início: {{ selectedStartDate }}</p>
+        <p>Data de Fim: {{ selectedEndDate }}</p>
+        <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
+        <button class="btn btn-outline-success mb-5" *ngIf="selectedEventId" (click)="unblockDates()">Desbloquear Datas</button>
+      </div>
+    </div>
   </div>
 </div>
