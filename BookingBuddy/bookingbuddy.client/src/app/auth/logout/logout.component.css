@@ -1,0 +1,15 @@
+:host{
+  display: flex;
+  width: inherit;
+  height: inherit;
+}
+
+.bottom-text {
+  color: #636363;
+}
+
+.bottom-text button {
+  font-weight: bolder;
+  text-decoration: none;
+  color: #636363;
+}
