@@ -7,3 +7,35 @@ a.navbar-brand {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+.profile-without-hover {
+  scale: 2;
+  color: black;
+}
+
+.profile {
+  scale: 2;
+  color: black;
+}
+
+.profile:hover {
+  scale: 2;
+  color: white;
+}
+
+.btn-lg-border {
+  border: 2px solid black;
+}
+
+.btn:disabled {
+  opacity: 100%;
+}
+
+.logout:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}

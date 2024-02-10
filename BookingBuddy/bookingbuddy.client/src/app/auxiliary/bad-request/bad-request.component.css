@@ -1,6 +1,9 @@
-:host{
+:host {
   display: flex;
   width: inherit;
   height: inherit;
 }
 
+.title {
+  font-size: xxx-large;
+}
