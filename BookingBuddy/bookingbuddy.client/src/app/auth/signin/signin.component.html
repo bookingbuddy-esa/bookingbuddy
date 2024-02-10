@@ -1,37 +1,45 @@
 <div *ngIf="!submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
   <div></div>
-  <div class="d-flex h-75 flex-column align-items-center justify-content-center">
-    <div *ngIf="errors.length !== 0"
-         class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
-      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
-              (click)="errors=[]"></button>
-      <div class="d-flex flex-column align-items-start">
-        <span *ngFor="let error of errors">{{ error }}</span>
+  <div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="d-flex flex-column align-items-center w-100">
+      <div *ngIf="errors.length !== 0"
+           class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+                (click)="errors=[]"></button>
+        <div class="d-flex flex-column align-items-start">
+          <span *ngFor="let error of errors">{{ error }}</span>
+        </div>
       </div>
+      <div class="p-3 page-title">Bem-vindo ao Booking Buddy!</div>
     </div>
-    <div class="p-3 page-title">Olá mais uma vez! Sentimos a sua falta.</div>
-    <form class="form w-75 text-center d-flex flex-column align-items-end" [formGroup]="signinForm" style="height: 40%"
-          (submit)="signin($event)">
-      <input type="email" class="form-control form-input p-2 my-2" id="email" placeholder="Insira o seu endereço de e-mail"
-             name="email" formControlName="email">
-      <input type="password" class="form-control form-input p-2 mt-2" id="password" placeholder="Insira a sua nova palavra-passe"
-             name="password" formControlName="password">
-      <div class="flex-row w-auto py-2 recover recovery-link">
-        <a class="" [routerLink]="['/recover-password']">Esqueceu-se da sua palavra passe?</a>
+    <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="signinForm"
+          (submit)="signin($event)" novalidate>
+      <div class="w-100 py-2">
+        <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail"
+               name="email" formControlName="email">
+        <div class="invalid-feedback">O email é inválido!</div>
       </div>
-      <button class="btn btn-login p-2 mt-4 w-100" [disabled]="!signinForm.valid" type="submit">Login</button>
+      <div class="w-100 py-2">
+        <input type="password" class="form-control form-input p-2" id="password"
+               placeholder="Insira a sua palavra passe"
+               name="password" formControlName="password">
+        <button class="btn btn-login mt-4 w-100 p-2" [disabled]="!signinForm.valid" type="submit">Iniciar sessão
+        </button>
+      </div>
     </form>
-    <div class="other-logins w-75 d-flex flex-row align-items-center justify-content-center p-2">
-      <hr class="flex-grow-1"/>
-      <span class="mx-4">Ou faça login com</span>
-      <hr class="flex-grow-1"/>
-    </div>
-    <div class="d-flex flex-row align-items-center justify-content-center">
-      <div class="mx-4">
-        <app-google></app-google>
+    <div class="d-flex my-auto flex-column align-items-center w-100">
+      <div class="other-registers py-2 w-100 d-flex flex-row align-items-center justify-content-center">
+        <hr class="flex-grow-1"/>
+        <span class="mx-4">Ou faça login com</span>
+        <hr class="flex-grow-1"/>
       </div>
-      <div class="mx-4">
-        <app-microsoft></app-microsoft>
+      <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="mx-4">
+          <app-google></app-google>
+        </div>
+        <div class="mx-4">
+          <app-microsoft></app-microsoft>
+        </div>
       </div>
     </div>
   </div>
