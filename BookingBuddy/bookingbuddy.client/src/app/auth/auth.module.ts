@@ -12,6 +12,7 @@ import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
 import { GoogleComponent } from './external-providers/google/google.component';
 import { MicrosoftComponent } from './external-providers/microsoft/microsoft.component';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   imports: [
@@ -26,10 +27,11 @@ import { MicrosoftComponent } from './external-providers/microsoft/microsoft.com
         { path: 'recover-password', component: RecoverPwComponent },
         { path: 'reset-password', component: ResetPwComponent },
         { path: 'confirm-email', component: ConfirmEmailComponent },
+        { path: 'logout', component: LogoutComponent }
       ]
     )
   ],
-  declarations: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent, MicrosoftComponent],
+  declarations: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent, MicrosoftComponent, LogoutComponent],
   exports: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent]
 })
 export class AuthModule { }
