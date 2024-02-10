@@ -24,7 +24,7 @@ namespace BookingBuddyTest
             var property = new PropertyCreateModel
             (
                 LandlordId: landlord.LandlordId,
-                AmenityIds: new List<string>(),
+                AmenityIds: new List<int>(),
                 Name: "Propriedade de teste",
                 Description: "Descrição da propriedade de teste",
                 PricePerNight: 20,
@@ -48,7 +48,7 @@ namespace BookingBuddyTest
             var property2 = new PropertyCreateModel
             (
                 LandlordId: landlord.LandlordId,
-                AmenityIds: new List<string>(),
+                AmenityIds: new List<int>(),
                 Name: "Propriedade de teste",
                 Description: "Descrição da propriedade de teste",
                 PricePerNight: 20,
@@ -86,7 +86,7 @@ namespace BookingBuddyTest
             (
                 PropertyId: "propertyTest3",
                 LandlordId: landlord.LandlordId,
-                AmenityIds: new List<string>(),
+                AmenityIds: new List<int>(),
                 Name: "Propriedade de teste",
                 Description: "Descrição da propriedade de teste",
                 PricePerNight: 20,
@@ -98,7 +98,7 @@ namespace BookingBuddyTest
             (
                 PropertyId: "propertyTest4",
                 LandlordId: landlord.LandlordId,
-                AmenityIds: new List<string>(),
+                AmenityIds: new List<int>(),
                 Name: "Propriedade de teste",
                 Description: "Descrição da propriedade de teste",
                 PricePerNight: 20,
@@ -121,7 +121,7 @@ namespace BookingBuddyTest
             var property5 = new PropertyCreateModel
             (
                 LandlordId: landlord.LandlordId,
-                AmenityIds: new List<string>(),
+                AmenityIds: new List<int>(),
                 Name: "Propriedade de teste",
                 Description: "Descrição da propriedade de teste",
                 PricePerNight: 20,

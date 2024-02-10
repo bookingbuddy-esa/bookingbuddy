@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookingBuddy.Server.Data
 {
@@ -24,5 +25,10 @@ namespace BookingBuddy.Server.Data
         /// Propriedade que diz respeito à propriedade física.
         /// </summary>
         public DbSet<Property> Property { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
     }
 }

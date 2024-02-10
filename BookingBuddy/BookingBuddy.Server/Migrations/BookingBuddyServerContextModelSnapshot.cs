@@ -38,7 +38,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PropertyAmenity");
+                    b.ToTable("PropertyAmenity", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.ApplicationUser", b =>
@@ -130,7 +130,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Landlord");
+                    b.ToTable("Landlord", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
@@ -170,7 +170,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("LandlordId");
 
-                    b.ToTable("Property");
+                    b.ToTable("Property", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

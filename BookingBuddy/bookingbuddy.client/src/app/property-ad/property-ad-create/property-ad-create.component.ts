@@ -21,13 +21,6 @@ export class PropertyAdCreateComponent {
   createPropertyAdForm!: FormGroup;
   createPropertyFailed: boolean;
 
-  checkboxOptions = CheckboxOptions;
-
-  /**
-   * Construtor da classe SignInComponent.
-   * @param formBuilder Construtor de formulários do Angular.
-   * @param router Router do Angular.
-   */
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
     this.errors = [];
     this.createPropertyFailed = false;
@@ -49,34 +42,30 @@ export class PropertyAdCreateComponent {
     }
   }
 
-  public onChange(_: any): void {
-    console.log(_.target.name);
-  }
-
-  public create(_: any): void {
-    const teste = this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade));
+  public create(_: any) {
     this.createPropertyFailed = false;
     this.errors = [];
 
-    const name = this.createPropertyAdForm.get('name')?.value;
-    const location = this.createPropertyAdForm.get('location')?.value;
-    const pricePerNight = this.createPropertyAdForm.get('pricePerNight')?.value;
-    const landlordId = this.createPropertyAdForm.get('landlordId')?.value;
-    const description = this.createPropertyAdForm.get('description')?.value;
-    const imagesUrl = this.createPropertyAdForm.get('imagesUrl')?.value;
-
-    
-    // Adicionar o landlordId ao objeto de dados
-    const landlord = {
-      ...this.createPropertyAdForm.value,
-      landlordId: this.createPropertyAdForm.get('landlordId')?.value
+    const newProperty = {
+      name: this.createPropertyAdForm.get('name')?.value,
+      location: this.createPropertyAdForm.get('location')?.value,
+      pricePerNight: this.createPropertyAdForm.get('pricePerNight')?.value,
+      landlordId: "um", // TODO: hardcoded, meter dinamico
+      description: this.createPropertyAdForm.get('description')?.value,
+      imagesUrl: ["test.png"], // TODO: hardcoded, meter dinamico
+      amenityIds: this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade).toString())
     };
-    // Fazer POST com os dados atualizados
-    this.http.post<any>('/api/properties/create', landlord);
 
-
-    console.log(this.createPropertyAdForm.value);
-   /* console.log(checkboxesSelecionadas);*/
-    //return this.http.post<any>('/api/properties/create', this.createPropertyAdForm.value)
+    // TODO: passar isto para um serviço
+    this.http.post('api/properties/create', newProperty).subscribe(
+      (response) => {
+        console.log("RES:", response);
+      },
+      (error) => {
+        console.log("ERR:", error);
+        this.createPropertyFailed = true;
+        this.errors.push(error.error.message);
+      }
+    );
   }
 }
