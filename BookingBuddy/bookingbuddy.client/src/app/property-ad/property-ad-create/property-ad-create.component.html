@@ -1,134 +1,127 @@
+<div class="main d-flex flex-column align-items-center justify-content-between">
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="createPropertyAdForm" (submit)="create($event)">
+            <div class="d-flex flex-column criar-anuncio">
+                <div class="page-title mt-5">Criação de Anúncio</div>
+                <h5 class="p-2 mb-4">Preencha os seguintes campos:</h5>
+                <div class="input-group row">
+                    <div class="col" align="right">
+                        <label> Nome do anúncio: </label>
+                    </div>
+                    <div class="col">
+                        <input class="form-control mb-3" name="name" formControlName="name" />
+                    </div>
+                </div>
 
-<div class="main d-flex flex-column align-items-center justify-content-between ">
-  <div class="d-flex flex-column align-items-center justify-content-center" style="width:100%">
-    <div class="page-title mt-5">Criação de Anúncio</div>
-    <h5 class="p-2 mb-4">Preencha os seguintes campos:</h5>
-    <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="createPropertyAdForm" (submit)="create($event)">
-      
-        <div class="input-group row">
-          <div class="col" align="right">
-            <label> Nome do anúncio: </label>
-          </div>
-          <div class="col">
-            <input class="form-control mb-3" name="name" formControlName="name" />
-          </div>
-        </div>
+                <div class="input-group row text-right">
+                    <div class="col" align="right">
+                        <label> Descrição do anúncio: </label>
+                    </div>
+                    <div class="col">
+                        <textarea class="form-control mb-3" name="description" formControlName="description"> </textarea>
+                    </div>
+                </div>
 
-        <div class="input-group row text-right">
-          <div class="col" align="right">
-            <label> Descrição do anúncio: </label>
-          </div>
-          <div class="col">
-            <textarea class="form-control mb-3" name="description" formControlName="description"> </textarea>
-          </div>
-        </div>
+                <div class="input-group row">
+                    <div class="col" align="right">
+                        <label> Localização </label>
+                    </div>
+                    <div class="col">
+                        <input class=" form-control mb-3" name="location" formControlName="location" />
+                    </div>
+                </div>
 
-        <div class="input-group row">
-          <div class="col" align="right">
-            <label> Localização </label>
-          </div>
-          <div class="col">
-            <input class=" form-control mb-3" name="location" formControlName="location" />
-          </div>
-        </div>
+                <div class="input-group row">
+                    <div class="col" align="right">
+                        <label> Preço p/noite em €</label>
+                    </div>
+                    <div class="col">
+                        <input class=" form-control mb-3" name="priceNight" formControlName="priceNight" />
 
-        <div class="input-group row">
-          <div class="col" align="right">
-            <label> Preço p/noite em €</label>
-          </div>
-          <div class="col">
-            <input class=" form-control mb-3" name="priceNight" formControlName="priceNight" />
+                    </div>
+                </div>
+            </div>
 
-          </div>
-        </div>
-      
-      <h3 class="mt-5 mb-2">Comodidades</h3>
+            <div class="container mb-5 mt-3">
+                <h3 class="mt-5 mb-2">Comodidades</h3>
+                <div class="row">
+                    <div class="col-lg-4  col-sm-12 mx-auto" align="left">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="estacionamento" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Estacionamento</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="wifi" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Wifi</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="cozinha" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Cozinha</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="varanda" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Varanda</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="frigorifico" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Frigorífico</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12 mx-auto" align="left">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="microondas" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Micro-ondas</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="quintal" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Quintal</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="maquinaLavar" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Máquina de lavar</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="piscinaPartilhada" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Piscina Partilhada</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="piscinaIndividual" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Piscina Índividual</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-4  col-sm-12 mx-auto" align="left">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="animais" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Permitido Animais</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="varanda" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Varanda</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="camaras" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Câmaras de segurança</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="tv" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Televisão</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input m-2" name="wifi" id="customCheckDisabled">
+                            <label class="custom-control-label" for="customCheckDisabled">Wifi</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-      <div class="container mb-5 mt-3">
-        <div class="row">
-          <div class="col-lg-4  col-sm-12 mx-auto" align="left">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2" name="estacionamento" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Estacionamento</label>
+            <div class="mb-5 mt-5">
+                <span>Anexar imagens da propriedade:</span>
+                <label for="createPropertyAdForm" class="form-label"></label>
+                <input class="form-control" name="files" type="file">
             </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2" name="wifi" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Wifi</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="cozinha" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Cozinha</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="varanda" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Varanda</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="frigorifico" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Frigorífico</label>
-            </div>
-          </div>
-          <div class="col-lg-4 col-sm-12 mx-auto" align="left">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="microondas" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Micro-ondas</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2" name="quintal" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Quintal</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="maquinaLavar" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Máquina de lavar</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="piscinaPartilhada" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Piscina Partilhada</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="piscinaIndividual" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Piscina Índividual</label>
-            </div>
-          </div>
-          <div class="col-lg-4  col-sm-12 mx-auto" align="left">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="animais" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Permitido Animais</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="varanda" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Varanda</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="camaras" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Câmaras de segurança</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="tv" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Televisão</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input m-2"  name="wifi" id="customCheckDisabled">
-              <label class="custom-control-label" for="customCheckDisabled">Wifi</label>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="mb-5 mt-5">
-        <span>Anexar imagens da propriedade:</span>
-        <label for="createPropertyAdForm" class="form-label"></label>
-        <input class="form-control" name="files" type="file">
-      </div>
-
-      <button type="button" class="btn btn-outline-success">Registar Propriedade</button>
-    </form>
-
-
-    
-   
-
-  </div>
-  
+            <button type="button" class="btn btn-outline-success">Registar Propriedade</button>
+        </form>
+    </div>
 </div>
 <!--trocar os nomes dos checkbox-->
