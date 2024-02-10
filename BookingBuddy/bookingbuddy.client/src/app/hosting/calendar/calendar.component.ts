@@ -3,7 +3,9 @@ import { CalendarOptions } from '@fullcalendar/core';
 import { FullCalendarComponent } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { HostingService } from '../hosting.service'; 
+import { HostingService } from '../hosting.service';
+import { AuthorizeService } from "../../auth/authorize.service";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-calendar',
@@ -16,7 +18,14 @@ export class CalendarComponent implements OnInit {
   selectedStartDate: string | null = null;
   selectedEndDate: string | null = null;
   selectedEventId: number | null = null;
-  constructor(private hostingService: HostingService) { }
+  signedIn: boolean = false;
+  constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router) {
+    this.authService.isSignedIn().forEach(
+      isSignedIn => {
+        this.signedIn = isSignedIn;
+        if (!this.signedIn) { this.router.navigateByUrl('signin'); }
+      });
+  }
 
   ngOnInit(): void {
     this.calendarOptions = {

@@ -72,5 +72,11 @@ namespace BookingBuddy.Server.Models
         /// </summary>
         [Display(Name = "Proprietário")]
         public Landlord? Landlord { get; set; }
+
+        /// <summary>
+        /// Propriedade de navegação que diz respeito as datas que estão bloqueadas da propriedade.
+        /// </summary>
+        [Display(Name = "Datas Bloqueadas")]
+        public List<BlockedDate>? BlockedDates { get; set; }
     }
 }
