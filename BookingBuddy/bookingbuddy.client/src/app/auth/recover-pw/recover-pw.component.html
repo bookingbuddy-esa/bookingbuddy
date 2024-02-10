@@ -2,19 +2,19 @@
   <div></div>
   <div class="d-flex w-50 flex-column align-items-center">
     <div class="h3 p-3 fw-bolder">Recuperar palavra-passe</div>
-    <div class="h6 w-50">Se existir uma conta associada a um endereço de e-mail enviaremos uma hiperligação para recuperar a
+    <div class="h5 mb-5 w-50">Se existir uma conta associada a um endereço de e-mail enviaremos uma hiperligação para recuperar a
       sua palavra-passe.
     </div>
-    <form class="d-flex mb-3 w-50 flex-column align-items-center" [formGroup]="recoverPWForm"
+    <form class="d-flex mb-4 w-50 flex-column align-items-center" [formGroup]="recoverPWForm"
           (submit)="recover($event)" novalidate>
       <div class="w-100 py-2">
-        <input type="email" class="form-control form-input" id="email" placeholder="Insira o seu endereço de e-mail"
+        <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail"
                name="email"
                formControlName="email"
                [ngClass]="{'is-valid':emailFormField?.valid && emailFormField?.dirty,'is-invalid':emailFormField?.invalid && emailFormField?.dirty}">
         <div class="invalid-feedback">O email é inválido!</div>
       </div>
-      <button class="btn btn-submit mt-4 w-100" [disabled]="!recoverPWForm.valid" type="submit">Enviar</button>
+      <button class="btn btn-submit mt-4 w-100 p-2" [disabled]="!recoverPWForm.valid" type="submit">Enviar</button>
     </form>
   </div>
   <span class="bottom-text mb-3">Já tem conta? <button class="btn btn-link p-0" type="button"

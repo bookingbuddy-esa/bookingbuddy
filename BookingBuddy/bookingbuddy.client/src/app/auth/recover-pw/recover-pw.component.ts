@@ -24,7 +24,6 @@ export class RecoverPwComponent implements OnInit {
     this.recoverPWForm = this.formBuilder.group(
       {
         email: ['', [Validators.required, Validators.email]],
-
       });
   }
 
