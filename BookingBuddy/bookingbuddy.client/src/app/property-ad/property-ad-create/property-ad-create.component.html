@@ -1,67 +1,65 @@
 <div class="main d-flex flex-column align-items-center justify-content-between">
-  <div class="d-flex flex-column align-items-center justify-content-center">
-    <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="createPropertyAdForm" (submit)="create($event)">
-      <div class="d-flex flex-column criar-anuncio">
-        <div class="page-title mt-5">Criação de Anúncio</div>
-        <h5 class="p-2 mb-4">Preencha os seguintes campos:</h5>
-        <div class="input-group row">
-          <div class="col" align="right">
-            <label> Nome do anúncio: </label>
-          </div>
-          <div class="col">
-            <input class="form-control mb-3" name="name" formControlName="name" />
-          </div>
-        </div>
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="createPropertyAdForm" (submit)="create($event)">
+            <div class="d-flex flex-column criar-anuncio">
+                <div class="page-title mt-5">Criação de Anúncio</div>
+                <h5 class="p-2 mb-4">Preencha os seguintes campos:</h5>
+                <div class="input-group row">
+                    <div class="col" align="right">
+                        <label> Nome do anúncio: </label>
+                    </div>
+                    <div class="col">
+                        <input class="form-control mb-3" name="name" formControlName="name" />
+                    </div>
+                </div>
 
-        <div class="input-group row text-right">
-          <div class="col" align="right">
-            <label> Descrição do anúncio: </label>
-          </div>
-          <div class="col">
-            <textarea class="form-control mb-3" name="description" formControlName="description"> </textarea>
-          </div>
-        </div>
+                <div class="input-group row text-right">
+                    <div class="col" align="right">
+                        <label> Descrição do anúncio: </label>
+                    </div>
+                    <div class="col">
+                        <textarea class="form-control mb-3" name="description" formControlName="description"> </textarea>
+                    </div>
+                </div>
 
-        <div class="input-group row">
-          <div class="col" align="right">
-            <label> Localização </label>
-          </div>
-          <div class="col">
-            <input class=" form-control mb-3" name="location" formControlName="location" />
-          </div>
-        </div>
+                <div class="input-group row">
+                    <div class="col" align="right">
+                        <label> Localização </label>
+                    </div>
+                    <div class="col">
+                        <input class=" form-control mb-3" name="location" formControlName="location" />
+                    </div>
+                </div>
 
-        <div class="input-group row">
-          <div class="col" align="right">
-            <label> Preço p/noite em €</label>
-          </div>
-          <div class="col">
-            <input class=" form-control mb-3" name="priceNight" formControlName="pricePerNight" />
+                <div class="input-group row">
+                    <div class="col" align="right">
+                        <label> Preço p/noite em €</label>
+                    </div>
+                    <div class="col">
+                        <input class=" form-control mb-3" name="priceNight" formControlName="pricePerNight" />
 
-          </div>
-        </div>
-      </div>
-     
-      <div class="container mb-5 mt-3">
-        <h3 class="mt-5 mb-2">Comodidades</h3>
-        <div class="row">
-          <div class="col-lg-4  col-sm-12 mx-auto" align="left">
-            <div *ngFor="let comodidade of comodidades">
-              <!--<input type="checkbox" [value]="Comodidades[comodidade]" (change)="atualizarSelecionadas(comodidade)">-->
-              {{ comodidade }}
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="mb-5 mt-5">
-        <span>Anexar imagens da propriedade:</span>
-        <label for="createPropertyAdForm" class="form-label"></label>
-        <input class="form-control" name="files" type="file">
-      </div>
+            <div class="container mb-5 mt-3">
+                <h3 class="mt-5 mb-2">Comodidades</h3>
+                <div class="row">
+                    <div class="col-lg-4  col-sm-12 mx-auto" align="left">
+                        <div *ngFor="let comodidade of comodidades">
+                            <input type="checkbox" [value]="comodidade" (change)="atualizarSelecionadas(comodidade)"> {{ comodidade }}
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-      <button type="button" class="btn btn-outline-success">Registar Propriedade</button>
-    </form>
-  </div>
+            <div class="mb-5 mt-5">
+                <span>Anexar imagens da propriedade:</span>
+                <label for="createPropertyAdForm" class="form-label"></label>
+                <input class="form-control" name="files" type="file">
+            </div>
+
+            <button type="submit" class="btn btn-outline-success">Registar Propriedade</button>
+        </form>
+    </div>
 </div>
-<

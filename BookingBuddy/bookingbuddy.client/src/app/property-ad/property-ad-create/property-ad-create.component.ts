@@ -15,14 +15,11 @@ import { CheckboxOptions } from '../../models/checkboxes';
   styleUrl: './property-ad-create.component.css'
 })
 export class PropertyAdCreateComponent {
-  
   comodidades = Object.values(CheckboxOptions);
-  
   comodidadesSelecionadas: CheckboxOptions[] = [];
   errors: string[] = [];
   createPropertyAdForm!: FormGroup;
   createPropertyFailed: boolean;
-  stringKeys = Object.keys(CheckboxOptions).filter((value) => 0);
 
   checkboxOptions = CheckboxOptions;
 
@@ -34,8 +31,6 @@ export class PropertyAdCreateComponent {
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
     this.errors = [];
     this.createPropertyFailed = false;
-    console.log(this.comodidades);
-    console.log(CheckboxOptions);
     this.createPropertyAdForm = this.formBuilder.group({
       name: [''],
       location: [''],
@@ -44,14 +39,9 @@ export class PropertyAdCreateComponent {
       description: [''],
       imagesUrl: ['']
     });
-    
   }
-  
- 
 
   atualizarSelecionadas(comodidade: CheckboxOptions) {
-   // const comodidadeEnum = CheckboxOptions[comodidade];
-
     if (this.comodidadesSelecionadas.includes(comodidade)) {
       this.comodidadesSelecionadas = this.comodidadesSelecionadas.filter(c => c !== comodidade);
     } else {
@@ -64,8 +54,7 @@ export class PropertyAdCreateComponent {
   }
 
   public create(_: any): void {
-   
-
+    const teste = this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade));
     this.createPropertyFailed = false;
     this.errors = [];
 
