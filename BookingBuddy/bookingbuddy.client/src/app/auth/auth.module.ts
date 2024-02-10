@@ -21,18 +21,16 @@ import { MicrosoftComponent } from './external-providers/microsoft/microsoft.com
     AuxiliaryModule,
     RouterModule.forChild(
       [
-        //{ path: 'sigin', component: SignInComponent },
         { path: 'register', component: RegisterComponent },
         { path: 'signin', component: SignInComponent },
         { path: 'recover-password', component: RecoverPwComponent },
         { path: 'reset-password', component: ResetPwComponent },
         { path: 'confirm-email', component: ConfirmEmailComponent },
-        { path: 'microsoft', component: MicrosoftComponent }
       ]
     )
   ],
-  declarations: [/*LoginMenuComponent,*/ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent, MicrosoftComponent],
-  exports: [/*LoginMenuComponent, */ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent]
+  declarations: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent, MicrosoftComponent],
+  exports: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent]
 })
 export class AuthModule { }
 
