@@ -12,6 +12,7 @@ import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
+import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { PropertyAdCreateComponent } from './property-ad/property-ad-create/prop
     AppComponent,
     HomepageComponent,
     MenuComponent,
-    PropertyAdCreateComponent
+    PropertyAdCreateComponent,
+    PropertyAdRetrieveComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

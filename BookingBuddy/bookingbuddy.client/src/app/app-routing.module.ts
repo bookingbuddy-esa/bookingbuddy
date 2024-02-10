@@ -5,11 +5,13 @@ import { RecoverPwComponent } from './auth/recover-pw/recover-pw.component';
 import { SignInComponent } from './auth/signin/signin.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
+import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 
 const routes: Routes = [
   //{ path: 'register', component: RegisterComponent },
   //{ path: 'signin', component: SignInComponent },
   { path: 'property-ad-create', component: PropertyAdCreateComponent },
+  { path: 'property-ad', component: PropertyAdRetrieveComponent },
   { path: '', component: HomepageComponent }
 ];
 
