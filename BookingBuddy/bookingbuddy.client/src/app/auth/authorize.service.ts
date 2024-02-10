@@ -68,6 +68,18 @@ export class AuthorizeService {
     }));
   }
 
+  public checkConfirmationToken(uid: string, token: string) {
+    return this.http.post('api/checkConfirmation', {
+      uid: uid,
+      token: token
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
   // recover user password by sending an email to the specified email
   public recoverPassword(email: string) {
     return this.http.post('api/forgotPassword', {
@@ -86,6 +98,19 @@ export class AuthorizeService {
       uid: uid,
       token: token,
       newPassword: newPassword
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
+  public checkResetToken(uid: string, token: string) {
+    return this.http.post('api/checkResetPassword', {
+      uid: uid,
+      token: token,
+      newPassword: ''
     }, {
       observe: 'response',
       responseType: 'text'
