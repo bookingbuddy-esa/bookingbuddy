@@ -23,11 +23,12 @@ export class SignInComponent implements OnInit {
   errors: string[] = [];
   signinForm!: FormGroup;
   signedIn: boolean = false;
+  submitting: boolean = false;
 
 
   /**
    * Construtor da classe SignInComponent.
-   * 
+   *
    * @param authService Serviço de autenticação.
    * @param formBuilder Construtor de formulários do Angular.
    * @param router Router do Angular.
@@ -59,28 +60,30 @@ export class SignInComponent implements OnInit {
    * - Chama o serviço de autenticação ('AuthorizeService') para fazer login.
    * - Navega para a página home em caso de sucesso.
    * - Caso o acesso seja negado, é apresentada uma mensagem de erro.
-   * 
-   * @param _ 
+   *
+   * @param _
    */
   public signin(_: any) {
+    this.submitting = true;
     if (!this.signinForm.valid) {
+      this.submitting = false;
       return;
     }
-
     this.errors = [];
 
     const userName = this.signinForm.get('email')?.value;
     const password = this.signinForm.get('password')?.value
-
     this.authService.signIn(userName, password).forEach(
       response => {
         if (response) {
           this.signedIn = true;
+          this.submitting = false;
           this.router.navigateByUrl('');
         }
       }).catch(
         error => {
           this.errors.push("Acesso negado. Verifique as credenciais.");
+          this.submitting = false;
         }
       );
   }

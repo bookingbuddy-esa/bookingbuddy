@@ -1,64 +1,51 @@
-.inputCaixaRegister {
-  width: 300px;
-  height: 60px;
-  margin-bottom: 10px;
-  border-radius: 15px;
-  border-color: grey;
-  border: 1px solid grey;
-  padding: 10px;
+:host{
+  display: flex;
+  width: inherit;
+  height: inherit;
 }
 
-.btnRegister {
+.form-input {
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding-left: 1%;
+  font-weight: bold;
+}
+
+.page-title {
+  font-size: 200%;
+  font-weight: bold;
+}
+
+  .recovery-link a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+  }
+
+.btn-login {
+  border-radius: 5px;
+  font-weight: bold;
   background-color: #9DC78A;
-  width: 300px;
-  height: 60px;
-  border-radius: 15px;
-  margin-top: 5%;
   border: none;
-  outline: none;
-  color: black;
 }
 
-.margin7 {
-  margin: 7%;
-  margin-bottom: 5%;
+  .btn-login:hover {
+    background-color: #53834C;
+    color: white;
+  }
+
+.other-logins {
+  font-size: 100%;
+  font-weight: bolder;
+  color: #757171;
 }
 
-.hr1 {
-  border: 1px solid black;
-  width: 100px;
+.bottom-text {
+  color: #636363;
 }
 
-.divhr1 {
-  display: flex;
-}
-
-.d-flex-center {
-  display: flex;
-  min-height: 10vh;
-}
-
-.externalLoginButton {
-  margin-left: 20%;
-  margin-right: 20%;
-}
-
-.botao-imagem {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  border: 1px solid #9DC78A;
-  border-radius: 15px;
-  width: 70px;
-  height: 60px;
-}
-
-.google {
-  width: 50px;
-  height: 50px;
-}
-
-.microsoft {
-  width: 30px;
-  height: 30px;
+.bottom-text button {
+  font-weight: bolder;
+  text-decoration: none;
+  color: #636363;
 }

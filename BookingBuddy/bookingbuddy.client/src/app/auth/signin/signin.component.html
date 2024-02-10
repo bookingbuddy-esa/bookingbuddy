@@ -1,45 +1,42 @@
-<div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn">
-  <h3 class="margin7">Olá mais uma vez! Sentimos a sua falta.</h3>
-  <form class="form w-50" [formGroup]="signinForm" (submit)="signin($event)">
-    <div class="row m-3">
-      <input class="col form-field inputCaixaRegister" name="name" formControlName="email" placeholder="Insira o seu e-mail" />
+<div *ngIf="!submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
+  <div></div>
+  <div class="d-flex h-75 flex-column align-items-center justify-content-center">
+    <div *ngIf="errors.length !== 0"
+         class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+              (click)="errors=[]"></button>
+      <div class="d-flex flex-column align-items-start">
+        <span *ngFor="let error of errors">{{ error }}</span>
+      </div>
     </div>
-    <div class="row m-3">
-      <input class="col form-field inputCaixaRegister" type="password" name="password" formControlName="password" placeholder="Insira a sua palavra-passe" />
+    <div class="p-3 page-title">Olá mais uma vez! Sentimos a sua falta.</div>
+    <form class="form w-75 text-center d-flex flex-column align-items-end" [formGroup]="signinForm" style="height: 40%"
+          (submit)="signin($event)">
+      <input type="email" class="form-control form-input p-2 my-2" id="email" placeholder="Insira o seu endereço de e-mail"
+             name="email" formControlName="email">
+      <input type="password" class="form-control form-input p-2 mt-2" id="password" placeholder="Insira a sua nova palavra-passe"
+             name="password" formControlName="password">
+      <div class="flex-row w-auto py-2 recover recovery-link">
+        <a class="" [routerLink]="['/recover-password']">Esqueceu-se da sua palavra passe?</a>
+      </div>
+      <button class="btn btn-login p-2 mt-4 w-100" [disabled]="!signinForm.valid" type="submit">Login</button>
+    </form>
+    <div class="other-logins w-75 d-flex flex-row align-items-center justify-content-center p-2">
+      <hr class="flex-grow-1"/>
+      <span class="mx-4">Ou faça login com</span>
+      <hr class="flex-grow-1"/>
     </div>
-    <div class="row m-3">
-      <p style="text-align:right"> <a href="recover-password">Esqueceu-se da sua palavra passe ?</a></p>
+    <div class="d-flex flex-row align-items-center justify-content-center">
+      <div class="mx-4">
+        <app-google></app-google>
+      </div>
+      <div class="mx-4">
+        <app-microsoft></app-microsoft>
+      </div>
     </div>
-
-    <div class="row m-3" *ngIf="">
-      <label style="color: red">Login falhou.</label>
-    </div>
-    <div class="row m-3" *ngFor="let error of errors">
-      <label style="color: red">{{error}}</label>
-    </div>
-    <div class="row m-3">
-      <button class="col btnRegister" type="submit">Login</button>
-    </div>
-  </form>
-
-  <div class="divhr1">
-    <hr class="hr1 margin-top2">
-    <span> &nbsp; Ou faça login com &nbsp;</span>
-    <hr class="hr1 margin-top2">
   </div>
-
-  <div class="flex-row d-flex-center justify-content-center align-items-center">
-    <div class="externalLoginButton">
-      <app-google></app-google>
-    </div>
-    <div class="externalLoginButton">
-      <app-microsoft></app-microsoft>
-    </div>
-  </div>
-
-  <div class="fixed-bottom mx-auto" style="text-align:center;">
-    <p>Ainda não se registou? <a href="/register" style="font-weight:bold">Criar conta</a></p>
-  </div>
+  <span class="bottom-text mb-3">Ainda não se registou? <button class="btn btn-link p-0" type="button"
+                                                                [routerLink]="['/register']">Criar conta</button></span>
 </div>
 
-
+<app-loader *ngIf="submitting" class="m-auto"></app-loader>
