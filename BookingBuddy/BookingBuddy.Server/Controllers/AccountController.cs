@@ -23,6 +23,14 @@ namespace BookingBuddy.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
 
+        /// <summary>
+        /// Regista um utilizador e envia um e-mail de confirmação.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// </remarks>
+        /// <param name="model">Modelo de registo de utilizador</param>
+        /// <returns>Resposta do pedido de criar conta de utilizador, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Route("api/register")]
@@ -31,7 +39,7 @@ namespace BookingBuddy.Server.Controllers
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
             {
-                return BadRequest(IdentityResult.Failed().Errors.Append(new PortugueseIdentityErrorDescriber().DuplicateEmail(model.Email)));
+                return BadRequest(new[] { new PortugueseIdentityErrorDescriber().DuplicateEmail(model.Email) });
             }
 
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
@@ -53,29 +61,44 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <remarks>
         /// Nenhum dos parâmetros pode ser null.
+        /// A conta do utilizador já deve ter sido criada previamente.
         /// 
-        /// NOTA: A conta do utilizador já deve ter sido criada previamente.
+        /// NOTA: A conta não se pode estar com o e-mail confirmado.
         /// </remarks>
         /// <param name="model">Modelo de reenvio de email</param>
         /// <returns>Reenvia o email de confirmação da conta, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/resendConfirmation")]
         public async Task<IActionResult> ResendConfirmationEmail([FromBody] EmailResendModel model)
         {
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
             {
+                if (existingUser.EmailConfirmed)
+                {
+                    return BadRequest(new[] { new IdentityError() { Code = "EmailAlreadyConfirmed", Description = "O email já se encontra confirmado." } });
+                }
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(existingUser);
                 var confirmationLink = $"https://localhost:4200/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
-                await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email, existingUser.Name, new { confirmationLink });
+                await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email!, existingUser.Name, new { confirmationLink });
                 return Ok();
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+            return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
 
+        /// <summary>
+        /// Confirma o email.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// 
+        /// NOTA: O utilizador tem de estar previamente registado na plataforma.
+        /// </remarks>
+        /// <param name="model">Modelo de confirmação de e-mail</param>
+        /// <returns>Resposta do pedido de confirmação de e-mail, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Route("api/confirmEmail")]
@@ -84,18 +107,47 @@ namespace BookingBuddy.Server.Controllers
             var user = await _userManager.FindByIdAsync(model.Uid);
             if (user == null)
             {
-                return NotFound(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+                return NotFound(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, model.Token);
             if (result.Succeeded)
             {
+                await _userManager.UpdateSecurityStampAsync(user);
                 return Ok();
             }
             else
             {
                 return BadRequest(result.Errors);
             }
+        }
+
+        /// <summary>
+        /// Verifica se o token de confirmação do e-mail é válido.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// </remarks>
+        /// <param name="model">Modelo de confirmação de e-mail</param>
+        /// <returns>Resposta do pedido de verificar o token de confirmação de e-mail, OK(200) se concluido com sucesso.</returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("api/checkConfirmation")]
+        public async Task<IActionResult> CheckConfirmationToken([FromBody] EmailConfirmModel model)
+        {
+            var existingUser = await _userManager.FindByIdAsync(model.Uid);
+            if (existingUser != null)
+            {
+                var result = await _userManager.VerifyUserTokenAsync(existingUser, _userManager.Options.Tokens.EmailConfirmationTokenProvider, "EmailConfirmation", model.Token);
+                if (result)
+                {
+                    return Ok();
+                }
+                return BadRequest(new[] { new PortugueseIdentityErrorDescriber().InvalidToken() });
+            }
+            return BadRequest(new[] { new IdentityError() { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
 
         /// <summary>
@@ -120,7 +172,7 @@ namespace BookingBuddy.Server.Controllers
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
         [ProducesResponseType(StatusCodes.Status302Found)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/google")]
         public async Task<IActionResult> GoogleLogin([FromForm] GoogleSignInModel model)
         {
@@ -132,7 +184,7 @@ namespace BookingBuddy.Server.Controllers
             if (exsistingUser == null)
             {
                 var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
-                var user = new ApplicationUser() { Email = email, UserName = email, Name = name };
+                var user = new ApplicationUser() { Email = email, UserName = email, Name = name, EmailConfirmed = true };
                 var userCreateResult = await _userManager.CreateAsync(user);
                 if (userCreateResult.Succeeded)
                 {
@@ -173,7 +225,7 @@ namespace BookingBuddy.Server.Controllers
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
         [ProducesResponseType(StatusCodes.Status302Found)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/microsoft")]
         public async Task<IActionResult> MicrosoftLogin([FromForm] MicrosoftSignInModel model)
         {
@@ -185,7 +237,7 @@ namespace BookingBuddy.Server.Controllers
             if (exsistingUser == null)
             {
                 var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
-                var user = new ApplicationUser() { Email = email, UserName = email, Name = name };
+                var user = new ApplicationUser() { Email = email, UserName = email, Name = name, EmailConfirmed = true };
                 var userCreateResult = await _userManager.CreateAsync(user);
                 if (userCreateResult.Succeeded)
                 {
@@ -227,7 +279,7 @@ namespace BookingBuddy.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/forgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] PasswordRecoveryModel model)
         {
@@ -236,11 +288,11 @@ namespace BookingBuddy.Server.Controllers
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
                 var recoverLink = $"https://localhost:4200/reset-password?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
-                await EmailSender.SendTemplateEmail("d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email, existingUser.Name, new { recoverLink });
+                await EmailSender.SendTemplateEmail("d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email!, existingUser.Name, new { recoverLink });
                 Console.WriteLine(recoverLink);
                 return Ok();
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new PortugueseIdentityErrorDescriber().InvalidEmail(model.Email)));
+            return BadRequest(new[] { new PortugueseIdentityErrorDescriber().InvalidEmail(model.Email) });
         }
 
         /// <summary>
@@ -263,7 +315,7 @@ namespace BookingBuddy.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/resetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] PasswordResetModel model)
         {
@@ -273,11 +325,40 @@ namespace BookingBuddy.Server.Controllers
                 var result = await _userManager.ResetPasswordAsync(existingUser, model.Token, model.NewPassword);
                 if (result.Succeeded)
                 {
+                    await _userManager.UpdateSecurityStampAsync(existingUser);
                     return Ok();
                 }
                 return BadRequest(result.Errors);
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+            return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
+        }
+
+        /// <summary>
+        /// Verifica se o token de reset da palavra-passe é válido.
+        /// </summary>
+        /// <remarks>
+        /// Nenhum dos parâmetros pode ser null.
+        /// </remarks>
+        /// <param name="model">Modelo de reset da palavra-passe</param>
+        /// <returns>Resposta do pedido de verificar o token de reset da palavra-passe, OK(200) se concluido com sucesso.</returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("api/checkResetPassword")]
+        public async Task<IActionResult> CheckResetPasswordToken([FromBody] PasswordResetModel model)
+        {
+            var existingUser = await _userManager.FindByIdAsync(model.Uid);
+            if (existingUser != null)
+            {
+                var result = await _userManager.VerifyUserTokenAsync(existingUser, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", model.Token);
+                if (result)
+                {
+                    return Ok();
+                }
+                return BadRequest(new[] { new PortugueseIdentityErrorDescriber().InvalidToken() });
+            }
+            return BadRequest(new[] { new IdentityError() { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
 
         /// <summary>
@@ -293,6 +374,7 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [Route("api/manage/info")]
         public async Task<IActionResult> ManageInfo()
@@ -302,7 +384,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Ok(new { existingUser.Name, existingUser.UserName, existingUser.Email, isEmailConfirmed = existingUser.EmailConfirmed });
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+            return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
 
         /// <summary>
@@ -329,7 +411,7 @@ namespace BookingBuddy.Server.Controllers
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/manage/info")]
         public async Task<IActionResult> ManageInfo([FromBody] AccountManageModel model)
         {
@@ -365,7 +447,7 @@ namespace BookingBuddy.Server.Controllers
                 }
                 return Ok(new { existingUser.Name, existingUser.UserName, existingUser.Email, isEmailConfirmed = existingUser.EmailConfirmed });
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+            return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
 
         /// <summary>
@@ -389,7 +471,7 @@ namespace BookingBuddy.Server.Controllers
         [HttpPost]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("api/manage/changePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] PasswordChangeModel model)
         {
@@ -403,7 +485,7 @@ namespace BookingBuddy.Server.Controllers
                 }
                 return Ok();
             }
-            return BadRequest(IdentityResult.Failed().Errors.Append(new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }));
+            return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
 
         /// <summary>
@@ -424,9 +506,13 @@ namespace BookingBuddy.Server.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
         }
     }
+    /// <summary>
+    /// Modelo de registo de utilizador.
+    /// </summary>
+    /// <param name="Name">Nome do utilizador</param>
+    /// <param name="Email">E-mail do utilizador</param>
+    /// <param name="Password">Palavra-passe do utilizador</param>
     public record AccountRegisterModel(string Name, string Email, string Password);
-    /* // todo: mudar depois ?
-       public enum AccountType; */
 
     /// <summary>
     /// Modelo de reenvio de email.
@@ -434,6 +520,11 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Email">Email do utilizador</param>
     public record EmailResendModel(string Email);
 
+    /// <summary>
+    /// Modelo de confirmação do e-mail.
+    /// </summary>
+    /// <param name="Uid">Id do utilizador</param>
+    /// <param name="Token">Token de confirmação de e-mail</param>
     public record EmailConfirmModel(string Uid, string Token);
 
     /// <summary>
