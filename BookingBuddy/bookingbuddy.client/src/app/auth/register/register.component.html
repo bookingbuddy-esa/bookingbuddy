@@ -1,105 +1,87 @@
-<div *ngIf="!submitting">
-  <div class="d-flex flex-column align-items-center justify-content-center" *ngIf="!signedIn && !registerSucceeded">
-    <h3 class="p-4 mt-3">Bem-vindo ao Booking Buddy!</h3>
-    <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show alertSize" role="alert">
-      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"></button>
-      <div class="d-flex flex-column align-items-start">
-        <span *ngFor="let error of errors">{{error}}</span>
-      </div>
-    </div>
-    <form class="form w-50" [formGroup]="registerForm" (submit)="register($event)">
-      <div class="row m-3">
-        <input class="col form-field inputCaixaRegister" name="name" formControlName="name" placeholder="Insira o seu nome" />
-      </div>
-      <div class="row m-3">
-        <input class="col form-field inputCaixaRegister" name="email" formControlName="email" placeholder="Insira o seu endereço e-mail" required />
-      </div>
-      <div>
-        <div class="row m-3">
-          <input class="col form-field inputCaixaRegister" type="password" name="password" formControlName="password" autocomplete="on" placeholder="Insira a sua palavra-passe" required />
-          <div *ngIf="!passwordFormField?.valid && passwordFormField?.dirty" class="center d-flex flex-column align-items-start passwordErrorsDiv">
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')">
-              ❌ Pelo menos uma letra maiúscula.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')">
-              ❌ Pelo menos uma letra minúscula.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')">
-              ❌ Pelo menos um número.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')">
-              ❌ Pelo menos um caractere especial.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('.{6,}')">
-              ❌ Pelo menos 6 caracteres.
-            </span>
-          </div>
+<div *ngIf="!submitting && !registerSucceeded"
+     class="d-flex w-100 flex-column align-items-center justify-content-between">
+  <div></div>
+  <div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="d-flex flex-column align-items-center w-100">
+      <div *ngIf="errors.length !== 0"
+           class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+                (click)="errors=[]"></button>
+        <div class="d-flex flex-column align-items-start">
+          <span *ngFor="let error of errors">{{ error }}</span>
         </div>
       </div>
-      <div class="row m-3">
-        <input class="col form-field inputCaixaRegister" type="password" name="confirmPassword" formControlName="confirmPassword" autocomplete="on" placeholder="Confirme a sua palavra-passe" />
+      <div class="p-3 page-title">Bem-vindo ao Booking Buddy!</div>
+    </div>
+    <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="registerForm"
+          (submit)="register($event)" novalidate>
+      <div class="w-100 py-2">
+        <input type="text" class="form-control form-input p-2" id="name" placeholder="Insira o seu nome" name="name"
+               formControlName="name"
+               [ngClass]="{'is-valid':nameFormField?.valid && nameFormField?.dirty,'is-invalid':nameFormField?.invalid && nameFormField?.dirty}">
+        <div class="invalid-feedback">O nome é obrigatório!</div>
       </div>
-      <div class="row m-3">
-        <button class="col btnRegister" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
+      <div class="w-100 py-2">
+        <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail"
+               name="email" formControlName="email"
+               (select)="emailFailed=false"
+               (click)="emailFailed=false"
+               [ngClass]="{'is-valid':emailFormField?.valid && emailFormField?.dirty,'is-invalid':emailFormField?.invalid && emailFormField?.dirty || emailFailed}">
+        <div class="invalid-feedback">O email é inválido!</div>
       </div>
+      <div class="w-100 py-2">
+        <input type="password" class="form-control form-input p-2" id="password" placeholder="Insira a sua palavra passe"
+               name="password" formControlName="password"
+               [ngClass]="{'is-valid':passwordFormField?.valid && passwordFormField?.dirty,'is-invalid':passwordFormField?.invalid && passwordFormField?.dirty}">
+        <div *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')" class="invalid-feedback">Pelo menos uma letra
+          maiúscula.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')" class="invalid-feedback">Pelo menos uma letra
+          minúscula.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')" class="invalid-feedback">Pelo menos um número.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')" class="invalid-feedback">Pelo menos um
+          caractere especial.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('.{6,}')" class="invalid-feedback">Pelo menos 6 caracteres.</div>
+      </div>
+      <div class="w-100 py-2">
+        <input type="password" class="form-control form-input p-2" id="confirmPassword"
+               placeholder="Reescreva a palavra-passe" name="confirmPassword" formControlName="confirmPassword"
+               [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
+        <div class="invalid-feedback">A palavra-passe é obrigatória!</div>
+      </div>
+      <button class="btn btn-register mt-4 w-100 p-2" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
     </form>
-
-    <div class="divhr1">
-      <hr class="hr1">
-      <span> &nbsp; Ou criar conta com &nbsp;</span>
-      <hr class="hr1">
-    </div>
-
-    <div class="flex-row d-flex-center justify-content-center align-items-center">
-      <div class="externalLoginButton">
-        <app-google></app-google>
+    <div class="d-flex my-auto flex-column align-items-center w-100">
+      <div class="other-registers py-2 w-100 d-flex flex-row align-items-center justify-content-center">
+        <hr class="flex-grow-1"/>
+        <span class="mx-4">Ou criar conta com</span>
+        <hr class="flex-grow-1"/>
       </div>
-      <div class="externalLoginButton">
-        <app-microsoft></app-microsoft>
+      <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="mx-4">
+          <app-google></app-google>
+        </div>
+        <div class="mx-4">
+          <app-microsoft></app-microsoft>
+        </div>
       </div>
     </div>
-
-    <div class="fixed-bottom mx-auto" style="text-align:center;">
-      <p>Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
-    </div>
   </div>
+  <span class="bottom-text mb-3">Já tem conta?  <button class="btn btn-link p-0" type="button" [routerLink]="['/signin']">Faça login</button></span>
 </div>
 
-<div *ngIf="registerSucceeded" class="d-flex flex-column align-items-center justify-content-center margin7">
-  <img class="carta" src="../assets/img/envelope.png">
-  <div>
-    <p class="validarText">
-      Estamos quase lá...<br>
-      Por favor, confirme o seu endereço de e-mail para ativar a sua conta.
-    </p>
+<div *ngIf="registerSucceeded && !submitting"
+     class="d-flex w-100 flex-column align-items-center justify-content-between">
+  <div class="d-flex w-50 my-5 flex-column align-items-center text-center">
+    <img class="p-4 mb-2" src="../assets/img/envelope.png" width="40%">
+    <p class="h2 fw-bolder">Estamos quase lá...</p>
+    <p class="h2 fw-bolder">Por favor, confirme o seu endereço de e-mail para ativar a sua conta.</p>
   </div>
-  <div class="bottom-div">
-    <p>Não recebeu e-mail de confirmação? <a href="#" style="font-weight:bold">Clique aqui</a></p>
-  </div>
+  <span class="bottom-text mb-3">Não recebeu e-mail de confirmação? <button class="btn btn-link p-0" type="button"
+                                                                            (click)="resendEmail()">Clique aqui</button></span>
 </div>
 
-<div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
-  <app-loader></app-loader>
-</div>
-
-
-
-<!--A div abaixo é para ser mostrada quando o email for validado
-<div *ngIf="registerSucceeded" class="d-flex flex-column align-items-center justify-content-center margin7" >
-  <img style="margin-bottom:10%" class="carta" src="../assets/img/certo.png">
-  <div>
-    <p class="validarText">
-      O seu endereço de e-mail foi confirmado com sucesso.<br />
-      A sua conta está pronta para uso.
-    </p>
-  </div>
-  <div>
-    <p class="validarText" >
-      Agradecemos por escolher o Booking Buddy.
-    </p>
-  </div>
-
-  <div class="bottom-div">
-    <p>Clique aqui para ser redirecionado para a página de <a href="/signin" style="font-weight:bold">Login</a></p>
-  </div>
-</div>-->
+<app-loader *ngIf="submitting" class="m-auto"></app-loader>

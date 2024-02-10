@@ -11,20 +11,26 @@ import { AuthGuard } from './auth/authorize.guard';
 import { AuthorizeService } from './auth/authorize.service';
 import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
+import { AuxiliaryModule } from './auxiliary/auxiliary.module';
+import { HomepagePropertyComponent } from './homepage/homepage-property/homepage-property.component';
+import {NgOptimizedImage} from "@angular/common";
+import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 import { HostingModule } from './hosting/hosting.module';
 import { cA } from '@fullcalendar/core/internal-common';
-
 
 @NgModule({
   declarations: [
     AppComponent,
     HomepageComponent,
-    MenuComponent
+    MenuComponent,
+    HomepagePropertyComponent,
+    PropertyAdCreateComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
     ReactiveFormsModule, AuthModule,
+    AuxiliaryModule, NgOptimizedImage,
     HostingModule
   ],
   providers: [
