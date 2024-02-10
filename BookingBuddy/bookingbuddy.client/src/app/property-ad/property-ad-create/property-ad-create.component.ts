@@ -7,8 +7,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
 import { CheckboxOptions } from '../../models/checkboxes';
 
-
-
 @Component({
   selector: 'app-property-ad-create',
   templateUrl: './property-ad-create.component.html',
