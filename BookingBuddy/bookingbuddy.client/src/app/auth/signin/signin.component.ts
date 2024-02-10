@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthorizeService } from "../authorize.service";
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AuthorizeService} from "../authorize.service";
+import {Router} from '@angular/router';
 
 /**
  * Componente responsável pelo formulário de login.
@@ -37,7 +37,9 @@ export class SignInComponent implements OnInit {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
-        if (this.signedIn) { this.router.navigateByUrl(''); }
+        if (this.signedIn) {
+          this.router.navigateByUrl('');
+        }
       });
   }
 
@@ -52,6 +54,14 @@ export class SignInComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]]
       });
+  }
+
+  get emailFormField() {
+    return this.signinForm.get('email');
+  }
+
+  get passwordFormField() {
+    return this.signinForm.get('password');
   }
 
   /**
@@ -81,11 +91,11 @@ export class SignInComponent implements OnInit {
           this.router.navigateByUrl('');
         }
       }).catch(
-        error => {
-          this.errors.push("Acesso negado. Verifique as credenciais.");
-          this.submitting = false;
-        }
-      );
+      error => {
+        this.errors.push("Acesso negado. Verifique as credenciais.");
+        this.submitting = false;
+      }
+    );
   }
 }
 
