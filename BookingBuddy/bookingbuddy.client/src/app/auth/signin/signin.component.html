@@ -12,16 +12,16 @@
     <div class="p-3 page-title">Olá mais uma vez! Sentimos a sua falta.</div>
     <form class="form w-75 text-center d-flex flex-column align-items-end" [formGroup]="signinForm" style="height: 40%"
           (submit)="signin($event)">
-      <input class="form-field w-100 form-input mb-3" name="email" formControlName="email"
-             placeholder="Insira o seu e-mail"/>
-      <input class="form-field w-100 form-input" type="password" name="password" formControlName="password"
-             placeholder="Insira a sua palavra-passe"/>
+      <input type="email" class="form-control form-input p-2 my-2" id="email" placeholder="Insira o seu endereço de e-mail"
+             name="email" formControlName="email">
+      <input type="password" class="form-control form-input p-2 mt-2" id="password" placeholder="Insira a sua nova palavra-passe"
+             name="password" formControlName="password">
       <div class="flex-row w-auto py-2 recover recovery-link">
         <a class="" [routerLink]="['/recover-password']">Esqueceu-se da sua palavra passe?</a>
       </div>
-      <button class="login-button btn mt-4 w-100" [disabled]="!signinForm.valid" type="submit">Login</button>
+      <button class="btn btn-login p-2 mt-4 w-100" [disabled]="!signinForm.valid" type="submit">Login</button>
     </form>
-    <div class="other-logins d-flex flex-row align-items-center justify-content-center p-2">
+    <div class="other-logins w-75 d-flex flex-row align-items-center justify-content-center p-2">
       <hr class="flex-grow-1"/>
       <span class="mx-4">Ou faça login com</span>
       <hr class="flex-grow-1"/>
@@ -35,7 +35,8 @@
       </div>
     </div>
   </div>
-  <span class="bottom-text mb-3">Ainda não se registou? <button class="btn btn-link p-0" type="button" [routerLink]="['/register']">Criar conta</button></span>
+  <span class="bottom-text mb-3">Ainda não se registou? <button class="btn btn-link p-0" type="button"
+                                                                [routerLink]="['/register']">Criar conta</button></span>
 </div>
 
 <app-loader *ngIf="submitting" class="m-auto"></app-loader>

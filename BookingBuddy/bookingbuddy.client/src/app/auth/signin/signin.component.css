@@ -7,7 +7,6 @@
 .form-input {
   border: 2px solid grey;
   border-radius: 5px;
-  min-height: 20%;
   padding-left: 1%;
   font-weight: bold;
 }
@@ -23,21 +22,19 @@
     font-weight: bold;
   }
 
-.login-button {
+.btn-login {
   border-radius: 5px;
-  min-height: 20%;
   font-weight: bold;
   background-color: #9DC78A;
   border: none;
 }
 
-  .login-button:hover {
+  .btn-login:hover {
     background-color: #53834C;
     color: white;
   }
 
 .other-logins {
-  width: 60%;
   font-size: 100%;
   font-weight: bolder;
   color: #757171;
