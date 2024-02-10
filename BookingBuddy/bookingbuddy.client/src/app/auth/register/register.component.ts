@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from "@angular/forms";
-import { AuthorizeService } from "../authorize.service";
+import {Component, OnInit} from "@angular/core";
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl} from "@angular/forms";
+import {AuthorizeService} from "../authorize.service";
 
 @Component({
   selector: 'app-register-component',
@@ -14,9 +14,10 @@ export class RegisterComponent implements OnInit {
   registerSucceeded: boolean = false;
   signedIn: boolean = false;
   submitting: boolean = false;
+  emailFailed: boolean = false;
 
   constructor(private authService: AuthorizeService,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
@@ -24,19 +25,33 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.registerFailed = false;
-    this.registerSucceeded = false;
-    this.errors = [];
     this.registerForm = this.formBuilder.group(
       {
         name: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required]],
-        confirmPassword: ['', [Validators.required]]
+        password: new FormControl<string>('', {
+          validators: [Validators.required, Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/)],
+        }),
+        confirmPassword: new FormControl<string>('', {
+          validators: [Validators.required]
+        })
       });
   }
+
+  get nameFormField() {
+    return this.registerForm.get('name');
+  }
+
+  get emailFormField() {
+    return this.registerForm.get('email');
+  }
+
   get passwordFormField() {
     return this.registerForm.get('password');
+  }
+
+  get confirmPasswordFormField() {
+    return this.registerForm.get('confirmPassword');
   }
 
   public register(_: any) {
@@ -63,22 +78,38 @@ export class RegisterComponent implements OnInit {
           this.submitting = false;
         }
       }).catch(
-        error => {
-          this.registerFailed = true;
-          if (error.error) {
-            console.log(error.error);
-            const errorObj = JSON.parse(error.error);
-            console.log(errorObj);
-            Object.entries(errorObj).forEach((entry) => {
-              const [key, value] = entry;
-
-              if (value && typeof value === 'object' && 'description' in value) {
-                const description = value.description as string;
-                this.errors.push(description);
+      error => {
+        this.registerFailed = true;
+        if (error.error) {
+          const errorObj = JSON.parse(error.error);
+          Object.entries(errorObj).forEach((entry) => {
+            const [key, value] = entry;
+            if (value && typeof value === 'object' && 'description' in value) {
+              const description = value.description as string;
+              this.errors.push(description);
+              if (value && typeof value === 'object' && 'code' in value) {
+                const code = value.code as string;
+                if (code === 'DuplicateEmail') {
+                  this.emailFailed = true;
+                }
               }
-            });
-          }
-          this.submitting = false;
-        });
+            }
+          });
+        }
+        this.submitting = false;
+      });
+  }
+
+  public resendEmail() {
+    this.submitting = true;
+    this.authService.resendConfirmationEmail(
+      this.registerForm.get('email')?.value
+    ).forEach(response => {
+      if (response) {
+        this.submitting = false;
+      }
+    }).catch(error => {
+      this.submitting = false;
+    });
   }
 }

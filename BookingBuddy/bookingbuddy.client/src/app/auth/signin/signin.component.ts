@@ -28,7 +28,7 @@ export class SignInComponent implements OnInit {
 
   /**
    * Construtor da classe SignInComponent.
-   * 
+   *
    * @param authService Serviço de autenticação.
    * @param formBuilder Construtor de formulários do Angular.
    * @param router Router do Angular.
@@ -60,8 +60,8 @@ export class SignInComponent implements OnInit {
    * - Chama o serviço de autenticação ('AuthorizeService') para fazer login.
    * - Navega para a página home em caso de sucesso.
    * - Caso o acesso seja negado, é apresentada uma mensagem de erro.
-   * 
-   * @param _ 
+   *
+   * @param _
    */
   public signin(_: any) {
     this.submitting = true;
