@@ -16,13 +16,13 @@
     <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="registerForm"
           (submit)="register($event)" novalidate>
       <div class="w-100 py-2">
-        <input type="text" class="form-control form-input" id="name" placeholder="Insira o seu nome" name="name"
+        <input type="text" class="form-control form-input p-2" id="name" placeholder="Insira o seu nome" name="name"
                formControlName="name"
                [ngClass]="{'is-valid':nameFormField?.valid && nameFormField?.dirty,'is-invalid':nameFormField?.invalid && nameFormField?.dirty}">
         <div class="invalid-feedback">O nome é obrigatório!</div>
       </div>
       <div class="w-100 py-2">
-        <input type="email" class="form-control form-input" id="email" placeholder="Insira o seu endereço de e-mail"
+        <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail"
                name="email" formControlName="email"
                (select)="emailFailed=false"
                (click)="emailFailed=false"
@@ -30,7 +30,7 @@
         <div class="invalid-feedback">O email é inválido!</div>
       </div>
       <div class="w-100 py-2">
-        <input type="password" class="form-control form-input" id="password" placeholder="Insira a sua palavra passe"
+        <input type="password" class="form-control form-input p-2" id="password" placeholder="Insira a sua palavra passe"
                name="password" formControlName="password"
                [ngClass]="{'is-valid':passwordFormField?.valid && passwordFormField?.dirty,'is-invalid':passwordFormField?.invalid && passwordFormField?.dirty}">
         <div *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')" class="invalid-feedback">Pelo menos uma letra
@@ -47,12 +47,12 @@
         <div *ngIf="!passwordFormField?.value?.match('.{6,}')" class="invalid-feedback">Pelo menos 6 caracteres.</div>
       </div>
       <div class="w-100 py-2">
-        <input type="password" class="form-control form-input" id="confirmPassword"
+        <input type="password" class="form-control form-input p-2" id="confirmPassword"
                placeholder="Reescreva a palavra-passe" name="confirmPassword" formControlName="confirmPassword"
                [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
         <div class="invalid-feedback">A palavra-passe é obrigatória!</div>
       </div>
-      <button class="btn btn-register mt-4 w-100" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
+      <button class="btn btn-register mt-4 w-100 p-2" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
     </form>
     <div class="d-flex my-auto flex-column align-items-center w-100">
       <div class="other-registers py-2 w-100 d-flex flex-row align-items-center justify-content-center">
