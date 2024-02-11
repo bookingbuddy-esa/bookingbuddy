@@ -21,7 +21,7 @@ export class LogoutComponent implements OnInit {
         }
       }).catch(
       error => {
-        this.router.navigate(["forbidden"]).then(
+        this.router.navigate([""]).then(
           () => {
             this.submitting = false;
           }

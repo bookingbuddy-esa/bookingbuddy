@@ -2,22 +2,25 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {HomepageComponent} from './homepage/homepage.component';
 import {PropertyAdCreateComponent} from './property-ad/property-ad-create/property-ad-create.component';
+import {PropertyAdRetrieveComponent} from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 import {NotfoundComponent} from "./auxiliary/notfound/notfound.component";
 import {UnauthorizedComponent} from "./auxiliary/unauthorized/unauthorized.component";
 import {BadRequestComponent} from "./auxiliary/bad-request/bad-request.component";
 import {CalendarComponent} from "./hosting/calendar/calendar.component";
+import { AuthModule } from "./auth/auth.module";
 
 const routes: Routes = [
-  {path: '', component: HomepageComponent, pathMatch: 'full'},
+  {path: '', component: HomepageComponent},
   {path: 'property-ad-create', component: PropertyAdCreateComponent},
-  {path: 'forbidden', component: UnauthorizedComponent},
+  {path: 'propriedades/:id', component: PropertyAdRetrieveComponent },
+  {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
-  {path: '*', component: NotfoundComponent},
-  { path: 'calendar', component: CalendarComponent }
+  { path: 'calendar', component: CalendarComponent },
+  {path: '**', component: NotfoundComponent}
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [AuthModule, RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {

@@ -17,6 +17,7 @@ import {NgOptimizedImage} from "@angular/common";
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 import { HostingModule } from './hosting/hosting.module';
 import { cA } from '@fullcalendar/core/internal-common';
+import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { cA } from '@fullcalendar/core/internal-common';
     HomepageComponent,
     MenuComponent,
     HomepagePropertyComponent,
-    PropertyAdCreateComponent
+    PropertyAdCreateComponent,
+    PropertyAdRetrieveComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
