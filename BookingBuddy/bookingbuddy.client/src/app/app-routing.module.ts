@@ -12,7 +12,7 @@ const routes: Routes = [
   {path: '', component: HomepageComponent},
   {path: 'property-ad-create', component: PropertyAdCreateComponent},
   {path: 'propriedades/:id', component: PropertyAdRetrieveComponent },
-  {path: 'forbidden', component: UnauthorizedComponent},
+  {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
   {path: '**', component: NotfoundComponent}
 ];

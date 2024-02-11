@@ -24,8 +24,11 @@ namespace BookingBuddy.Server.Migrations
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Amenity", b =>
                 {
-                    b.Property<string>("AmenityId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("AmenityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AmenityId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -38,7 +41,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PropertyAmenity", (string)null);
+                    b.ToTable("PropertyAmenity");
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.ApplicationUser", b =>
@@ -293,7 +296,6 @@ namespace BookingBuddy.Server.Migrations
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
                 {
                     b.HasOne("BookingBuddy.Server.Models.ApplicationUser", "ApplicationUser")
-                    
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
