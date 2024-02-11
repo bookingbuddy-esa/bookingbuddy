@@ -5,7 +5,7 @@
 namespace BookingBuddy.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class PropertyLandlordAmenity : Migration
+    public partial class AmenityLandlordProperty : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -13,38 +13,12 @@ namespace BookingBuddy.Server.Migrations
             migrationBuilder.DropTable(
                 name: "Person");
 
-            migrationBuilder.AddColumn<string>(
-                name: "PictureUrl",
-                table: "AspNetUsers",
-                type: "nvarchar(max)",
-                nullable: true);
-
-            migrationBuilder.CreateTable(
-                name: "Landlord",
-                columns: table => new
-                {
-                    LandlordId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PropertyIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Landlord", x => x.LandlordId);
-                    table.ForeignKey(
-                        name: "FK_Landlord_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Property",
                 columns: table => new
                 {
                     PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LandlordId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AmenityIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
@@ -56,10 +30,10 @@ namespace BookingBuddy.Server.Migrations
                 {
                     table.PrimaryKey("PK_Property", x => x.PropertyId);
                     table.ForeignKey(
-                        name: "FK_Property_Landlord_LandlordId",
-                        column: x => x.LandlordId,
-                        principalTable: "Landlord",
-                        principalColumn: "LandlordId",
+                        name: "FK_Property_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -82,14 +56,9 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Landlord_ApplicationUserId",
-                table: "Landlord",
-                column: "ApplicationUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Property_LandlordId",
+                name: "IX_Property_ApplicationUserId",
                 table: "Property",
-                column: "LandlordId");
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PropertyAmenity_PropertyId",
@@ -105,13 +74,6 @@ namespace BookingBuddy.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Property");
-
-            migrationBuilder.DropTable(
-                name: "Landlord");
-
-            migrationBuilder.DropColumn(
-                name: "PictureUrl",
-                table: "AspNetUsers");
 
             migrationBuilder.CreateTable(
                 name: "Person",

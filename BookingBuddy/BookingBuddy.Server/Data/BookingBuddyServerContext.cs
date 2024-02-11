@@ -15,10 +15,12 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<Amenity> PropertyAmenity { get; set; } = default!;
 
+        /*
         /// <summary>
         /// Propriedade que diz respeito ao proprietário da propriedade física.
         /// </summary>
         public DbSet<Landlord> Landlord { get; set; } = default!;
+        */
 
         /// <summary>
         /// Propriedade que diz respeito à propriedade física.

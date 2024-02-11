@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿/*
+using System.ComponentModel.DataAnnotations;
 
 namespace BookingBuddy.Server.Models
 {
@@ -43,3 +44,5 @@ namespace BookingBuddy.Server.Models
         public ApplicationUser? User { get; set; }
     }
 }
+
+*/
