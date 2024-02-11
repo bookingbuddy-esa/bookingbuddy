@@ -15,7 +15,7 @@ import { AuxiliaryModule } from './auxiliary/auxiliary.module';
 import { HomepagePropertyComponent } from './homepage/homepage-property/homepage-property.component';
 import {NgOptimizedImage} from "@angular/common";
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
-import { CheckboxOptions } from '../app/models/checkboxes';
+import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +23,8 @@ import { CheckboxOptions } from '../app/models/checkboxes';
     HomepageComponent,
     MenuComponent,
     HomepagePropertyComponent,
-    PropertyAdCreateComponent
+    PropertyAdCreateComponent,
+    PropertyAdRetrieveComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
