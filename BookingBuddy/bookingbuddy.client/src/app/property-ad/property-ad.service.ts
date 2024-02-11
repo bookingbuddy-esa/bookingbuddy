@@ -13,6 +13,24 @@ export class PropertyAdService {
     return this.http.get('/api/properties/' + propertyId);
   }
 
+  public createPropertyAd(name: string, location: string, pricePerNight: number, description: string,   imagesUrl: string[], amenityIds : string[] ) {
+    return this.http.post('/api/properties/create', {
+      name: name,
+      location: location,
+      pricePerNight: pricePerNight,
+      description : description,
+      imagesUrl: imagesUrl,
+      amenityIds: amenityIds,
+    }, {
+      observe: 'response',
+      responseType: 'text'
+    })
+      .pipe<boolean>(map((res: HttpResponse<string>) => {
+        return res.ok;
+      }));
+  }
+
+
   public getProperties() {
     return this.http.get('/api/properties/');
   }
