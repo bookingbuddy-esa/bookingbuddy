@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthorizeService } from '../auth/authorize.service';
-import { UserInfo } from '../auth/authorize.dto';
-import { Router } from '@angular/router';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {AuthorizeService} from '../auth/authorize.service';
+import {UserInfo} from '../auth/authorize.dto';
+import {Router} from '@angular/router';
+import {Property} from '../models/property';
+import { PropertyAdService } from '../property-ad/property-ad.service';
 
 @Component({
   selector: 'app-homepage',
@@ -11,25 +12,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class HomepageComponent implements OnInit {
   signedIn: boolean = false;
-  editPassword: boolean = false;
-  changePWForm!: FormGroup;
   submitting: boolean = false;
-  errors: string[] = [];
   user: UserInfo | undefined;
+  property_list: Property[] = [];
 
-  constructor(private authService: AuthorizeService, private router: Router) {
-    this.errors = [];
-    this.changePWForm = new FormGroup({
-      password: new FormControl<string>('', {
-        validators: [Validators.required, Validators.pattern(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{6,}$/)],
-      }),
-      confirmPassword: new FormControl<string>('', {
-        validators: [Validators.required]
-      }),
-      oldPassword: new FormControl<string>('', {
-        validators: [Validators.required]
-      }),
-    });
+  constructor(private authService: AuthorizeService, private propertyService: PropertyAdService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -46,51 +33,45 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
-  }
+    /*const testPhotosUrl = [
+      "https://www.usatoday.com/gcdn/-mm-/05b227ad5b8ad4e9dcb53af4f31d7fbdb7fa901b/c=0-64-2119-1259/local/-/media/USATODAY/USATODAY/2014/08/13/1407953244000-177513283.jpg",
+      "https://png.pngtree.com/thumb_back/fh260/background/20230425/pngtree-living-room-with-window-and-wooden-furniture-image_2514066.jpg",
+      "https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc=",
+      "https://upload.wikimedia.org/wikipedia/commons/7/79/Ponta_Negra_Beach_Hotel.jpg",
+      "https://digital.ihg.com/is/image/ihg/ihg-lp-refresh-hero-imea-gben-lvp-1440x617"
+    ];
 
-  get passwordFormField() {
-    return this.changePWForm.get('password');
-  }
+    const testLocation = [
+      "Atouguia da Baleia, Portugal",
+      "Lisboa, Portugal",
+      "Porto, Portugal",
+      "Funchal, Portugal",
+      "Portimão, Portugal"
+    ];
+    for (let i = 0; i < 30; i++) {
+      const number = Math.floor(Math.random() * 5);
+      this.property_list.push({
+        propertyId: i.toString(),
+        landlordId: "landlord",
+        name: "Property " + i,
+        location: testLocation[number],
+        description: "Random description",
+        pricePerNight: Math.floor(Math.random() * 1000),
+        amenityIds: [],
+        imagesUrl: [testPhotosUrl[number]]
+      });
+    }*/
 
-  public changePassword(_: any) {
-    this.submitting = true;
-    if (!this.changePWForm.valid) {
-      this.submitting = false;
-      return;
-    }
-    this.errors = [];
-    const password = this.changePWForm.get('password')?.value;
-    const confirmPassword = this.changePWForm.get('confirmPassword')?.value;
-    const oldPassword = this.changePWForm.get('oldPassword')?.value;
-    if (password !== confirmPassword) {
-      this.errors.push('As palavras-passe não são iguais.');
-      this.submitting = false;
-      return;
-    }
-    this.authService.changePassword(password, oldPassword).forEach(
+    this.propertyService.getProperties().forEach(
       response => {
         if (response) {
-          this.submitting = false;
-          this.editPassword = false;
-          this.changePWForm.reset();
+          this.property_list = response as Property[];
         }
       }).catch(
         error => {
-          if (error.error) {
-            const errorObj = JSON.parse(error.error);
-            Object.entries(errorObj).forEach((entry) => {
-              const [key, value] = entry;
-              var code = (value as any)["code"]
-              var description = (value as any)["description"];
-              if (code === "InvalidToken" || code === "UserNotFound") {
-                //em caso de o token ou o user serem inválidos
-                //this.validUrl = false;
-              }
-              this.errors.push(description);
-            });
-          }
-          this.submitting = false;
-        });
+          //this.errors.push("TODO");
+        }
+      );
   }
 
   public logout() {

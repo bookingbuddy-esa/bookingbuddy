@@ -12,6 +12,7 @@ import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
 import { GoogleComponent } from './external-providers/google/google.component';
 import { MicrosoftComponent } from './external-providers/microsoft/microsoft.component';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   imports: [
@@ -21,18 +22,17 @@ import { MicrosoftComponent } from './external-providers/microsoft/microsoft.com
     AuxiliaryModule,
     RouterModule.forChild(
       [
-        //{ path: 'sigin', component: SignInComponent },
         { path: 'register', component: RegisterComponent },
         { path: 'signin', component: SignInComponent },
         { path: 'recover-password', component: RecoverPwComponent },
         { path: 'reset-password', component: ResetPwComponent },
         { path: 'confirm-email', component: ConfirmEmailComponent },
-        { path: 'microsoft', component: MicrosoftComponent }
+        { path: 'logout', component: LogoutComponent }
       ]
     )
   ],
-  declarations: [/*LoginMenuComponent,*/ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent, MicrosoftComponent],
-  exports: [/*LoginMenuComponent, */ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent]
+  declarations: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent, ConfirmEmailComponent, GoogleComponent, MicrosoftComponent, LogoutComponent],
+  exports: [ RegisterComponent, RecoverPwComponent, SignInComponent, ResetPwComponent]
 })
 export class AuthModule { }
 

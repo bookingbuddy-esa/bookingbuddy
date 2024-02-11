@@ -1,25 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from "@angular/forms";
-import { AuthorizeService } from "../authorize.service";
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl} from "@angular/forms";
+import {AuthorizeService} from "../authorize.service";
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-reset-pw',
   templateUrl: './reset-pw.component.html',
   styleUrl: './reset-pw.component.css'
 })
-export class ResetPwComponent {
+export class ResetPwComponent implements OnInit {
   errors: string[] = [];
   resetPWForm!: FormGroup;
-  emailSent: boolean = false;
   submitting: boolean = false;
   token: string = "";
   uid: string = "";
-  validUrl: boolean = false;
 
-  constructor(private authService: AuthorizeService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private authService: AuthorizeService, private route: ActivatedRoute, private router: Router) {
+  }
 
   ngOnInit(): void {
+    this.submitting = true;
     this.errors = [];
     this.resetPWForm = new FormGroup({
       password: new FormControl<string>('', {
@@ -29,17 +29,37 @@ export class ResetPwComponent {
         validators: [Validators.required]
       })
     });
-    var urlUid = this.route.snapshot.queryParamMap.get("uid");
-    var urlToken = this.route.snapshot.queryParamMap.get("token");
+    const urlUid = this.route.snapshot.queryParamMap.get("uid");
+    const urlToken = this.route.snapshot.queryParamMap.get("token");
     if (urlUid !== null && urlToken !== null) {
       this.uid = urlUid;
       this.token = urlToken;
-      this.validUrl = true
+      this.authService.checkResetToken(this.uid, this.token).forEach(
+        response => {
+          if (response) {
+            this.submitting = false;
+          }
+        }).catch(
+        error => {
+          console.log(error);
+          this.router.navigate(["bad-request"]).then(r => {
+            this.submitting = false;
+          });
+        });
+    } else {
+      this.submitting = false;
+      this.router.navigate(["bad-request"]).then(r => {
+        this.submitting = false;
+      });
     }
   }
 
   get passwordFormField() {
     return this.resetPWForm.get('password');
+  }
+
+  get confirmPasswordFormField() {
+    return this.resetPWForm.get('confirmPassword');
   }
 
   public reset(_: any) {
@@ -59,25 +79,27 @@ export class ResetPwComponent {
     this.authService.resetPassword(this.uid, this.token, password).forEach(
       response => {
         if (response) {
-          this.submitting = false;
-          this.router.navigateByUrl("/signin")
+          this.router.navigate(["signin"]).then(r => {
+            this.submitting = false;
+          });
         }
       }).catch(
-        error => {
-          if (error.error) {
-            const errorObj = JSON.parse(error.error);
-            Object.entries(errorObj).forEach((entry) => {
-              const [key, value] = entry;
-              var code = (value as any)["code"]
-              var description = (value as any)["description"];
-              if (code === "InvalidToken" || code === "UserNotFound") {
-                //em caso de o token ou o user serem inválidos
-                //this.validUrl = false;
+      error => {
+        if (error.error) {
+          const errorObj = JSON.parse(error.error);
+          if (errorObj && errorObj.errors) {
+            const errorList = errorObj.errors;
+            for (let field in errorList) {
+              if (Object.prototype.hasOwnProperty.call(errorList, field)) {
+                let list: string[] = errorList[field];
+                for (let idx = 0; idx < list.length; idx += 1) {
+                  this.errors.push(`${field}: ${list[idx]}`);
+                }
               }
-              this.errors.push(description);
-            });
+            }
           }
-          this.submitting = false;
-        });
+        }
+        this.submitting = false;
+      });
   }
 }

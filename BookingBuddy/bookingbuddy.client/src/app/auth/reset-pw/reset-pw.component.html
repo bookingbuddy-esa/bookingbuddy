@@ -1,51 +1,46 @@
-<div *ngIf="!submitting">
-  <div class="flex-row d-flex-center justify-content-center align-items-center">
-    <div *ngIf="validUrl" class="center d-flex flex-column align-items-center">
-      <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show alertSize" role="alert">
-        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"></button>
-        <div class="d-flex flex-column align-items-start">
-          <span *ngFor="let error of errors">{{error}}</span>
-        </div>
-      </div>
-      <form [formGroup]="resetPWForm" class="center d-flex flex-column align-items-center" (submit)="reset($event)">
-        <h2 class="textAlignmentCenter">Recuperar palavra-passe</h2>
-        <p class="size textAlignmentCenter">Estamos quase! <br /> </p>
-        <div>
-          <input class="inputCaixaRegister space-around-input" type="password" id="pass" name="password" formControlName="password" placeholder="Insira a sua nova palavra-passe" required>
-          <div *ngIf="!passwordFormField?.valid && passwordFormField?.dirty" class="center d-flex flex-column align-items-start passwordErrorsDiv">
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')">
-              ❌ Pelo menos uma letra maiúscula.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')">
-              ❌ Pelo menos uma letra minúscula.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')">
-              ❌ Pelo menos um número.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')">
-              ❌ Pelo menos um caractere especial.
-            </span>
-            <span class="passwordErrors" *ngIf="!passwordFormField?.value?.match('.{6,}')">
-              ❌ Pelo menos 6 caracteres.
-            </span>
-          </div>
-        </div>
-        <input class="inputCaixaRegister space-around-input" type="password" id="confirmPassword" name="confirmPassword" formControlName="confirmPassword" placeholder="Reescreva a palavra-passe" required>
-        <button type="submit" [disabled]="!resetPWForm.valid" class="space-around-input btnRecoverPW">Enviar</button>
-      </form>
-      <div class="fixed-bottom bottom-text">
-        <p class="textAlignmentCenter space-around-input mt-auto">Já tem conta? <a href="/signin" style="font-weight:bold">Faça login</a></p>
+<div *ngIf="!submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
+  <div></div>
+  <div class="d-flex w-50 flex-column align-items-center">
+    <div *ngIf="errors.length !== 0"
+         class="alert alert-danger alert-dismissible d-flex w-50 align-items-center fade show mt-2" role="alert">
+      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+              (click)="errors=[]"></button>
+      <div class="d-flex flex-column align-items-start">
+        <span *ngFor="let error of errors">{{ error }}</span>
       </div>
     </div>
-    <div class="center d-flex flex-column align-items-center" *ngIf="!validUrl">
-      <h1>Pedido Inválido</h1>
-      <p>Não foi possível validar o pedido!</p>
-      <br />
-      <button class="btn btn-primary btn-lg btn-block" onclick="location.href = '/signin';">Voltar ao login</button>
-    </div>
+    <div class="h3 p-3 fw-bolder">Recuperar palavra-passe</div>
+    <div class="h5 mb-5 w-50 text-center">Estamos quase!</div>
+    <form class="d-flex mb-3 w-50 flex-column align-items-center" [formGroup]="resetPWForm"
+          (submit)="reset($event)" novalidate>
+      <div class="w-100 py-2">
+        <input type="password" class="form-control form-input p-2" id="password" placeholder="Insira a sua nova palavra-passe"
+               name="password" formControlName="password"
+               [ngClass]="{'is-valid':passwordFormField?.valid && passwordFormField?.dirty,'is-invalid':passwordFormField?.invalid && passwordFormField?.dirty}">
+        <div *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')" class="invalid-feedback">Pelo menos uma letra
+          maiúscula.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')" class="invalid-feedback">Pelo menos uma letra
+          minúscula.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')" class="invalid-feedback">Pelo menos um número.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')" class="invalid-feedback">Pelo menos um
+          caractere especial.
+        </div>
+        <div *ngIf="!passwordFormField?.value?.match('.{6,}')" class="invalid-feedback">Pelo menos 6 caracteres.</div>
+      </div>
+      <div class="w-100 py-2">
+        <input type="password" class="form-control form-input p-2" id="confirmPassword"
+               placeholder="Reescreva a palavra-passe" name="confirmPassword" formControlName="confirmPassword"
+               [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
+        <div class="invalid-feedback">A palavra-passe é obrigatória!</div>
+      </div>
+      <button class="btn btn-submit mt-4 w-100 p-2" [disabled]="!resetPWForm.valid" type="submit">Enviar</button>
+    </form>
   </div>
+  <span class="bottom-text mb-3">Já tem conta? <button class="btn btn-link p-0" type="button"
+                                                       [routerLink]="['/signin']">Inicie sessão</button></span>
 </div>
 
-<div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
-  <app-loader></app-loader>
-</div>
+<app-loader *ngIf="submitting" class="m-auto"></app-loader>

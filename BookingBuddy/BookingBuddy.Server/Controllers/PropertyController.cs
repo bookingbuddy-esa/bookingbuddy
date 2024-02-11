@@ -5,6 +5,7 @@ using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -56,6 +57,20 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
+            List<Amenity> amenities = [];
+
+            property.AmenityIds?.ForEach(amenityId =>
+            {
+                Amenity amenity = new Amenity
+                {
+                    AmenityId = amenityId,
+                    Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                };
+
+                amenities.Add(amenity);
+            });
+
+            property.Amenities = amenities;
             return property;
         }
         
@@ -191,7 +206,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return NotFound();
             }
-
+            
             if (user.Id != property.ApplicationUserId)
             {
                 return Forbid();
@@ -218,7 +233,7 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyCreateModel(List<string>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyCreateModel(List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
 
     /// <summary>
     /// Modelo de edição de propriedade
@@ -230,5 +245,5 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyEditModel(string PropertyId, List<string>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyEditModel(string PropertyId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
 }

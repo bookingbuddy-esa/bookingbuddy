@@ -1,34 +1,50 @@
-<div *ngIf="!submitting" class="main d-flex flex-column align-items-center justify-content-between">
+<div *ngIf="!submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
   <div></div>
-  <div class="d-flex flex-column align-items-center justify-content-center mb-5" [ngClass]="{'mt-2':errors.length !== 0}" style="width:100%">
-    <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex align-items-center fade show mt-2" role="alert" style="width:50%">
-      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
-      <div class="d-flex flex-column align-items-start">
-        <span *ngFor="let error of errors">{{error}}</span>
+  <div class="d-flex flex-column align-items-center justify-content-center">
+    <div class="d-flex flex-column align-items-center w-100">
+      <div *ngIf="errors.length !== 0"
+           class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+                (click)="errors=[]"></button>
+        <div class="d-flex flex-column align-items-start">
+          <span *ngFor="let error of errors">{{ error }}</span>
+        </div>
       </div>
+      <div class="p-3 page-title">Bem-vindo ao Booking Buddy!</div>
     </div>
-    <div class="p-2 mb-4 page-title">Olá mais uma vez! Sentimos a sua falta.</div>
-    <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="signinForm" (submit)="signin($event)">
-      <input class="form-field form-input mb-3" name="email" formControlName="email" placeholder="Insira o seu e-mail" />
-      <input class="form-field form-input mb-1" type="password" name="password" formControlName="password" placeholder="Insira a sua palavra-passe" />
-      <div class="flex-row recover recovery-link mb-5">
-        <a [routerLink]="['/recover-password']">Esqueceu-se da sua palavra passe ?</a>
+    <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="signinForm"
+          (submit)="signin($event)" novalidate>
+      <div class="w-100 py-2">
+        <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail"
+               name="email" formControlName="email">
+        <div class="invalid-feedback">O email é inválido!</div>
       </div>
-      <button class="mb-5 login-button btn" [disabled]="!signinForm.valid" type="submit">Login</button>
+      <div class="w-100 py-2">
+        <input type="password" class="form-control form-input p-2" id="password"
+               placeholder="Insira a sua palavra passe"
+               name="password" formControlName="password">
+        <button class="btn btn-login mt-4 w-100 p-2" [disabled]="!signinForm.valid" type="submit">Iniciar sessão
+        </button>
+      </div>
     </form>
-    <div class="other-logins d-flex flex-row align-items-center justify-content-center mb-3 mt-4">
-      <hr class="flex-grow-1" />
-      <span class="mx-4">Ou faça login com</span>
-      <hr class="flex-grow-1" />
-    </div>
-    <div class="d-flex flex-row align-items-center justify-content-center">
-      <div class="mx-4"><app-google></app-google></div>
-      <div class="mx-4"><app-microsoft></app-microsoft></div>
+    <div class="d-flex my-auto flex-column align-items-center w-100">
+      <div class="other-registers py-2 w-100 d-flex flex-row align-items-center justify-content-center">
+        <hr class="flex-grow-1"/>
+        <span class="mx-4">Ou faça login com</span>
+        <hr class="flex-grow-1"/>
+      </div>
+      <div class="d-flex flex-row align-items-center justify-content-center">
+        <div class="mx-4">
+          <app-google></app-google>
+        </div>
+        <div class="mx-4">
+          <app-microsoft></app-microsoft>
+        </div>
+      </div>
     </div>
   </div>
-  <span class="bottom-text mb-3">Ainda não se registou? <a [routerLink]="['/register']">Criar conta</a></span>
+  <span class="bottom-text mb-3">Ainda não se registou? <button class="btn btn-link p-0" type="button"
+                                                                [routerLink]="['/register']">Criar conta</button></span>
 </div>
 
-<div *ngIf="submitting" class="main d-flex flex-column align-items-center justify-content-center">
-  <app-loader></app-loader>
-</div>
+<app-loader *ngIf="submitting" class="m-auto"></app-loader>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookingBuddy.Server.Data
 {

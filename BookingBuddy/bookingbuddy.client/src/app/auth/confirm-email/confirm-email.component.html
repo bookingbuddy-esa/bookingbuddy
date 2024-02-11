@@ -1,17 +1,11 @@
-<div *ngIf="!submitting">
-  <div class="flex-row d-flex-center justify-content-center align-items-center">
-    <div class="center d-flex flex-column align-items-center">
-      <img class="image-center" src="../assets/img/certo.png">
-      <h2 class="center-text space-around">O seu endereço de e-mail foi confirmado com sucesso.</h2>
-      <h2 class="center-text space-around">A sua conta está pronta para uso.</h2>
-      <h2 class="center-text last-text">Agradecemos por escolher o Booking Buddy.</h2>
-    </div>
+<div *ngIf="!submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
+  <div class="d-flex w-50 my-5 flex-column align-items-center text-center">
+    <img class="p-4 mb-2" src="../assets/img/certo.png" width="40%">
+    <p class="h2 fw-bolder">O seu endereço de e-mail foi confirmado com sucesso.</p>
+    <p class="h2 fw-bolder">A sua conta está pronta para uso.</p>
+    <p class="h2 mt-4 fw-bolder">Agradecemos por escolher o Booking Buddy.</p>
   </div>
-  <div class="fixed-bottom bottom-text">
-    <p class="textAlignmentCenter space-around-input mt-auto">Clique aqui para ser redirecionado para a página de <a href="/signin" style="font-weight:bold">login</a></p>
-  </div>
+  <span class="bottom-text mb-3">Clique aqui para ser redirecionado para a página de <button class="btn btn-link p-0" type="button" [routerLink]="['/signin']">Iniciar sessão</button></span>
 </div>
 
-<div *ngIf="submitting" class="flex-row d-flex-center justify-content-center align-items-center">
-  <app-loader></app-loader>
-</div>
+<app-loader *ngIf="submitting" class="m-auto"></app-loader>

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthorizeService } from "../authorize.service";
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {AuthorizeService} from "../authorize.service";
+import {Router} from '@angular/router';
 
 /**
  * Componente responsável pelo formulário de login.
@@ -28,7 +28,7 @@ export class SignInComponent implements OnInit {
 
   /**
    * Construtor da classe SignInComponent.
-   * 
+   *
    * @param authService Serviço de autenticação.
    * @param formBuilder Construtor de formulários do Angular.
    * @param router Router do Angular.
@@ -37,7 +37,9 @@ export class SignInComponent implements OnInit {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
-        if (this.signedIn) { this.router.navigateByUrl(''); }
+        if (this.signedIn) {
+          this.router.navigateByUrl('');
+        }
       });
   }
 
@@ -54,14 +56,22 @@ export class SignInComponent implements OnInit {
       });
   }
 
+  get emailFormField() {
+    return this.signinForm.get('email');
+  }
+
+  get passwordFormField() {
+    return this.signinForm.get('password');
+  }
+
   /**
    * Tentativa de login com as credenciais fornecidas no formulário.
    * - Verifica se o formulário é válido.
    * - Chama o serviço de autenticação ('AuthorizeService') para fazer login.
    * - Navega para a página home em caso de sucesso.
    * - Caso o acesso seja negado, é apresentada uma mensagem de erro.
-   * 
-   * @param _ 
+   *
+   * @param _
    */
   public signin(_: any) {
     this.submitting = true;
@@ -81,11 +91,11 @@ export class SignInComponent implements OnInit {
           this.router.navigateByUrl('');
         }
       }).catch(
-        error => {
-          this.errors.push("Acesso negado. Verifique as credenciais.");
-          this.submitting = false;
-        }
-      );
+      error => {
+        this.errors.push("Acesso negado. Verifique as credenciais.");
+        this.submitting = false;
+      }
+    );
   }
 }
 
