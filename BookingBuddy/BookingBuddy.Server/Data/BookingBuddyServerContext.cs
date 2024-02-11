@@ -16,19 +16,16 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<Amenity> PropertyAmenity { get; set; } = default!;
 
+        /*
         /// <summary>
         /// Propriedade que diz respeito ao proprietário da propriedade física.
         /// </summary>
         public DbSet<Landlord> Landlord { get; set; } = default!;
+        */
 
         /// <summary>
         /// Propriedade que diz respeito à propriedade física.
         /// </summary>
         public DbSet<Property> Property { get; set; } = default!;
-
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
-        }
     }
 }

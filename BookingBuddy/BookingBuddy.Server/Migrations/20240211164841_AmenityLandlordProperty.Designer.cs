@@ -4,6 +4,7 @@ using BookingBuddy.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingBuddy.Server.Migrations
 {
     [DbContext(typeof(BookingBuddyServerContext))]
-    partial class BookingBuddyServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240211164841_AmenityLandlordProperty")]
+    partial class AmenityLandlordProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,7 +41,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PropertyAmenity", (string)null);
+                    b.ToTable("PropertyAmenity");
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.ApplicationUser", b =>
@@ -293,7 +296,6 @@ namespace BookingBuddy.Server.Migrations
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
                 {
                     b.HasOne("BookingBuddy.Server.Models.ApplicationUser", "ApplicationUser")
-                    
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
