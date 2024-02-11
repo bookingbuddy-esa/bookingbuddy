@@ -138,7 +138,8 @@ namespace BookingBuddy.Server.Controllers
                 }
             }
 
-            return CreatedAtAction("GetProperty", new { id = property.PropertyId }, property);
+            return property;
+            //return CreatedAtAction("GetProperty", new { id = property.PropertyId }, property);
         }
 
         /// <summary>
@@ -177,7 +178,7 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyCreateModel(string LandlordId, List<string>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyCreateModel(string LandlordId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
 
     /// <summary>
     /// Modelo de edição de propriedade
@@ -190,5 +191,5 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyEditModel(string PropertyId, string LandlordId, List<string>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyEditModel(string PropertyId, string LandlordId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
 }

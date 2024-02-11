@@ -1,0 +1,81 @@
+<div class="main d-flex flex-column justify-content-between" *ngIf="property">
+    <div class="info d-flex mt-5 flex-column justify-content-around align-self-center">
+        <h4>{{property.name}}</h4>
+        <div class="d-flex flex-row gap-2">
+            <h5>★ 4.9</h5>
+            <h5>{{property.location}}</h5>
+        </div>
+
+        <div class="d-flex gap-2 mt-2 justify-content-around ms-auto me-auto">
+            <img src="https://a0.muscache.com/im/pictures/57c386b4-9f3e-4468-81f4-93b31219e621.jpg?im_w=480" />
+            <img src="https://a0.muscache.com/im/pictures/014df369-194e-47b1-9d5e-197a22ea9f40.jpg?im_w=480" />
+            <img src="https://a0.muscache.com/im/pictures/014df369-194e-47b1-9d5e-197a22ea9f40.jpg?im_w=240" />
+        </div>
+    </div>
+    <div class="d-flex mt-5 mb-5 gap-5 ms-5 me-5">
+        <div class="owner w-75 gap-2">
+            <h5>Unidade de arrendamento inteiro(a) hospedado por António</h5>
+            <div class="info d-flex align-items-center gap-3">
+                <h6>5 hóspedes</h6>
+                <h6>2 quartos</h6>
+                <h6>5 camas</h6>
+                <h6>1 casa de banho</h6>
+            </div>
+            <hr/>
+            <p>Bem-vindo ao nosso retiro familiar!</p>
+            <p>
+                Localizado na Consolação, uma pequena aldeia no extremo sul dos Supertubos. Primeira linha para o apartamento no último andar do mar com janelas grandes. Grande terraço ensolarado em forma de L, orientação sul e oeste. Mais de 180º de vista para o mar,
+                a menos de 1 minuto da água. A 6 km do centro de Peniche. Restaurantes e mercearias nas proximidades...</p>
+
+            <a href="#">Mostrar mais ></a>
+
+            <div class="comodidades mt-5">
+                <h5>Comodidades</h5>
+                <div class="d-flex flex-row gap-5">
+                    <div class="d-flex flex-column gap-2">
+                        <h6><i class="bi bi-house-door me-2"></i>Cozinha</h6>
+                        <h6><i class="bi bi-wifi me-2"></i>Wi-Fi</h6>
+                        <h6><i class="bi bi-p-circle me-2"></i>Estacionamento gratuito</h6>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <h6><i class="bi bi-tv me-2"></i>TV</h6>
+                        <h6><i class="bi bi-badge-wc me-2"></i>Máquina de lavar</h6>
+                        <h6><i class="bi bi-check-lg me-2"></i>Secador</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="reservar p-4 border border-secondary rounded d-flex text-center">
+            <div class="d-flex flex-column justify-content-around gap-3">
+                <h5><b>{{property.pricePerNight}}€</b> noite</h5>
+                <div class="d-flex flex-row gap-3 mt-1">
+                    <div>
+                        <label for="checkIn">Check-In</label>
+                        <input type="date" id="checkIn" name="checkIn">
+                    </div>
+                    <div>
+                        <label for="checkOut">Check-Out</label>
+                        <input type="date" id="checkOut" name="checkOut">
+                    </div>
+                </div>
+                <div class="d-flex flex-row gap-3 mt-1">
+                    <label for="hospedes">Hóspedes</label>
+                    <select name="hospedes" id="hospedes">
+                        <option value="1">1 hóspede</option>
+                        <option value="2">2 hóspedes</option>
+                        <option value="3">3 hóspedes</option>
+                        <option value="4">4 hóspedes</option>
+                        <option value="5">5 hóspedes</option>
+                    </select>
+                </div>
+                <button class="btn btn-success mt-1">Reservar</button>
+                <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
+                <div class="precos mt-5">
+                    <h6 class="text-secondary"><u>{{property.pricePerNight}} x 1 noites - {{property.pricePerNight * 1}}€</u></h6>
+                    <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
+                    <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
