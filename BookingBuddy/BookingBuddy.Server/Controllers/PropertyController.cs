@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -44,13 +45,27 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("{propertyId}")]
         public async Task<ActionResult<Property>> GetProperty(string propertyId)
         {
-            var property = await _context.Property.FindAsync(propertyId);
+            var property = _context.Property.Where(p => p.PropertyId == propertyId).Include("Landlord").FirstOrDefault();
 
             if (property == null)
             {
                 return NotFound();
             }
 
+            List<Amenity> amenities = [];
+
+            property.AmenityIds?.ForEach(amenityId =>
+            {
+                Amenity amenity = new Amenity
+                {
+                    AmenityId = amenityId,
+                    Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                };
+
+                amenities.Add(amenity);
+            });
+
+            property.Amenities = amenities;
             return property;
         }
         
@@ -138,6 +153,10 @@ namespace BookingBuddy.Server.Controllers
                 }
             }
 
+            property.Landlord = await _context.Landlord.FindAsync(property.LandlordId);
+
+            Console.WriteLine("Landlord com o ID: " + property.LandlordId);
+            Console.WriteLine(property.Landlord);
             return property;
             //return CreatedAtAction("GetProperty", new { id = property.PropertyId }, property);
         }
