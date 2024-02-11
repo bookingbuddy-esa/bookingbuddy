@@ -29,11 +29,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
   property: Property | undefined;
   id: string = "";
 
-  constructor(private service: PropertyAdService, private route: ActivatedRoute) {
+  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.service.getProperty(this.route.snapshot.params['id']).forEach(
+    this.propertyService.getProperty(this.route.snapshot.params['id']).forEach(
       response => {
         if (response) {
           console.log(response);
@@ -47,5 +47,4 @@ export class PropertyAdRetrieveComponent implements OnInit {
     
     //this.property = { propertyId: "1", landlordId: "1", name: "Casa do Forte", location: "Peniche, Portugal", pricePerNight: 100, imagesUrl: [""] };
   }
-
 }

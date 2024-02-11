@@ -31,4 +31,7 @@ export class PropertyAdService {
   }
 
 
+  public getProperties() {
+    return this.http.get('/api/properties/');
+  }
 }

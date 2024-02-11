@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -14,14 +17,17 @@ namespace BookingBuddy.Server.Controllers
     public class PropertyController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         /// <summary>
         /// Construtor da classe PropertyController.
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
-        public PropertyController(BookingBuddyServerContext context)
+        /// <param name="userManager">Gestor de utilizadores</param>
+        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -51,6 +57,20 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
+            List<Amenity> amenities = [];
+
+            property.AmenityIds?.ForEach(amenityId =>
+            {
+                Amenity amenity = new Amenity
+                {
+                    AmenityId = amenityId,
+                    Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                };
+
+                amenities.Add(amenity);
+            });
+
+            property.Amenities = amenities;
             return property;
         }
         
@@ -61,26 +81,41 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="model">Modelo de edição de uma propriedade</param>
         /// <returns>Não encontrada, caso a propriedade não exista na base dados, ou uma exceção, ou sem conteúdo, caso contrário</returns>
         [HttpPut("edit/{propertyId}")]
+        [Authorize]
         public async Task<IActionResult> EditProperty(string propertyId, [FromBody] PropertyEditModel model)
         {
-            var property = new Property
-            {
-                PropertyId = model.PropertyId,
-                LandlordId = model.LandlordId,
-                AmenityIds = model.AmenityIds,
-                Name = model.Name,
-                Description = model.Description,
-                PricePerNight = model.PricePerNight,
-                Location = model.Location,
-                ImagesUrl = model.ImagesUrl
-            };
+            var user = await _userManager.GetUserAsync(User);
 
-            if (propertyId != property.PropertyId)
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var propertyToEdit = await _context.Property.FirstOrDefaultAsync(p => p.PropertyId == propertyId);
+
+            if (propertyToEdit == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Id != propertyToEdit.ApplicationUserId)
+            {
+                return Forbid();
+            }
+
+            if (propertyId != model.PropertyId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(property).State = EntityState.Modified;
+            propertyToEdit.AmenityIds = model.AmenityIds;
+            propertyToEdit.Name = model.Name;
+            propertyToEdit.Description = model.Description;
+            propertyToEdit.PricePerNight = model.PricePerNight;
+            propertyToEdit.Location = model.Location;
+            propertyToEdit.ImagesUrl = model.ImagesUrl;
+
+            _context.Entry(propertyToEdit).State = EntityState.Modified;
 
             try
             {
@@ -110,10 +145,17 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<ActionResult<Property>> CreateProperty([FromBody] PropertyCreateModel model)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var property = new Property
             {
                 PropertyId = Guid.NewGuid().ToString(),
-                LandlordId = model.LandlordId,
+                ApplicationUserId = user.Id,
                 AmenityIds = model.AmenityIds,
                 Name = model.Name,
                 Description = model.Description,
@@ -139,8 +181,7 @@ namespace BookingBuddy.Server.Controllers
                 }
             }
 
-            return property;
-            //return CreatedAtAction("GetProperty", new { id = property.PropertyId }, property);
+            return CreatedAtAction("GetProperty", new { propertyId = property.PropertyId }, property);
         }
 
         /// <summary>
@@ -149,12 +190,26 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="propertyId">Identificador da propriedade a remover</param>
         /// <returns>Propriedade não encontrada, caso não exista nenhuma propriedade com o identificador fornecido, ou sem conteúdo, caso contrário</returns>
         [HttpDelete("delete/{propertyId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteProperty(string propertyId)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var property = await _context.Property.FindAsync(propertyId);
+
             if (property == null)
             {
                 return NotFound();
+            }
+            
+            if (user.Id != property.ApplicationUserId)
+            {
+                return Forbid();
             }
 
             _context.Property.Remove(property);
@@ -172,25 +227,23 @@ namespace BookingBuddy.Server.Controllers
     /// <summary>
     /// Modelo de criação de propriedade
     /// </summary>
-    /// <param name="LandlordId">Identificador do proprietário</param>
     /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyCreateModel(string LandlordId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyCreateModel(List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
 
     /// <summary>
     /// Modelo de edição de propriedade
     /// </summary>
     /// <param name="PropertyId">Identificador da propriedade</param>
-    /// <param name="LandlordId">Identificador do proprietário</param>
     /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyEditModel(string PropertyId, string LandlordId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyEditModel(string PropertyId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
 }

@@ -16,6 +16,12 @@
   font-weight: bold;
 }
 
+.btn-forgot{
+  font-weight: bolder;
+  text-decoration: none;
+  color: black;
+}
+
   .recovery-link a {
     text-decoration: none;
     color: black;

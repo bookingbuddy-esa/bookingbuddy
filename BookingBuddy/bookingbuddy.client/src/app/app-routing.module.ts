@@ -11,8 +11,8 @@ import { AuthModule } from "./auth/auth.module";
 const routes: Routes = [
   {path: '', component: HomepageComponent},
   {path: 'property-ad-create', component: PropertyAdCreateComponent},
-  {path: 'property-ad/:id', component: PropertyAdRetrieveComponent },
-  {path: 'forbidden', component: UnauthorizedComponent},
+  {path: 'propriedades/:id', component: PropertyAdRetrieveComponent },
+  {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
   {path: '**', component: NotfoundComponent}
 ];

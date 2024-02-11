@@ -20,6 +20,7 @@ export class PropertyAdCreateComponent {
   errors: string[] = [];
   createPropertyAdForm!: FormGroup;
   createPropertyFailed: boolean;
+  checkboxOptions = CheckboxOptions;
 
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
     this.errors = [];
