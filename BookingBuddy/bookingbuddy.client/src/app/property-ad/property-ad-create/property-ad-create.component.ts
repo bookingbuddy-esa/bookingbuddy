@@ -7,8 +7,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
 import { CheckboxOptions } from '../../models/checkboxes';
 
-
-
 @Component({
   selector: 'app-property-ad-create',
   templateUrl: './property-ad-create.component.html',
@@ -20,6 +18,7 @@ export class PropertyAdCreateComponent {
   errors: string[] = [];
   createPropertyAdForm!: FormGroup;
   createPropertyFailed: boolean;
+  checkboxOptions = CheckboxOptions;
 
   constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
     this.errors = [];

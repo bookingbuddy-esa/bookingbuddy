@@ -1,4 +1,4 @@
-# bookingbuddy
+# Booking Buddy
 Projeto ESA 2023/2024
 
 # Git Guide
