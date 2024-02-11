@@ -12,4 +12,8 @@ export class PropertyAdService {
   public getProperty(propertyId: string) {
     return this.http.get('/api/properties/' + propertyId);
   }
+
+  public getProperties() {
+    return this.http.get('/api/properties/');
+  }
 }

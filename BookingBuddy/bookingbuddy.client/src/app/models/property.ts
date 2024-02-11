@@ -1,5 +1,5 @@
 import { Landlord } from "./landlord";
-
+import { Amenity } from "./amenity";
 export interface Property {
   propertyId: string;
   landlordId: string;
@@ -8,6 +8,7 @@ export interface Property {
   location: string;
   description: string;
   pricePerNight: number;
+  amenities?: Amenity[];
   amenityIds?: string[];
   imagesUrl?: string[];
 }
