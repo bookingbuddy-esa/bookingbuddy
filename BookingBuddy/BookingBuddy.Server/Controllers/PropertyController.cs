@@ -107,6 +107,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="model">Modelo de criação de uma propriedade</param>
         /// <returns>A propriedade criada, um conflito, caso já exista uma propriedade com o mesmo identificador, ou uma exceção caso contrário</returns>
         [HttpPost("create")]
+        [Authorize]
         public async Task<ActionResult<Property>> CreateProperty([FromBody] PropertyCreateModel model)
         {
             var property = new Property
