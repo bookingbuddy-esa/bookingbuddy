@@ -52,6 +52,20 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
+            List<Amenity> amenities = [];
+
+            property.AmenityIds?.ForEach(amenityId =>
+            {
+                Amenity amenity = new Amenity
+                {
+                    AmenityId = amenityId,
+                    Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                };
+
+                amenities.Add(amenity);
+            });
+
+            property.Amenities = amenities;
             return property;
         }
         
