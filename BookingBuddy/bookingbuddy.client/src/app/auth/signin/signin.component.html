@@ -19,10 +19,12 @@
                name="email" formControlName="email">
         <div class="invalid-feedback">O email é inválido!</div>
       </div>
-      <div class="w-100 py-2">
+      <div class="w-100 py-2 d-flex flex-column align-items-end">
         <input type="password" class="form-control form-input p-2" id="password"
                placeholder="Insira a sua palavra passe"
                name="password" formControlName="password">
+        <button class="btn btn-forgot btn-link p-0" type="button"
+                [routerLink]="['/recover-password']">Esqueceu se da palavra-passe?</button>
         <button class="btn btn-login mt-4 w-100 p-2" [disabled]="!signinForm.valid" type="submit">Iniciar sessão
         </button>
       </div>
