@@ -47,5 +47,4 @@ export class PropertyAdRetrieveComponent implements OnInit {
     
     //this.property = { propertyId: "1", landlordId: "1", name: "Casa do Forte", location: "Peniche, Portugal", pricePerNight: 100, imagesUrl: [""] };
   }
-
 }

@@ -53,6 +53,7 @@ export class HomepageComponent implements OnInit {
         landlordId: "landlord",
         name: "Property " + i,
         location: testLocation[number],
+        description: "Random description",
         pricePerNight: Math.floor(Math.random() * 1000),
         amenityIds: [],
         imagesUrl: [testPhotosUrl[number]]
