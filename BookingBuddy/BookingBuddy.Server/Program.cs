@@ -9,7 +9,7 @@ using BookingBuddy.Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyProductionServer") ?? throw new InvalidOperationException("Connection string 'BookingBuddyServerContext' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ?? throw new InvalidOperationException("Connection string 'BookingBuddyServerContext' not found.")));
 
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
