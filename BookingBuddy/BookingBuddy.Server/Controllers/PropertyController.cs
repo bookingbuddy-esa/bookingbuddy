@@ -218,6 +218,22 @@ namespace BookingBuddy.Server.Controllers
             return NoContent();
         }
 
+        [HttpGet("user/{userId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<Property>>> GetPropertiesByUserId(string userId)
+        {
+            var properties = await _context.Property
+                .Where(p => p.ApplicationUserId == userId)
+                .ToListAsync();
+
+            if (properties == null || properties.Count == 0)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+            }
+
+            return properties;
+        }
+
         private bool PropertyExists(string id)
         {
             return _context.Property.Any(e => e.PropertyId == id);

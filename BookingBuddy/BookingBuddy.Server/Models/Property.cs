@@ -72,5 +72,7 @@ namespace BookingBuddy.Server.Models
         /// </summary>
         [Display(Name = "Proprietário")]
         public ApplicationUser? ApplicationUser { get; set; }
+
+        public List<BlockedDate>? BlockedDates { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -17,10 +18,27 @@ namespace BookingBuddy.Server.Controllers
             _context = context;
         }
 
+        
+        [HttpGet("property/{propertyId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<BlockedDate>>> GetPropertyBlockedDates(string propertyId)
+        {
+           var blockedDates = await _context.BlockedDate
+            .Where(b => b.PropertyId == propertyId)
+            .ToListAsync();
+
+            if (blockedDates == null || blockedDates.Count == 0)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+            }
+
+            return blockedDates;
+        }
+
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<BlockedDate>>> GetBlockedDates()
+        public async Task<ActionResult<IEnumerable<BlockedDate>>> GetBlockedDates(string propertyId)
         {
             return await _context.BlockedDate.ToListAsync();
         }
@@ -37,7 +55,8 @@ namespace BookingBuddy.Server.Controllers
             var blockedDate = new BlockedDate
             {
                  Start = inputModel.StartDate,
-                 End = inputModel.EndDate
+                 End = inputModel.EndDate,
+                 PropertyId= inputModel.PropertyId
             };
 
              _context.BlockedDate.Add(blockedDate);
@@ -67,5 +86,6 @@ namespace BookingBuddy.Server.Controllers
     {
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        public string PropertyId {  get; set; }
     }
 }

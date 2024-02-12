@@ -9,5 +9,7 @@ namespace BookingBuddy.Server.Models
 
         public String Start { get; set; }
         public String End { get; set; }
+
+        public String PropertyId {  get; set; }
     }
 }

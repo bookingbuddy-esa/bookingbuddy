@@ -7,6 +7,7 @@ import { HostingService } from '../hosting.service';
 import { AuthorizeService } from "../../auth/authorize.service";
 import { Router } from '@angular/router';
 import { Property } from '../../models/property';
+import { UserInfo } from '../../auth/authorize.dto';
 
 @Component({
   selector: 'app-calendar',
@@ -21,59 +22,41 @@ export class CalendarComponent implements OnInit {
   selectedEventId: number | null = null;
   signedIn: boolean = false;
   property_list: Property[] = [];
+  user: UserInfo | undefined;
+  currentProperty: Property | null = null;
 
   constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router) {
-    this.authService.isSignedIn().forEach(
-      isSignedIn => {
-        this.signedIn = isSignedIn;
-        if (!this.signedIn) { this.router.navigateByUrl('signin'); }
-      });
+
   }
 
   ngOnInit(): void {
+    this.authService.isSignedIn().forEach(isSignedIn => {
+      this.signedIn = isSignedIn;
+      if (this.signedIn) {
+        this.authService.user().forEach(async user => {
+          this.user = user;
+
+          await this.loadUserProperties();
+
+        });
+      } else {
+        this.router.navigateByUrl('signin');
+      }
+    });
+    this.initializeCalendar();
+  }
+
+  private initializeCalendar() {
     this.calendarOptions = {
       plugins: [dayGridPlugin, interactionPlugin],
-      dateClick: this.handleDateClick.bind(this),
       select: this.handleSelect.bind(this),
-      events: this.getEventRanges.bind(this), 
+      events: this.getEventRanges.bind(this),
       selectable: true,
       eventClick: this.handleEventClick.bind(this),
       selectOverlap: function (event: { groupId: string; }) {
         return !(event.groupId == "blocked");
       },
     };
-
-    const testPhotosUrl = [
-      "https://www.usatoday.com/gcdn/-mm-/05b227ad5b8ad4e9dcb53af4f31d7fbdb7fa901b/c=0-64-2119-1259/local/-/media/USATODAY/USATODAY/2014/08/13/1407953244000-177513283.jpg",
-      "https://png.pngtree.com/thumb_back/fh260/background/20230425/pngtree-living-room-with-window-and-wooden-furniture-image_2514066.jpg",
-      "https://media.istockphoto.com/id/119926339/photo/resort-swimming-pool.jpg?s=612x612&w=0&k=20&c=9QtwJC2boq3GFHaeDsKytF4-CavYKQuy1jBD2IRfYKc=",
-      "https://upload.wikimedia.org/wikipedia/commons/7/79/Ponta_Negra_Beach_Hotel.jpg",
-      "https://digital.ihg.com/is/image/ihg/ihg-lp-refresh-hero-imea-gben-lvp-1440x617"
-    ];
-    const testLocation = [
-      "Atouguia da Baleia, Portugal",
-      "Lisboa, Portugal",
-      "Porto, Portugal",
-      "Funchal, Portugal",
-      "Portimão, Portugal"
-    ];
-    for (let i = 0; i < 3; i++) {
-      const number = Math.floor(Math.random() * 5);
-      this.property_list.push({
-        propertyId: i.toString(),
-        landlordId: "landlord",
-        name: "Property " + i,
-        location: testLocation[number],
-        pricePerNight: Math.floor(Math.random() * 1000),
-        amenityIds: [],
-        imagesUrl: [testPhotosUrl[number]]
-      });
-    }
-
-  }
-
-  handleDateClick(info: any) {
-    //console.log("Data: " + info.dateStr);
   }
 
   handleEventClick(info: any) {
@@ -81,21 +64,24 @@ export class CalendarComponent implements OnInit {
       const startDate = new Date(info.event.start);
       const endDate = new Date(info.event.end);
       this.selectedEventId = info.event.id;
-      this.selectedStartDate = `${startDate.getFullYear() }-${startDate.getMonth() + 1}-${startDate.getDate() }`;
-      this.selectedEndDate = `${startDate.getFullYear() }-${endDate.getMonth() + 1}-${endDate.getDate() }`;
+      this.selectedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
+      this.selectedEndDate = `${startDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate() - 1}`;
     }
   }
 
   handleSelect(info: any) {
     this.selectedEventId = null;
     this.selectedStartDate = info.startStr;
-    this.selectedEndDate = info.endStr;
+    const endDate = new Date(info.endStr);
+    endDate.setDate(endDate.getDate() - 1);
+
+    this.selectedEndDate = endDate.toISOString().split('T')[0];
     console.log("Selecionado entre " + this.selectedStartDate + " a " + this.selectedEndDate);
   }
 
   blockSelectedDates() {
-    if (this.selectedStartDate && this.selectedEndDate) {
-      this.hostingService.blockDates(this.selectedStartDate, this.selectedEndDate).forEach(
+    if (this.selectedStartDate && this.selectedEndDate && this.currentProperty) {
+      this.hostingService.blockDates(this.selectedStartDate, this.selectedEndDate, this.currentProperty.propertyId).forEach(
         response => {
           if (response) {
             this.fullcalendar.getApi().refetchEvents();
@@ -126,30 +112,53 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  setCurrentProperty(property: Property) {
+    this.currentProperty = property;
+    this.fullcalendar.getApi().refetchEvents(); 
+  }
+
   async getEventRanges(info: any) {
     try {
-      const blockedDates = await this.hostingService.getDateRanges().toPromise();
+      console.log('Current Property:'+ this.currentProperty?.propertyId);
+      if (this.currentProperty) {
+        const blockedDates = await this.hostingService.getPropertyBlockedDates(this.currentProperty?.propertyId).toPromise();
+        console.log('Datas obtidas:'+ blockedDates);
+        if (!blockedDates) {
+          console.error('DateRanges não está definido.');
+          return [];
+        }
+        const events = blockedDates.map((blocked) => ({
+          groupId: "blocked",
+          id: blocked.id,
+          start: blocked.start,
+          end: blocked.end,
+          display: 'background',
+          color: 'red',
+        }));
 
-      if (!blockedDates) {
-        console.error('DateRanges não está definido.');
-        return [];
+        console.log('Datas obtidas:', events);
+
+        return events;
       }
-
-      const events = blockedDates.map((blocked) => ({
-        groupId: "blocked",
-        id: blocked.id,
-        start: blocked.start,
-        end: blocked.end,
-        display: 'background',
-        color: 'red',
-      }));
-
-      console.log('Datas obtidas:', events);
-
-      return events;
+      return [];
     } catch (error) {
       console.error('Erro ao obter BlockedDates:', error);
-      throw error;
+      return [];
+    }
+  }
+
+  private loadUserProperties() {
+    if (this.user) {
+      this.hostingService.getPropertiesByUserId(this.user?.userId).subscribe(
+        properties => {
+          this.property_list = properties;
+          this.currentProperty = this.property_list[0];
+          this.fullcalendar.getApi().refetchEvents();
+        },
+        error => {
+          console.error('Erro ao obter propriedades do usuário:', error);
+        }
+      );
     }
   }
 
