@@ -71,6 +71,13 @@ namespace BookingBuddy.Server.Controllers
             });
 
             property.Amenities = amenities;
+
+            var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
+            property.ApplicationUser = new ReturnUser(){
+                Id = user!.Id,
+                Name = user.Name
+            };
+
             return property;
         }
         
