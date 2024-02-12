@@ -1,4 +1,4 @@
-name: BookingBuddyServer and bookingbuddy.client - Build and Test
+name: Build & Test - dev
 
 on:
   push:
