@@ -57,6 +57,8 @@ export class PropertyAdCreateComponent {
     this.errors = [];
     const images = this.selectedFile ? this.selectedFile.name : '';
 
+    console.log(images);
+
     const newProperty = {
       name: this.createPropertyAdForm.get('name')?.value,
       location: this.createPropertyAdForm.get('location')?.value,

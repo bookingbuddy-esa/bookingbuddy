@@ -1,7 +1,11 @@
-<div *ngIf="!submitting" class="d-flex p-3 w-100 flex-row flex-wrap align-content-start justify-content-start">
-  <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
+<div *ngIf="!submitting && property_list.length > 0" class="d-flex p-3 w-100 flex-row flex-wrap align-content-start justify-content-start">
+    <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
+</div>
+
+<div *ngIf="property_list.length === 0" class="d-flex p-3 w-100 justify-content-center">
+    <h5 class="mt-5">Ainda não existem propriedades na plataforma!</h5>
 </div>
 
 <div *ngIf="submitting" class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">
-  <app-loader></app-loader>
+    <app-loader></app-loader>
 </div>

@@ -2,10 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property } from '../../models/property';
 
-
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { PropertyAdService } from '../property-ad.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -44,6 +41,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   }
 
   ngOnInit() {
+    // TODO: obter as datas bloqueadas da propriedade
     this.propertyService.getProperty(this.route.snapshot.params['id']).forEach(
       response => {
         if (response) {
@@ -52,7 +50,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         }
       }).catch(
         error => {
-          //this.errors.push("Acesso negado. Verifique as credenciais.");
+          // TODO return error message
         }
       );
   }
@@ -75,7 +73,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   public reservar(_: any) {
     this.reservarPropriedadeFailed = false;
-    this.errors = [];
 
     const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
     const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
@@ -85,31 +82,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
       return;
     }
 
-
-
-
-    /*console.log(this.reservarPropriedadeForm.get('checkIn')?.value);
-    console.log(this.reservarPropriedadeForm.get('checkOut')?.value);
-    console.log(this.reservarPropriedadeForm.get('numHospedes')?.value);*/
-
-    /*const newProperty = {
-      name: this.createPropertyAdForm.get('name')?.value,
-      location: this.createPropertyAdForm.get('location')?.value,
-      pricePerNight: this.createPropertyAdForm.get('pricePerNight')?.value,
-      description: this.createPropertyAdForm.get('description')?.value,
-      imagesUrl: [images], //["test.png"], // TODO: hardcoded, meter dinamico
-      amenityIds: this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade).toString())
-    };
-
-    this.propertyService.createPropertyAd(newProperty.name, newProperty.location, newProperty.pricePerNight,  newProperty.description, newProperty.imagesUrl, newProperty.amenityIds).forEach(
-      response => {
-        if (response) {
-          console.log(response);
-        }
-      }).catch(
-        error => {
-          console.error(error);
-        }
-      );*/
+    // TODO: reservar a propriedade
   }
 }
