@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property } from '../../models/property';
 
-
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 import { PropertyAdService } from '../property-ad.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -27,12 +25,23 @@ export class PropertyAdRetrieveComponent implements OnInit {
   // handle the case when the server is not available
 
   property: Property | undefined;
-  id: string = "";
+  reservarPropriedadeForm!: FormGroup;
+  reservarPropriedadeFailed: boolean;
+  errors: string[];
 
-  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute) {
+  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder) {
+    this.errors = [];
+    
+    this.reservarPropriedadeFailed = false;
+    this.reservarPropriedadeForm = this.formBuilder.group({
+      checkIn: ['', Validators.required],
+      checkOut: ['', Validators.required],
+      numHospedes: ['1', Validators.required]
+    });
   }
 
   ngOnInit() {
+    // TODO: obter as datas bloqueadas da propriedade
     this.propertyService.getProperty(this.route.snapshot.params['id']).forEach(
       response => {
         if (response) {
@@ -41,10 +50,38 @@ export class PropertyAdRetrieveComponent implements OnInit {
         }
       }).catch(
         error => {
-          //this.errors.push("Acesso negado. Verifique as credenciais.");
+          // TODO return error message
         }
       );
-    
-    //this.property = { propertyId: "1", landlordId: "1", name: "Casa do Forte", location: "Peniche, Portugal", pricePerNight: 100, imagesUrl: [""] };
+  }
+
+  calcularDiferencaDias(): number {
+    const checkInDateString: string = this.reservarPropriedadeForm.get('checkIn')?.value;
+    const checkOutDateString: string = this.reservarPropriedadeForm.get('checkOut')?.value;
+    const checkInDate: Date = new Date(checkInDateString);
+    const checkOutDate: Date = new Date(checkOutDateString);
+
+    if(checkInDateString === '' || checkOutDateString === '' || checkOutDate <= checkInDate) {
+      return 1;
+    }
+
+    const diferencaMilissegundos: number = checkOutDate.getTime() - checkInDate.getTime();
+    const diferencaDias: number = diferencaMilissegundos / (1000 * 60 * 60 * 24);
+
+    return diferencaDias;
+  }
+
+  public reservar(_: any) {
+    this.reservarPropriedadeFailed = false;
+
+    const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
+    const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
+
+    if(checkOutDate <= checkInDate){
+      this.errors.push("A data de check-out não pode ser igual ou menor do que a data de check-in.");
+      return;
+    }
+
+    // TODO: reservar a propriedade
   }
 }

@@ -46,37 +46,45 @@
   </div>-->
             </div>
         </div>
-        <div class="reservar p-4 border border-secondary rounded d-flex text-center">
-            <div class="d-flex flex-column justify-content-around gap-3">
-                <h5><b>{{property.pricePerNight}}€</b> noite</h5>
-                <div class="d-flex flex-row gap-3 mt-1">
-                    <div>
-                        <label for="checkIn">Check-In</label>
-                        <input type="date" id="checkIn" name="checkIn">
+        <div class="reservar p-3 border border-secondary rounded d-flex text-center">
+            <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
+                <div class="d-flex flex-column justify-content-around gap-3">
+                    <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+                        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
+                        <div class="d-flex flex-column align-items-start">
+                            <span *ngFor="let error of errors">{{ error }}</span>
+                        </div>
                     </div>
-                    <div>
-                        <label for="checkOut">Check-Out</label>
-                        <input type="date" id="checkOut" name="checkOut">
+                    <h5 class="mt-4"><b>{{property.pricePerNight}}€</b> noite</h5>
+                    <div class="d-flex flex-row gap-3 mt-1">
+                        <div>
+                            <label for="checkIn">Check-In</label>
+                            <input type="date" id="checkIn" name="checkIn" class="form-control" formControlName="checkIn">
+                        </div>
+                        <div>
+                            <label for="checkOut">Check-Out</label>
+                            <input type="date" id="checkOut" name="checkOut" class="form-control" formControlName="checkOut">
+                        </div>
+                    </div>
+                    <div class="d-flex flex-row gap-3 mt-1 align-items-center">
+                        <label for="hospedes">Hóspedes</label>
+                        <select name="hospedes" id="hospedes" class="form-select" formControlName="numHospedes">
+                            <option value="1">1 hóspede</option>
+                            <option value="2">2 hóspedes</option>
+                            <option value="3">3 hóspedes</option>
+                            <option value="4">4 hóspedes</option>
+                            <option value="5">5 hóspedes</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success mt-1">Reservar</button>
+                    <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
+                    <div class="precos mt-2">
+                        <h6 class="text-secondary"><u>{{property.pricePerNight}} x {{calcularDiferencaDias()}} noites - {{property.pricePerNight * calcularDiferencaDias()}}€</u></h6>
+                        <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
+                        <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
                     </div>
                 </div>
-                <div class="d-flex flex-row gap-3 mt-1">
-                    <label for="hospedes">Hóspedes</label>
-                    <select name="hospedes" id="hospedes">
-                        <option value="1">1 hóspede</option>
-                        <option value="2">2 hóspedes</option>
-                        <option value="3">3 hóspedes</option>
-                        <option value="4">4 hóspedes</option>
-                        <option value="5">5 hóspedes</option>
-                    </select>
-                </div>
-                <button class="btn btn-success mt-1">Reservar</button>
-                <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
-                <div class="precos mt-5">
-                    <h6 class="text-secondary"><u>{{property.pricePerNight}} x 1 noites - {{property.pricePerNight * 1}}€</u></h6>
-                    <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
-                    <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>

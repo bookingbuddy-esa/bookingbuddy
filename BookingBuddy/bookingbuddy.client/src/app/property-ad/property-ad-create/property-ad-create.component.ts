@@ -22,7 +22,7 @@ export class PropertyAdCreateComponent {
   createPropertyFailed: boolean;
   checkboxOptions = CheckboxOptions;
 
-  constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
     this.errors = [];
     
     this.createPropertyFailed = false;
@@ -57,6 +57,8 @@ export class PropertyAdCreateComponent {
     this.errors = [];
     const images = this.selectedFile ? this.selectedFile.name : '';
 
+    console.log(images);
+
     const newProperty = {
       name: this.createPropertyAdForm.get('name')?.value,
       location: this.createPropertyAdForm.get('location')?.value,
@@ -75,7 +77,6 @@ export class PropertyAdCreateComponent {
         error => {
           console.error(error);
         }
-      );;
-    
+      );
   }
 }
