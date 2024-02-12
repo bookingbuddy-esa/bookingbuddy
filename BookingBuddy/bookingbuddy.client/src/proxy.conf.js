@@ -5,7 +5,8 @@ const PROXY_CONFIG = [
       "/login",
     ],
     target: "https://bookingbuddy-api-server.azurewebsites.net/",
-    secure: false
+    secure: false,
+    changeOrigin: true
   }
 ]
 
