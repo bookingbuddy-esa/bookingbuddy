@@ -18,13 +18,13 @@ jobs:
           dotnet-version: '8.0.x'
       
       - name: Install dependencies
-        run: dotnet restore BookingBuddy\BookingBuddy.Server
+        run: dotnet restore BookingBuddy/BookingBuddy.Server
       
       - name: Build BookingBuddy.Server
-        run: dotnet build
+        run: dotnet build BookingBuddy/BookingBuddy.Server
       
       - name: Test BookingBuddyTest
-        run: dotnet test BookingBuddy\BookingBuddyTest
+        run: dotnet test BookingBuddy/BookingBuddyTest
   
   bookingbuddy-client-Build:
     runs-on: ubuntu-latest
@@ -37,9 +37,9 @@ jobs:
           node-version: '20.x'
 
       - name: Insatll dependencies
-        working-directory: BookingBuddy\bookingbuddy.client
+        working-directory: BookingBuddy/bookingbuddy.client
         run: npm ci
 
       - name: Build bookingbuddy.client
-        working-directory: BookingBuddy\bookingbuddy.client
+        working-directory: BookingBuddy/bookingbuddy.client
         run: npm run build --if-present
