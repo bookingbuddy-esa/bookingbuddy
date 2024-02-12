@@ -381,7 +381,11 @@ namespace BookingBuddy.Server.Controllers
             var existingUser = await _userManager.GetUserAsync(User);
             if (existingUser != null)
             {
-                return Ok(new { existingUser.Name, existingUser.UserName, existingUser.Email, isEmailConfirmed = existingUser.EmailConfirmed });
+                return Ok(new UserInfoModel
+                (
+                    existingUser.Id,
+                    existingUser.Name,
+                    existingUser.UserName, existingUser.Email, existingUser.EmailConfirmed));
             }
             return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
@@ -573,4 +577,8 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Id_token">Token de login</param>
     /// <param name="Session_state">Estado da sessão</param>
     public record MicrosoftSignInModel(string Id_token, string Session_state);
+
+    public record UserInfoModel(string UserId, string Name, string UserName, string Email, Boolean IsEmailConfirmed);
+
+
 }

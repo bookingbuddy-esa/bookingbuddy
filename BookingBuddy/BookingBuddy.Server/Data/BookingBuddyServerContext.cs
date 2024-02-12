@@ -27,5 +27,7 @@ namespace BookingBuddy.Server.Data
         /// Propriedade que diz respeito à propriedade física.
         /// </summary>
         public DbSet<Property> Property { get; set; } = default!;
+
+        public DbSet<BlockedDate> BlockedDate { get; set; } = default!;
     }
 }

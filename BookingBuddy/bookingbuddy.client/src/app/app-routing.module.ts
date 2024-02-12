@@ -5,7 +5,8 @@ import {PropertyAdCreateComponent} from './property-ad/property-ad-create/proper
 import {PropertyAdRetrieveComponent} from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 import {NotfoundComponent} from "./auxiliary/notfound/notfound.component";
 import {UnauthorizedComponent} from "./auxiliary/unauthorized/unauthorized.component";
-import { BadRequestComponent } from "./auxiliary/bad-request/bad-request.component";
+import {BadRequestComponent} from "./auxiliary/bad-request/bad-request.component";
+import {CalendarComponent} from "./hosting/calendar/calendar.component";
 import { AuthModule } from "./auth/auth.module";
 
 const routes: Routes = [
@@ -14,6 +15,7 @@ const routes: Routes = [
   {path: 'propriedades/:id', component: PropertyAdRetrieveComponent },
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
+  { path: 'calendar', component: CalendarComponent },
   {path: '**', component: NotfoundComponent}
 ];
 

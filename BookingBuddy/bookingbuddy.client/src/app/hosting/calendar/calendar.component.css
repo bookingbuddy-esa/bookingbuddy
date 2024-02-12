@@ -1,0 +1,19 @@
+
+:host {
+  flex-grow: inherit;
+  display: flex;
+  width: 100%;
+}
+
+.main {
+  flex-grow: inherit;
+}
+
+.color{
+    color: black;
+}
+
+.box-shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Adapte conforme necessário */
+}
+
