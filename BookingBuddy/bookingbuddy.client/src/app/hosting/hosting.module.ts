@@ -11,7 +11,7 @@ import { HomepagePropertyComponent } from './calendar/homepage-property/homepage
 
 @NgModule({
   declarations: [
-    CalendarComponent, HomepagePropertyComponent
+    CalendarComponent , HomepagePropertyComponent
   ],
   imports: [
     CommonModule, BrowserModule,

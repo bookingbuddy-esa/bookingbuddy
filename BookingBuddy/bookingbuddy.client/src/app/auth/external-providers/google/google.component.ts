@@ -1,6 +1,7 @@
 declare var google: any;
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-google',
@@ -9,13 +10,11 @@ import { Router } from '@angular/router';
 })
 export class GoogleComponent implements OnInit {
 
-  constructor(private router: Router) { }
-
   ngOnInit(): void {
     google.accounts.id.initialize({
-      client_id: '780818883221-79bvdf437f1rkq51jjvdl1l3n62pp5nv.apps.googleusercontent.com',
+      client_id: environment.googleClientId,
       ux_mode: 'redirect',
-      login_uri: 'https://localhost:7213/api/google'
+      login_uri: `${environment.apiUrl}/api/google`
     });
     google.accounts.id.renderButton(document.getElementById("googleButton"), {
       type: 'icon',

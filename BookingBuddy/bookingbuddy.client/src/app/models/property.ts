@@ -1,9 +1,9 @@
-import { Landlord } from "./landlord";
+import { ApplicationUser } from "./applicationUser";
 import { Amenity } from "./amenity";
 export interface Property {
   propertyId: string;
-  landlordId: string;
-  landlord?: Landlord;
+  applicationUserId: string;
+  applicationUser?: ApplicationUser;
   name: string;
   location: string;
   description: string;

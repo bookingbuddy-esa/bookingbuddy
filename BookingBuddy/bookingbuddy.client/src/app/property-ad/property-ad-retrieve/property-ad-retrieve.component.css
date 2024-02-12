@@ -1,0 +1,5 @@
+:host {
+    display: flex;
+    height: inherit;
+    width: inherit;
+}
