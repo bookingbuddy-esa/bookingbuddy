@@ -3,7 +3,7 @@ name: BookingBuddyServer and bookingbuddy.client - Build and Test
 on:
   push:
     branches:
-      - prod-staging
+      - dev
   workflow_dispatch:
 
 jobs:
