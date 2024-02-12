@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookingBuddy.Server.Models
 {
@@ -71,6 +72,13 @@ namespace BookingBuddy.Server.Models
         /// Propriedade de navegação que diz respeito ao proprietário da propriedade física a anunciar.
         /// </summary>
         [Display(Name = "Proprietário")]
-        public ApplicationUser? ApplicationUser { get; set; }
+        public ReturnUser? ApplicationUser { get; set; }
+    }
+
+    [NotMapped]
+    public class ReturnUser
+    {
+        public string Name { get; set; }
+        public string Id { get; set; }
     }
 }
