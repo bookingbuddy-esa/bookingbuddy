@@ -8,6 +8,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { PropertyAdService } from '../property-ad.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -27,9 +28,19 @@ export class PropertyAdRetrieveComponent implements OnInit {
   // handle the case when the server is not available
 
   property: Property | undefined;
-  id: string = "";
+  reservarPropriedadeForm!: FormGroup;
+  reservarPropriedadeFailed: boolean;
+  errors: string[];
 
-  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute) {
+  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder) {
+    this.errors = [];
+    
+    this.reservarPropriedadeFailed = false;
+    this.reservarPropriedadeForm = this.formBuilder.group({
+      checkIn: ['', Validators.required],
+      checkOut: ['', Validators.required],
+      numHospedes: ['1', Validators.required]
+    });
   }
 
   ngOnInit() {
@@ -44,7 +55,61 @@ export class PropertyAdRetrieveComponent implements OnInit {
           //this.errors.push("Acesso negado. Verifique as credenciais.");
         }
       );
-    
-    //this.property = { propertyId: "1", landlordId: "1", name: "Casa do Forte", location: "Peniche, Portugal", pricePerNight: 100, imagesUrl: [""] };
+  }
+
+  calcularDiferencaDias(): number {
+    const checkInDateString: string = this.reservarPropriedadeForm.get('checkIn')?.value;
+    const checkOutDateString: string = this.reservarPropriedadeForm.get('checkOut')?.value;
+    const checkInDate: Date = new Date(checkInDateString);
+    const checkOutDate: Date = new Date(checkOutDateString);
+
+    if(checkInDateString === '' || checkOutDateString === '' || checkOutDate <= checkInDate) {
+      return 1;
+    }
+
+    const diferencaMilissegundos: number = checkOutDate.getTime() - checkInDate.getTime();
+    const diferencaDias: number = diferencaMilissegundos / (1000 * 60 * 60 * 24);
+
+    return diferencaDias;
+  }
+
+  public reservar(_: any) {
+    this.reservarPropriedadeFailed = false;
+    this.errors = [];
+
+    const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
+    const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
+
+    if(checkOutDate <= checkInDate){
+      this.errors.push("A data de check-out não pode ser igual ou menor do que a data de check-in.");
+      return;
+    }
+
+
+
+
+    /*console.log(this.reservarPropriedadeForm.get('checkIn')?.value);
+    console.log(this.reservarPropriedadeForm.get('checkOut')?.value);
+    console.log(this.reservarPropriedadeForm.get('numHospedes')?.value);*/
+
+    /*const newProperty = {
+      name: this.createPropertyAdForm.get('name')?.value,
+      location: this.createPropertyAdForm.get('location')?.value,
+      pricePerNight: this.createPropertyAdForm.get('pricePerNight')?.value,
+      description: this.createPropertyAdForm.get('description')?.value,
+      imagesUrl: [images], //["test.png"], // TODO: hardcoded, meter dinamico
+      amenityIds: this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade).toString())
+    };
+
+    this.propertyService.createPropertyAd(newProperty.name, newProperty.location, newProperty.pricePerNight,  newProperty.description, newProperty.imagesUrl, newProperty.amenityIds).forEach(
+      response => {
+        if (response) {
+          console.log(response);
+        }
+      }).catch(
+        error => {
+          console.error(error);
+        }
+      );*/
   }
 }

@@ -22,7 +22,7 @@ export class PropertyAdCreateComponent {
   createPropertyFailed: boolean;
   checkboxOptions = CheckboxOptions;
 
-  constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
     this.errors = [];
     
     this.createPropertyFailed = false;
@@ -75,7 +75,6 @@ export class PropertyAdCreateComponent {
         error => {
           console.error(error);
         }
-      );;
-    
+      );
   }
 }
