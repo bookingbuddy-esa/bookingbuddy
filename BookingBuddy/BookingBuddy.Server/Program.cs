@@ -8,6 +8,15 @@ using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+        builder.WithOrigins("https://localhost:4200")
+           .AllowAnyMethod()
+           .AllowAnyHeader()
+           .AllowCredentials());
+});
+
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ?? throw new InvalidOperationException("Connection string 'BookingBuddyServerContext' not found.")));
 
@@ -36,6 +45,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -48,7 +58,7 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
