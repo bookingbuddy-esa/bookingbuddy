@@ -57,7 +57,7 @@ jobs:
         with:
           app-name: 'bookingbuddy'
           slot-name: 'Production'
-          package: ./BookingBuddy/bookingbuddy.client/dist/bookingbuddy.client/browser
+          package: ./BookingBuddy/bookingbuddy.client
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9C56BA61DD824CEEB399083F1B2943AA }}
 
   BookingBuddyServer-build:
