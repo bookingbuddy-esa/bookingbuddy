@@ -2,3 +2,63 @@
 body {
   --bs-body-font-family: 'Montserrat';
 }
+
+:root {
+  --fc-border-color: black;
+  --fc-daygrid-event-dot-width: 5px;
+}
+
+
+
+
+
+.fc {
+  background-color: white;
+}
+
+.fc .fc-daygrid-day-number {
+  color:black;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: black;
+   
+}
+
+.fc .fc-highlight {
+  background: green;
+  opacity:25%;
+}
+
+.fc .fc-scroller-harness {
+  background: #9DC78A;
+}
+
+.fc .fc-scrollgrid-section-body table, .fc .fc-scrollgrid-section-footer table {
+  background-color: #e4fee4;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-top: 0%;
+}
+
+.btn-outline-success{
+    background-color:black;
+}
+
+/*Cor botão today*/
+.fc .fc-button-primary:disabled {
+  background: #176b17;
+}
+.fc .fc-button:not(:disabled) {
+  background: #176b17;
+}
+
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
+  background-color: #176b17;
+}
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+  background-color: #176b17;
+}

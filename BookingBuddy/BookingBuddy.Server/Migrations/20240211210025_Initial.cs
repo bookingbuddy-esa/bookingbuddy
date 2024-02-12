@@ -182,6 +182,26 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BlockedDate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Start = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    End = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlockedDate", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlockedDate_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "PropertyId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PropertyAmenity",
                 columns: table => new
                 {
@@ -240,6 +260,11 @@ namespace BookingBuddy.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BlockedDate_PropertyId",
+                table: "BlockedDate",
+                column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Property_ApplicationUserId",
                 table: "Property",
                 column: "ApplicationUserId");
@@ -267,6 +292,9 @@ namespace BookingBuddy.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "BlockedDate");
 
             migrationBuilder.DropTable(
                 name: "PropertyAmenity");

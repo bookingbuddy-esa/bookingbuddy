@@ -56,7 +56,7 @@
             <div class="mb-5 mt-5">
                 <span>Anexar imagens da propriedade:</span>
                 <label for="createPropertyAdForm" class="form-label"></label>
-                <input class="form-control" name="files" type="file">
+                <input class="form-control" name="files" type="file" (change)="onFileSelected($event)">
             </div>
 
             <button type="submit" class="btn btn-outline-success">Registar Propriedade</button>

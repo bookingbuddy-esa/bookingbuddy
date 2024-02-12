@@ -17,8 +17,9 @@ namespace BookingBuddy.Server.Controllers
     /// </remarks>
     /// <param name="userManager">Gestor de Utilizadores</param>
     /// <param name="signInManager">Gestor de logins</param>
+    /// <param name="configuration">Configurações globais</param>
     [ApiController]
-    public class AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager) : ControllerBase
+    public class AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration) : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
@@ -48,7 +49,7 @@ namespace BookingBuddy.Server.Controllers
             if (result.Succeeded)
             {
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var confirmationLink = $"https://localhost:4200/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
+                var confirmationLink = $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
                 await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", user.Email, user.Name, new { confirmationLink });
                 return Ok();
             }
@@ -82,7 +83,7 @@ namespace BookingBuddy.Server.Controllers
                     return BadRequest(new[] { new IdentityError() { Code = "EmailAlreadyConfirmed", Description = "O email já se encontra confirmado." } });
                 }
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(existingUser);
-                var confirmationLink = $"https://localhost:4200/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
+                var confirmationLink = $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
                 await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email!, existingUser.Name, new { confirmationLink });
                 return Ok();
             }
@@ -192,16 +193,16 @@ namespace BookingBuddy.Server.Controllers
                     if (addClaimsResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, true);
-                        return Redirect("https://localhost:4200/");
+                        return Redirect(configuration.GetSection("Front-End-Url").Value!);
                     }
-                    BadRequest(addClaimsResult.Errors);
+                    return BadRequest(addClaimsResult.Errors);
                 }
                 return BadRequest(userCreateResult.Errors);
             }
             else
             {
                 await _signInManager.SignInAsync(exsistingUser, true);
-                return Redirect("https://localhost:4200/");
+                return Redirect(configuration.GetSection("Front-End-Url").Value!);
             }
         }
 
@@ -245,16 +246,16 @@ namespace BookingBuddy.Server.Controllers
                     if (addClaimsResult.Succeeded)
                     {
                         await _signInManager.SignInAsync(user, true);
-                        return Redirect("https://localhost:4200/");
+                        return Redirect(configuration.GetSection("Front-End-Url").Value!);
                     }
-                    BadRequest(addClaimsResult.Errors);
+                    return BadRequest(addClaimsResult.Errors);
                 }
                 return BadRequest(userCreateResult.Errors);
             }
             else
             {
                 await _signInManager.SignInAsync(exsistingUser, true);
-                return Redirect("https://localhost:4200/");
+                return Redirect(configuration.GetSection("Front-End-Url").Value!);
             }
         }
 
@@ -287,7 +288,7 @@ namespace BookingBuddy.Server.Controllers
             if (existingUser != null)
             {
                 var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
-                var recoverLink = $"https://localhost:4200/reset-password?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
+                var recoverLink = $"{configuration.GetSection("Front-End-Url").Value!}/reset-password?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
                 await EmailSender.SendTemplateEmail("d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email!, existingUser.Name, new { recoverLink });
                 return Ok();
             }
@@ -381,7 +382,11 @@ namespace BookingBuddy.Server.Controllers
             var existingUser = await _userManager.GetUserAsync(User);
             if (existingUser != null)
             {
-                return Ok(new { existingUser.Name, existingUser.UserName, existingUser.Email, isEmailConfirmed = existingUser.EmailConfirmed });
+                return Ok(new UserInfoModel
+                (
+                    existingUser.Id,
+                    existingUser.Name,
+                    existingUser.UserName, existingUser.Email, existingUser.EmailConfirmed));
             }
             return BadRequest(new[] { new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." } });
         }
@@ -573,4 +578,8 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Id_token">Token de login</param>
     /// <param name="Session_state">Estado da sessão</param>
     public record MicrosoftSignInModel(string Id_token, string Session_state);
+
+    public record UserInfoModel(string UserId, string Name, string UserName, string Email, Boolean IsEmailConfirmed);
+
+
 }

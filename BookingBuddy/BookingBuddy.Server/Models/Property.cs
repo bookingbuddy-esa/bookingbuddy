@@ -73,6 +73,8 @@ namespace BookingBuddy.Server.Models
         /// </summary>
         [Display(Name = "Proprietário")]
         public ReturnUser? ApplicationUser { get; set; }
+
+        public List<BlockedDate>? BlockedDates { get; set; }
     }
 
     [NotMapped]

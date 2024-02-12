@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingBuddy.Server.Migrations
 {
     [DbContext(typeof(BookingBuddyServerContext))]
-    [Migration("20240211190841_Initial")]
+    [Migration("20240211210025_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -114,6 +114,32 @@ namespace BookingBuddy.Server.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("BookingBuddy.Server.Models.BlockedDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("End")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PropertyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Start")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("BlockedDate");
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
@@ -296,6 +322,13 @@ namespace BookingBuddy.Server.Migrations
                         .HasForeignKey("PropertyId");
                 });
 
+            modelBuilder.Entity("BookingBuddy.Server.Models.BlockedDate", b =>
+                {
+                    b.HasOne("BookingBuddy.Server.Models.Property", null)
+                        .WithMany("BlockedDates")
+                        .HasForeignKey("PropertyId");
+                });
+
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
                 {
                     b.HasOne("BookingBuddy.Server.Models.ApplicationUser", "ApplicationUser")
@@ -361,6 +394,8 @@ namespace BookingBuddy.Server.Migrations
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
                 {
                     b.Navigation("Amenities");
+
+                    b.Navigation("BlockedDates");
                 });
 #pragma warning restore 612, 618
         }

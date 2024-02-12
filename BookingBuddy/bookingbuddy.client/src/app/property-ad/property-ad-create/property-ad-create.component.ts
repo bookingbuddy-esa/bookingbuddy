@@ -6,6 +6,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
 import { CheckboxOptions } from '../../models/checkboxes';
+import { PropertyAdService } from '../property-ad.service';
 
 @Component({
   selector: 'app-property-ad-create',
@@ -13,6 +14,7 @@ import { CheckboxOptions } from '../../models/checkboxes';
   styleUrl: './property-ad-create.component.css'
 })
 export class PropertyAdCreateComponent {
+  selectedFile: File | undefined;
   comodidades = Object.values(CheckboxOptions);
   comodidadesSelecionadas: CheckboxOptions[] = [];
   errors: string[] = [];
@@ -20,8 +22,9 @@ export class PropertyAdCreateComponent {
   createPropertyFailed: boolean;
   checkboxOptions = CheckboxOptions;
 
-  constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
+  constructor(private http: HttpClient, private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
     this.errors = [];
+    
     this.createPropertyFailed = false;
     this.createPropertyAdForm = this.formBuilder.group({
       name: [''],
@@ -31,6 +34,14 @@ export class PropertyAdCreateComponent {
       description: [''],
       imagesUrl: ['']
     });
+  }
+  //função para guardar as imagens num array // TODO:Restrições de tipo de ficheiro
+  onFileSelected(event: any): void {
+    const inputElement = event.target;
+    if (inputElement.files.length > 0) {
+      this.selectedFile = inputElement.files[0];
+      console.log('Ficheiro selecionado:', this.selectedFile);
+    }
   }
 
   atualizarSelecionadas(comodidade: CheckboxOptions) {
@@ -44,27 +55,27 @@ export class PropertyAdCreateComponent {
   public create(_: any) {
     this.createPropertyFailed = false;
     this.errors = [];
+    const images = this.selectedFile ? this.selectedFile.name : '';
 
     const newProperty = {
       name: this.createPropertyAdForm.get('name')?.value,
       location: this.createPropertyAdForm.get('location')?.value,
       pricePerNight: this.createPropertyAdForm.get('pricePerNight')?.value,
-      landlordId: "um", // TODO: hardcoded, meter dinamico
       description: this.createPropertyAdForm.get('description')?.value,
-      imagesUrl: ["test.png"], // TODO: hardcoded, meter dinamico
+      imagesUrl: [images], //["test.png"], // TODO: hardcoded, meter dinamico
       amenityIds: this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade).toString())
     };
 
-    // TODO: passar isto para um serviço
-    this.http.post('api/properties/create', newProperty).subscribe(
-      (response) => {
-        console.log("RES:", response);
-      },
-      (error) => {
-        console.log("ERR:", error);
-        this.createPropertyFailed = true;
-        this.errors.push(error.error.message);
-      }
-    );
+    this.propertyService.createPropertyAd(newProperty.name, newProperty.location, newProperty.pricePerNight,  newProperty.description, newProperty.imagesUrl, newProperty.amenityIds).forEach(
+      response => {
+        if (response) {
+          console.log(response);
+        }
+      }).catch(
+        error => {
+          console.error(error);
+        }
+      );;
+    
   }
 }
