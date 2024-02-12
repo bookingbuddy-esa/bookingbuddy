@@ -20,7 +20,6 @@
     <None Remove="src\assets\NovaPasta1\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\app\property-ad\" />
     <Folder Include="src\assets\img\" />
   </ItemGroup>
 </Project>

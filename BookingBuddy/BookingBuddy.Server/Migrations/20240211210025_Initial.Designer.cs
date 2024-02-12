@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingBuddy.Server.Migrations
 {
     [DbContext(typeof(BookingBuddyServerContext))]
-    [Migration("20240208181716_AmenityLandlordProperty")]
-    partial class AmenityLandlordProperty
+    [Migration("20240211210025_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,11 @@ namespace BookingBuddy.Server.Migrations
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Amenity", b =>
                 {
-                    b.Property<string>("AmenityId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("AmenityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AmenityId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -113,27 +116,30 @@ namespace BookingBuddy.Server.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("BookingBuddy.Server.Models.Landlord", b =>
+            modelBuilder.Entity("BookingBuddy.Server.Models.BlockedDate", b =>
                 {
-                    b.Property<string>("LandlordId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("End")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PropertyIds")
+                    b.Property<string>("PropertyId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Start")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("LandlordId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("PropertyId");
 
-                    b.ToTable("Landlord");
+                    b.ToTable("BlockedDate");
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
@@ -144,6 +150,10 @@ namespace BookingBuddy.Server.Migrations
                     b.Property<string>("AmenityIds")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -152,10 +162,6 @@ namespace BookingBuddy.Server.Migrations
                     b.Property<string>("ImagesUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LandlordId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -171,7 +177,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("PropertyId");
 
-                    b.HasIndex("LandlordId");
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Property");
                 });
@@ -316,26 +322,22 @@ namespace BookingBuddy.Server.Migrations
                         .HasForeignKey("PropertyId");
                 });
 
-            modelBuilder.Entity("BookingBuddy.Server.Models.Landlord", b =>
+            modelBuilder.Entity("BookingBuddy.Server.Models.BlockedDate", b =>
                 {
-                    b.HasOne("BookingBuddy.Server.Models.ApplicationUser", "User")
+                    b.HasOne("BookingBuddy.Server.Models.Property", null)
+                        .WithMany("BlockedDates")
+                        .HasForeignKey("PropertyId");
+                });
+
+            modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
+                {
+                    b.HasOne("BookingBuddy.Server.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
-                {
-                    b.HasOne("BookingBuddy.Server.Models.Landlord", "Landlord")
-                        .WithMany("Properties")
-                        .HasForeignKey("LandlordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Landlord");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -389,14 +391,11 @@ namespace BookingBuddy.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookingBuddy.Server.Models.Landlord", b =>
-                {
-                    b.Navigation("Properties");
-                });
-
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
                 {
                     b.Navigation("Amenities");
+
+                    b.Navigation("BlockedDates");
                 });
 #pragma warning restore 612, 618
         }

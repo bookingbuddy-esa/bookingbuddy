@@ -20,11 +20,11 @@ namespace BookingBuddyTest
 
             DbContext.Database.EnsureCreated();
 
-            var applicationUser = new ApplicationUser { Id = new Guid().ToString(), Name = "Landlord Teste", Email = "landlord@bookingbuddy.com", UserName = "landlord@bookingbuddy.com" };
+            var applicationUser = new ApplicationUser { Id = new Guid().ToString(), Name = "Proprietário Teste", Email = "propteste@bookingbuddy.com", UserName = "propteste@bookingbuddy.com" };
 
             DbContext.Users.Add(applicationUser);
 
-            DbContext.Landlord.Add(new Landlord { LandlordId = "landlord", ApplicationUserId = applicationUser.Id, Name = "Landlord" });
+            // DbContext.Landlord.Add(new Landlord { LandlordId = "landlord", ApplicationUserId = applicationUser.Id, Name = "Landlord" });
 
             DbContext.SaveChanges();
         }

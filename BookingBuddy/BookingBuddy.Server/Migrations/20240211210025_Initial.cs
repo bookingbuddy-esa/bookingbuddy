@@ -52,20 +52,6 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Person",
-                columns: table => new
-                {
-                    PersonId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Person", x => x.PersonId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -171,6 +157,69 @@ namespace BookingBuddy.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Property",
+                columns: table => new
+                {
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AmenityIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    PricePerNight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ImagesUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Property", x => x.PropertyId);
+                    table.ForeignKey(
+                        name: "FK_Property_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BlockedDate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Start = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    End = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlockedDate", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BlockedDate_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "PropertyId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PropertyAmenity",
+                columns: table => new
+                {
+                    AmenityId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PropertyAmenity", x => x.AmenityId);
+                    table.ForeignKey(
+                        name: "FK_PropertyAmenity_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "PropertyId");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -209,6 +258,21 @@ namespace BookingBuddy.Server.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlockedDate_PropertyId",
+                table: "BlockedDate",
+                column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Property_ApplicationUserId",
+                table: "Property",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropertyAmenity_PropertyId",
+                table: "PropertyAmenity",
+                column: "PropertyId");
         }
 
         /// <inheritdoc />
@@ -230,10 +294,16 @@ namespace BookingBuddy.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Person");
+                name: "BlockedDate");
+
+            migrationBuilder.DropTable(
+                name: "PropertyAmenity");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Property");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

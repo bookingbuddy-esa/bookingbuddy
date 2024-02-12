@@ -42,7 +42,7 @@ app.UseStaticFiles();
 app.MapIdentityApi<ApplicationUser>();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
 {
     app.UseSwagger();
     app.UseSwaggerUI();

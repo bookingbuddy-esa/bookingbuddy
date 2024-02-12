@@ -16,7 +16,7 @@ namespace BookingBuddy.Server.Models
         /// <summary>
         /// Propriedade que diz respeito ao identificador do proprietário da propriedade.
         /// </summary>
-        public string LandlordId { get; set; }
+        public string ApplicationUserId { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito aos identificadores das comodidades da propriedade.
@@ -71,6 +71,8 @@ namespace BookingBuddy.Server.Models
         /// Propriedade de navegação que diz respeito ao proprietário da propriedade física a anunciar.
         /// </summary>
         [Display(Name = "Proprietário")]
-        public Landlord? Landlord { get; set; }
+        public ApplicationUser? ApplicationUser { get; set; }
+
+        public List<BlockedDate>? BlockedDates { get; set; }
     }
 }

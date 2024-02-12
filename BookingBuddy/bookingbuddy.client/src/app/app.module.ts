@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { Host, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -15,6 +15,8 @@ import { AuxiliaryModule } from './auxiliary/auxiliary.module';
 import { HomepagePropertyComponent } from './homepage/homepage-property/homepage-property.component';
 import {NgOptimizedImage} from "@angular/common";
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
+import { HostingModule } from './hosting/hosting.module';
+import { cA } from '@fullcalendar/core/internal-common';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 
 @NgModule({
@@ -30,7 +32,8 @@ import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
     ReactiveFormsModule, AuthModule,
-    AuxiliaryModule, NgOptimizedImage
+    AuxiliaryModule, NgOptimizedImage,
+    HostingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
