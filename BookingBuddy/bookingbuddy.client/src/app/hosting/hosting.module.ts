@@ -6,12 +6,12 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { HostingService } from './hosting.service';
 import { AppRoutingModule } from '../app-routing.module';
 //import { RouterModule } from '@angular/router';
-import { HomepagePropertyComponent } from './calendar/calendar-property/calendar-property.component';
+// import { HomepagePropertyComponent } from './calendar/calendar-property/calendar-property.component';
 
 
 @NgModule({
   declarations: [
-    CalendarComponent, HomepagePropertyComponent
+    CalendarComponent /*, HomepagePropertyComponent*/
   ],
   imports: [
     CommonModule, BrowserModule,
