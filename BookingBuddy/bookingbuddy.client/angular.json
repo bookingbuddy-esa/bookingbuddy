@@ -75,12 +75,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "bookingbuddy.client:build:production",
-                            "proxyConfig": "src/proxy.conf.js"
+                            "buildTarget": "bookingbuddy.client:build:production"
                         },
                         "development": {
-                            "buildTarget": "bookingbuddy.client:build:development",
-                            "proxyConfig": "src/proxy.development.conf.js"
+                            "buildTarget": "bookingbuddy.client:build:development"
                         }
                     },
                     "defaultConfiguration": "development"

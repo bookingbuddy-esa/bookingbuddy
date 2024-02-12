@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
 import { UserInfo } from './authorize.dto';
+import {environment} from "../../environments/environment";
 
 
 @Injectable({
@@ -18,7 +19,7 @@ export class AuthorizeService {
 
   // cookie-based login
   public signIn(email: string, password: string) {
-    return this.http.post('/login?useCookies=true', {
+    return this.http.post(`${environment.apiUrl}/login?useCookies=true`, {
       email: email,
       password: password
     }, {
@@ -33,7 +34,7 @@ export class AuthorizeService {
 
   // register new user
   public register(name: string, email: string, password: string) {
-    return this.http.post('api/register', {
+    return this.http.post(`${environment.apiUrl}/api/register`, {
       name: name,
       email: email,
       password: password
@@ -46,7 +47,7 @@ export class AuthorizeService {
   }
 
   public confirmEmail(uid: string, token: string) {
-    return this.http.post('api/confirmEmail', {
+    return this.http.post(`${environment.apiUrl}/api/confirmEmail`, {
       uid: uid,
       token: token
     }, {
@@ -58,7 +59,7 @@ export class AuthorizeService {
   }
 
   public resendConfirmationEmail(email: string) {
-    return this.http.post('api/resendConfirmation', {
+    return this.http.post(`${environment.apiUrl}/api/resendConfirmation`, {
       email: email
     }, {
       observe: 'response',
@@ -69,7 +70,7 @@ export class AuthorizeService {
   }
 
   public checkConfirmationToken(uid: string, token: string) {
-    return this.http.post('api/checkConfirmation', {
+    return this.http.post(`${environment.apiUrl}/api/checkConfirmation`, {
       uid: uid,
       token: token
     }, {
@@ -82,7 +83,7 @@ export class AuthorizeService {
 
   // recover user password by sending an email to the specified email
   public recoverPassword(email: string) {
-    return this.http.post('api/forgotPassword', {
+    return this.http.post(`${environment.apiUrl}/api/forgotPassword`, {
       email: email
     }, {
       observe: 'response',
@@ -94,7 +95,7 @@ export class AuthorizeService {
 
   // reset user password
   public resetPassword(uid: string, token: string, newPassword: string) {
-    return this.http.post('api/resetPassword', {
+    return this.http.post( `${environment.apiUrl}/api/resetPassword`, {
       uid: uid,
       token: token,
       newPassword: newPassword
@@ -107,7 +108,7 @@ export class AuthorizeService {
   }
 
   public checkResetToken(uid: string, token: string) {
-    return this.http.post('api/checkResetPassword', {
+    return this.http.post(`${environment.apiUrl}/api/checkResetPassword`, {
       uid: uid,
       token: token,
       newPassword: ''
@@ -121,7 +122,7 @@ export class AuthorizeService {
 
   // logout
   public signOut() {
-    return this.http.post('/api/logout', {}, {
+    return this.http.post(`${environment.apiUrl}/api/logout`, {}, {
       withCredentials: true,
       observe: 'response',
       responseType: 'text'
@@ -135,7 +136,7 @@ export class AuthorizeService {
 
   // check if the user is authenticated. the endpoint is protected so 401 if not.
   public user() {
-    return this.http.get<UserInfo>('api/manage/info', {
+    return this.http.get<UserInfo>(`${environment.apiUrl}/api/manage/info`, {
       withCredentials: true
     }).pipe(catchError((_: HttpErrorResponse, __: Observable<UserInfo>) => {
       return of({} as UserInfo);
@@ -143,7 +144,7 @@ export class AuthorizeService {
   }
 
   public manageUser(newName: string, newUserName: string, newEmail: string, newPassword: string, oldPassword: string) {
-    return this.http.post<UserInfo>('api/manage/info', {
+    return this.http.post<UserInfo>(`${environment.apiUrl}/api/manage/info`, {
       withCredentials: true,
       newName: newName,
       newUserName: newUserName,
@@ -156,7 +157,7 @@ export class AuthorizeService {
   }
 
   public changePassword(newPassword: string, oldPassword: string) {
-    return this.http.post('api/manage/changePassword', {
+    return this.http.post(`${environment.apiUrl}/api/manage/changePassword`, {
       newPassword: newPassword,
       oldPassword: oldPassword
     }, {
