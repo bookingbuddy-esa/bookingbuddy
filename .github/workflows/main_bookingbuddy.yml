@@ -84,7 +84,7 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-  deploy:
+  BookingBuddyServer-deploy:
     runs-on: ubuntu-latest
     needs: BookingBuddyServer-build
     environment:
@@ -104,4 +104,4 @@ jobs:
           app-name: 'bookingbuddy-api-server'
           slot-name: 'production'
           package: .
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_b86a754cb19547918a76212a7f823a14 }}          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2BF1F679F3904871A985DEC393437A5F }}
