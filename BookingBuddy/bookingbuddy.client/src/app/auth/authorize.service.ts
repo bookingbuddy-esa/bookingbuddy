@@ -19,10 +19,11 @@ export class AuthorizeService {
 
   // cookie-based login
   public signIn(email: string, password: string) {
-    return this.http.post(`${environment.apiUrl}/login?useCookies=true`, {
+    return this.http.post(`${environment.apiUrl}/api/login`, {
       email: email,
       password: password
     }, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
     })
