@@ -86,6 +86,7 @@ export class PropertyAdCreateComponent {
       catchError((error: HttpErrorResponse) => {
         this.errors.push('Erro ao fazer upload das imagens.');
         this.createPropertyFailed = true;
+        this.errors.push("Erro ao fazer upload das imagens da propriedade")
         return of([]);
       }),
       map((images: string[]) => {
@@ -103,6 +104,7 @@ export class PropertyAdCreateComponent {
       catchError((error: HttpErrorResponse) => {
         this.errors.push('Erro ao criar propriedade.');
         this.createPropertyFailed = true;
+        //console.log("2st error: " + error);
         return of(null);
       }),
       map((newProperty: any) => {
@@ -114,7 +116,8 @@ export class PropertyAdCreateComponent {
               }
             }).catch(
               error => {
-                console.error(error);
+                this.errors.push(error.message);
+                //console.error(error);
               }
             );
         }

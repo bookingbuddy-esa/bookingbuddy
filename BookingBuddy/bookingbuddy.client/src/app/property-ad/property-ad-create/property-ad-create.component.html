@@ -32,12 +32,15 @@
                 </div>
 
                 <div class="input-group row">
-                    <div class="col-12 col-md-5" align="right">
-                        <label> Descrição do anúncio: </label>
+                  <div class="col-12 col-md-5" align="right">
+                    <div class="fix-display">
+                      <label class="fs-5" style="display: block;"> Descrição do anúncio: </label>
+                      <label class="fs-10" style="display: block;">(máximo de 500 caracteres)</label>
                     </div>
+                  </div>
                     <div class="col-12 col-md-7">
                         <div class="col-12 col-md-6">
-                            <textarea class="form-control mb-3" name="description" formControlName="description"> </textarea>
+                            <textarea class="form-control mb-3" maxlength="500" name="description" formControlName="description"> </textarea>
                         </div>
                     </div>
                 </div>
@@ -49,7 +52,7 @@
                     </div>
                     <div class="col-12 col-md-7">
                         <div class="col-12 col-md-6">
-                            <input class="form-control mb-3" name="location" formControlName="location" />
+                            <input class="form-control mb-3" maxlength="100" name="location" formControlName="location" />
                         </div>
                     </div>
                 </div>
