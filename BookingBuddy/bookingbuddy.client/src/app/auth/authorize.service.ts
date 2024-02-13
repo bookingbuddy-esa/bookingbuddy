@@ -145,12 +145,13 @@ export class AuthorizeService {
 
   public manageUser(newName: string, newUserName: string, newEmail: string, newPassword: string, oldPassword: string) {
     return this.http.post<UserInfo>(`${environment.apiUrl}/api/manage/info`, {
-      withCredentials: true,
       newName: newName,
       newUserName: newUserName,
       newEmail: newEmail,
       newPassword: newPassword,
       oldPassword: oldPassword
+    }, {
+      withCredentials: true,
     }).pipe(catchError((_: HttpErrorResponse, __: Observable<UserInfo>) => {
       return of({} as UserInfo);
     }));
