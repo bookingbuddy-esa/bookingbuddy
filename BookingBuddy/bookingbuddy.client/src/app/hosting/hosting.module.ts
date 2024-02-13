@@ -7,11 +7,12 @@ import { HostingService } from './hosting.service';
 import { AppRoutingModule } from '../app-routing.module';
 //import { RouterModule } from '@angular/router';
 import { HomepagePropertyComponent } from './calendar/homepage-property/homepage-property.component';
+import { PropertyPromoteComponent } from './property-promote/property-promote.component';
 
 
 @NgModule({
   declarations: [
-    CalendarComponent , HomepagePropertyComponent
+    CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent
   ],
   imports: [
     CommonModule, BrowserModule,
