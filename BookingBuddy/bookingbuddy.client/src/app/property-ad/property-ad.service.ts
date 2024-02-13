@@ -23,6 +23,7 @@ export class PropertyAdService {
       imagesUrl: imagesUrl,
       amenityIds: amenityIds,
     }, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
     })
