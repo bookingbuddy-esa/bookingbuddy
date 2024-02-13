@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
 import {environment} from "../../environments/environment";
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,5 +35,17 @@ export class PropertyAdService {
 
   public getProperties() {
     return this.http.get(`${environment.apiUrl}/api/properties/`);
+  }
+
+  public uploadImages(images: File[]): Observable<string[]> {
+    const formData = new FormData();
+    images.forEach(image => {
+      formData.append('image', image);
+    });
+
+    return this.http.post(`${environment.apiUrl}/api/upload`, formData, { withCredentials: true })
+      .pipe<string[]>(map((res: any) => {
+        return res;
+      }));
   }
 }
