@@ -77,3 +77,8 @@
 .marginForRow {
     margin-left: 10%;
 }
+
+.fix-display {
+  display: block;
+  margin-top: 5px;
+}
