@@ -53,8 +53,6 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapIdentityApi<ApplicationUser>();
-
 // Configure the HTTP request pipeline.
 if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
 {
