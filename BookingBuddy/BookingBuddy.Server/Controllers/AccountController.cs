@@ -6,6 +6,7 @@ using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 using System.Web;
 using System.IdentityModel.Tokens.Jwt;
+using BookingBuddy.Server.Data;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -21,6 +22,7 @@ namespace BookingBuddy.Server.Controllers
     [ApiController]
     [Route("api")]
     public class AccountController(
+        BookingBuddyServerContext context,
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IConfiguration configuration) : ControllerBase
@@ -206,7 +208,6 @@ namespace BookingBuddy.Server.Controllers
                 var result = await _signInManager.PasswordSignInAsync(user, model.password, true, false);
                 if (result.Succeeded)
                 {
-                    
                     return Ok();
                 }
             }
@@ -464,19 +465,23 @@ namespace BookingBuddy.Server.Controllers
         public async Task<IActionResult> ManageInfo()
         {
             var existingUser = await _userManager.GetUserAsync(User);
-            if (existingUser != null)
-            {
-                return Ok(new UserInfoModel
+            if (existingUser == null)
+                return BadRequest(new[]
+                {
+                    new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }
+                });
+            var provider = context.AspNetProviders.FirstOrDefault(p => p.AspNetProviderId == existingUser.ProviderId);
+            return Ok(new UserInfoModel
                 (
                     existingUser.Id,
+                    provider!.Name,
                     existingUser.Name,
-                    existingUser.UserName, existingUser.Email, existingUser.EmailConfirmed));
-            }
+                    existingUser.UserName!,
+                    existingUser.Email!,
+                    existingUser.EmailConfirmed
+                )
+            );
 
-            return BadRequest(new[]
-            {
-                new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }
-            });
         }
 
         /// <summary>
@@ -704,9 +709,16 @@ namespace BookingBuddy.Server.Controllers
     /// Modelo de informação do utilizador
     /// </summary>
     /// <param name="UserId">Id do utilizador</param>
+    /// <param name="ProviderId">Id do fornecedor</param>
     /// <param name="Name">Nome do utilizador</param>
     /// <param name="UserName">Nome da conta do utilizador</param>
     /// <param name="Email">E-mail do utilizador</param>
     /// <param name="IsEmailConfirmed">Estado da confirmação do e-mail</param>
-    public record UserInfoModel(string UserId, string Name, string UserName, string Email, Boolean IsEmailConfirmed);
+    public record UserInfoModel(
+        string UserId,
+        string Provider,
+        string Name,
+        string UserName,
+        string Email,
+        bool IsEmailConfirmed);
 }
