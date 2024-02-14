@@ -49,7 +49,14 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest(new[] { new PortugueseIdentityErrorDescriber().DuplicateEmail(model.Email) });
             }
 
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Name = model.Name };
+            var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "LOCAL");
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                Name = model.Name,
+                ProviderId = provider!.AspNetProviderId
+            };
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
@@ -206,13 +213,15 @@ namespace BookingBuddy.Server.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                if(user.EmailConfirmed == false)
+                if (user.EmailConfirmed == false)
                 {
                     return BadRequest(new[]
                     {
-                        new IdentityError { Code = "EmailNotConfirmed", Description = "O e-mail não se encontra confirmado." }
+                        new IdentityError
+                            { Code = "EmailNotConfirmed", Description = "O e-mail não se encontra confirmado." }
                     });
                 }
+
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
                 if (result.Succeeded)
                 {
