@@ -68,21 +68,21 @@ namespace BookingBuddy.Server.Data
             var googleProvider = new AspNetProvider
             {
                 AspNetProviderId = Guid.NewGuid().ToString(),
-                Name = "Google",
+                Name = "google",
                 NormalizedName = "GOOGLE"
             };
             
             var microsoftProvider = new AspNetProvider
             {
                 AspNetProviderId = Guid.NewGuid().ToString(),
-                Name = "Microsoft",
+                Name = "microsoft",
                 NormalizedName = "MICROSOFT"
             };
             
             var localProvider = new AspNetProvider
             {
                 AspNetProviderId = Guid.NewGuid().ToString(),
-                Name = "Local",
+                Name = "local",
                 NormalizedName = "LOCAL"
             };
             
