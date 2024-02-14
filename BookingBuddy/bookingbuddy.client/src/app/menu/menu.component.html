@@ -31,6 +31,7 @@
                             <hr *ngIf="signedIn" class="dropdown-divider">
                             <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
                             <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['property-ad-create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['property-promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
                             <hr *ngIf="signedIn" class="dropdown-divider">
                             <li *ngIf="signedIn"><a class="dropdown-item logout" [routerLink]="['logout']">Logout<i class="bi bi-door-open ms-2"></i></a></li>
                         </ul>

@@ -7,15 +7,18 @@ import { HostingService } from './hosting.service';
 import { AppRoutingModule } from '../app-routing.module';
 //import { RouterModule } from '@angular/router';
 import { HomepagePropertyComponent } from './calendar/homepage-property/homepage-property.component';
-
+import { PropertyPromoteComponent } from './property-promote/property-promote.component';
+import { SidePropertiesComponent } from './property-promote/side-properties/side-properties.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    CalendarComponent , HomepagePropertyComponent
+    CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent
   ],
   imports: [
     CommonModule, BrowserModule,
-    FullCalendarModule, AppRoutingModule
+    FullCalendarModule, AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]
