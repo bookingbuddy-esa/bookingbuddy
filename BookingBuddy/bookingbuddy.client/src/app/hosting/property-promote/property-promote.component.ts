@@ -4,7 +4,7 @@ import { AuthorizeService } from '../../auth/authorize.service';
 import { Router } from '@angular/router';
 import { UserInfo } from '../../auth/authorize.dto';
 import { Property } from '../../models/property';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PropertyPromote } from '../../models/property-promote';
 
 @Component({
@@ -66,6 +66,9 @@ export class PropertyPromoteComponent implements OnInit {
     }
 
     console.log(propertyPromote);
+
+    // TODO: acrescentar constante que diz respeito ao paymentMethodSelected (quando for implementada a parte relativa ao pagamento), e consoante a opção selecionada, após
+    // se clicar no botão, redirecionar o utilizador para a página de pagamento associado ao método escolhido, e posteriormente de sucesso/insucesso da promoção da propriedade.
   }
 
   setCurrentProperty(property: Property) {
