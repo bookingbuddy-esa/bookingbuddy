@@ -54,6 +54,7 @@ namespace BookingBuddy.Server.Controllers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "user");
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
@@ -205,6 +206,13 @@ namespace BookingBuddy.Server.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
+                if(user.EmailConfirmed == false)
+                {
+                    return BadRequest(new[]
+                    {
+                        new IdentityError { Code = "EmailNotConfirmed", Description = "O e-mail não se encontra confirmado." }
+                    });
+                }
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
                 if (result.Succeeded)
                 {
@@ -255,6 +263,7 @@ namespace BookingBuddy.Server.Controllers
                 };
                 var userCreateResult = await _userManager.CreateAsync(user);
                 if (!userCreateResult.Succeeded) return BadRequest(userCreateResult.Errors);
+                await _userManager.AddToRoleAsync(user, "user");
                 await _signInManager.SignInAsync(user, true);
                 return Ok();
             }
@@ -466,10 +475,12 @@ namespace BookingBuddy.Server.Controllers
                     new IdentityError { Code = "UserNotFound", Description = "O utilizador não se encontra registado." }
                 });
             var provider = context.AspNetProviders.FirstOrDefault(p => p.AspNetProviderId == existingUser.ProviderId);
+            var roles = await _userManager.GetRolesAsync(existingUser);
             return Ok(new UserInfoModel
                 (
                     existingUser.Id,
                     provider!.Name,
+                    roles.ToList(),
                     existingUser.Name,
                     existingUser.UserName!,
                     existingUser.Email!,
@@ -716,6 +727,7 @@ namespace BookingBuddy.Server.Controllers
     /// </summary>
     /// <param name="UserId">Id do utilizador</param>
     /// <param name="Provider">Nome do fornecedor</param>
+    /// <param name="Role">Tipo de utilizador</param>
     /// <param name="Name">Nome do utilizador</param>
     /// <param name="UserName">Nome da conta do utilizador</param>
     /// <param name="Email">E-mail do utilizador</param>
@@ -723,6 +735,7 @@ namespace BookingBuddy.Server.Controllers
     public record UserInfoModel(
         string UserId,
         string Provider,
+        List<string> Role,
         string Name,
         string UserName,
         string Email,

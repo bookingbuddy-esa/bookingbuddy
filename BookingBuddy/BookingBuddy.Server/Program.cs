@@ -29,6 +29,7 @@ builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.None;
 });
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingBuddyServerContext>()
     .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
     .AddDefaultTokenProviders();
