@@ -243,11 +243,11 @@ namespace BookingBuddy.Server.Controllers
                 var name = jwtSecurityToken.Claims.First(claim => claim.Type == "name").Value;
                 var provider = context.AspNetProviders.FirstOrDefault(p => p.AspNetProviderId == model.ProviderId);
                 string? photoUrl = null;
-                if (provider!.Name == "Google")
+                if (provider!.NormalizedName == "GOOGLE")
                 {
                     photoUrl = jwtSecurityToken.Claims.First(claim => claim.Type == "picture").Value;
                 }
-                else if (provider.Name == "Microsoft")
+                else if (provider.NormalizedName == "MICROSOFT")
                 {
                     // TODO: Get photo from Microsoft Graph
                 }
