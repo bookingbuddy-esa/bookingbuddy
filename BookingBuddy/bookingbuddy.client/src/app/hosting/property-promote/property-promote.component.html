@@ -1,1 +1,34 @@
-<p>property-promote works!</p>
+ <div>
+    <div class="row flex-nowrap">
+      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark">
+          <h4>Propriedades</h4>
+          <app-side-properties *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)"></app-side-properties>
+        </div>
+      </div>
+      <div class="py-3">
+        <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="propertyPromoteForm" (submit)="submitPromotion()">
+          <h2>Promover propriedade</h2>
+
+          <div class="form-group">
+            <label for="duration">Escolha a duração:</label>
+            <select name="duration" id="duration" class="form-control" formControlName="duration">
+              <option value="1">1 Semana</option>
+              <option value="2">1 Mês</option>
+              <option value="3">1 Ano</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="paymentMethod">Escolha o método de pagamento:</label>
+            <select name="paymentMethod" id="paymentMethod" class="form-control" formControlName="paymentMethod">
+              <option value="1">Cartão de crédito/débito</option>
+              <option value="2">MB WAY</option>
+            </select>
+          </div>
+
+          <button class="btn btn-success" type="submit">Promover</button>
+        </form>
+      </div>
+    </div>
+  </div>

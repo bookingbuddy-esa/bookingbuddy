@@ -8,6 +8,7 @@ import {UnauthorizedComponent} from "./auxiliary/unauthorized/unauthorized.compo
 import {BadRequestComponent} from "./auxiliary/bad-request/bad-request.component";
 import {CalendarComponent} from "./hosting/calendar/calendar.component";
 import { AuthModule } from "./auth/auth.module";
+import { PropertyPromoteComponent } from './hosting/property-promote/property-promote.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -15,7 +16,8 @@ const routes: Routes = [
   {path: 'propriedades/:id', component: PropertyAdRetrieveComponent },
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
-  { path: 'calendar', component: CalendarComponent },
+  {path: 'calendar', component: CalendarComponent},
+  {path: 'property-promote', component: PropertyPromoteComponent},
   {path: '**', component: NotfoundComponent}
 ];
 
