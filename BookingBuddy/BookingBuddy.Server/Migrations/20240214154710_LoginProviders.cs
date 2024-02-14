@@ -82,9 +82,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AspNetProviderId", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3b8b2eb0-a85d-4054-8e83-7711ff05b931", "Google", "GOOGLE" },
-                    { "841527c5-f63d-455b-a0b2-bd608bcdf5a2", "Microsoft", "MICROSOFT" },
-                    { "e5e97d95-b506-43dd-9539-7e1053a5a1a0", "Local", "LOCAL" }
+                    { "599b5787-f070-4d1d-8c91-17631c17bc7d", "local", "LOCAL" },
+                    { "9d19f1a6-0a1a-478a-bcf9-02234f688367", "microsoft", "MICROSOFT" },
+                    { "e2f08010-89a9-4225-8ddf-ab5f203e3494", "google", "GOOGLE" }
                 });
 
             migrationBuilder.InsertData(
@@ -92,9 +92,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "779e6b8f-1ca5-4432-80a4-1d5100aa6bc2", "8aa79a63-9d30-48a7-8a47-04df9ad0fd09", "admin", "ADMIN" },
-                    { "88282e62-1b83-44ef-aa89-be90b85a61dd", "46c5c526-fe01-4d36-93b2-eda7f30127a9", "landlord", "LANDLORD" },
-                    { "b4e2e8f3-652f-422b-8f2b-d8b436c25b18", "1d5d3b05-b731-4de3-9c06-6dbf9eaffc72", "user", "USER" }
+                    { "ac30bd48-cc51-4947-ad2e-9785aeabb38c", "d78d64f6-ff5e-4bf9-bca7-bd8c402d16e3", "landlord", "LANDLORD" },
+                    { "af6f0000-a53d-4287-8d77-2b81c1a65d0d", "482674ba-d832-414d-b2ad-68571152157d", "user", "USER" },
+                    { "e2eb363a-7bb4-4847-aff1-abbdd152fdfa", "5e8a3126-472b-4d27-9ee9-7aba0ff59e2a", "admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -102,9 +102,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PictureUrl", "ProviderId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "7555779c-065f-4736-83da-05997bc59354", 0, "9c5ed9ad-06d1-40d4-9317-2752fdfbab05", "bookingbuddy.user@bookingbuddy.com", true, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEAYXakg4+YuNqcDbLLwsAi8brrfh4iLnkJQCp7JgdhRtxPdcXRhCPEBhkXcTb3vvwA==", null, false, null, "e5e97d95-b506-43dd-9539-7e1053a5a1a0", "bbbfa965-474b-45d8-8919-77721572d0c1", false, "bookingbuddy.user@bookingbuddy.com" },
-                    { "fa817682-9a5a-4c8f-8ab5-7bd5d3b1172e", 0, "70496d6b-571f-4db7-8dee-7038994d7043", "bookingbuddy.admin@bookingbuddy.com", true, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEEadtHKyQ7HVC8ychTl9Kkf3MggoIXtXtNASICeRTXS6zFx3VPsH/qIfQqeuU0pnvQ==", null, false, null, "e5e97d95-b506-43dd-9539-7e1053a5a1a0", "2791edb8-2f20-4740-bbf4-3b92403f8fa2", false, "bookingbuddy.admin@bookingbuddy.com" },
-                    { "fb988bbe-bd4e-4b58-a56a-8f0a3b08aa09", 0, "b4a2a1a7-a4c5-4479-af8c-3104cc684625", "bookingbuddy.landlord@bookingbuddy.com", true, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEJFQETAhDJKYtlrdLvfFU9/uPPWUEcRJg5FTaEDmsEYBQpnWXXUp+4Itae/ZY+sDIg==", null, false, null, "e5e97d95-b506-43dd-9539-7e1053a5a1a0", "d0f59353-b2bf-4fbd-8b3a-496ca76ee087", false, "bookingbuddy.landlord@bookingbuddy.com" }
+                    { "5266930d-952d-46bd-9fe3-495d7d66660e", 0, "a619f5ae-aaef-4211-be88-6ee1ee17ce4f", "bookingbuddy.landlord@bookingbuddy.com", true, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAECx/ejlklKQ3t9LDtEjyOjoJw+Qzk2q4n0KgKRFcK26Ime4e1O050ahLlbP0I/rmjw==", null, false, null, "599b5787-f070-4d1d-8c91-17631c17bc7d", "e098a394-329d-476f-9f46-323f1b63d691", false, "bookingbuddy.landlord@bookingbuddy.com" },
+                    { "5af20bf1-d3b2-4515-9c4b-d2ac0bc5f9e9", 0, "5767ba9d-167e-42a8-b3ec-8501589ed7f0", "bookingbuddy.admin@bookingbuddy.com", true, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEFAlB/VVqc5VZXAvHDdyb/lp/GJvdZhfVJWhj2P43JTCsqrpMM1Y5CHyxof1NHFKxA==", null, false, null, "599b5787-f070-4d1d-8c91-17631c17bc7d", "693c4b38-bfb8-4e70-a718-d0962282add6", false, "bookingbuddy.admin@bookingbuddy.com" },
+                    { "b7111238-968e-4b2f-8a49-9cc4969a5624", 0, "b7b2f876-b387-42b2-bf25-32b0d39634b2", "bookingbuddy.user@bookingbuddy.com", true, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEN0bgrJ6qQsPY2pvqenJSsnqw1NAB8CpMTldTIciL3N3oyrIo8YZKIlm2vUm47vXiw==", null, false, null, "599b5787-f070-4d1d-8c91-17631c17bc7d", "0b65d11a-d2bf-4358-b950-095ad96f2fd4", false, "bookingbuddy.user@bookingbuddy.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -112,9 +112,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "b4e2e8f3-652f-422b-8f2b-d8b436c25b18", "7555779c-065f-4736-83da-05997bc59354" },
-                    { "779e6b8f-1ca5-4432-80a4-1d5100aa6bc2", "fa817682-9a5a-4c8f-8ab5-7bd5d3b1172e" },
-                    { "88282e62-1b83-44ef-aa89-be90b85a61dd", "fb988bbe-bd4e-4b58-a56a-8f0a3b08aa09" }
+                    { "ac30bd48-cc51-4947-ad2e-9785aeabb38c", "5266930d-952d-46bd-9fe3-495d7d66660e" },
+                    { "e2eb363a-7bb4-4847-aff1-abbdd152fdfa", "5af20bf1-d3b2-4515-9c4b-d2ac0bc5f9e9" },
+                    { "af6f0000-a53d-4287-8d77-2b81c1a65d0d", "b7111238-968e-4b2f-8a49-9cc4969a5624" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -148,47 +148,47 @@ namespace BookingBuddy.Server.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "b4e2e8f3-652f-422b-8f2b-d8b436c25b18", "7555779c-065f-4736-83da-05997bc59354" });
+                keyValues: new object[] { "ac30bd48-cc51-4947-ad2e-9785aeabb38c", "5266930d-952d-46bd-9fe3-495d7d66660e" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "779e6b8f-1ca5-4432-80a4-1d5100aa6bc2", "fa817682-9a5a-4c8f-8ab5-7bd5d3b1172e" });
+                keyValues: new object[] { "e2eb363a-7bb4-4847-aff1-abbdd152fdfa", "5af20bf1-d3b2-4515-9c4b-d2ac0bc5f9e9" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "88282e62-1b83-44ef-aa89-be90b85a61dd", "fb988bbe-bd4e-4b58-a56a-8f0a3b08aa09" });
+                keyValues: new object[] { "af6f0000-a53d-4287-8d77-2b81c1a65d0d", "b7111238-968e-4b2f-8a49-9cc4969a5624" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "779e6b8f-1ca5-4432-80a4-1d5100aa6bc2");
+                keyValue: "ac30bd48-cc51-4947-ad2e-9785aeabb38c");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "88282e62-1b83-44ef-aa89-be90b85a61dd");
+                keyValue: "af6f0000-a53d-4287-8d77-2b81c1a65d0d");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "b4e2e8f3-652f-422b-8f2b-d8b436c25b18");
+                keyValue: "e2eb363a-7bb4-4847-aff1-abbdd152fdfa");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "7555779c-065f-4736-83da-05997bc59354");
+                keyValue: "5266930d-952d-46bd-9fe3-495d7d66660e");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "fa817682-9a5a-4c8f-8ab5-7bd5d3b1172e");
+                keyValue: "5af20bf1-d3b2-4515-9c4b-d2ac0bc5f9e9");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "fb988bbe-bd4e-4b58-a56a-8f0a3b08aa09");
+                keyValue: "b7111238-968e-4b2f-8a49-9cc4969a5624");
 
             migrationBuilder.DropColumn(
                 name: "ProviderId",
