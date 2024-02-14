@@ -202,10 +202,10 @@ namespace BookingBuddy.Server.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var user = await _userManager.FindByEmailAsync(model.email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(user, model.password, true, false);
+                var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
                 if (result.Succeeded)
                 {
                     return Ok();
@@ -214,6 +214,53 @@ namespace BookingBuddy.Server.Controllers
 
             return BadRequest(new[]
                 { new IdentityError { Code = "InvalidLogin", Description = "Credenciais inválidas." } });
+        }
+
+        /// <summary>
+        /// Login com um fornecedor.
+        /// </summary>
+        /// <param name="model">Modelo de login com fornecedor</param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("loginProviders")]
+        public async Task<IActionResult> LoginProviders([FromBody] LoginWithProviderModel model)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(model.Token);
+            var email = jwtSecurityToken.Claims.First(claim => claim.Type == "email").Value;
+            var existingUser = await _userManager.FindByEmailAsync(email);
+            if (existingUser == null)
+            {
+                var name = jwtSecurityToken.Claims.First(claim => claim.Type == "name").Value;
+                var provider = context.AspNetProviders.FirstOrDefault(p => p.AspNetProviderId == model.ProviderId);
+                string? photoUrl = null;
+                if (provider!.Name == "Google")
+                {
+                    photoUrl = jwtSecurityToken.Claims.First(claim => claim.Type == "picture").Value;
+                }
+                else if (provider.Name == "Microsoft")
+                {
+                    // TODO: Get photo from Microsoft Graph
+                }
+
+                var user = new ApplicationUser
+                {
+                    ProviderId = model.ProviderId,
+                    Email = email,
+                    UserName = email,
+                    Name = name,
+                    EmailConfirmed = true,
+                    PictureUrl = photoUrl
+                };
+                var userCreateResult = await _userManager.CreateAsync(user);
+                if (!userCreateResult.Succeeded) return BadRequest(userCreateResult.Errors);
+                await _signInManager.SignInAsync(user, true);
+                return Ok();
+            }
+
+            await _signInManager.SignInAsync(existingUser, true);
+            return Ok();
         }
 
         /// <summary>
@@ -240,38 +287,12 @@ namespace BookingBuddy.Server.Controllers
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("google")]
-        public async Task<IActionResult> GoogleLogin([FromForm] GoogleSignInModel model)
+        public IActionResult GoogleLogin([FromForm] GoogleSignInModel model)
         {
             var token = model.Credential;
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token);
-            var email = jwtSecurityToken.Claims.Where(claim => claim.Type == "email").First().Value;
-            var exsistingUser = await _userManager.FindByEmailAsync(email);
-            if (exsistingUser == null)
-            {
-                var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
-                var user = new ApplicationUser()
-                    { Email = email, UserName = email, Name = name, EmailConfirmed = true };
-                var userCreateResult = await _userManager.CreateAsync(user);
-                if (userCreateResult.Succeeded)
-                {
-                    var addClaimsResult = await _userManager.AddClaimsAsync(user, jwtSecurityToken.Claims);
-                    if (addClaimsResult.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, true);
-                        return Redirect(configuration.GetSection("Front-End-Url").Value!);
-                    }
-
-                    return BadRequest(addClaimsResult.Errors);
-                }
-
-                return BadRequest(userCreateResult.Errors);
-            }
-            else
-            {
-                await _signInManager.SignInAsync(exsistingUser, true);
-                return Redirect(configuration.GetSection("Front-End-Url").Value!);
-            }
+            var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "GOOGLE");
+            return Redirect(
+                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={token}");
         }
 
         /// <summary>
@@ -296,38 +317,12 @@ namespace BookingBuddy.Server.Controllers
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("microsoft")]
-        public async Task<IActionResult> MicrosoftLogin([FromForm] MicrosoftSignInModel model)
+        public IActionResult MicrosoftLogin([FromForm] MicrosoftSignInModel model)
         {
             var token = model.Id_token;
-            var handler = new JwtSecurityTokenHandler();
-            var jwtSecurityToken = handler.ReadJwtToken(token);
-            var email = jwtSecurityToken.Claims.Where(claim => claim.Type == "email").First().Value;
-            var exsistingUser = await _userManager.FindByEmailAsync(email);
-            if (exsistingUser == null)
-            {
-                var name = jwtSecurityToken.Claims.Where(claim => claim.Type == "name").First().Value;
-                var user = new ApplicationUser()
-                    { Email = email, UserName = email, Name = name, EmailConfirmed = true };
-                var userCreateResult = await _userManager.CreateAsync(user);
-                if (userCreateResult.Succeeded)
-                {
-                    var addClaimsResult = await _userManager.AddClaimsAsync(user, jwtSecurityToken.Claims);
-                    if (addClaimsResult.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, true);
-                        return Redirect(configuration.GetSection("Front-End-Url").Value!);
-                    }
-
-                    return BadRequest(addClaimsResult.Errors);
-                }
-
-                return BadRequest(userCreateResult.Errors);
-            }
-            else
-            {
-                await _signInManager.SignInAsync(exsistingUser, true);
-                return Redirect(configuration.GetSection("Front-End-Url").Value!);
-            }
+            var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "MICROSOFT");
+            return Redirect(
+                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={token}");
         }
 
         /// <summary>
@@ -481,7 +476,6 @@ namespace BookingBuddy.Server.Controllers
                     existingUser.EmailConfirmed
                 )
             );
-
         }
 
         /// <summary>
@@ -645,7 +639,19 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Token">Token de confirmação de e-mail</param>
     public record EmailConfirmModel(string Uid, string Token);
 
-    public record LoginModel(string email, string password);
+    /// <summary>
+    /// Modelo de login.
+    /// </summary>
+    /// <param name="Email">E-mail do utilizador</param>
+    /// <param name="Password">Palavra-passe do utilizador</param>
+    public record LoginModel(string Email, string Password);
+
+    /// <summary>
+    /// Modelo de login com fornecedor.
+    /// </summary>
+    /// <param name="ProviderId">Id do fornecedor</param>
+    /// <param name="Token">Token de login</param>
+    public record LoginWithProviderModel(string ProviderId, string Token);
 
     /// <summary>
     /// Modelo de recuperação de palavra-passe.
@@ -709,7 +715,7 @@ namespace BookingBuddy.Server.Controllers
     /// Modelo de informação do utilizador
     /// </summary>
     /// <param name="UserId">Id do utilizador</param>
-    /// <param name="ProviderId">Id do fornecedor</param>
+    /// <param name="Provider">Nome do fornecedor</param>
     /// <param name="Name">Nome do utilizador</param>
     /// <param name="UserName">Nome da conta do utilizador</param>
     /// <param name="Email">E-mail do utilizador</param>
