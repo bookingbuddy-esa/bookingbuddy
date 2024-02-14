@@ -7,7 +7,7 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
         <span class="navbar-toggler-icon"></span>
       </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{ show: isExpanded }">
+            <div  class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{ show: isExpanded }">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
                         <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
@@ -24,77 +24,19 @@
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-list"></i>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDarkDropdownMenuLink" *ngIf="!signedIn">
-                            <li><a class="dropdown-item" [routerLink]="['register']">Registar<i class="bi bi-person-add ms-2"></i></a></li>
-                            <li><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i></a></li>
-                        </ul>
-
-                        <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDarkDropdownMenuLink" *ngIf="signedIn">
-                            <li class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['profile']">{{ user?.name }}<i class="bi bi-person ms-2"></i></a></li>
-                            <hr class="dropdown-divider">
-                            <li class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
-                            <li class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['property-ad-create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
-                            <hr class="dropdown-divider">
-                            <li><a class="dropdown-item logout" [routerLink]="['logout']">Logout<i class="bi bi-door-open ms-2"></i></a></li>
+                        <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDarkDropdownMenuLink">
+                            <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['register']">Registar<i class="bi bi-person-add ms-2"></i></a></li>
+                            <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i></a></li>
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['profile']">{{ user?.name }}<i class="bi bi-person ms-2"></i></a></li>
+                            <hr *ngIf="signedIn" class="dropdown-divider">
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['property-ad-create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
+                            <hr *ngIf="signedIn" class="dropdown-divider">
+                            <li *ngIf="signedIn"><a class="dropdown-item logout" [routerLink]="['logout']">Logout<i class="bi bi-door-open ms-2"></i></a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
-
-            <!--<div *ngIf="!signedIn" class="btn-group">
-                <button type="button" class="btn btn-lg-border" disabled>
-      <span class="material-symbols-outlined profile-without-hover p-2">
-      account_circle
-      </span>
-    </button>
-                <button type="button" class="btn btn-lg-border btn-outline-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-      <span class="material-symbols-outlined py-2">menu</span>
-    </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" [routerLink]="['register']">Registar</a></li>
-                    <li><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão</a></li>
-                </ul>
-            </div>
-
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" [ngClass]="{ show: isExpanded }">
-                <ul class="navbar-nav flex-grow d-flex">
-                    <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
-                        <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-                        <a class="nav-link text-dark" [routerLink]="['/property-ad-create']">Criar Propriedade</a>
-                    </li>
-                </ul>
-                <div *ngIf="!signedIn" class="btn-group">
-                    <button type="button" class="btn btn-lg-border" disabled>
-            <span class="material-symbols-outlined profile-without-hover p-2">
-            account_circle
-            </span>
-          </button>
-                    <button type="button" class="btn btn-lg-border btn-outline-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="material-symbols-outlined py-2">menu</span>
-          </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" [routerLink]="['register']">Registar</a></li>
-                        <li><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão</a></li>
-                    </ul>
-                </div>
-                <div *ngIf="signedIn" class="btn-group">
-                    <button type="button" class="btn btn-lg-border" disabled>
-            <span class="material-symbols-outlined profile-without-hover p-2">
-            account_circle
-            </span>
-          </button>
-                    <button type="button" class="btn btn-lg-border btn-outline-dark dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-            <span class="material-symbols-outlined py-2">menu</span>
-          </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="mx-auto text-center"><span>{{ user?.name }}</span></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item logout" [routerLink]="['logout']">Logout</a></li>
-                    </ul>
-                </div>
-            </div>-->
         </div>
     </nav>
 </header>
