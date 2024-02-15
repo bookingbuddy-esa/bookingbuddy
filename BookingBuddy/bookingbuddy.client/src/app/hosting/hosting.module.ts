@@ -10,15 +10,18 @@ import { HomepagePropertyComponent } from './calendar/homepage-property/homepage
 import { PropertyPromoteComponent } from './property-promote/property-promote.component';
 import { SidePropertiesComponent } from './property-promote/side-properties/side-properties.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CalendarPopupComponent } from './calendar/calendar-popup/calendar-popup.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
-    CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent
+    CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent, CalendarPopupComponent
   ],
   imports: [
     CommonModule, BrowserModule,
     FullCalendarModule, AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule, MatDialogModule, MatIconModule
   ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]

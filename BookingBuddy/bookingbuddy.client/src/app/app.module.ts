@@ -19,6 +19,7 @@ import { HostingModule } from './hosting/hosting.module';
 import { cA } from '@fullcalendar/core/internal-common';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 import {GoogleMap, MapMarker} from "@angular/google-maps";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import {GoogleMap, MapMarker} from "@angular/google-maps";
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     AuthGuard,
-    AuthorizeService
+    AuthorizeService,
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })

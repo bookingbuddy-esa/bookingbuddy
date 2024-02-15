@@ -8,6 +8,8 @@ import { AuthorizeService } from "../../auth/authorize.service";
 import { Router } from '@angular/router';
 import { Property } from '../../models/property';
 import { UserInfo } from '../../auth/authorize.dto';
+import { MatDialog } from '@angular/material/dialog';
+import { CalendarPopupComponent } from './calendar-popup/calendar-popup.component';
 
 @Component({
   selector: 'app-calendar',
@@ -25,9 +27,7 @@ export class CalendarComponent implements OnInit {
   user: UserInfo | undefined;
   currentProperty: Property | null = null;
 
-  constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router) {
-
-  }
+  constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.authService.isSignedIn().forEach(isSignedIn => {
@@ -59,6 +59,23 @@ export class CalendarComponent implements OnInit {
     };
   }
 
+  openPopup() {
+    const dialogRef = this.dialog.open(CalendarPopupComponent, {
+      data: {
+        selectedStartDate: this.selectedStartDate,
+        selectedEndDate: this.selectedEndDate,
+        property: this.currentProperty,
+        eventId: this.selectedEventId
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'calendarUpdate') {
+        this.fullcalendar.getApi().refetchEvents();
+      }
+    });
+  }
+
   handleEventClick(info: any) {
     if (info.event.groupId == 'blocked') {
       const startDate = new Date(info.event.start);
@@ -66,6 +83,7 @@ export class CalendarComponent implements OnInit {
       this.selectedEventId = info.event.id;
       this.selectedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
       this.selectedEndDate = `${startDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate() - 1}`;
+      this.openPopup();
     }
   }
 
@@ -76,40 +94,7 @@ export class CalendarComponent implements OnInit {
     endDate.setDate(endDate.getDate() - 1);
 
     this.selectedEndDate = endDate.toISOString().split('T')[0];
-    console.log("Selecionado entre " + this.selectedStartDate + " a " + this.selectedEndDate);
-  }
-
-  blockSelectedDates() {
-    if (this.selectedStartDate && this.selectedEndDate && this.currentProperty) {
-      this.hostingService.blockDates(this.selectedStartDate, this.selectedEndDate, this.currentProperty.propertyId).forEach(
-        response => {
-          if (response) {
-            this.fullcalendar.getApi().refetchEvents();
-          }
-        }).catch(
-          error => {
-            console.error('Erro ao bloquear datas:', error);
-          }
-        );
-    } else {
-      console.warn('Selecione as datas antes de bloquear.');
-    }
-  }
-
-  unblockDates() {
-    if (this.selectedEventId) {
-      this.hostingService.unblockDates(this.selectedEventId).subscribe(
-        response => {
-          if (response) {
-            console.log('Datas desbloqueadas com sucesso.');
-            this.fullcalendar.getApi().refetchEvents();
-          }
-        },
-        error => {
-          console.error('Erro ao desbloquear datas:', error);
-        }
-      );
-    }
+    this.openPopup();
   }
 
   setCurrentProperty(property: Property) {
@@ -119,32 +104,48 @@ export class CalendarComponent implements OnInit {
 
   async getEventRanges(info: any) {
     try {
-      console.log('Current Property:'+ this.currentProperty?.propertyId);
       if (this.currentProperty) {
         const blockedDates = await this.hostingService.getPropertyBlockedDates(this.currentProperty?.propertyId).toPromise();
-        console.log('Datas obtidas:'+ blockedDates);
         if (!blockedDates) {
-          console.error('DateRanges não está definido.');
           return [];
         }
         const events = blockedDates.map((blocked) => ({
           groupId: "blocked",
           id: blocked.id,
           start: blocked.start,
-          end: blocked.end,
+          end: this.adjustEndDate(blocked.end),
           display: 'background',
           color: 'red',
         }));
 
-        console.log('Datas obtidas:', events);
 
         return events;
       }
       return [];
     } catch (error) {
-      console.error('Erro ao obter BlockedDates:', error);
       return [];
     }
+  }
+
+  private adjustEndDate(endDate: string): string {
+    const parts = endDate.split('-');
+    if (parts.length === 3) {
+      const yearAux = parseInt(parts[0], 10);
+      const monthAux = parseInt(parts[1], 10) - 1;
+      const dayAux = parseInt(parts[2], 10);
+
+      const adjustedEndDate = new Date(yearAux, monthAux, dayAux);
+
+      adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+
+      const day = adjustedEndDate.getDate().toString().padStart(2, '0');
+      const month = (adjustedEndDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = adjustedEndDate.getFullYear();
+
+      return `${year}-${month}-${day}`;
+    }
+
+    return endDate;
   }
 
   private loadUserProperties() {
