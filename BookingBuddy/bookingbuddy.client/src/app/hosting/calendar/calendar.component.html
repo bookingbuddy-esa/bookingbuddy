@@ -7,6 +7,7 @@
           </div>
         </div>
         <div class="col py-3">
+          <h1 *ngIf="currentProperty"><strong>{{currentProperty.name}}</strong> </h1>
           <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
         </div>
     </div>
