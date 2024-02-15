@@ -1,20 +1,21 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl, FormArray } from "@angular/forms";
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators, AbstractControl, FormArray} from "@angular/forms";
+import {Router} from '@angular/router';
 
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
-import { CheckboxOptions } from '../../models/checkboxes';
-import { PropertyAdService } from '../property-ad.service';
-import { AuthorizeService } from '../../auth/authorize.service';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, Subject, catchError, map, of} from 'rxjs';
+import {CheckboxOptions} from '../../models/checkboxes';
+import {PropertyAdService} from '../property-ad.service';
+import {AuthorizeService} from '../../auth/authorize.service';
+import {GoogleMap, MapGeocoder} from '@angular/google-maps';
 
 @Component({
   selector: 'app-property-ad-create',
   templateUrl: './property-ad-create.component.html',
   styleUrl: './property-ad-create.component.css'
 })
-export class PropertyAdCreateComponent {
+export class PropertyAdCreateComponent implements OnInit {
   selectedFiles: File[] = [];
   comodidades = Object.values(CheckboxOptions);
   comodidadesSelecionadas: CheckboxOptions[] = [];
@@ -23,10 +24,12 @@ export class PropertyAdCreateComponent {
   createPropertyFailed: boolean;
   checkboxOptions = CheckboxOptions;
   signedIn: boolean = false;
+  zoom: number = 6;
+  center: google.maps.LatLngLiteral = {lat: 39.69738149392836, lng: -8.322673356323522};
+  display?: google.maps.LatLngLiteral;
 
-  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService) {
+  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private router: Router, private propertyService: PropertyAdService, private geocoder: MapGeocoder) {
     this.errors = [];
-    
     this.createPropertyFailed = false;
     this.createPropertyAdForm = this.formBuilder.group({
       name: [''],
@@ -37,7 +40,7 @@ export class PropertyAdCreateComponent {
       imagesUrl: ['']
     });
   }
-  
+
   ngOnInit(): void {
     this.authService.isSignedIn().forEach(isSignedIn => {
       this.signedIn = isSignedIn;
@@ -48,6 +51,18 @@ export class PropertyAdCreateComponent {
         this.router.navigateByUrl('signin');
       }
     });
+  }
+
+  setLocation(event: google.maps.MapMouseEvent) {
+    this.display = event.latLng!.toJSON();
+    this.geocoder.geocode({
+      location: this.display
+    }).forEach(results => {
+      if (results) {
+        this.createPropertyAdForm.get('location')?.setValue(results.results[0].formatted_address);
+      }
+    });
+    this.createPropertyAdForm.get('location')?.setValue(`${this.display.lat}, ${this.display.lng}`);
   }
 
   //função para guardar as imagens num array // TODO:Restrições de tipo de ficheiro
@@ -115,11 +130,11 @@ export class PropertyAdCreateComponent {
                 console.log(response);
               }
             }).catch(
-              error => {
-                this.errors.push(error.message);
-                //console.error(error);
-              }
-            );
+            error => {
+              this.errors.push(error.message);
+              //console.error(error);
+            }
+          );
         }
       })
     ).subscribe();

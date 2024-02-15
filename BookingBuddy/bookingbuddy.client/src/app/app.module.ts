@@ -18,6 +18,7 @@ import { PropertyAdCreateComponent } from './property-ad/property-ad-create/prop
 import { HostingModule } from './hosting/hosting.module';
 import { cA } from '@fullcalendar/core/internal-common';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
+import {GoogleMap, MapMarker} from "@angular/google-maps";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/
     AppRoutingModule, FormsModule,
     ReactiveFormsModule, AuthModule,
     AuxiliaryModule, NgOptimizedImage,
-    HostingModule
+    HostingModule, GoogleMap, MapMarker
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
