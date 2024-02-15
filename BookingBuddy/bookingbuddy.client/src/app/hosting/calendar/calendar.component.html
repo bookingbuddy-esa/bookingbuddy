@@ -1,10 +1,10 @@
 <div class="container-fluid">
     <div class="row flex-nowrap">
         <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
-            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark min-vh-100">
-                <h4>Propriedades</h4>
-                <app-homepage-property *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)"></app-homepage-property>
-            </div>
+          <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
+            <h1 class="text-center">Propriedades</h1>
+            <app-homepage-property *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)"></app-homepage-property>
+          </div>
         </div>
         <div class="col py-3">
           <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>

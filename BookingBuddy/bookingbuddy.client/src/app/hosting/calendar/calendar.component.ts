@@ -48,6 +48,7 @@ export class CalendarComponent implements OnInit {
 
   private initializeCalendar() {
     this.calendarOptions = {
+      height: '90%',
       plugins: [dayGridPlugin, interactionPlugin],
       select: this.handleSelect.bind(this),
       events: this.getEventRanges.bind(this),
