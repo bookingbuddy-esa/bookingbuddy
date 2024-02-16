@@ -9,6 +9,7 @@ import {CheckboxOptions} from '../../models/checkboxes';
 import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
 import {GoogleMap, MapGeocoder} from '@angular/google-maps';
+import {UserInfo} from "../../auth/authorize.dto";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -16,6 +17,7 @@ import {GoogleMap, MapGeocoder} from '@angular/google-maps';
   styleUrl: './property-ad-create.component.css'
 })
 export class PropertyAdCreateComponent implements OnInit {
+  user: UserInfo | undefined;
   selectedFiles: File[] = [];
   comodidades = Object.values(CheckboxOptions);
   comodidadesSelecionadas: CheckboxOptions[] = [];
@@ -23,7 +25,6 @@ export class PropertyAdCreateComponent implements OnInit {
   createPropertyAdForm!: FormGroup;
   createPropertyFailed: boolean;
   checkboxOptions = CheckboxOptions;
-  signedIn: boolean = false;
   zoom: number = 6;
   center: google.maps.LatLngLiteral = {lat: 39.69738149392836, lng: -8.322673356323522};
   display?: google.maps.LatLngLiteral;
@@ -42,14 +43,8 @@ export class PropertyAdCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.isSignedIn().forEach(isSignedIn => {
-      this.signedIn = isSignedIn;
-      if (this.signedIn) {
-        this.authService.user().forEach(async user => {
-        });
-      } else {
-        this.router.navigateByUrl('signin');
-      }
+    this.authService.user().forEach(user => {
+      this.user=user;
     });
   }
 

@@ -7,17 +7,21 @@ import {NotfoundComponent} from "./auxiliary/notfound/notfound.component";
 import {UnauthorizedComponent} from "./auxiliary/unauthorized/unauthorized.component";
 import {BadRequestComponent} from "./auxiliary/bad-request/bad-request.component";
 import {CalendarComponent} from "./hosting/calendar/calendar.component";
-import { AuthModule } from "./auth/auth.module";
-import { PropertyPromoteComponent } from './hosting/property-promote/property-promote.component';
+import {AuthModule} from "./auth/auth.module";
+import {PropertyPromoteComponent} from './hosting/property-promote/property-promote.component';
+import {ForbiddenComponent} from "./auxiliary/forbidden/forbidden.component";
+import {AuthGuard} from "./auth/authorize.guard";
+import {LandlordRoleGuardService} from "./auth/role-guard/landlord-role-guard.service";
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
-  {path: 'property-ad-create', component: PropertyAdCreateComponent},
-  {path: 'propriedades/:id', component: PropertyAdRetrieveComponent },
+  {path: 'property-ad-create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
+  {path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
+  {path: 'property-promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
+  {path: 'propriedades/:id', component: PropertyAdRetrieveComponent},
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
-  {path: 'calendar', component: CalendarComponent},
-  {path: 'property-promote', component: PropertyPromoteComponent},
+  {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', component: NotfoundComponent}
 ];
 

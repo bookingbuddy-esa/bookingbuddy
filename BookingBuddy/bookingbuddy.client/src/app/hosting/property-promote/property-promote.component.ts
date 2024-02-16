@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { HostingService } from '../hosting.service';
-import { AuthorizeService } from '../../auth/authorize.service';
-import { Router } from '@angular/router';
-import { UserInfo } from '../../auth/authorize.dto';
-import { Property } from '../../models/property';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PropertyPromote } from '../../models/property-promote';
+import {Component, OnInit} from '@angular/core';
+import {HostingService} from '../hosting.service';
+import {AuthorizeService} from '../../auth/authorize.service';
+import {Router} from '@angular/router';
+import {UserInfo} from '../../auth/authorize.dto';
+import {Property} from '../../models/property';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {PropertyPromote} from '../../models/property-promote';
 
 @Component({
   selector: 'app-property-promote',
@@ -13,7 +13,6 @@ import { PropertyPromote } from '../../models/property-promote';
   styleUrl: './property-promote.component.css'
 })
 export class PropertyPromoteComponent implements OnInit {
-  signedIn: boolean = false;
   user: UserInfo | undefined;
   property_list: Property[] = [];
   currentProperty: Property | null = null;
@@ -27,18 +26,9 @@ export class PropertyPromoteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authService.isSignedIn().forEach(isSignedIn => {
-      this.signedIn = isSignedIn;
-      if (this.signedIn) {
-        this.authService.user().forEach(async user => {
-          this.user = user;
-
-          await this.loadUserProperties();
-
-        });
-      } else {
-        this.router.navigateByUrl('signin');
-      }
+    this.authService.user().forEach(async user => {
+      this.user = user;
+      this.loadUserProperties();
     });
   }
 
@@ -49,13 +39,16 @@ export class PropertyPromoteComponent implements OnInit {
 
     switch (durationSelected) {
       case "1": {
-        calculatedEndDate = new Date(calculatedEndDate.setDate(calculatedEndDate.getDate() + 7)); break
+        calculatedEndDate = new Date(calculatedEndDate.setDate(calculatedEndDate.getDate() + 7));
+        break
       }
       case "2": {
-        calculatedEndDate = new Date(calculatedEndDate.setMonth(calculatedEndDate.getMonth() + 1)); break
+        calculatedEndDate = new Date(calculatedEndDate.setMonth(calculatedEndDate.getMonth() + 1));
+        break
       }
       case "3": {
-        calculatedEndDate = new Date(calculatedEndDate.setFullYear(calculatedEndDate.getFullYear() + 1)); break
+        calculatedEndDate = new Date(calculatedEndDate.setFullYear(calculatedEndDate.getFullYear() + 1));
+        break
       }
     }
 

@@ -744,7 +744,7 @@ namespace BookingBuddy.Server.Controllers
     public record UserInfoModel(
         string UserId,
         string Provider,
-        List<string> Role,
+        List<string> Roles,
         string Name,
         string UserName,
         string Email,

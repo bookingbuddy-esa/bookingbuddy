@@ -1,15 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/core';
-import { FullCalendarComponent } from '@fullcalendar/angular';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {CalendarOptions} from '@fullcalendar/core';
+import {FullCalendarComponent} from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { HostingService } from '../hosting.service';
-import { AuthorizeService } from "../../auth/authorize.service";
-import { Router } from '@angular/router';
-import { Property } from '../../models/property';
-import { UserInfo } from '../../auth/authorize.dto';
-import { MatDialog } from '@angular/material/dialog';
-import { CalendarPopupComponent } from './calendar-popup/calendar-popup.component';
+import {HostingService} from '../hosting.service';
+import {AuthorizeService} from "../../auth/authorize.service";
+import {Router} from '@angular/router';
+import {Property} from '../../models/property';
+import {UserInfo} from '../../auth/authorize.dto';
+import {MatDialog} from '@angular/material/dialog';
+import {CalendarPopupComponent} from './calendar-popup/calendar-popup.component';
 
 @Component({
   selector: 'app-calendar',
@@ -17,31 +17,22 @@ import { CalendarPopupComponent } from './calendar-popup/calendar-popup.componen
   styleUrls: ['./calendar.component.css']
 })
 export class CalendarComponent implements OnInit {
-  @ViewChild(FullCalendarComponent, { static: false }) fullcalendar!: FullCalendarComponent;
+  @ViewChild(FullCalendarComponent, {static: false}) fullcalendar!: FullCalendarComponent;
   calendarOptions: any;
   selectedStartDate: string | null = null;
   selectedEndDate: string | null = null;
   selectedEventId: number | null = null;
-  signedIn: boolean = false;
   property_list: Property[] = [];
   user: UserInfo | undefined;
   currentProperty: Property | null = null;
 
-  constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router, private dialog: MatDialog) {}
+  constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router, private dialog: MatDialog) {
+  }
 
   ngOnInit(): void {
-    this.authService.isSignedIn().forEach(isSignedIn => {
-      this.signedIn = isSignedIn;
-      if (this.signedIn) {
-        this.authService.user().forEach(async user => {
-          this.user = user;
-
-          await this.loadUserProperties();
-
-        });
-      } else {
-        this.router.navigateByUrl('signin');
-      }
+    this.authService.user().forEach(async user => {
+      this.user = user;
+      this.loadUserProperties();
     });
     this.initializeCalendar();
   }
@@ -100,7 +91,7 @@ export class CalendarComponent implements OnInit {
 
   setCurrentProperty(property: Property) {
     this.currentProperty = property;
-    this.fullcalendar.getApi().refetchEvents(); 
+    this.fullcalendar.getApi().refetchEvents();
   }
 
   async getEventRanges(info: any) {
