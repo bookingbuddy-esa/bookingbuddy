@@ -46,6 +46,7 @@ export class PropertyAdCreateComponent implements OnInit {
     this.authService.user().forEach(user => {
       this.user=user;
     });
+    console.log(this.user);
   }
 
   setLocation(event: google.maps.MapMouseEvent) {

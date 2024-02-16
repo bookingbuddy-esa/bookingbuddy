@@ -15,10 +15,10 @@ import {LandlordRoleGuardService} from "./auth/role-guard/landlord-role-guard.se
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
-  {path: 'property-ad-create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
-  {path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
-  {path: 'property-promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
-  {path: 'propriedades/:id', component: PropertyAdRetrieveComponent},
+  {path: 'property/:id', component: PropertyAdRetrieveComponent},
+  {path: 'properties/create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
+  {path: 'properties/calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
+  {path: 'properties/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
