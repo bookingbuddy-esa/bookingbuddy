@@ -16,7 +16,6 @@ import { HomepagePropertyComponent } from './homepage/homepage-property/homepage
 import {NgOptimizedImage} from "@angular/common";
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 import { HostingModule } from './hosting/hosting.module';
-import { cA } from '@fullcalendar/core/internal-common';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 import {GoogleMap, MapMarker} from "@angular/google-maps";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -28,7 +27,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     MenuComponent,
     HomepagePropertyComponent,
     PropertyAdCreateComponent,
-    PropertyAdRetrieveComponent
+    PropertyAdRetrieveComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -38,7 +37,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     HostingModule, GoogleMap, MapMarker
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthGuard,
     AuthorizeService,
     provideAnimationsAsync()
