@@ -11,6 +11,7 @@ import {UserInfo} from "../auth/authorize.dto";
 export class MenuComponent implements OnInit {
   protected signedIn: boolean = false;
   protected user: UserInfo | undefined;
+  protected isLandlord: boolean = false;
 
   constructor(private authService: AuthorizeService, private router: Router) {
   }
@@ -20,13 +21,23 @@ export class MenuComponent implements OnInit {
       isSignedIn => {
         this.signedIn = isSignedIn;
         if (isSignedIn) {
-          this.authService.user().forEach(user => this.user = user);
+          this.authService.user().forEach(user => {
+            this.user = user
+            if (user.roles.includes('landlord') || user.roles.includes('admin')) {
+              this.isLandlord = true;
+            }
+          });
         }
       });
     this.authService.onStateChanged().forEach(isSignedIn => {
       this.signedIn = isSignedIn;
       if (isSignedIn) {
-        this.authService.user().forEach(user => this.user = user);
+        this.authService.user().forEach(user => {
+          this.user = user
+          if (user.roles.includes('landlord') || user.roles.includes('admin')) {
+            this.isLandlord = true;
+          }
+        });
       }
     });
   }
@@ -41,7 +52,13 @@ export class MenuComponent implements OnInit {
     this.isExpanded = !this.isExpanded;
   }
 
-  public signOut() {
-    this.authService.signOut().subscribe(() => this.router.navigate(['']));
+  signOut() {
+    this.router.navigateByUrl('/logout').then(
+      () => {
+        this.isLandlord = false;
+        this.signedIn = false;
+        this.user = undefined;
+      }
+    )
   }
 }
