@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './payment.component.html',
   styleUrl: './payment.component.css'
 })
+
 export class PaymentComponent {
 
 }

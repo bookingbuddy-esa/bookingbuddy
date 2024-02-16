@@ -74,7 +74,15 @@ namespace BookingBuddy.Server.Models
         [Display(Name = "Proprietário")]
         public ReturnUser? ApplicationUser { get; set; }
 
+        /// <summary>
+        /// Propriedade que diz respeito às datas bloqueadas da propriedade física a anunciar.
+        /// </summary>
         public List<BlockedDate>? BlockedDates { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito ao número de cliques que a propriedade física a anunciar teve.
+        /// </summary>
+        public int Clicks { get; set; }
     }
 
     [NotMapped]

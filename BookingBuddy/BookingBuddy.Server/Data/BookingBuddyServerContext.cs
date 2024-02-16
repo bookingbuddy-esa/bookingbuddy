@@ -32,6 +32,11 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<BlockedDate> BlockedDate { get; set; } = default!;
 
+        public DbSet<Order> Order { get; set; } = default!;
+        public DbSet<PromotionOrder> PromotionOrder { get; set; } = default!;
+        public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;
+        public DbSet<BookingOrder> BookingOrder { get; set; } = default!;
+
         /// <summary>
         /// Dados de inicialização da base de dados.
         /// </summary>
