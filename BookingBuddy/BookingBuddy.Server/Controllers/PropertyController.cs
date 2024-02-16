@@ -225,6 +225,11 @@ namespace BookingBuddy.Server.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Método que obtém as propriedades de um utilizador.
+        /// </summary>
+        /// <param name="userId">Identificador do utilizador</param>
+        /// <returns>Lista com as propriedades do utilizador, caso exista, ou não encontrada, caso contrário</returns>
         [HttpGet("user/{userId}")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Property>>> GetPropertiesByUserId(string userId)
@@ -241,6 +246,91 @@ namespace BookingBuddy.Server.Controllers
             return properties;
         }
 
+
+        /// <summary>
+        /// Método que obtém as datas bloqueadas de uma propriedade.
+        /// </summary>
+        /// <param name="propertyId">Identificador da propriedade</param>
+        /// <returns>Lista com as datas bloqueadas de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
+        [HttpGet("blockedDates/{propertyId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<BlockedDate>>> GetPropertyBlockedDates(string propertyId)
+        {
+            var blockedDates = await _context.BlockedDate
+             .Where(b => b.PropertyId == propertyId)
+             .ToListAsync();
+
+            if (blockedDates == null || blockedDates.Count == 0)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+            }
+
+            return blockedDates;
+        }
+
+        /// <summary>
+        /// Método que bloqueia as datas no calendario de uma propriedade.
+        /// </summary>
+        /// <param name="inputModel">Modelo de criação de uma BlockedDate</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Operação bem-sucedida, as datas foram bloqueadas com sucesso.
+        /// - 400 Bad Request: O modelo de entrada é inválido.
+        /// </returns>
+        [HttpPost("blockDates")]
+        [AllowAnonymous]
+        public async Task<IActionResult> BlockDates([FromBody] BlockDateInputModel inputModel)
+        {
+            if (inputModel == null)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            var blockedDate = new BlockedDate
+            {
+                Start = inputModel.StartDate,
+                End = inputModel.EndDate,
+                PropertyId = inputModel.PropertyId
+            };
+
+            _context.BlockedDate.Add(blockedDate);
+            await _context.SaveChangesAsync();
+
+            return Ok("Dates blocked successfully");
+        }
+
+        /// <summary>
+        /// Método que desbloqueia uma data de uma propriedade.
+        /// </summary>
+        /// <param name="id">Identificador da data a desbloquear</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Operação bem-sucedida, a data foi desbloqueada com sucesso.
+        /// - 404 Not Found: A data com o identificador fornecido não foi encontrada. 
+        /// </returns>
+        [HttpDelete("unblock/{id}")]
+        public async Task<IActionResult> UnblockDates(int id)
+        {
+            var blockedDate = await _context.BlockedDate.FindAsync(id);
+
+            if (blockedDate == null)
+            {
+                return NotFound();
+            }
+
+            _context.BlockedDate.Remove(blockedDate);
+            await _context.SaveChangesAsync();
+
+            return Ok("Dates unblocked successfully");
+        }
+
+        /// <summary>
+        /// Método que verifica se uma propriedade existe.
+        /// </summary>
+        /// <param name="id">Identificador da propriedade.</param>
+        /// <returns>
+        /// Retorna verdadeiro se uma propriedade com o identificador fornecido existir; caso contrário, retorna falso.
+        /// </returns>
         private bool PropertyExists(string id)
         {
             return _context.Property.Any(e => e.PropertyId == id);
@@ -269,4 +359,12 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
     public record PropertyEditModel(string PropertyId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+
+    /// <summary>
+    /// Modelo de edição de propriedade
+    /// </summary>
+    /// <param name="StartDate">Data Inicial do Bloqueio</param>
+    /// <param name="EndDate">Data Final do bloqueio</param>
+    /// <param name="PropertyId">Identificador da Propriedade</param>-
+    public record BlockDateInputModel(string StartDate, string EndDate, string PropertyId);
 }
