@@ -151,7 +151,7 @@
          aria-valuemin="0" aria-valuemax="100">
       <div class="progress-bar" [style.width.%]="currentCompletePercentage"></div>
     </div>
-    <div class="w-100 h-100 d-flex flex-row align-items-center justify-content-between">
+    <div class="w-100 h-100 d-flex flex-row align-items-center justify-content-between" [ngSwitch]="currentStep">
       <button *ngIf="currentCompletePercentage === 0" class="bottom-button btn btn-danger px-2 mx-5 h-50"
               [routerLink]="['/']">
         Cancelar
@@ -160,7 +160,20 @@
               (click)="previousStep()">
         Anterior
       </button>
-      <button class="bottom-button btn btn-primary px-2 mx-5 h-50"
+      <button *ngSwitchCase="1" class="bottom-button btn btn-primary px-2 mx-5 h-50"
+              [disabled]="!locationForm.valid"
+              (click)="nextStep()">
+        Seguinte
+      </button>
+      <button *ngSwitchCase="2" class="bottom-button btn btn-primary px-2 mx-5 h-50"
+              (click)="nextStep()">
+        Seguinte
+      </button>
+      <button *ngSwitchCase="3" class="bottom-button btn btn-primary px-2 mx-5 h-50"
+              (click)="nextStep()">
+        Seguinte
+      </button>
+      <button *ngSwitchDefault class="bottom-button btn btn-primary px-2 mx-5 h-50"
               (click)="nextStep()">
         Seguinte
       </button>

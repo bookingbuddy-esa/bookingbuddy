@@ -10,7 +10,7 @@ import {
 } from "@angular/forms";
 import {Router} from '@angular/router';
 
-import {interval, map, Observable, of, Subject, timeout} from 'rxjs';
+import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
 import {CheckboxOptions} from '../../models/checkboxes';
 import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
@@ -23,7 +23,7 @@ import {Property} from "../../models/property";
   templateUrl: './property-ad-create.component.html',
   styleUrl: './property-ad-create.component.css'
 })
-export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
+export class PropertyAdCreateComponent implements OnInit {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
 
@@ -32,13 +32,18 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
   protected errors: string[] = [];
   protected currentStep: number = 0;
   protected readonly numberOfSteps: number = 3;
+  protected step: Subject<number> = new BehaviorSubject(0);
+
+  protected onStepChange() {
+    return this.step.asObservable();
+  }
 
   protected nameAndDescriptionForm = this.formBuilder.group({
     name: ['', Validators.required],
     description: ['']
   });
   protected locationForm = this.formBuilder.group({
-    location: ['', Validators.required]
+    location: ['', [Validators.required, Validators.minLength(10)]]
   });
   protected priceAndAmenitiesForm = this.formBuilder.group({
     pricePerNight: ['', Validators.required],
@@ -53,7 +58,6 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
     gestureHandling: 'greedy',
     streetViewControl: false,
     zoomControl: true,
-
   };
   protected markerOptions: google.maps.MarkerOptions = {
     clickable: false,
@@ -71,28 +75,46 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
     this.authService.user().forEach(user => {
       this.user = user;
     });
-  }
-
-  ngAfterViewInit(): void {
-    google.maps.importLibrary("places").then(() => {
-      this.googleAutoComplete = new google.maps.places.Autocomplete(
-        document.getElementById('location') as HTMLInputElement,
-        {
-          types: ['address'],
-          componentRestrictions: {country: 'pt'}
+    this.onStepChange().forEach(step => {
+      this.currentStep = step;
+      switch (step) {
+        case 1: {
+          google.maps.importLibrary("places").then(() => {
+            this.googleAutoComplete = new google.maps.places.Autocomplete(
+              document.getElementById('location') as HTMLInputElement,
+              {
+                types: ['address'],
+                componentRestrictions: {country: 'pt'},
+              }
+            );
+            this.googleAutoComplete.addListener('place_changed', () => {
+              const place = this.googleAutoComplete?.getPlace();
+              if (place) {
+                this.locationForm.get('location')?.setValue(place.formatted_address!);
+                this.display = place.geometry?.location!.toJSON();
+                this.center = this.display!;
+                this.zoom = 15;
+              }
+            });
+          });
+          break;
         }
-      );
-      this.googleAutoComplete.addListener('place_changed', () => {
-        const place = this.googleAutoComplete?.getPlace();
-        if (place) {
-          this.locationForm.get('location')?.setValue(place.formatted_address!);
-          this.display = place.geometry?.location!.toJSON();
-          this.center = this.display!;
-          this.zoom = 15;
+        case 2: {
+          break;
         }
-      });
+        case 3: {
+          break;
+        }
+        default : {
+          this.locationForm.reset();
+          this.display = undefined;
+          this.nameAndDescriptionForm.reset();
+          this.priceAndAmenitiesForm.reset();
+        }
+      }
     });
   }
+
 
   setLocation(event: google.maps.MapMouseEvent): void {
     this.display = event.latLng!.toJSON();
@@ -105,12 +127,12 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
 
   previousStep() {
     if (this.currentStep > 0)
-      this.currentStep--;
+      this.step.next(this.currentStep - 1);
   }
 
   nextStep() {
     if (this.currentStep < this.numberOfSteps)
-      this.currentStep++;
+      this.step.next(this.currentStep + 1);
   }
 
   get currentCompletePercentage() {
