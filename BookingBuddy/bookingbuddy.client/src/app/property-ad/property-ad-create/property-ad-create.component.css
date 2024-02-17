@@ -24,21 +24,12 @@ google-map {
   border-radius: 5px !important;
 }
 
-.progress-bar-0 {
-  width: 0;
+.image-right{
+  max-height: 70%;
+  max-width: 70%;
+  object-fit: contain;
 }
 
-.progress-bar-33 {
-  width: 33%;
-}
-
-.progress-bar-66 {
-  width: 66%;
-}
-
-.progress-bar-100 {
-  width: 100%;
-}
 
 @media only screen and (max-width: 1700px) {
   .input-form-field {
