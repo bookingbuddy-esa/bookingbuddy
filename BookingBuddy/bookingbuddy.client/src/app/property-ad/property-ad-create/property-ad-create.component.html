@@ -101,8 +101,9 @@
   </div>
 </div>-->
 
-<div class="w-100 d-flex flex-column align-items-center justify-content-between">
-  <div class="w-100 flex-grow-1 p-5 d-flex flex-column flex-column align-items-center justify-content-center">
+<div class="w-100 d-flex flex-column align-items-center justify-content-between" [ngSwitch]="currentStep">
+  <div *ngSwitchCase="1"
+       class="w-100 flex-grow-1 p-5 d-flex flex-column flex-column align-items-center justify-content-center">
     <div class="fs-1 p-3 fw-bold">Onde fica o seu espaço?</div>
     <div class="fs-6 p-2">O seu endereço só é partilhado com os hóspedes depois de eles terem feito a reserva.</div>
     <form class="d-flex w-100 align-items-center justify-content-center p5" [formGroup]="locationForm">
@@ -123,23 +124,45 @@
                   height="100%"
                   [center]="center"
                   [zoom]="zoom"
+                  (mapClick)="setLocation($event)"
                   [options]="options">
         <map-marker *ngIf="display" [position]="display" [options]="markerOptions"></map-marker>
       </google-map>
+    </div>
+  </div>
+  <div *ngSwitchCase="2"
+       class="w-100 flex-grow-1 p-5 d-flex flex-column flex-column align-items-center justify-content-center"></div>
+  <div *ngSwitchDefault
+       class="w-100 flex-grow-1 p-5 d-flex flex-column flex-column align-items-center justify-content-center">
+    <div class="d-flex flex-row h-100 w-100 text-center align-items-center justify-content-center">
+      <div class="d-flex w-50 flex-column align-items-center">
+        <span class="h1 mb-5">Bem-vindo ao assistente de criação de anúncios!</span>
+        <span class="fs-5">Vamos começar por preencher os campos básicos do seu anúncio.</span>
+      </div>
+      <div class="d-flex flex-grow-1 h-100">
+        <img class="flex-grow-1 m-auto image-right"
+             src="https://i.pinimg.com/originals/fb/43/b2/fb43b2ef58e824f3ec1f640bf5bd996b.gif" alt="multiple houses">
+      </div>
     </div>
   </div>
   <div class="d-flex flex-column align-items-start justify-content-start"
        style="width: 100vw;height: 12%">
     <div class="progress w-100 rounded-0" role="progressbar" aria-label="Basic example" aria-valuenow="0"
          aria-valuemin="0" aria-valuemax="100">
-      <div class="progress-bar"
-           [ngClass]="{'progress-bar-0': completePercentage === 0 ,'progress-bar-33': completePercentage <= 33 && completePercentage > 0, 'progress-bar-66': completePercentage > 33 && completePercentage <= 66, 'progress-bar-100': completePercentage > 66}"></div>
+      <div class="progress-bar" [style.width.%]="currentCompletePercentage"></div>
     </div>
     <div class="w-100 h-100 d-flex flex-row align-items-center justify-content-between">
-      <button class="bottom-button btn btn-danger px-2 mx-5 h-50" (click)="completePercentage=0">Cancelar</button>
+      <button *ngIf="currentCompletePercentage === 0" class="bottom-button btn btn-danger px-2 mx-5 h-50"
+              [routerLink]="['/']">
+        Cancelar
+      </button>
+      <button *ngIf="currentCompletePercentage !== 0" class="bottom-button btn btn-secondary px-2 mx-5 h-50"
+              (click)="previousStep()">
+        Anterior
+      </button>
       <button class="bottom-button btn btn-primary px-2 mx-5 h-50"
-              (click)="completePercentage + 33 <= 100 ? completePercentage=completePercentage + 33 : 100">
-        Continuar
+              (click)="nextStep()">
+        Seguinte
       </button>
     </div>
   </div>

@@ -30,7 +30,8 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
   // Formulário
   protected selectedFiles: File[] = [];
   protected errors: string[] = [];
-  protected completePercentage: number = 0;
+  protected currentStep: number = 0;
+  protected readonly numberOfSteps: number = 3;
 
   protected nameAndDescriptionForm = this.formBuilder.group({
     name: ['', Validators.required],
@@ -49,7 +50,7 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
   protected zoom: number = 6;
   protected display: google.maps.LatLngLiteral | undefined;
   protected options: google.maps.MapOptions = {
-    gestureHandling: 'none',
+    gestureHandling: 'greedy',
     streetViewControl: false,
     zoomControl: true,
 
@@ -93,6 +94,28 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
     });
   }
 
+  setLocation(event: google.maps.MapMouseEvent): void {
+    this.display = event.latLng!.toJSON();
+    this.geocoder.geocode({location: this.display}).forEach(results => {
+      if (results) {
+        this.locationForm.get('location')?.setValue(results.results[0].formatted_address!);
+      }
+    });
+  }
+
+  previousStep() {
+    if (this.currentStep > 0)
+      this.currentStep--;
+  }
+
+  nextStep() {
+    if (this.currentStep < this.numberOfSteps)
+      this.currentStep++;
+  }
+
+  get currentCompletePercentage() {
+    return ((this.currentStep) / this.numberOfSteps) * 100;
+  }
 
   get nameFormField() {
     return this.nameAndDescriptionForm.get('name');
@@ -122,6 +145,10 @@ export class PropertyAdCreateComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public submitLocation() {
+    // TODO: Validar localização
+    this.currentStep++;
+  }
 
   /*public create(_: any) {
     this.submitting = true;
