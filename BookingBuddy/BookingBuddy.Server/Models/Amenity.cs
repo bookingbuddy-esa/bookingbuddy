@@ -11,7 +11,7 @@ namespace BookingBuddy.Server.Models
         /// Propriedade que diz respeito ao identificador de uma comodidade de uma propriedade física a anunciar.
         /// </summary>
         [Key]
-        public int AmenityId { get; set; }
+        public string AmenityId { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito ao nome de uma comodidade de uma propriedade física a anunciar.
@@ -19,5 +19,7 @@ namespace BookingBuddy.Server.Models
         [Required(ErrorMessage = "O nome da comodidade é obrigatório")]
         [Display(Name = "Nome")]
         public string Name { get; set; }
+        
+        public string DisplayName { get; set; }
     }
 }

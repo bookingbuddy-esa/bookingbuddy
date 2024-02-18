@@ -167,11 +167,6 @@ export class PropertyAdCreateComponent implements OnInit {
     }
   }
 
-  public submitLocation() {
-    // TODO: Validar localização
-    this.currentStep++;
-  }
-
   /*public create(_: any) {
     this.submitting = true;
     this.errors = [];

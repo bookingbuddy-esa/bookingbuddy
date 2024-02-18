@@ -22,7 +22,7 @@ namespace BookingBuddy.Server.Models
         /// <summary>
         /// Propriedade que diz respeito aos identificadores das comodidades da propriedade.
         /// </summary>
-        public List<int>? AmenityIds { get; set; }
+        public List<string>? AmenityIds { get; set; }
 
         /// <summary>
         /// Propriedade que diz respeito ao nome da propriedade física a anunciar.
