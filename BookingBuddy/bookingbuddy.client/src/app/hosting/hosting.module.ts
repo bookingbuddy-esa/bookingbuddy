@@ -13,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CalendarPopupComponent } from './calendar/calendar-popup/calendar-popup.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { PaymentComponent } from '../payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,7 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [
     CommonModule, BrowserModule,
     FullCalendarModule, AppRoutingModule,
-    ReactiveFormsModule, MatDialogModule, MatIconModule
+    ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent
   ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]

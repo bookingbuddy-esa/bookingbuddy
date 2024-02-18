@@ -4,6 +4,7 @@ using BookingBuddy.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingBuddy.Server.Migrations
 {
     [DbContext(typeof(BookingBuddyServerContext))]
-    partial class BookingBuddyServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240216180700_Clicks")]
+    partial class Clicks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,55 +127,55 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "66f05769-998e-4d7d-a994-cf0ba22cfd16",
+                            Id = "2c3afa8a-56eb-47b4-bd81-3bdce7ce3362",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "52b6155a-db8f-4bba-b9c6-bc907fce06aa",
+                            ConcurrencyStamp = "5cd1d3aa-e538-44c5-8af6-e59520e2a973",
                             Email = "bookingbuddy.admin@bookingbuddy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "admin",
                             NormalizedEmail = "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM",
                             NormalizedUserName = "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELX4kYbRFoUO6f8bSSYw24YUSgBAV2qqPz3C9MX/IDK+B1iK6XOkxRgCx3S4Fqq3eA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJtcHc1qCjtJnehNWdJ2Gk5wV41Dd+AKDkkOvzVMUOIJ/haHphiSaGKBKgl0mib7+A==",
                             PhoneNumberConfirmed = false,
-                            ProviderId = "0c53013c-ebec-471b-aaf2-3f2361c9c522",
-                            SecurityStamp = "4deb2d73-06e9-4ba9-b49c-3b247d725911",
+                            ProviderId = "4b915b1f-8b74-45cf-979e-b10f8b98f919",
+                            SecurityStamp = "676321b8-1748-4e2d-9b6e-602849ecf26c",
                             TwoFactorEnabled = false,
                             UserName = "bookingbuddy.admin@bookingbuddy.com"
                         },
                         new
                         {
-                            Id = "fad782f6-d92a-4644-bf63-f6d3a32bc659",
+                            Id = "48996947-a573-4470-8d32-7797a2bac0e5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d7d71f74-ea3f-4cb4-9ea4-79e52594ce06",
+                            ConcurrencyStamp = "1865f161-f61a-45cd-a8f5-f7c58e2a040a",
                             Email = "bookingbuddy.user@bookingbuddy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "user",
                             NormalizedEmail = "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM",
                             NormalizedUserName = "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFW6lfz38pESC+tlwJpUMEbBUtgBwryWgY7hc89dG1j+CNXgxaUB7DpRmgcLlGqJPQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEzFRjlpejUeQ2FduLqTCg+K1pAhDOKOgbm9hiZ2mwlYaTN718YVLhUXnZ96HXOvmQ==",
                             PhoneNumberConfirmed = false,
-                            ProviderId = "0c53013c-ebec-471b-aaf2-3f2361c9c522",
-                            SecurityStamp = "aa74dfc5-25be-43d3-af9a-d36ad21e540d",
+                            ProviderId = "4b915b1f-8b74-45cf-979e-b10f8b98f919",
+                            SecurityStamp = "286c81f7-66b2-460e-97b3-c0876b8b5b16",
                             TwoFactorEnabled = false,
                             UserName = "bookingbuddy.user@bookingbuddy.com"
                         },
                         new
                         {
-                            Id = "fd71abac-8d5a-4ad2-86f6-1b0b7bde0382",
+                            Id = "2de95519-31eb-459e-8ad1-5021989213f5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "29bdc279-79bd-4019-9854-a26ec845b56f",
+                            ConcurrencyStamp = "01c1e30e-888f-4f11-91e9-875ba385cbe5",
                             Email = "bookingbuddy.landlord@bookingbuddy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "landlord",
                             NormalizedEmail = "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM",
                             NormalizedUserName = "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC5ksS873gQFb9xoFu6ZeLNAq9a45XNirdDHqZJyaj4ytCuXVHceXICF/fuHHDGKqg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJil2s4PH5/oiIIzET0MZif5nEwFry6KmL4TzvDxC04ljdbVtJ4oyvW3IKxjeeT73Q==",
                             PhoneNumberConfirmed = false,
-                            ProviderId = "0c53013c-ebec-471b-aaf2-3f2361c9c522",
-                            SecurityStamp = "e139138d-d745-43bc-8ef5-74737a472063",
+                            ProviderId = "4b915b1f-8b74-45cf-979e-b10f8b98f919",
+                            SecurityStamp = "f372039e-cc5c-4961-95d5-daba427cf305",
                             TwoFactorEnabled = false,
                             UserName = "bookingbuddy.landlord@bookingbuddy.com"
                         });
@@ -198,19 +201,19 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            AspNetProviderId = "45677807-439d-4c7a-99a5-5cc7985c4ecc",
+                            AspNetProviderId = "4b8bcf90-dfa6-4394-9d53-9686cd0e9ed9",
                             Name = "google",
                             NormalizedName = "GOOGLE"
                         },
                         new
                         {
-                            AspNetProviderId = "615bda1e-68bd-4190-9732-3396b31249a0",
+                            AspNetProviderId = "1ea9abb9-f0ee-456f-9d80-5c75d95ca7a1",
                             Name = "microsoft",
                             NormalizedName = "MICROSOFT"
                         },
                         new
                         {
-                            AspNetProviderId = "0c53013c-ebec-471b-aaf2-3f2361c9c522",
+                            AspNetProviderId = "4b915b1f-8b74-45cf-979e-b10f8b98f919",
                             Name = "local",
                             NormalizedName = "LOCAL"
                         });
@@ -306,9 +309,6 @@ namespace BookingBuddy.Server.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Method")
                         .IsRequired()
@@ -428,22 +428,22 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "39708a80-9206-4cef-9d2f-fc59d6826e9c",
-                            ConcurrencyStamp = "2ebb45d6-f955-4385-9990-0b554c64c512",
+                            Id = "42630d5b-ba89-4955-a36a-e31dd8cf7705",
+                            ConcurrencyStamp = "5e69ee78-9632-42a3-9e56-15bb46da26e7",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c9d9335a-5d78-4eee-926a-0e4f72b38949",
-                            ConcurrencyStamp = "651a52af-b07b-4c88-b522-b7c460dba9e1",
+                            Id = "61656fea-ed23-460c-bed2-acae223beeef",
+                            ConcurrencyStamp = "3f93db4b-e044-4640-96a3-40093425fab0",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "a7b2cc8a-03fa-4a1c-ad0d-9e8bf30dea0c",
-                            ConcurrencyStamp = "37f84d2f-4eaf-4e9f-af6b-963b8a1b7626",
+                            Id = "acb67e3b-29f7-409a-af25-8dac9168fe56",
+                            ConcurrencyStamp = "4f564740-89b2-4e57-93f5-579aab7b661f",
                             Name = "landlord",
                             NormalizedName = "LANDLORD"
                         });
@@ -538,18 +538,18 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "66f05769-998e-4d7d-a994-cf0ba22cfd16",
-                            RoleId = "39708a80-9206-4cef-9d2f-fc59d6826e9c"
+                            UserId = "2c3afa8a-56eb-47b4-bd81-3bdce7ce3362",
+                            RoleId = "42630d5b-ba89-4955-a36a-e31dd8cf7705"
                         },
                         new
                         {
-                            UserId = "fad782f6-d92a-4644-bf63-f6d3a32bc659",
-                            RoleId = "c9d9335a-5d78-4eee-926a-0e4f72b38949"
+                            UserId = "48996947-a573-4470-8d32-7797a2bac0e5",
+                            RoleId = "61656fea-ed23-460c-bed2-acae223beeef"
                         },
                         new
                         {
-                            UserId = "fd71abac-8d5a-4ad2-86f6-1b0b7bde0382",
-                            RoleId = "a7b2cc8a-03fa-4a1c-ad0d-9e8bf30dea0c"
+                            UserId = "2de95519-31eb-459e-8ad1-5021989213f5",
+                            RoleId = "acb67e3b-29f7-409a-af25-8dac9168fe56"
                         });
                 });
 

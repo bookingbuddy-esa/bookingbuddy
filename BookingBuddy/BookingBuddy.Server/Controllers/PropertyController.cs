@@ -38,7 +38,7 @@ namespace BookingBuddy.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
         {
-            return await _context.Property.ToListAsync();
+            return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
         }
 
         /// <summary>
@@ -56,6 +56,9 @@ namespace BookingBuddy.Server.Controllers
             {
                 return NotFound();
             }
+
+            property.Clicks += 1;
+            await _context.SaveChangesAsync();
 
             List<Amenity> amenities = [];
 
@@ -77,6 +80,8 @@ namespace BookingBuddy.Server.Controllers
                 Id = user!.Id,
                 Name = user.Name
             };
+
+            // TODO: incrementar os clicks
 
             return property;
         }
@@ -168,7 +173,8 @@ namespace BookingBuddy.Server.Controllers
                 Description = model.Description,
                 PricePerNight = model.PricePerNight,
                 Location = model.Location,
-                ImagesUrl = model.ImagesUrl
+                ImagesUrl = model.ImagesUrl,
+                Clicks = 0
             };
 
             _context.Property.Add(property);

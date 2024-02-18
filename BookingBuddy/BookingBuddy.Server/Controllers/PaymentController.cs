@@ -13,7 +13,7 @@ namespace BookingBuddy.Server.Controllers
     /// </summary>
     [Route("api/payments")]
     [ApiController]
-    public class PaymentController : Controller
+    public class PaymentController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -31,24 +31,65 @@ namespace BookingBuddy.Server.Controllers
             _configuration = configuration;
         }
 
+        [HttpGet("{paymentId}")]
+        public async Task<ActionResult<Payment>> GetPayment(string paymentId)
+        {
+            Console.WriteLine("> search - PaymentID: " + paymentId);
+            var payment = await _context.Payment.FindAsync(paymentId);
+
+            if (payment == null)
+            {
+                return NotFound();
+            }
+
+            return payment;
+        }
+
+
         /// <summary>
         /// Método que representa o endpoint de webhook para notificações de pagamentos.
         /// </summary>
         /// <returns></returns>
         [HttpGet("webhook")]
-        public async Task<IActionResult> Webhook([FromQuery] MbwayResponse mbwayResponse)
+        public async Task<IActionResult> Webhook([FromQuery] PaymentResponse paymentResponse)
         {
-            string key = mbwayResponse.key;
-            string orderId = mbwayResponse.orderId;
-            string amount = mbwayResponse.amount;
-            string requestId = mbwayResponse.requestId;
-            string paymentDatetime = mbwayResponse.payment_datetime;
+            string key = paymentResponse.key;
+            string orderId = paymentResponse.orderId;
+            string amount = paymentResponse.amount;
+            string requestId = paymentResponse.requestId;
+            string paymentDatetime = paymentResponse.payment_datetime;
 
             Console.WriteLine($"Key: {key}");
             Console.WriteLine($"Order ID: {orderId}");
             Console.WriteLine($"Amount: {amount}");
             Console.WriteLine($"Request ID: {requestId}");
             Console.WriteLine($"Payment Datetime: {paymentDatetime}");
+
+            if (key != _configuration.GetSection("PhishingKey").Value!)
+            {
+                return Unauthorized();
+            }
+
+            var payment = await _context.Payment.FindAsync(requestId);
+            if (payment == null)
+            {
+                return NotFound();
+            }
+
+            payment.Status = "Paid";
+
+            try {
+                await _context.SaveChangesAsync();
+                var order = await _context.Order.FindAsync(orderId);
+                if (order != null)
+                {
+                    order.State = true;
+                    await _context.SaveChangesAsync();
+                }
+            } catch (Exception ex) {
+                return StatusCode(500, $"An error occurred while updating payment status: {ex.Message}");
+            }
+
             return Ok();
         }
 
@@ -58,29 +99,99 @@ namespace BookingBuddy.Server.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreatePayment()
+        public async Task<IActionResult> CreatePayment(ApplicationUser user, string paymentMethod, decimal amount, string phoneNumber = null)
         {
             try
             {
-                return Ok("Pagamento criado com sucesso.");
+                if(user == null) {
+                    return Unauthorized();
+                }
+
+                var _httpClient = new HttpClient();
+                dynamic requestData = null;
+                string endpointUrl = "";
+
+                if(paymentMethod == "mbway")
+                {
+                    requestData = new
+                    {
+                        mbWayKey = _configuration.GetSection("MbWayKey").Value!,
+                        orderId = Guid.NewGuid().ToString(),
+                        amount = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+                        mobileNumber = phoneNumber,
+                        email = user.Email,
+                        description = "Pagamento de teste - Booking Buddy"
+                    };
+                    
+                    endpointUrl = "https://ifthenpay.com/api/spg/payment/mbway";
+
+                } else if (paymentMethod == "multibanco")
+                {
+                    requestData = new
+                    {
+                        mbWayKey = _configuration.GetSection("MbWayKey").Value!,
+                        orderId = Guid.NewGuid().ToString(),
+                        amount = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+                        description = "Pagamento de teste - Booking Buddy",
+                        url = "https://bookingbuddy.azurewebsites.net/",
+                        clientCode = user.Id,
+                        clientName = user.Name,
+                        clientEmail = user.Email,
+                        clientUsername = user.UserName,
+                        clientPhone = user.PhoneNumber,
+                        expiryDays = 0 // TODO: 24 horas, mas pode ser aumentado
+                    };
+
+                    endpointUrl = "https://ifthenpay.com/api/multibanco/reference/sandbox";
+                } else
+                {
+                    return BadRequest("Invalid payment method.");
+                }
+
+                /*Console.WriteLine("request to ifthenpay: " + Newtonsoft.Json.JsonConvert.SerializeObject(requestData));
+                Console.WriteLine("endpoint: " + endpointUrl);*/
+
+                var jsonContent = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(requestData), Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync(endpointUrl, jsonContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Failed to create payment. StatusCode: " + response.StatusCode);
+                    return StatusCode((int)response.StatusCode, "Failed to create payment.");
+                }
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                dynamic responseJson = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
+                
+                try
+                {
+                    var newPayment = new Payment
+                    {
+                        PaymentId = responseJson.RequestId,
+                        Method = paymentMethod,
+                        Amount = amount,
+                        Status = "Pending",
+                        CreatedAt = DateTime.Now
+                    };
+
+                    _context.Payment.Add(newPayment);
+                    await _context.SaveChangesAsync();
+
+                    return CreatedAtAction("GetPayment", new { paymentId = newPayment.PaymentId }, newPayment);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"An error occurred while saving payment to database: {ex.Message}");
+                }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
-
-
-        private string GetAmountByPromotionDuration(DateTime startingDate, DateTime endingDate)
-        {
-            var duration = (endingDate - startingDate).TotalDays;
-            // TODO: Calcular o valor do pagamento com base na duração da promoção
-            // 1 semana, 1 mês e 1 ano
-            return "1.00";
-        }
     }
 
-    public class MbwayResponse {
+    public class PaymentResponse {
         public string key { get; set; }
         public string orderId { get; set; }
         public string amount { get; set; }

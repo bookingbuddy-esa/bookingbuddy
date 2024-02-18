@@ -20,7 +20,7 @@ import { cA } from '@fullcalendar/core/internal-common';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 import {GoogleMap, MapMarker} from "@angular/google-maps";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { PaymentComponent } from './payment/payment.component';
+//import { PaymentComponent } from './payment/payment.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,7 @@ import { PaymentComponent } from './payment/payment.component';
     HomepagePropertyComponent,
     PropertyAdCreateComponent,
     PropertyAdRetrieveComponent,
-    PaymentComponent
+    //PaymentComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

@@ -5,6 +5,7 @@ using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -13,52 +14,125 @@ namespace BookingBuddy.Server.Controllers
     /// </summary>
     [Route("api/orders")]
     [ApiController]
-    public class OrderController : Controller
+    public class OrderController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly PaymentController _paymentController;
 
-        public OrderController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
+        public OrderController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, PaymentController paymentController)
         {
             _context = context;
             _userManager = userManager;
+            _paymentController = paymentController;
         }
 
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> CreateOrderPromotion([FromBody] PropertyPromoteModel model)
+        /// <summary>
+        /// Método que representa o endpoint de obtenção de uma order através do seu ID.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpGet("{orderId}")]
+        public async Task<ActionResult<Order>> GetOrder(string orderId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
+            var order = await _context.Order.FindAsync(orderId);
 
-            var property = await _context.Property.FindAsync(model.PropertyId);
-            if (property == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            // TODO: criar pagamento
+            return order;
+        }
 
-            var order = new Order
+        /// <summary>
+        /// Método que representa o endpoint de criação de um pedido de promover uma propriedade.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("promote")]
+        [Authorize]
+        public async Task<IActionResult> CreateOrderPromote([FromBody] PropertyPromoteModel model)
+        {
+            try {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                var property = await _context.Property.FindAsync(model.PropertyId);
+                if (property == null)
+                {
+                    return NotFound();
+                }
+
+                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber);
+                if (newPaymentResult is CreatedAtActionResult { Value: Payment newPayment })
+                {
+                    var order = new Order
+                    {
+                        OrderId = Guid.NewGuid().ToString(),
+                        PaymentId = newPayment.PaymentId,
+                        ApplicationUserId = user.Id,
+                        PropertyId = model.PropertyId,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate,
+                        State = false
+                    };
+
+                    _context.Order.Add(order);
+
+                    try {
+                        await _context.SaveChangesAsync();
+
+                        // TODO: criar PromoteOrder
+                        return CreatedAtAction("GetOrder", new { orderId = order.OrderId }, order);
+                    } catch (Exception ex)
+                    {
+                        return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
             {
-                OrderId = Guid.NewGuid().ToString(),
-                ApplicationUserId = user.Id,
-                PropertyId = model.PropertyId,
-                StartDate = model.StartDate,
-                EndDate = model.EndDate,
-                State = false
-            };
+                return StatusCode(500, $"An error occurred while creating order: {ex.Message}");
+            }
 
-            _context.Order.Add(order);
-            await _context.SaveChangesAsync();
+            return BadRequest();
+        }
 
-            return Ok(order);
+        private decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
+        {
+            // TODO: verificar se datas são válidas
+            var duration = (endingDate - startingDate).TotalDays;
+
+            if (duration >= 7)
+            {
+                return Convert.ToDecimal(5 * duration);
+            }
+            else if (duration >= 30)
+            {
+                return Convert.ToDecimal(4.5 * duration);
+            }
+            else if (duration >= 365)
+            {
+                return Convert.ToDecimal(3.5 * duration);
+            }
+            else
+            {
+                return Convert.ToDecimal(5 * duration);
+            }
         }
 
     }
 
-    public record PropertyPromoteModel(string PropertyId, DateTime StartDate, DateTime EndDate);
+    /// <summary>
+    /// Classe que representa o modelo de um pedido de promoção de uma propriedade.
+    /// </summary>
+    /// <param name="PropertyId"></param>
+    /// <param name="StartDate"></param>
+    /// <param name="EndDate"></param>
+    /// <param name="PaymentMethod"></param>
+    public record PropertyPromoteModel(string PropertyId, DateTime StartDate, DateTime EndDate, string PaymentMethod, string PhoneNumber);
 }

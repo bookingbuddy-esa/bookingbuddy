@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
+using BookingBuddy.Server.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<PaymentController, PaymentController>();
 
 var app = builder.Build();
 

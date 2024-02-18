@@ -1,11 +1,15 @@
-<div class="container-fluid">
-    <div class="row flex-nowrap">
-        <div class="form-group mt-4">
-            <label for="paymentMethod">Escolha o método de pagamento:</label>
-            <select name="paymentMethod" id="paymentMethod" class="form-control" formControlName="paymentMethod">
-      <option value="1">Cartão de crédito/débito</option>
-      <option value="2">MB WAY</option>
+<div class="form-group mt-4" *ngIf="data">
+    <label for="paymentMethod">Escolha o método de pagamento:</label>
+    <select #paymentMethod name="paymentMethod" id="paymentMethod" class="form-control" (change)="addPaymentMethod(paymentMethod.value)">
+    <option value="multibanco">Ref. Multibanco</option>
+    <option value="mbway">MB WAY</option>
     </select>
-        </div>
-    </div>
+
+    <input type="text" class="form-control mt-4" *ngIf="paymentMethod.value === 'mbway'" placeholder="Número de telemóvel" name="phoneNumber" [(ngModel)]="phoneNumber" required>
+</div>
+
+<button class="btn btn-success mt-4" type="button" (click)="submitPayment()" [disabled]="paymentMethod === undefined">Efetuar pagamento</button>
+
+<div *ngIf="paymentResponse">
+    <p class="mt-4">{{paymentResponse}}</p>
 </div>
