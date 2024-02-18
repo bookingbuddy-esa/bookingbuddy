@@ -11,7 +11,7 @@ import {
 import {Router} from '@angular/router';
 
 import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
-import {CheckboxOptions} from '../../models/checkboxes';
+import {AmenityEnum, AmenitiesHelper} from '../../models/amenityEnum';
 import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
 import {GoogleMap, MapGeocoder} from '@angular/google-maps';
@@ -26,6 +26,10 @@ import {Property} from "../../models/property";
 export class PropertyAdCreateComponent implements OnInit {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
+
+  // Amenities
+  protected readonly AmenityEnum = AmenityEnum;
+  protected readonly AmenitiesHelper = AmenitiesHelper;
 
   // Formulário
   protected selectedFiles: File[] = [];
@@ -121,6 +125,7 @@ export class PropertyAdCreateComponent implements OnInit {
     this.geocoder.geocode({location: this.display}).forEach(results => {
       if (results) {
         this.locationForm.get('location')?.setValue(results.results[0].formatted_address!);
+        this.locationForm.get('location')?.markAsDirty();
       }
     });
   }
