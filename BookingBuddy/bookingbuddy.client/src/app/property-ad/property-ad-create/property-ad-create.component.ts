@@ -1,12 +1,7 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-  AbstractControl,
-  FormArray,
-  ReactiveFormsModule
+  Validators
 } from "@angular/forms";
 import {Router} from '@angular/router';
 
@@ -14,7 +9,6 @@ import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from '
 import {AmenityEnum, AmenitiesHelper} from '../../models/amenityEnum';
 import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
-import {GoogleMap, MapGeocoder} from '@angular/google-maps';
 import {UserInfo} from "../../auth/authorize.dto";
 import {Property} from "../../models/property";
 
@@ -38,40 +32,17 @@ export class PropertyAdCreateComponent implements OnInit {
   protected readonly numberOfSteps: number = 3;
   protected step: Subject<number> = new BehaviorSubject(0);
 
+  // Dados
+  protected location: google.maps.LatLngLiteral | undefined;
+
   protected onStepChange() {
     return this.step.asObservable();
   }
 
-  protected nameAndDescriptionForm = this.formBuilder.group({
-    name: ['', Validators.required],
-    description: ['']
-  });
-  protected locationForm = this.formBuilder.group({
-    location: ['', [Validators.required, Validators.minLength(10)]]
-  });
-  protected priceAndAmenitiesForm = this.formBuilder.group({
-    pricePerNight: ['', Validators.required],
-  });
-
-  // Google Maps
-  protected googleAutoComplete?: google.maps.places.Autocomplete;
-  protected center: google.maps.LatLngLiteral = {lat: 39.69738149392836, lng: -8.322673356323522};
-  protected zoom: number = 6;
-  protected display: google.maps.LatLngLiteral | undefined;
-  protected options: google.maps.MapOptions = {
-    gestureHandling: 'greedy',
-    streetViewControl: false,
-    zoomControl: true,
-  };
-  protected markerOptions: google.maps.MarkerOptions = {
-    clickable: false,
-  };
-
   constructor(private authService: AuthorizeService,
               private formBuilder: FormBuilder,
               private router: Router,
-              private propertyService: PropertyAdService,
-              private geocoder: MapGeocoder) {
+              private propertyService: PropertyAdService) {
     this.errors = [];
   }
 
@@ -81,52 +52,6 @@ export class PropertyAdCreateComponent implements OnInit {
     });
     this.onStepChange().forEach(step => {
       this.currentStep = step;
-      switch (step) {
-        case 1: {
-          google.maps.importLibrary("places").then(() => {
-            this.googleAutoComplete = new google.maps.places.Autocomplete(
-              document.getElementById('location') as HTMLInputElement,
-              {
-                types: ['address'],
-                componentRestrictions: {country: 'pt'},
-              }
-            );
-            this.googleAutoComplete.addListener('place_changed', () => {
-              const place = this.googleAutoComplete?.getPlace();
-              if (place) {
-                this.locationForm.get('location')?.setValue(place.formatted_address!);
-                this.display = place.geometry?.location!.toJSON();
-                this.center = this.display!;
-                this.zoom = 15;
-              }
-            });
-          });
-          break;
-        }
-        case 2: {
-          break;
-        }
-        case 3: {
-          break;
-        }
-        default : {
-          this.locationForm.reset();
-          this.display = undefined;
-          this.nameAndDescriptionForm.reset();
-          this.priceAndAmenitiesForm.reset();
-        }
-      }
-    });
-  }
-
-
-  setLocation(event: google.maps.MapMouseEvent): void {
-    this.display = event.latLng!.toJSON();
-    this.geocoder.geocode({location: this.display}).forEach(results => {
-      if (results) {
-        this.locationForm.get('location')?.setValue(results.results[0].formatted_address!);
-        this.locationForm.get('location')?.markAsDirty();
-      }
     });
   }
 
@@ -144,12 +69,8 @@ export class PropertyAdCreateComponent implements OnInit {
     return ((this.currentStep) / this.numberOfSteps) * 100;
   }
 
-  get nameFormField() {
-    return this.nameAndDescriptionForm.get('name');
-  }
-
-  get locationFormField() {
-    return this.locationForm.get('location');
+  setLocation($event: google.maps.LatLngLiteral | undefined) {
+    this.location = $event;
   }
 
   //função para guardar as imagens num array // TODO:Restrições de tipo de ficheiro
@@ -210,4 +131,7 @@ export class PropertyAdCreateComponent implements OnInit {
       return of(null);
     });
   }*/
+  setAmenities($event: string[]) {
+
+  }
 }

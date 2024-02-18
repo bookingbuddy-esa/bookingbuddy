@@ -19,7 +19,9 @@ import { HostingModule } from './hosting/hosting.module';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
 import {GoogleMap, MapMarker} from "@angular/google-maps";
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { AmenityComponent } from './property-ad/property-ad-create/amenity/amenity.component';
+import { LocationStepComponent } from './property-ad/property-ad-create/location-step/location-step.component';
+import { InitialStepComponent } from './property-ad/property-ad-create/initial-step/initial-step.component';
+import { AmenitiesStepComponent } from './property-ad/property-ad-create/amenities-step/amenities-step.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { AmenityComponent } from './property-ad/property-ad-create/amenity/ameni
     HomepagePropertyComponent,
     PropertyAdCreateComponent,
     PropertyAdRetrieveComponent,
-    AmenityComponent,
+    LocationStepComponent,
+    InitialStepComponent,
+    AmenitiesStepComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,

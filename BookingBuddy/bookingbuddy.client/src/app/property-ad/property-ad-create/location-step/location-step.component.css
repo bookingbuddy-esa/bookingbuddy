@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  height: inherit;
+  width: inherit;
+}
+
+.bottom-button{
+  width: 10%;
+}
