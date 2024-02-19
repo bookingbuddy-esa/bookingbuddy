@@ -34,7 +34,6 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("{paymentId}")]
         public async Task<ActionResult<Payment>> GetPayment(string paymentId)
         {
-            Console.WriteLine("> search - PaymentID: " + paymentId);
             var payment = await _context.Payment.FindAsync(paymentId);
 
             if (payment == null)
@@ -112,7 +111,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreatePayment(ApplicationUser user, string paymentMethod, decimal amount, string phoneNumber = null)
+        public async Task<ActionResult<Payment>> CreatePayment(ApplicationUser user, string paymentMethod, decimal amount, string phoneNumber)
         {
             try
             {
@@ -142,7 +141,7 @@ namespace BookingBuddy.Server.Controllers
                 {
                     requestData = new
                     {
-                        mbWayKey = _configuration.GetSection("MbWayKey").Value!,
+                        mbKey = _configuration.GetSection("MbKey").Value!,
                         orderId = Guid.NewGuid().ToString(),
                         amount = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
                         description = "Pagamento de teste - Booking Buddy",
@@ -175,7 +174,7 @@ namespace BookingBuddy.Server.Controllers
 
                 var responseContent = await response.Content.ReadAsStringAsync();
                 dynamic responseJson = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
-                
+
                 try
                 {
                     var newPayment = new Payment
@@ -190,7 +189,14 @@ namespace BookingBuddy.Server.Controllers
                     _context.Payment.Add(newPayment);
                     await _context.SaveChangesAsync();
 
-                    return CreatedAtAction("GetPayment", new { paymentId = newPayment.PaymentId }, newPayment);
+                    if (responseJson.Entity != null)
+                    {
+                        newPayment.Entity = responseJson.Entity;
+                        newPayment.Reference = responseJson.Reference;
+                        newPayment.ExpiryDate = responseJson.ExpiryDate;
+                    }
+                    
+                    return newPayment;
                 }
                 catch (Exception ex)
                 {

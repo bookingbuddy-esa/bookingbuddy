@@ -10,6 +10,9 @@ namespace BookingBuddy.Server.Models
         [Key]
         public string PaymentId { get; set; }
         public string Method { get; set; }
+        public string? Entity { get; set; }
+        public string? Reference { get; set; }
+        public string? ExpiryDate { get; set; }
         public decimal Amount { get; set; }
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -71,40 +71,43 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("{propertyId}")]
         public async Task<ActionResult<Property>> GetProperty(string propertyId)
         {
-            var property = await _context.Property.FindAsync(propertyId);
+            try {
+                var property = await _context.Property.FindAsync(propertyId);
 
-            if (property == null)
-            {
-                return NotFound();
-            }
-
-            property.Clicks += 1;
-            await _context.SaveChangesAsync();
-
-            List<Amenity> amenities = [];
-
-            property.AmenityIds?.ForEach(amenityId =>
-            {
-                Amenity amenity = new Amenity
+                if (property == null)
                 {
-                    AmenityId = amenityId,
-                    Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                    return NotFound();
+                }
+
+                property.Clicks += 1;
+                await _context.SaveChangesAsync();
+
+                List<Amenity> amenities = [];
+
+                property.AmenityIds?.ForEach(amenityId =>
+                {
+                    Amenity amenity = new Amenity
+                    {
+                        AmenityId = amenityId,
+                        Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                    };
+
+                    amenities.Add(amenity);
+                });
+
+                property.Amenities = amenities;
+
+                var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
+                property.ApplicationUser = new ReturnUser(){
+                    Id = user!.Id,
+                    Name = user.Name
                 };
 
-                amenities.Add(amenity);
-            });
-
-            property.Amenities = amenities;
-
-            var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
-            property.ApplicationUser = new ReturnUser(){
-                Id = user!.Id,
-                Name = user.Name
-            };
-
-            // TODO: incrementar os clicks
-
-            return property;
+                return property;
+            } catch(Exception ex){
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
         }
         
         /// <summary>

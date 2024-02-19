@@ -5,6 +5,7 @@ using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 namespace BookingBuddy.Server.Controllers
@@ -52,7 +53,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns></returns>
         [HttpPost("promote")]
         [Authorize]
-        public async Task<IActionResult> CreateOrderPromote([FromBody] PropertyPromoteModel model)
+        public async Task<ActionResult<Order>> CreateOrderPromote([FromBody] PropertyPromoteModel model)
         {
             try {
                 var user = await _userManager.GetUserAsync(User);
@@ -68,7 +69,7 @@ namespace BookingBuddy.Server.Controllers
                 }
 
                 var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber);
-                if (newPaymentResult is CreatedAtActionResult { Value: Payment newPayment })
+                if (newPaymentResult is ActionResult<Payment> { Value: Payment newPayment } && newPayment != null)
                 {
                     var order = new Order
                     {
@@ -90,9 +91,9 @@ namespace BookingBuddy.Server.Controllers
                         return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
                     }
 
-                    // TODO: retornar apenas o necessário
-
-                    return CreatedAtAction("GetOrder", new { orderId = order.OrderId }, order);
+                    order.ApplicationUser = null;
+                    order.Property = null;
+                    return order;
                 }
             }
             catch (Exception ex)
@@ -105,7 +106,11 @@ namespace BookingBuddy.Server.Controllers
 
         private decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
         {
-            // TODO: verificar se datas são válidas
+            if (startingDate > endingDate)
+            {
+                throw new Exception("Invalid dates");
+            }
+
             var duration = (endingDate - startingDate).TotalDays;
 
             if (duration >= 7)
@@ -135,5 +140,5 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="StartDate"></param>
     /// <param name="EndDate"></param>
     /// <param name="PaymentMethod"></param>
-    public record PropertyPromoteModel(string PropertyId, DateTime StartDate, DateTime EndDate, string PaymentMethod, string PhoneNumber);
+    public record PropertyPromoteModel(string PropertyId, DateTime StartDate, DateTime EndDate, string PaymentMethod, string? PhoneNumber = null);
 }

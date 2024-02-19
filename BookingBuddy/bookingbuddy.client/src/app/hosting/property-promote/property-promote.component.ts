@@ -63,11 +63,6 @@ export class PropertyPromoteComponent implements OnInit {
       startDate: new Date(),
       endDate: calculatedEndDate
     }
-
-    //console.log("Promoção da propriedade:", this.propertyPromote);
-
-    // TODO: acrescentar constante que diz respeito ao paymentMethodSelected (quando for implementada a parte relativa ao pagamento), e consoante a opção selecionada, após
-    // se clicar no botão, redirecionar o utilizador para a página de pagamento associado ao método escolhido, e posteriormente de sucesso/insucesso da promoção da propriedade.
   }
 
   setCurrentProperty(property: Property) {

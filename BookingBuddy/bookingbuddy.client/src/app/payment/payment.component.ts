@@ -12,10 +12,10 @@ import { PaymentService } from './payment.service';
 })
 
 export class PaymentComponent {
-  currentPhase: number = 1;
   @Input() data!: any;
   paymentMethod: string = "multibanco";
-  phoneNumber: string | undefined;
+  phoneNumber: string | undefined = undefined;
+  currentPhase: number = 1;
   paymentResponse: any;
 
   constructor(private paymentService: PaymentService){}
@@ -29,7 +29,7 @@ export class PaymentComponent {
   }
 
   public submitPayment(): void {
-    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber};
+    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || null};
     console.log(JSON.stringify(this.data));
 
     this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, "promote", this.phoneNumber).forEach((response) => {
@@ -43,6 +43,7 @@ export class PaymentComponent {
     });
   }
 
+  // TODO: remover -> apenas de teste para simular a confirmação do pagamento
   public confirmarPagamento(): void {
     this.paymentService.confirmOrder(this.paymentResponse.orderId, this.paymentResponse.paymentId).forEach((response) => {
       if(response){

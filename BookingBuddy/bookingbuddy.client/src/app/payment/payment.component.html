@@ -16,9 +16,12 @@
                 <h5 class="card-title">Detalhes do Pagamento</h5>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item"><strong>ID Pagamento:</strong> {{paymentResponse.payment.paymentId}}</li>
+                    <li class="list-group-item mb-3"><strong>Método Pagamento:</strong> {{paymentResponse.payment.method}}</li>
+
+                    <li class="list-group-item" *ngIf="paymentMethod === 'multibanco'"><strong>Entidade:</strong> {{paymentResponse.payment.entity}}</li>
+                    <li class="list-group-item" *ngIf="paymentMethod === 'multibanco'"><strong>Referência:</strong> {{paymentResponse.payment.reference}}</li>
                     <li class="list-group-item"><strong>Valor:</strong> {{paymentResponse.payment.amount}}€</li>
-                    <li class="list-group-item"><strong>Método Pagamento:</strong> {{paymentResponse.payment.method}}</li>
-                    <li class="list-group-item"><strong>Estado Pagamento:</strong> {{paymentResponse.payment.status}}</li>
+                    <li class="list-group-item mt-4"><strong>Estado Pagamento:</strong> {{paymentResponse.payment.status}}</li>
                 </ul>
 
                 <button class="btn btn-success mt-4" type="button" (click)="confirmarPagamento()">Confirmar Pagamento (DEV)</button>
