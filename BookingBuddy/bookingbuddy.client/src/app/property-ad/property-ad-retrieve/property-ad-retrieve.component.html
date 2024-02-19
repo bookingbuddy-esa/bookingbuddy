@@ -6,7 +6,7 @@
       <h5>★ 4.9</h5>
       <h5>{{ property.location }}</h5>
     </div>
-    <div id="carouselExampleControls" class="carousel slidev img-shorter" data-bs-ride="carousel">
+    <div id="carouselExampleControls" class=" carousel mycarousel slidev img-shorter" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div *ngFor="let imagem of property.imagesUrl; let i = index" class="carousel-item" [class.active]="i === 0">
           <img [src]="imagem" class="d-block w-100 h-50" alt="Imagem {{ i + 1 }}">
