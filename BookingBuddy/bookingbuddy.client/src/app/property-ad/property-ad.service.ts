@@ -24,7 +24,7 @@ export class PropertyAdService {
       pricePerNight: property.pricePerNight,
       description: property.description,
       imagesUrl: property.imagesUrl,
-      amenityIds: property.amenityIds,
+      amenities: property.amenities,
     }, {
       withCredentials: true,
       observe: 'response',

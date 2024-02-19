@@ -8,7 +8,7 @@ export interface Property {
   location: string;
   description: string;
   pricePerNight: number;
-  amenities?: Amenity[];
+  amenities?: string[];
   amenityIds?: string[];
   imagesUrl?: string[];
 }

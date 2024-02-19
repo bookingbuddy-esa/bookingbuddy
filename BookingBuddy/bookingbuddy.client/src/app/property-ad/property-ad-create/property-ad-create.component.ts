@@ -8,6 +8,8 @@ import {UserInfo} from "../../auth/authorize.dto";
 import {Property} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
+import {coerceStringArray} from "@angular/cdk/coercion";
+import {Amenity} from "../../models/amenity";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -129,67 +131,38 @@ export class PropertyAdCreateComponent implements OnInit {
     }
   }
 
-  //função para guardar as imagens num array // TODO:Restrições de tipo de ficheiro
-  onFileSelected(event: any): void {
-    this.photos = [];
-    const inputElement = event.target;
-    if (inputElement.files.length > 0) {
-      const files = inputElement.files;
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        if (file.type === 'image/jpeg' || file.type === 'image/png') {
-          this.photos.push(file);
-        } else {
-          this.errors.push('Tipo de arquivo inválido. Por favor, selecione um arquivo JPEG ou PNG.');
-          console.log("Tipo de arquivo inválido. Por favor, selecione um arquivo JPEG ou PNG.")
-        }
-      }
-    }
-  }
-
   public create(_: any) {
-    console.log('Creating property ad...');
-    console.log(this.location);
-    console.log(this.selectedAmenities);
-    console.log(this.photos);
-    console.log(this.adInfo);
-/*    this.submitting = true;
+    this.submitting = true;
     this.errors = [];
 
-    this.propertyService.uploadImages(this.selectedFiles).pipe(
+    this.propertyService.uploadImages(this.photos).pipe(
       timeout(10000),
     ).forEach(images => {
       const newProperty: Property = {
         propertyId: '',
         applicationUserId: '',
-        name: this.createPropertyAdForm.get('name')?.value as string,
-        location: this.createPropertyAdForm.get('location')?.value as string,
-        pricePerNight: this.createPropertyAdForm.get('pricePerNight')?.value as number,
-        description: this.createPropertyAdForm.get('description')?.value as string,
+        name: this.adInfo?.name ?? '',
+        location: this.location?.address ?? '',
+        pricePerNight: this.adInfo?.pricePerNight ?? 0,
+        description: this.adInfo?.description ?? '',
         imagesUrl: images,
-        amenityIds: this.comodidadesSelecionadas.map(comodidade => Object.values(CheckboxOptions).indexOf(comodidade).toString()) as string[],
+        amenities: this.selectedAmenities,
       };
-
+      console.log(newProperty);
       this.propertyService.createPropertyAd(newProperty).forEach(success => {
           if (success) {
-            this.router.navigateByUrl('?success-create=true');
+            this.router.navigateByUrl('/');
           }
         }
       ).catch(() => {
         this.errors.push('Erro ao criar propriedade.');
-        this.createPropertyFailed = true;
         this.submitting = false;
-        scroll(0, 0);
         return of(null);
       });
     }).catch(() => {
       this.errors.push('Erro ao fazer upload das imagens.');
-      this.createPropertyFailed = true;
       this.submitting = false;
-      scroll(0, 0);
       return of(null);
-    });*/
+    });
   }
 }

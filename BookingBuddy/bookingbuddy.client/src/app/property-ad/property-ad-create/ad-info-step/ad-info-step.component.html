@@ -1,4 +1,14 @@
 <div class="d-flex flex-column align-items-center justify-content-start p-5 flex-grow-1">
+  <div class="d-flex flex-column align-items-center w-100" >
+    <div *ngIf="errors.length !== 0"
+         class="alert alert-danger alert-dismissible d-flex w-75 align-items-center fade show my-2" role="alert">
+      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+              (click)="errors=[]"></button>
+      <div class="d-flex flex-column align-items-start">
+        <span *ngFor="let error of errors">{{ error }}</span>
+      </div>
+    </div>
+  </div>
   <div class="fs-1 p-3 fw-bold">Preencher informações sobre o anúncio</div>
   <div class="fs-6 p-2">Preencha os seguintes campos com a informação do anúncio.</div>
   <form class="d-flex w-75 mt-3 h-50 flex-column align-items-center justify-content-center p5" [formGroup]="infoForm">

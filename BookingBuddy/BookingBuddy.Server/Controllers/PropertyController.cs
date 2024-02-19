@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using NuGet.Protocol;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -191,6 +192,8 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
+            Console.WriteLine(model.ToJson());
+            
             List<Amenity> amenities = [];
 
             model.Amenities?.ForEach(amenityName =>
