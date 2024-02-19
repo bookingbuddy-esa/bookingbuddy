@@ -65,7 +65,7 @@ namespace BookingBuddy.Server.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
-                await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", user.Email, user.Name,
+                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value! ,"d-a8fe3a81f5d44b4f9a3602650d0f8c8a", user.Email, user.Name,
                     new { confirmationLink });
                 return Ok();
             }
@@ -106,7 +106,7 @@ namespace BookingBuddy.Server.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(existingUser);
                 var confirmationLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
-                await EmailSender.SendTemplateEmail("d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email!,
+                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,"d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email!,
                     existingUser.Name, new { confirmationLink });
                 return Ok();
             }
@@ -374,7 +374,7 @@ namespace BookingBuddy.Server.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
                 var recoverLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/reset-password?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
-                await EmailSender.SendTemplateEmail("d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email!,
+                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,"d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email!,
                     existingUser.Name, new { recoverLink });
                 return Ok();
             }
