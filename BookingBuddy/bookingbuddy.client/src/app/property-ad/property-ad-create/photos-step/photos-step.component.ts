@@ -16,7 +16,6 @@ export class PhotosStepComponent implements OnInit {
   protected readonly maxFiles: number = 5;
 
   ngOnInit(): void {
-    console.log(this.photos);
     this.selectedFiles = this.photos;
     this.selectedFiles.forEach(file => {
       const reader = new FileReader();
@@ -25,7 +24,7 @@ export class PhotosStepComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     });
-    console.log(this.selectedFilesURL);
+    this.photosValid.emit(this.selectedFiles.length > 0);
   }
 
   onImagesSelect(event: Event): void {
@@ -58,5 +57,6 @@ export class PhotosStepComponent implements OnInit {
     const index = this.selectedFilesURL.indexOf(image);
     this.selectedFilesURL.splice(index, 1);
     this.selectedFiles.splice(index, 1);
+    this.photosValid.emit(this.selectedFiles.length > 0);
   }
 }

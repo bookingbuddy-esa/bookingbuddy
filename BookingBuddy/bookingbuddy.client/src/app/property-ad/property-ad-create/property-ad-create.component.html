@@ -16,6 +16,11 @@
                    (photosSubmit)="setPhotos($event)"
                    (photosValid)="photosValid($event)">
   </app-photos-step>
+  <app-ad-info-step *ngSwitchCase="4"
+                    [adInfo]="adInfo"
+                    (adInfoSubmit)="setAdInfo($event)"
+                    (adInfoValid)="adInfoValid($event)">
+  </app-ad-info-step>
   <div class="d-flex flex-column w-100 align-items-center" style="height: 15%">
     <div class="progress w-100 rounded-0" role="progressbar" aria-label="Progress Bar" aria-valuemin="0"
          aria-valuemax="100" aria-valuenow="0">
@@ -26,7 +31,8 @@
       <button *ngIf="currentStep !== 0" class="btn btn-link h-50 bottom-button link-dark fw-bolder"
               (click)="previousStep()">Anterior
       </button>
-      <button class="btn btn-dark h-50 bottom-button" [disabled]="!isValid()" (click)="nextStep()">Próximo</button>
+      <button *ngIf="currentStep !== numberOfSteps" class="btn btn-dark h-50 bottom-button" [disabled]="!isValid()" (click)="nextStep()">Próximo</button>
+      <button *ngIf="currentStep === numberOfSteps" class="btn btn-dark h-50 bottom-button" [disabled]="!isValid()" (click)="create($event)">Finalizar</button>
     </div>
   </div>
 </div>

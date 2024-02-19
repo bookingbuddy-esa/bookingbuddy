@@ -7,6 +7,7 @@ import {AuthorizeService} from '../../auth/authorize.service';
 import {UserInfo} from "../../auth/authorize.dto";
 import {Property} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
+import {AdInfo} from "./ad-info-step/ad-info-step.component";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -18,7 +19,7 @@ export class PropertyAdCreateComponent implements OnInit {
   protected submitting: boolean = false;
   protected errors: string[] = [];
   protected currentStep: number = 0;
-  protected readonly numberOfSteps: number = 5;
+  protected readonly numberOfSteps: number = 4;
   protected step: Subject<number> = new BehaviorSubject(0);
 
   protected onStepChange() {
@@ -35,6 +36,10 @@ export class PropertyAdCreateComponent implements OnInit {
   // Photos
   protected photos: File[] = [];
   protected isPhotosValid: boolean = false;
+
+  // Ad Info
+  protected adInfo: AdInfo | undefined;
+  protected isAdInfoValid: boolean = false;
 
   constructor(private authService: AuthorizeService,
               private router: Router,
@@ -63,6 +68,11 @@ export class PropertyAdCreateComponent implements OnInit {
           break;
         case 3:
           this.photos = [];
+          this.isPhotosValid = false;
+          break;
+        case 4:
+          this.adInfo = undefined;
+          this.isAdInfoValid = false;
       }
       this.step.next(this.currentStep - 1);
     }
@@ -70,16 +80,6 @@ export class PropertyAdCreateComponent implements OnInit {
 
   nextStep() {
     if (this.currentStep < this.numberOfSteps) {
-      switch (this.currentStep) {
-        case 1:
-          console.log(this.location);
-          break;
-        case 2:
-          console.log(this.selectedAmenities);
-          break;
-        case 3:
-          console.log(this.photos);
-      }
       this.step.next(this.currentStep + 1);
     }
   }
@@ -108,12 +108,22 @@ export class PropertyAdCreateComponent implements OnInit {
     this.isPhotosValid = $event;
   }
 
+  setAdInfo($event: AdInfo | undefined) {
+    this.adInfo = $event;
+  }
+
+  adInfoValid($event: boolean) {
+    this.isAdInfoValid = $event;
+  }
+
   isValid(): boolean {
     switch (this.currentStep) {
       case 1:
         return this.isLocationValid;
       case 3:
         return this.isPhotosValid;
+      case 4:
+        return this.isAdInfoValid;
       default :
         return true;
     }
@@ -139,8 +149,13 @@ export class PropertyAdCreateComponent implements OnInit {
     }
   }
 
-  /*public create(_: any) {
-    this.submitting = true;
+  public create(_: any) {
+    console.log('Creating property ad...');
+    console.log(this.location);
+    console.log(this.selectedAmenities);
+    console.log(this.photos);
+    console.log(this.adInfo);
+/*    this.submitting = true;
     this.errors = [];
 
     this.propertyService.uploadImages(this.selectedFiles).pipe(
@@ -175,6 +190,6 @@ export class PropertyAdCreateComponent implements OnInit {
       this.submitting = false;
       scroll(0, 0);
       return of(null);
-    });
-  }*/
+    });*/
+  }
 }
