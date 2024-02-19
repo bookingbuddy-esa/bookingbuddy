@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {AmenitiesHelper} from "../../../models/amenityEnum";
 
 @Component({
@@ -6,10 +6,15 @@ import {AmenitiesHelper} from "../../../models/amenityEnum";
   templateUrl: './amenities-step.component.html',
   styleUrl: './amenities-step.component.css'
 })
-export class AmenitiesStepComponent {
+export class AmenitiesStepComponent implements OnInit{
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected selectedAmenities: string[] = [];
+  @Input() amenities: string[] = [];
   @Output() onAmenitiesChange = new EventEmitter<string[]>();
+
+  ngOnInit(): void {
+    this.selectedAmenities = this.amenities;
+  }
 
   selectAmenity(amenity: string) {
     if (this.selectedAmenities.includes(amenity)) {
