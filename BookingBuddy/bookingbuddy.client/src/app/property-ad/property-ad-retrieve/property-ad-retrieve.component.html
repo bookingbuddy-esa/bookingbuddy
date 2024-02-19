@@ -37,9 +37,9 @@
       <p>{{ property.description }}</p>
       <div class="comodidades mt-5">
         <h5>Comodidades</h5>
-        <div *ngFor="let amenity of property.amenities" class="d-flex flex-row gap-2">
-          <span class="w-25 text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity) }}</span>
-          <h6 class="flex-grow-1">{{ AmenitiesHelper.getAmenityDisplayName(amenity) }}</h6>
+        <div *ngFor="let amenity of property.amenities" class="d-flex flex-row py-2 align-items-center">
+          <span class="text-center material-symbols-outlined" style="width: 5%;">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
+          <h6 class="flex-grow-1 my-auto">{{ amenity.displayName }}</h6>
         </div>
       </div>
     </div>

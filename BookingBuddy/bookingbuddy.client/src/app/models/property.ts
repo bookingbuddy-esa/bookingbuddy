@@ -8,7 +8,16 @@ export interface Property {
   location: string;
   description: string;
   pricePerNight: number;
-  amenities?: string[];
+  amenities?: Amenity[];
   amenityIds?: string[];
   imagesUrl?: string[];
+}
+
+export interface PropertyCreate {
+  name: string;
+  location: string;
+  description: string;
+  pricePerNight: number;
+  amenities: string[];
+  imagesUrl: string[];
 }

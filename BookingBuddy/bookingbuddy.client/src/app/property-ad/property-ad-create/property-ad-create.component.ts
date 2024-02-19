@@ -5,11 +5,9 @@ import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from '
 import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
 import {UserInfo} from "../../auth/authorize.dto";
-import {Property} from "../../models/property";
+import {Property, PropertyCreate} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
-import {coerceStringArray} from "@angular/cdk/coercion";
-import {Amenity} from "../../models/amenity";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -138,9 +136,7 @@ export class PropertyAdCreateComponent implements OnInit {
     this.propertyService.uploadImages(this.photos).pipe(
       timeout(10000),
     ).forEach(images => {
-      const newProperty: Property = {
-        propertyId: '',
-        applicationUserId: '',
+      const newProperty: PropertyCreate = {
         name: this.adInfo?.name ?? '',
         location: this.location?.address ?? '',
         pricePerNight: this.adInfo?.pricePerNight ?? 0,
@@ -148,7 +144,6 @@ export class PropertyAdCreateComponent implements OnInit {
         imagesUrl: images,
         amenities: this.selectedAmenities,
       };
-      console.log(newProperty);
       this.propertyService.createPropertyAd(newProperty).forEach(success => {
           if (success) {
             this.router.navigateByUrl('/');

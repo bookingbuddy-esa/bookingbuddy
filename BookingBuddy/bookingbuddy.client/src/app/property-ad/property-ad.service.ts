@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject, catchError, map, of} from 'rxjs';
 import {environment} from "../../environments/environment";
-import {Property} from "../models/property";
+import {Property, PropertyCreate} from "../models/property";
 
 
 @Injectable({
@@ -17,7 +17,7 @@ export class PropertyAdService {
     return this.http.get(`${environment.apiUrl}/api/properties/${propertyId}`);
   }
 
-  public createPropertyAd(property: Property) {
+  public createPropertyAd(property: PropertyCreate) {
     return this.http.post(`${environment.apiUrl}/api/properties/create`, {
       name: property.name,
       location: property.location,
