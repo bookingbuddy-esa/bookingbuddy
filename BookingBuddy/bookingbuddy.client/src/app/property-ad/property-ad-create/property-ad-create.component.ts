@@ -16,10 +16,9 @@ import {MapLocation} from "./location-step/location-step.component";
 export class PropertyAdCreateComponent implements OnInit {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
-  protected selectedFiles: File[] = [];
   protected errors: string[] = [];
   protected currentStep: number = 0;
-  protected readonly numberOfSteps: number = 3;
+  protected readonly numberOfSteps: number = 5;
   protected step: Subject<number> = new BehaviorSubject(0);
 
   protected onStepChange() {
@@ -32,6 +31,10 @@ export class PropertyAdCreateComponent implements OnInit {
 
   // Amenities
   protected selectedAmenities: string[] = [];
+
+  // Photos
+  protected photos: File[] = [];
+  protected isPhotosValid: boolean = false;
 
   constructor(private authService: AuthorizeService,
               private router: Router,
@@ -58,6 +61,8 @@ export class PropertyAdCreateComponent implements OnInit {
         case 2:
           this.selectedAmenities = [];
           break;
+        case 3:
+          this.photos = [];
       }
       this.step.next(this.currentStep - 1);
     }
@@ -72,6 +77,8 @@ export class PropertyAdCreateComponent implements OnInit {
         case 2:
           console.log(this.selectedAmenities);
           break;
+        case 3:
+          console.log(this.photos);
       }
       this.step.next(this.currentStep + 1);
     }
@@ -93,10 +100,20 @@ export class PropertyAdCreateComponent implements OnInit {
     this.selectedAmenities = $event;
   }
 
+  setPhotos($event: File[]) {
+    this.photos = $event;
+  }
+
+  photosValid($event: boolean) {
+    this.isPhotosValid = $event;
+  }
+
   isValid(): boolean {
     switch (this.currentStep) {
       case 1:
         return this.isLocationValid;
+      case 3:
+        return this.isPhotosValid;
       default :
         return true;
     }
@@ -104,7 +121,7 @@ export class PropertyAdCreateComponent implements OnInit {
 
   //função para guardar as imagens num array // TODO:Restrições de tipo de ficheiro
   onFileSelected(event: any): void {
-    this.selectedFiles = [];
+    this.photos = [];
     const inputElement = event.target;
     if (inputElement.files.length > 0) {
       const files = inputElement.files;
@@ -113,7 +130,7 @@ export class PropertyAdCreateComponent implements OnInit {
         const file = files[i];
 
         if (file.type === 'image/jpeg' || file.type === 'image/png') {
-          this.selectedFiles.push(file);
+          this.photos.push(file);
         } else {
           this.errors.push('Tipo de arquivo inválido. Por favor, selecione um arquivo JPEG ou PNG.');
           console.log("Tipo de arquivo inválido. Por favor, selecione um arquivo JPEG ou PNG.")

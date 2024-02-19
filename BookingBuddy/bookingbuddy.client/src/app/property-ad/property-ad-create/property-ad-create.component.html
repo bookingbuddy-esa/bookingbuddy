@@ -11,16 +11,22 @@
                       [amenities]="selectedAmenities"
                       (onAmenitiesChange)="setAmenities($event)">
   </app-amenities-step>
-  <div class="d-flex flex-column w-100" style="height: 15%">
+  <app-photos-step *ngSwitchCase="3"
+                   [photos]="photos"
+                   (photosSubmit)="setPhotos($event)"
+                   (photosValid)="photosValid($event)">
+  </app-photos-step>
+  <div class="d-flex flex-column w-100 align-items-center" style="height: 15%">
     <div class="progress w-100 rounded-0" role="progressbar" aria-label="Progress Bar" aria-valuemin="0"
          aria-valuemax="100" aria-valuenow="0">
-      <div class="progress-bar" [style.width.%]="currentCompletePercentage"></div>
+      <div class="progress-bar bg-dark" [style.width.%]="currentCompletePercentage"></div>
     </div>
     <div class="d-flex flex-row h-100 w-100 align-items-center justify-content-between px-5">
       <button *ngIf="currentStep === 0" class="btn btn-danger h-50 bottom-button" [routerLink]="['/']">Cancelar</button>
-      <button *ngIf="currentStep !== 0" class="btn btn-secondary h-50 bottom-button" (click)="previousStep()">Anterior
+      <button *ngIf="currentStep !== 0" class="btn btn-link h-50 bottom-button link-dark fw-bolder"
+              (click)="previousStep()">Anterior
       </button>
-      <button class="btn btn-primary h-50 bottom-button" [disabled]="!isValid()" (click)="nextStep()">Próximo</button>
+      <button class="btn btn-dark h-50 bottom-button" [disabled]="!isValid()" (click)="nextStep()">Próximo</button>
     </div>
   </div>
 </div>

@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+  height: inherit;
+  width: 60%;
+}
+
+.photos::-webkit-scrollbar {
+  display: none;
+}

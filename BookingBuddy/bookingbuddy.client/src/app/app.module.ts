@@ -23,6 +23,8 @@ import { LocationStepComponent } from './property-ad/property-ad-create/location
 import { InitialStepComponent } from './property-ad/property-ad-create/initial-step/initial-step.component';
 import { AmenitiesStepComponent } from './property-ad/property-ad-create/amenities-step/amenities-step.component';
 import { AmenityComponent } from './property-ad/property-ad-create/amenities-step/amenity/amenity.component';
+import { AdInfoStepComponent } from './property-ad/property-ad-create/ad-info-step/ad-info-step.component';
+import { PhotosStepComponent } from './property-ad/property-ad-create/photos-step/photos-step.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { AmenityComponent } from './property-ad/property-ad-create/amenities-ste
     InitialStepComponent,
     AmenitiesStepComponent,
     AmenityComponent,
+    AdInfoStepComponent,
+    PhotosStepComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,
