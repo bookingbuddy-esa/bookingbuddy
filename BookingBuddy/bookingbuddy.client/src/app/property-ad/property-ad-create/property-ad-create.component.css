@@ -1,84 +1,82 @@
 :host {
-    flex-grow: inherit;
-    display: flex;
-    width: 100%;
+  display: flex;
+  height: inherit;
+  width: inherit;
 }
 
-.main {
-    flex-grow: inherit;
+.form-input-rounded-right {
+  border-radius: 0 5px 5px 0 !important;
 }
 
-.center-form {
-    width: 100%;
-    text-align: center;
+.input-form-field {
+  width: 30%;
 }
 
-.form-input {
-    border-color: grey;
-    border: 1.5px solid grey;
-    border-radius: 5px;
-    width: 45%;
-    min-height: 20%;
-    padding-left: 1%;
-    font-weight: bold;
+.google-maps {
+  width: 30%;
 }
 
-.page-title {
-    font-size: 200%;
-    font-weight: bold;
+.bottom-button {
+  width: 10%;
 }
 
-.recovery-link {
-    text-align: right;
-    width: 45%;
+google-map {
+  border-radius: 5px !important;
 }
 
-.recovery-link a {
-    text-decoration: none;
-    color: black;
-    font-weight: bold;
+.image-right{
+  max-height: 70%;
+  max-width: 70%;
+  object-fit: contain;
 }
 
-.login-button {
-    border-radius: 5px;
-    width: 45%;
-    min-height: 20%;
-    font-weight: bold;
-    background-color: #9DC78A;
-    border: none;
+
+@media only screen and (max-width: 1700px) {
+  .input-form-field {
+    width: 40%;
+  }
+
+  .google-maps {
+    width: 40%;
+  }
 }
 
-.login-button:hover {
-    background-color: #53834C;
-    color: white;
-}
-
-.other-logins {
-    width: 45%;
-    font-size: 100%;
-    font-weight: bolder;
-    color: #757171;
-}
-
-.bottom-text {
-    color: #636363;
-}
-
-.bottom-text a {
-    font-weight: bolder;
-    text-decoration: none;
-    color: #636363;
-}
-
-.custom-small-input {
+@media only screen and (max-width: 1400px) {
+  .input-form-field {
     width: 50%;
+  }
+
+  .google-maps {
+    width: 50%;
+  }
 }
 
-.marginForRow {
-    margin-left: 10%;
+@media only screen and (max-width: 1100px) {
+  .input-form-field {
+    width: 60%;
+  }
+
+  .google-maps {
+    width: 60%;
+  }
 }
 
-.fix-display {
-  display: block;
-  margin-top: 5px;
+@media only screen and (max-width: 800px) {
+  .input-form-field {
+    width: 70%;
+  }
+
+  .google-maps {
+    width: 70%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .input-form-field {
+    width: 100%;
+  }
+
+  .google-maps {
+    width: 100%;
+  }
 }

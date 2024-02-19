@@ -38,9 +38,28 @@ namespace BookingBuddy.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
         {
-            //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
+            var properties = await _context.Property.ToListAsync();
+            foreach (var property in properties)
+            {
+                List<Amenity> amenities = [];
+                property.AmenityIds?.ForEach(amenityId =>
+                {
+                    var amenity = _context.Amenity.FirstOrDefault(a => a.AmenityId == amenityId);
+                    if (amenity != null)
+                    {
+                        amenities.Add(amenity);
+                    }
+                });
+                property.Amenities = amenities;
+                var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
+                property.ApplicationUser = new ReturnUser()
+                {
+                    Id = user!.Id,
+                    Name = user.Name
+                };
+            }
 
-            var allProperties = await _context.Property.ToListAsync();
+            //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
 
             var promotedPropertyIds = await _context.Order
                 .Where(order => order.EndDate > DateTime.Now && order.State)
@@ -52,11 +71,11 @@ namespace BookingBuddy.Server.Controllers
                 .OrderByDescending(property => property.Clicks)
                 .ToListAsync();
 
-            var otherProperties = allProperties
+            var otherProperties = properties
                 .Except(promotedProperties)
                 .OrderByDescending(property => property.Clicks)
                 .ToList();
-                
+
             var orderedProperties = promotedProperties.Concat(otherProperties).ToList();
 
             return orderedProperties;
@@ -71,7 +90,8 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("{propertyId}")]
         public async Task<ActionResult<Property>> GetProperty(string propertyId)
         {
-            try {
+            try
+            {
                 var property = await _context.Property.FindAsync(propertyId);
 
                 if (property == null)
@@ -86,30 +106,31 @@ namespace BookingBuddy.Server.Controllers
 
                 property.AmenityIds?.ForEach(amenityId =>
                 {
-                    Amenity amenity = new Amenity
+                    var amenity = _context.Amenity.FirstOrDefault(a => a.AmenityId == amenityId);
+                    if (amenity != null)
                     {
-                        AmenityId = amenityId,
-                        Name = Enum.GetName(typeof(AmenityEnum), amenityId)
-                    };
-
-                    amenities.Add(amenity);
+                        amenities.Add(amenity);
+                    }
                 });
 
                 property.Amenities = amenities;
 
                 var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
-                property.ApplicationUser = new ReturnUser(){
+                property.ApplicationUser = new ReturnUser()
+                {
                     Id = user!.Id,
                     Name = user.Name
                 };
 
                 return property;
-            } catch(Exception ex){
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.Message);
                 return NotFound();
             }
         }
-        
+
         /// <summary>
         /// Método que atualiza uma propriedade existente na base de dados da aplicação.
         /// </summary>
@@ -144,7 +165,19 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest();
             }
 
-            propertyToEdit.AmenityIds = model.AmenityIds;
+            List<Amenity> amenities = [];
+
+            model.Amenities?.ForEach(amenityName =>
+            {
+                var amenity =
+                    _context.Amenity.FirstOrDefault(a => string.Equals(a.Name.ToUpper(), amenityName.ToUpper()));
+                if (amenity != null)
+                {
+                    amenities.Add(amenity);
+                }
+            });
+
+            propertyToEdit.AmenityIds = amenities.Select(a => a.AmenityId).ToList();
             propertyToEdit.Name = model.Name;
             propertyToEdit.Description = model.Description;
             propertyToEdit.PricePerNight = model.PricePerNight;
@@ -188,15 +221,27 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
+            List<Amenity> amenities = [];
+
+            model.Amenities?.ForEach(amenityName =>
+            {
+                var amenity =
+                    _context.Amenity.FirstOrDefault(a => string.Equals(a.Name.ToUpper(), amenityName.ToUpper()));
+                if (amenity != null)
+                {
+                    amenities.Add(amenity);
+                }
+            });
+
             var property = new Property
             {
                 PropertyId = Guid.NewGuid().ToString(),
                 ApplicationUserId = user.Id,
-                AmenityIds = model.AmenityIds,
                 Name = model.Name,
                 Description = model.Description,
                 PricePerNight = model.PricePerNight,
                 Location = model.Location,
+                AmenityIds = amenities.Select(a => a.AmenityId).ToList(),
                 ImagesUrl = model.ImagesUrl,
                 Clicks = 0
             };
@@ -212,10 +257,8 @@ namespace BookingBuddy.Server.Controllers
                 {
                     return Conflict();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return CreatedAtAction("GetProperty", new { propertyId = property.PropertyId }, property);
@@ -243,7 +286,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return NotFound();
             }
-            
+
             if (user.Id != property.ApplicationUserId)
             {
                 return Forbid();
@@ -287,8 +330,8 @@ namespace BookingBuddy.Server.Controllers
         public async Task<ActionResult<IEnumerable<BlockedDate>>> GetPropertyBlockedDates(string propertyId)
         {
             var blockedDates = await _context.BlockedDate
-             .Where(b => b.PropertyId == propertyId)
-             .ToListAsync();
+                .Where(b => b.PropertyId == propertyId)
+                .ToListAsync();
 
             if (blockedDates == null || blockedDates.Count == 0)
             {
@@ -376,19 +419,33 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyCreateModel(List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyCreateModel(
+        string Name,
+        string Description,
+        decimal PricePerNight,
+        string Location,
+        List<string>? Amenities,
+        List<string> ImagesUrl);
 
     /// <summary>
     /// Modelo de edição de propriedade
     /// </summary>
     /// <param name="PropertyId">Identificador da propriedade</param>
-    /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
+    /// <param name="Amenities">Lista de comodidades</param>
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
+    /// <param name="Amenities">Lista de comodidades</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyEditModel(string PropertyId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyEditModel(
+        string PropertyId,
+        string Name,
+        string Description,
+        decimal PricePerNight,
+        string Location,
+        List<string>? Amenities,
+        List<string> ImagesUrl);
 
     /// <summary>
     /// Modelo de edição de propriedade

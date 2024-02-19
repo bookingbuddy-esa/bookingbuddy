@@ -16,7 +16,7 @@ namespace BookingBuddy.Server.Data
         /// Propriedade que diz respeito ao fornecedor de login.
         /// </summary>
         public DbSet<AspNetProvider> AspNetProviders { get; set; } = default!;
-        
+
         /// <summary>
         /// Propriedade que diz respeito à comodidade da propriedade física.
         /// </summary>
@@ -38,6 +38,8 @@ namespace BookingBuddy.Server.Data
         public DbSet<BookingOrder> BookingOrder { get; set; } = default!;
 
         public DbSet<Payment> Payment { get; set; } = default!;
+
+        public DbSet<Amenity> Amenity { get; set; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.
@@ -71,28 +73,28 @@ namespace BookingBuddy.Server.Data
                 userRole,
                 landlordRole
             );
-            
+
             var googleProvider = new AspNetProvider
             {
                 AspNetProviderId = Guid.NewGuid().ToString(),
                 Name = "google",
                 NormalizedName = "GOOGLE"
             };
-            
+
             var microsoftProvider = new AspNetProvider
             {
                 AspNetProviderId = Guid.NewGuid().ToString(),
                 Name = "microsoft",
                 NormalizedName = "MICROSOFT"
             };
-            
+
             var localProvider = new AspNetProvider
             {
                 AspNetProviderId = Guid.NewGuid().ToString(),
                 Name = "local",
                 NormalizedName = "LOCAL"
             };
-            
+
             builder.Entity<AspNetProvider>().HasData(
                 googleProvider,
                 microsoftProvider,
@@ -171,6 +173,14 @@ namespace BookingBuddy.Server.Data
                     UserId = landlordUser.Id
                 }
             );
+
+            List<Amenity> amenities = [];
+            amenities.AddRange(Enum.GetValues<AmenityEnum>().Select(amenity => new Amenity
+            {
+                AmenityId = Guid.NewGuid().ToString(), Name = amenity.ToString(), DisplayName = amenity.GetAmenityName()
+            }));
+
+            builder.Entity<Amenity>().HasData(amenities);
         }
     }
 }

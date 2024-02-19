@@ -29,9 +29,9 @@
                             <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i></a></li>
                             <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['profile']">{{ user?.name }}<i class="bi bi-person ms-2"></i></a></li>
                             <hr *ngIf="signedIn" class="dropdown-divider">
-                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['property-ad-create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['property-promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['properties/create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
+                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['properties/calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
+                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['properties/promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
                             <hr *ngIf="signedIn" class="dropdown-divider">
                             <li *ngIf="signedIn"><button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">Logout<i class="bi bi-door-open ms-2"></i></button></li>
                         </ul>

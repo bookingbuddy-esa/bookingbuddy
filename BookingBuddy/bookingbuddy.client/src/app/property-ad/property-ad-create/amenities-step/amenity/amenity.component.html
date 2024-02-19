@@ -1,0 +1,6 @@
+<div class="amenity w-100 m-3 p-2 rounded d-flex flex-row align-items-center"
+     (click)="this.onSelected.emit(amenity)"
+      [ngClass]="{'amenity-selected': selected}">
+  <span class="w-25 text-center material-symbols-outlined">{{ icon }}</span>
+  <span class="flex-grow-1 fw-bolder">{{ displayAmenity }}</span>
+</div>

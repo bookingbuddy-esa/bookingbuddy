@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 
 import { PropertyAdService } from '../property-ad.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AmenitiesHelper} from "../../models/amenityEnum";
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -28,10 +29,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
   reservarPropriedadeForm!: FormGroup;
   reservarPropriedadeFailed: boolean;
   errors: string[];
+  protected readonly AmenitiesHelper = AmenitiesHelper;
 
   constructor(private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder) {
     this.errors = [];
-    
+
     this.reservarPropriedadeFailed = false;
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],

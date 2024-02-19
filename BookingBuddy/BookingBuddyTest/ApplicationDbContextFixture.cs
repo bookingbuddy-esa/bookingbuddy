@@ -19,14 +19,6 @@ namespace BookingBuddyTest
             DbContext = new BookingBuddyServerContext(options);
 
             DbContext.Database.EnsureCreated();
-
-            var applicationUser = new ApplicationUser { Id = new Guid().ToString(), Name = "Proprietário Teste", Email = "propteste@bookingbuddy.com", UserName = "propteste@bookingbuddy.com" };
-
-            DbContext.Users.Add(applicationUser);
-
-            // DbContext.Landlord.Add(new Landlord { LandlordId = "landlord", ApplicationUserId = applicationUser.Id, Name = "Landlord" });
-
-            DbContext.SaveChanges();
         }
 
         public void Dispose() => DbContext.Dispose();

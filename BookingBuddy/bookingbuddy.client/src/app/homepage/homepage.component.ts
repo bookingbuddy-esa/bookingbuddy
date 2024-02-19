@@ -3,7 +3,8 @@ import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
 import {Router} from '@angular/router';
 import {Property} from '../models/property';
-import { PropertyAdService } from '../property-ad/property-ad.service';
+import {PropertyAdService} from '../property-ad/property-ad.service';
+import {FeedbackService} from "../auxiliary/feedback.service";
 
 @Component({
   selector: 'app-homepage',
@@ -16,7 +17,12 @@ export class HomepageComponent implements OnInit {
   user: UserInfo | undefined;
   property_list: Property[] = [];
 
-  constructor(private authService: AuthorizeService, private propertyService: PropertyAdService, private router: Router) {
+  constructor(
+    private authService: AuthorizeService,
+    private propertyService: PropertyAdService,
+    private router: Router,
+    private FeedbackService: FeedbackService
+  ) {
   }
 
   ngOnInit(): void {
@@ -40,9 +46,9 @@ export class HomepageComponent implements OnInit {
           this.property_list = response as Property[];
         }
       }).catch(
-        error => {
-          //this.errors.push("TODO");
-        }
-      );
+      error => {
+        //this.errors.push("TODO");
+      }
+    );
   }
 }

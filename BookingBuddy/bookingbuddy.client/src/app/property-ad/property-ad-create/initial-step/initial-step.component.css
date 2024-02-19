@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  height: inherit;
+  width: inherit;
+}
+
+.image-right {
+  max-height: 70%;
+  max-width: 70%;
+  object-fit: contain;
+}
