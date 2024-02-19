@@ -1,7 +1,7 @@
 :host {
   display: flex;
   height: inherit;
-  width: inherit;
+  width: 50%;
 }
 
 .bottom-button{

@@ -11,6 +11,7 @@ import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
 import {UserInfo} from "../../auth/authorize.dto";
 import {Property} from "../../models/property";
+import {MapLocation} from "./location-step/location-step.component";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -32,12 +33,14 @@ export class PropertyAdCreateComponent implements OnInit {
   protected readonly numberOfSteps: number = 3;
   protected step: Subject<number> = new BehaviorSubject(0);
 
-  // Dados
-  protected location: google.maps.LatLngLiteral | undefined;
-
   protected onStepChange() {
     return this.step.asObservable();
   }
+
+  // Localização
+
+  protected location: MapLocation | undefined;
+  protected isLocationValid: boolean = false;
 
   constructor(private authService: AuthorizeService,
               private formBuilder: FormBuilder,
@@ -56,8 +59,15 @@ export class PropertyAdCreateComponent implements OnInit {
   }
 
   previousStep() {
-    if (this.currentStep > 0)
+    if (this.currentStep > 0) {
+      switch (this.currentStep) {
+        case 1:
+          this.location = undefined;
+          this.isLocationValid = false;
+          break;
+      }
       this.step.next(this.currentStep - 1);
+    }
   }
 
   nextStep() {
@@ -69,8 +79,21 @@ export class PropertyAdCreateComponent implements OnInit {
     return ((this.currentStep) / this.numberOfSteps) * 100;
   }
 
-  setLocation($event: google.maps.LatLngLiteral | undefined) {
+  setLocation($event: MapLocation | undefined) {
     this.location = $event;
+  }
+
+  locationValid($event: boolean) {
+    this.isLocationValid = $event;
+  }
+
+  isValid(): boolean {
+    switch (this.currentStep) {
+      case 1:
+        return this.isLocationValid;
+      default :
+        return true;
+    }
   }
 
   //função para guardar as imagens num array // TODO:Restrições de tipo de ficheiro
