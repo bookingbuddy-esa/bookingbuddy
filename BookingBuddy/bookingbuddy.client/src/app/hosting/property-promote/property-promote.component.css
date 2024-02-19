@@ -1,17 +1,21 @@
 :host {
-  display: flex;
-  width: inherit;
-  height: inherit;
+    display: flex;
+    width: inherit;
+    height: inherit;
 }
 
 .color {
-  color: black;
+    color: black;
 }
 
 .box-shadow {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .current-property {
-  border: 2px solid green;
+    border: 4px solid green;
+}
+
+.teste {
+    margin-left: 20px;
 }

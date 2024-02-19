@@ -48,6 +48,7 @@ export class PaymentComponent {
     this.paymentService.confirmOrder(this.paymentResponse.orderId, this.paymentResponse.paymentId).forEach((response) => {
       if(response){
         console.log(response);
+        alert('Esta mensagem é de teste - O pagamento foi confirmado com sucesso!')
       }
     }).catch((err) => {
       console.error("Erro no servidor: " + err);
