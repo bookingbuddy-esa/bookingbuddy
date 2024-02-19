@@ -1,7 +1,7 @@
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
-import { UserInfo } from './authorize.dto';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {BehaviorSubject, Observable, Subject, catchError, map, of} from 'rxjs';
+import {UserInfo} from './authorize.dto';
 import {environment} from "../../environments/environment";
 
 
@@ -9,7 +9,8 @@ import {environment} from "../../environments/environment";
   providedIn: 'root'
 })
 export class AuthorizeService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   private _authStateChanged: Subject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -19,17 +20,31 @@ export class AuthorizeService {
 
   // cookie-based login
   public signIn(email: string, password: string) {
-    return this.http.post(`${environment.apiUrl}/login?useCookies=true`, {
+    return this.http.post(`${environment.apiUrl}/api/login`, {
       email: email,
       password: password
     }, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
-    })
-      .pipe<boolean>(map((res: HttpResponse<string>) => {
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
         this._authStateChanged.next(res.ok);
         return res.ok;
       }));
+  }
+
+  public signInWithProviders(providerId: string, token: string) {
+    return this.http.post(`${environment.apiUrl}/api/loginProviders`, {
+      providerId: providerId,
+      token: token
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      this._authStateChanged.next(res.ok);
+      return res.ok;
+    }));
   }
 
   // register new user
@@ -95,7 +110,7 @@ export class AuthorizeService {
 
   // reset user password
   public resetPassword(uid: string, token: string, newPassword: string) {
-    return this.http.post( `${environment.apiUrl}/api/resetPassword`, {
+    return this.http.post(`${environment.apiUrl}/api/resetPassword`, {
       uid: uid,
       token: token,
       newPassword: newPassword
@@ -145,12 +160,13 @@ export class AuthorizeService {
 
   public manageUser(newName: string, newUserName: string, newEmail: string, newPassword: string, oldPassword: string) {
     return this.http.post<UserInfo>(`${environment.apiUrl}/api/manage/info`, {
-      withCredentials: true,
       newName: newName,
       newUserName: newUserName,
       newEmail: newEmail,
       newPassword: newPassword,
       oldPassword: oldPassword
+    }, {
+      withCredentials: true,
     }).pipe(catchError((_: HttpErrorResponse, __: Observable<UserInfo>) => {
       return of({} as UserInfo);
     }));

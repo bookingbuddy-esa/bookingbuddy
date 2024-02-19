@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AuthorizeService} from "../authorize.service";
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {el} from "@fullcalendar/core/internal-common";
 
 /**
  * Componente responsável pelo formulário de login.
@@ -33,7 +34,7 @@ export class SignInComponent implements OnInit {
    * @param formBuilder Construtor de formulários do Angular.
    * @param router Router do Angular.
    */
-  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private router: Router) {
+  constructor(private authService: AuthorizeService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
@@ -48,12 +49,31 @@ export class SignInComponent implements OnInit {
    * - Inicializa o formulário de login ('signinForm').
    */
   ngOnInit(): void {
+    this.submitting = true;
     this.errors = [];
     this.signinForm = this.formBuilder.group(
       {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]]
       });
+    const providerId = this.route.snapshot.queryParamMap.get('providerId');
+    const token = this.route.snapshot.queryParamMap.get('token');
+    if (providerId !== null && token !== null) {
+      this.authService.signInWithProviders(providerId, token).forEach(
+        response => {
+          if (response) {
+            this.signedIn = true;
+            this.router.navigateByUrl('').then(r => this.submitting = false);
+          }
+        }).catch(
+        error => {
+          this.errors.push("Acesso negado. Verifique as credenciais.");
+          this.submitting = false;
+        });
+    } else {
+      this.router.navigateByUrl('signin').then(r => this.submitting = false);
+    }
+    this.submitting = false;
   }
 
   get emailFormField() {

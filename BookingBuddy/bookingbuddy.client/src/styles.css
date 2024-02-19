@@ -62,3 +62,6 @@ body {
 .fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
   background-color: #176b17;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -16,8 +16,15 @@ import { HomepagePropertyComponent } from './homepage/homepage-property/homepage
 import {NgOptimizedImage} from "@angular/common";
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 import { HostingModule } from './hosting/hosting.module';
-import { cA } from '@fullcalendar/core/internal-common';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
+import {GoogleMap, MapMarker} from "@angular/google-maps";
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { LocationStepComponent } from './property-ad/property-ad-create/location-step/location-step.component';
+import { InitialStepComponent } from './property-ad/property-ad-create/initial-step/initial-step.component';
+import { AmenitiesStepComponent } from './property-ad/property-ad-create/amenities-step/amenities-step.component';
+import { AmenityComponent } from './property-ad/property-ad-create/amenities-step/amenity/amenity.component';
+import { AdInfoStepComponent } from './property-ad/property-ad-create/ad-info-step/ad-info-step.component';
+import { PhotosStepComponent } from './property-ad/property-ad-create/photos-step/photos-step.component';
 
 @NgModule({
   declarations: [
@@ -26,19 +33,26 @@ import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/
     MenuComponent,
     HomepagePropertyComponent,
     PropertyAdCreateComponent,
-    PropertyAdRetrieveComponent
+    PropertyAdRetrieveComponent,
+    LocationStepComponent,
+    InitialStepComponent,
+    AmenitiesStepComponent,
+    AmenityComponent,
+    AdInfoStepComponent,
+    PhotosStepComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
     ReactiveFormsModule, AuthModule,
     AuxiliaryModule, NgOptimizedImage,
-    HostingModule
+    HostingModule, GoogleMap, MapMarker
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     AuthGuard,
-    AuthorizeService
+    AuthorizeService,
+    provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]
 })

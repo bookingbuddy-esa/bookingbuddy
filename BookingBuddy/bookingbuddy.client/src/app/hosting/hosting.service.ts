@@ -10,11 +10,11 @@ export class HostingService {
   constructor(private http: HttpClient) { }
 
   public getPropertyBlockedDates(propertyId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/blockedDates/property/${propertyId}`);
+    return this.http.get<any[]>(`${environment.apiUrl}/api/properties/blockedDates/${propertyId}`);
   }
 
   public blockDates(startDate: string, endDate: string, propertyId: string){
-    return this.http.post(`${environment.apiUrl}/api/blockedDates`, {
+    return this.http.post(`${environment.apiUrl}/api/properties/blockDates`, {
       startDate: startDate,
       endDate: endDate,
       propertyId: propertyId
@@ -31,7 +31,7 @@ export class HostingService {
   }
 
   public unblockDates(id: number): Observable<boolean> {
-    return this.http.delete(`${environment.apiUrl}/api/blockedDates/unblock/${id}`, {
+    return this.http.delete(`${environment.apiUrl}/api/properties/unblock/${id}`, {
       observe: 'response',
       responseType: 'text'
     }).pipe(

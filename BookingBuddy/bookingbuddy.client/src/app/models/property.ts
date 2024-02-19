@@ -12,3 +12,12 @@ export interface Property {
   amenityIds?: string[];
   imagesUrl?: string[];
 }
+
+export interface PropertyCreate {
+  name: string;
+  location: string;
+  description: string;
+  pricePerNight: number;
+  amenities: string[];
+  imagesUrl: string[];
+}

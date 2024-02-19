@@ -1,0 +1,14 @@
+<div class="popup-content-container">
+
+  <h1 mat-dialog-title>Gestão do Calendario</h1>
+  <button mat-icon-button mat-dialog-close class="close-button">
+    <mat-icon aria-label="Fechar">close</mat-icon>
+  </button>
+  <div mat-dialog-content class="popup-content">
+    <h2 *ngIf="eventId"><strong>Datas Bloqueadas</strong></h2>
+    <p><strong>{{ startDateOutput }} - {{ endDateOutput }}</strong></p>
+    <br />
+    <button class="btn btn-outline-success mb-5" *ngIf="eventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
+    <button class="btn btn-outline-success mb-5" *ngIf="eventId" (click)="unblockDates()">Desbloquear Datas</button>
+  </div>
+</div>

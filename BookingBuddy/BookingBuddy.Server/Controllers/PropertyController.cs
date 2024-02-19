@@ -38,7 +38,47 @@ namespace BookingBuddy.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
         {
-            return await _context.Property.ToListAsync();
+            var properties = await _context.Property.ToListAsync();
+            foreach (var property in properties)
+            {
+                List<Amenity> amenities = [];
+                property.AmenityIds?.ForEach(amenityId =>
+                {
+                    var amenity = _context.Amenity.FirstOrDefault(a => a.AmenityId == amenityId);
+                    if (amenity != null)
+                    {
+                        amenities.Add(amenity);
+                    }
+                });
+                property.Amenities = amenities;
+                var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
+                property.ApplicationUser = new ReturnUser()
+                {
+                    Id = user!.Id,
+                    Name = user.Name
+                };
+            }
+
+            //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
+
+            var promotedPropertyIds = await _context.Order
+                .Where(order => order.EndDate > DateTime.Now && order.State)
+                .Select(order => order.PropertyId)
+                .ToListAsync();
+
+            var promotedProperties = await _context.Property
+                .Where(property => promotedPropertyIds.Contains(property.PropertyId))
+                .OrderByDescending(property => property.Clicks)
+                .ToListAsync();
+
+            var otherProperties = properties
+                .Except(promotedProperties)
+                .OrderByDescending(property => property.Clicks)
+                .ToList();
+
+            var orderedProperties = promotedProperties.Concat(otherProperties).ToList();
+
+            return orderedProperties;
         }
 
         /// <summary>
@@ -50,37 +90,47 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("{propertyId}")]
         public async Task<ActionResult<Property>> GetProperty(string propertyId)
         {
-            var property = await _context.Property.FindAsync(propertyId);
-
-            if (property == null)
+            try
             {
-                return NotFound();
-            }
+                var property = await _context.Property.FindAsync(propertyId);
 
-            List<Amenity> amenities = [];
-
-            property.AmenityIds?.ForEach(amenityId =>
-            {
-                Amenity amenity = new Amenity
+                if (property == null)
                 {
-                    AmenityId = amenityId,
-                    Name = Enum.GetName(typeof(AmenityEnum), amenityId)
+                    return NotFound();
+                }
+
+                property.Clicks += 1;
+                await _context.SaveChangesAsync();
+
+                List<Amenity> amenities = [];
+
+                property.AmenityIds?.ForEach(amenityId =>
+                {
+                    var amenity = _context.Amenity.FirstOrDefault(a => a.AmenityId == amenityId);
+                    if (amenity != null)
+                    {
+                        amenities.Add(amenity);
+                    }
+                });
+
+                property.Amenities = amenities;
+
+                var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
+                property.ApplicationUser = new ReturnUser()
+                {
+                    Id = user!.Id,
+                    Name = user.Name
                 };
 
-                amenities.Add(amenity);
-            });
-
-            property.Amenities = amenities;
-
-            var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
-            property.ApplicationUser = new ReturnUser(){
-                Id = user!.Id,
-                Name = user.Name
-            };
-
-            return property;
+                return property;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
         }
-        
+
         /// <summary>
         /// Método que atualiza uma propriedade existente na base de dados da aplicação.
         /// </summary>
@@ -115,7 +165,19 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest();
             }
 
-            propertyToEdit.AmenityIds = model.AmenityIds;
+            List<Amenity> amenities = [];
+
+            model.Amenities?.ForEach(amenityName =>
+            {
+                var amenity =
+                    _context.Amenity.FirstOrDefault(a => string.Equals(a.Name.ToUpper(), amenityName.ToUpper()));
+                if (amenity != null)
+                {
+                    amenities.Add(amenity);
+                }
+            });
+
+            propertyToEdit.AmenityIds = amenities.Select(a => a.AmenityId).ToList();
             propertyToEdit.Name = model.Name;
             propertyToEdit.Description = model.Description;
             propertyToEdit.PricePerNight = model.PricePerNight;
@@ -159,16 +221,29 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
+            List<Amenity> amenities = [];
+
+            model.Amenities?.ForEach(amenityName =>
+            {
+                var amenity =
+                    _context.Amenity.FirstOrDefault(a => string.Equals(a.Name.ToUpper(), amenityName.ToUpper()));
+                if (amenity != null)
+                {
+                    amenities.Add(amenity);
+                }
+            });
+
             var property = new Property
             {
                 PropertyId = Guid.NewGuid().ToString(),
                 ApplicationUserId = user.Id,
-                AmenityIds = model.AmenityIds,
                 Name = model.Name,
                 Description = model.Description,
                 PricePerNight = model.PricePerNight,
                 Location = model.Location,
-                ImagesUrl = model.ImagesUrl
+                AmenityIds = amenities.Select(a => a.AmenityId).ToList(),
+                ImagesUrl = model.ImagesUrl,
+                Clicks = 0
             };
 
             _context.Property.Add(property);
@@ -182,10 +257,8 @@ namespace BookingBuddy.Server.Controllers
                 {
                     return Conflict();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return CreatedAtAction("GetProperty", new { propertyId = property.PropertyId }, property);
@@ -213,7 +286,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return NotFound();
             }
-            
+
             if (user.Id != property.ApplicationUserId)
             {
                 return Forbid();
@@ -225,6 +298,11 @@ namespace BookingBuddy.Server.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Método que obtém as propriedades de um utilizador.
+        /// </summary>
+        /// <param name="userId">Identificador do utilizador</param>
+        /// <returns>Lista com as propriedades do utilizador, caso exista, ou não encontrada, caso contrário</returns>
         [HttpGet("user/{userId}")]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Property>>> GetPropertiesByUserId(string userId)
@@ -241,6 +319,91 @@ namespace BookingBuddy.Server.Controllers
             return properties;
         }
 
+
+        /// <summary>
+        /// Método que obtém as datas bloqueadas de uma propriedade.
+        /// </summary>
+        /// <param name="propertyId">Identificador da propriedade</param>
+        /// <returns>Lista com as datas bloqueadas de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
+        [HttpGet("blockedDates/{propertyId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<BlockedDate>>> GetPropertyBlockedDates(string propertyId)
+        {
+            var blockedDates = await _context.BlockedDate
+                .Where(b => b.PropertyId == propertyId)
+                .ToListAsync();
+
+            if (blockedDates == null || blockedDates.Count == 0)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+            }
+
+            return blockedDates;
+        }
+
+        /// <summary>
+        /// Método que bloqueia as datas no calendario de uma propriedade.
+        /// </summary>
+        /// <param name="inputModel">Modelo de criação de uma BlockedDate</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Operação bem-sucedida, as datas foram bloqueadas com sucesso.
+        /// - 400 Bad Request: O modelo de entrada é inválido.
+        /// </returns>
+        [HttpPost("blockDates")]
+        [AllowAnonymous]
+        public async Task<IActionResult> BlockDates([FromBody] BlockDateInputModel inputModel)
+        {
+            if (inputModel == null)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            var blockedDate = new BlockedDate
+            {
+                Start = inputModel.StartDate,
+                End = inputModel.EndDate,
+                PropertyId = inputModel.PropertyId
+            };
+
+            _context.BlockedDate.Add(blockedDate);
+            await _context.SaveChangesAsync();
+
+            return Ok("Dates blocked successfully");
+        }
+
+        /// <summary>
+        /// Método que desbloqueia uma data de uma propriedade.
+        /// </summary>
+        /// <param name="id">Identificador da data a desbloquear</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Operação bem-sucedida, a data foi desbloqueada com sucesso.
+        /// - 404 Not Found: A data com o identificador fornecido não foi encontrada. 
+        /// </returns>
+        [HttpDelete("unblock/{id}")]
+        public async Task<IActionResult> UnblockDates(int id)
+        {
+            var blockedDate = await _context.BlockedDate.FindAsync(id);
+
+            if (blockedDate == null)
+            {
+                return NotFound();
+            }
+
+            _context.BlockedDate.Remove(blockedDate);
+            await _context.SaveChangesAsync();
+
+            return Ok("Dates unblocked successfully");
+        }
+
+        /// <summary>
+        /// Método que verifica se uma propriedade existe.
+        /// </summary>
+        /// <param name="id">Identificador da propriedade.</param>
+        /// <returns>
+        /// Retorna verdadeiro se uma propriedade com o identificador fornecido existir; caso contrário, retorna falso.
+        /// </returns>
         private bool PropertyExists(string id)
         {
             return _context.Property.Any(e => e.PropertyId == id);
@@ -256,17 +419,39 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyCreateModel(string LandlordId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyCreateModel(
+        string Name,
+        string Description,
+        decimal PricePerNight,
+        string Location,
+        List<string>? Amenities,
+        List<string> ImagesUrl);
 
     /// <summary>
     /// Modelo de edição de propriedade
     /// </summary>
     /// <param name="PropertyId">Identificador da propriedade</param>
-    /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
+    /// <param name="Amenities">Lista de comodidades</param>
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
+    /// <param name="Amenities">Lista de comodidades</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyEditModel(string PropertyId, List<int>? AmenityIds, string Name, string Description, decimal PricePerNight, string Location, List<string> ImagesUrl);
+    public record PropertyEditModel(
+        string PropertyId,
+        string Name,
+        string Description,
+        decimal PricePerNight,
+        string Location,
+        List<string>? Amenities,
+        List<string> ImagesUrl);
+
+    /// <summary>
+    /// Modelo de edição de propriedade
+    /// </summary>
+    /// <param name="StartDate">Data Inicial do Bloqueio</param>
+    /// <param name="EndDate">Data Final do bloqueio</param>
+    /// <param name="PropertyId">Identificador da Propriedade</param>-
+    public record BlockDateInputModel(string StartDate, string EndDate, string PropertyId);
 }

@@ -6,21 +6,36 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
+using BookingBuddy.Server.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ?? throw new InvalidOperationException("Connection string 'BookingBuddyServerContext' not found.")));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+        builder.WithOrigins("https://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
 
-builder.Services.AddAuthorization();
+builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ??
+                         throw new InvalidOperationException(
+                             "Connection string 'BookingBuddyServerContext' not found.")));
+
+builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
+});
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingBuddyServerContext>()
     .AddErrorDescriber<PortugueseIdentityErrorDescriber>()
     .AddDefaultTokenProviders();
 
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = true;
-});
+builder.Services.Configure<IdentityOptions>(options => { options.SignIn.RequireConfirmedAccount = true; });
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
@@ -34,12 +49,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<PaymentController, PaymentController>();
+
 var app = builder.Build();
 
+app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
-app.MapIdentityApi<ApplicationUser>();
 
 // Configure the HTTP request pipeline.
 if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
@@ -48,7 +64,7 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
