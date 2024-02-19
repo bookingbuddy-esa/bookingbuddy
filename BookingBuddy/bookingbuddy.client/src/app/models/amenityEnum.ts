@@ -62,25 +62,25 @@ export class AmenitiesHelper {
       case AmenityEnum![1]:
         return "wifi";
       case AmenityEnum![2]:
-        return "kitchen";
+        return "oven";
       case AmenityEnum![3]:
         return "balcony";
       case AmenityEnum![4]:
-        return "fridge";
+        return "kitchen";
       case AmenityEnum![5]:
         return "microwave";
       case AmenityEnum![6]:
-        return "garden";
+        return "yard";
       case AmenityEnum![7]:
-        return "washing_machine";
+        return "local_laundry_service";
       case AmenityEnum![8]:
-        return "pool";
+        return "waves";
       case AmenityEnum![9]:
         return "pool";
       case AmenityEnum![10]:
         return "pets";
       case AmenityEnum![11]:
-        return "security";
+        return "videocam";
       case AmenityEnum![12]:
         return "tv";
       default:

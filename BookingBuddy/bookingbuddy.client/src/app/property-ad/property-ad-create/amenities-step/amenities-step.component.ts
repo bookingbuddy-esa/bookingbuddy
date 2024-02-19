@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {AmenitiesHelper} from "../../../models/amenityEnum";
 
 @Component({
   selector: 'app-amenities-step',
@@ -6,8 +7,20 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
   styleUrl: './amenities-step.component.css'
 })
 export class AmenitiesStepComponent {
-  @Output() nextStep = new EventEmitter<void>();
-  @Output() previousStep = new EventEmitter<void>();
-  @Output() amenitiesSubmit = new EventEmitter<string[]>();
-  @Input() currentPercentage!: number;
+  protected readonly AmenitiesHelper = AmenitiesHelper;
+  protected selectedAmenities: string[] = [];
+  @Output() onAmenitiesChange = new EventEmitter<string[]>();
+
+  selectAmenity(amenity: string) {
+    if (this.selectedAmenities.includes(amenity)) {
+      this.selectedAmenities = this.selectedAmenities.filter(a => a !== amenity);
+    } else {
+      this.selectedAmenities.push(amenity);
+    }
+    this.onAmenitiesChange.emit(this.selectedAmenities);
+  }
+
+  isSelected(amenity: string): boolean {
+    return this.selectedAmenities.includes(amenity);
+  }
 }

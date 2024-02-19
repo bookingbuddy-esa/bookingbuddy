@@ -22,6 +22,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { LocationStepComponent } from './property-ad/property-ad-create/location-step/location-step.component';
 import { InitialStepComponent } from './property-ad/property-ad-create/initial-step/initial-step.component';
 import { AmenitiesStepComponent } from './property-ad/property-ad-create/amenities-step/amenities-step.component';
+import { AmenityComponent } from './property-ad/property-ad-create/amenities-step/amenity/amenity.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { AmenitiesStepComponent } from './property-ad/property-ad-create/ameniti
     LocationStepComponent,
     InitialStepComponent,
     AmenitiesStepComponent,
+    AmenityComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,

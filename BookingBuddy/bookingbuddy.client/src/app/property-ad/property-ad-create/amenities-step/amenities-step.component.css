@@ -1,9 +1,9 @@
 :host {
   display: flex;
   height: inherit;
-  width: inherit;
+  width: 50%;
 }
 
-.bottom-button{
-  width: 10%;
+.amenity-list::-webkit-scrollbar {
+  display: none;
 }

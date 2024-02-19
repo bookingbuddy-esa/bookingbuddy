@@ -1,12 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  FormBuilder,
-  Validators
-} from "@angular/forms";
 import {Router} from '@angular/router';
 
 import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
-import {AmenityEnum, AmenitiesHelper} from '../../models/amenityEnum';
 import {PropertyAdService} from '../property-ad.service';
 import {AuthorizeService} from '../../auth/authorize.service';
 import {UserInfo} from "../../auth/authorize.dto";
@@ -21,12 +16,6 @@ import {MapLocation} from "./location-step/location-step.component";
 export class PropertyAdCreateComponent implements OnInit {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
-
-  // Amenities
-  protected readonly AmenityEnum = AmenityEnum;
-  protected readonly AmenitiesHelper = AmenitiesHelper;
-
-  // Formulário
   protected selectedFiles: File[] = [];
   protected errors: string[] = [];
   protected currentStep: number = 0;
@@ -37,13 +26,14 @@ export class PropertyAdCreateComponent implements OnInit {
     return this.step.asObservable();
   }
 
-  // Localização
-
+  // Location
   protected location: MapLocation | undefined;
   protected isLocationValid: boolean = false;
 
+  // Amenities
+  protected selectedAmenities: string[] = [];
+
   constructor(private authService: AuthorizeService,
-              private formBuilder: FormBuilder,
               private router: Router,
               private propertyService: PropertyAdService) {
     this.errors = [];
@@ -65,14 +55,26 @@ export class PropertyAdCreateComponent implements OnInit {
           this.location = undefined;
           this.isLocationValid = false;
           break;
+        case 2:
+          this.selectedAmenities = [];
+          break;
       }
       this.step.next(this.currentStep - 1);
     }
   }
 
   nextStep() {
-    if (this.currentStep < this.numberOfSteps)
+    if (this.currentStep < this.numberOfSteps) {
+      switch (this.currentStep) {
+        case 1:
+          console.log(this.location);
+          break;
+        case 2:
+          console.log(this.selectedAmenities);
+          break;
+      }
       this.step.next(this.currentStep + 1);
+    }
   }
 
   get currentCompletePercentage() {
@@ -85,6 +87,10 @@ export class PropertyAdCreateComponent implements OnInit {
 
   locationValid($event: boolean) {
     this.isLocationValid = $event;
+  }
+
+  setAmenities($event: string[]) {
+    this.selectedAmenities = $event;
   }
 
   isValid(): boolean {
@@ -154,7 +160,4 @@ export class PropertyAdCreateComponent implements OnInit {
       return of(null);
     });
   }*/
-  setAmenities($event: string[]) {
-
-  }
 }
