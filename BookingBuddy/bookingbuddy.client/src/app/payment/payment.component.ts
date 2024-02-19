@@ -12,6 +12,7 @@ import { PaymentService } from './payment.service';
 })
 
 export class PaymentComponent {
+  currentPhase: number = 1;
   @Input() data!: any;
   paymentMethod: string = "multibanco";
   phoneNumber: string | undefined;
@@ -33,11 +34,24 @@ export class PaymentComponent {
 
     this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, "promote", this.phoneNumber).forEach((response) => {
       if(response){
-        console.dir(response);
-        //this.paymentResponse = response;
+        this.currentPhase = 2;
+        this.paymentResponse = response;
+        console.log(response);
+      }
+    }).catch((err) => {
+      console.error("Erro no servidor: " + err);
+    });
+  }
+
+  public confirmarPagamento(): void {
+    this.paymentService.confirmOrder(this.paymentResponse.orderId, this.paymentResponse.paymentId).forEach((response) => {
+      if(response){
+        console.log(response);
       }
     }).catch((err) => {
       console.error("Erro no servidor: " + err);
     });
   }
 }
+
+

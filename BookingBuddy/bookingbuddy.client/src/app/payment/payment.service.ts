@@ -25,4 +25,8 @@ export class PaymentService {
       return res.body;
     }));
   }
+
+  public confirmOrder(orderId: string, paymentId: string){
+    return this.http.get(`${environment.apiUrl}/api/payments/webhook?key=Ygh58zuWkpLL69E&orderId=${orderId}&amount=35.0&requestId=${paymentId}&payment_datetime=19-02-2024 12:36:00`);
+  }
 }

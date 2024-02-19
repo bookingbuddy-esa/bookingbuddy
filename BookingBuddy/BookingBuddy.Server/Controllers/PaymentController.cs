@@ -85,6 +85,19 @@ namespace BookingBuddy.Server.Controllers
                 {
                     order.State = true;
                     await _context.SaveChangesAsync();
+
+                    if (orderId.StartsWith("PROMOTE-"))
+                    {
+                        var promoteOrder = new PromoteOrder
+                        {
+                            PromoteOrderId = Guid.NewGuid().ToString(),
+                            OrderId = orderId
+                        };
+                        _context.PromoteOrder.Add(promoteOrder);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    // TODO: criar BookingOrder se a orderID tiver "BOOKING-" no início
                 }
             } catch (Exception ex) {
                 return StatusCode(500, $"An error occurred while updating payment status: {ex.Message}");

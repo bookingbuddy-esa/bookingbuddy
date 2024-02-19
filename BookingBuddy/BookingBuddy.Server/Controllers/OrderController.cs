@@ -72,7 +72,7 @@ namespace BookingBuddy.Server.Controllers
                 {
                     var order = new Order
                     {
-                        OrderId = Guid.NewGuid().ToString(),
+                        OrderId = "PROMOTE-" + Guid.NewGuid().ToString(),
                         PaymentId = newPayment.PaymentId,
                         ApplicationUserId = user.Id,
                         PropertyId = model.PropertyId,
@@ -85,13 +85,14 @@ namespace BookingBuddy.Server.Controllers
 
                     try {
                         await _context.SaveChangesAsync();
-
-                        // TODO: criar PromoteOrder
-                        return CreatedAtAction("GetOrder", new { orderId = order.OrderId }, order);
                     } catch (Exception ex)
                     {
                         return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
                     }
+
+                    // TODO: retornar apenas o necessário
+
+                    return CreatedAtAction("GetOrder", new { orderId = order.OrderId }, order);
                 }
             }
             catch (Exception ex)

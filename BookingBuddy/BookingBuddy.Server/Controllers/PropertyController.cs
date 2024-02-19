@@ -38,7 +38,28 @@ namespace BookingBuddy.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
         {
-            return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
+            //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
+
+            var allProperties = await _context.Property.ToListAsync();
+
+            var promotedPropertyIds = await _context.Order
+                .Where(order => order.EndDate > DateTime.Now && order.State)
+                .Select(order => order.PropertyId)
+                .ToListAsync();
+
+            var promotedProperties = await _context.Property
+                .Where(property => promotedPropertyIds.Contains(property.PropertyId))
+                .OrderByDescending(property => property.Clicks)
+                .ToListAsync();
+
+            var otherProperties = allProperties
+                .Except(promotedProperties)
+                .OrderByDescending(property => property.Clicks)
+                .ToList();
+                
+            var orderedProperties = promotedProperties.Concat(otherProperties).ToList();
+
+            return orderedProperties;
         }
 
         /// <summary>

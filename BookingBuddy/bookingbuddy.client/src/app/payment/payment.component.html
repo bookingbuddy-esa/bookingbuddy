@@ -1,4 +1,4 @@
-<div class="form-group mt-4" *ngIf="data">
+<div class="form-group mt-4" *ngIf="data && currentPhase === 1">
     <label for="paymentMethod">Escolha o método de pagamento:</label>
     <select #paymentMethod name="paymentMethod" id="paymentMethod" class="form-control" (change)="addPaymentMethod(paymentMethod.value)">
     <option value="multibanco">Ref. Multibanco</option>
@@ -6,10 +6,23 @@
     </select>
 
     <input type="text" class="form-control mt-4" *ngIf="paymentMethod.value === 'mbway'" placeholder="Número de telemóvel" name="phoneNumber" [(ngModel)]="phoneNumber" required>
+    <button class="btn btn-success mt-4" type="button" (click)="submitPayment()">Efetuar pagamento</button>
 </div>
 
-<button class="btn btn-success mt-4" type="button" (click)="submitPayment()" [disabled]="paymentMethod === undefined">Efetuar pagamento</button>
+<div *ngIf="currentPhase === 2">
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Detalhes do Pagamento</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><strong>ID Pagamento:</strong> {{paymentResponse.payment.paymentId}}</li>
+                    <li class="list-group-item"><strong>Valor:</strong> {{paymentResponse.payment.amount}}€</li>
+                    <li class="list-group-item"><strong>Método Pagamento:</strong> {{paymentResponse.payment.method}}</li>
+                    <li class="list-group-item"><strong>Estado Pagamento:</strong> {{paymentResponse.payment.status}}</li>
+                </ul>
 
-<div *ngIf="paymentResponse">
-    <p class="mt-4">{{paymentResponse}}</p>
+                <button class="btn btn-success mt-4" type="button" (click)="confirmarPagamento()">Confirmar Pagamento (DEV)</button>
+            </div>
+        </div>
+    </div>
 </div>
