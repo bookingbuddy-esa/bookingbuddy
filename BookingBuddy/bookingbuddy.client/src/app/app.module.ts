@@ -25,6 +25,7 @@ import { AmenitiesStepComponent } from './property-ad/property-ad-create/ameniti
 import { AmenityComponent } from './property-ad/property-ad-create/amenities-step/amenity/amenity.component';
 import { AdInfoStepComponent } from './property-ad/property-ad-create/ad-info-step/ad-info-step.component';
 import { PhotosStepComponent } from './property-ad/property-ad-create/photos-step/photos-step.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { PhotosStepComponent } from './property-ad/property-ad-create/photos-ste
     AmenityComponent,
     AdInfoStepComponent,
     PhotosStepComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,

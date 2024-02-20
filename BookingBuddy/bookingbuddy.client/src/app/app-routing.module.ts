@@ -12,6 +12,7 @@ import {PropertyPromoteComponent} from './hosting/property-promote/property-prom
 import {ForbiddenComponent} from "./auxiliary/forbidden/forbidden.component";
 import {AuthGuard} from "./auth/authorize.guard";
 import {LandlordRoleGuardService} from "./auth/role-guard/landlord-role-guard.service";
+import { ChatComponent } from './chat/chat.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -19,7 +20,8 @@ const routes: Routes = [
   {path: 'properties/create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
   {path: 'properties/calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
   {path: 'properties/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
-  {path: 'unauthorized', component: UnauthorizedComponent},
+  {path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
+  {path: 'unauthorized', component: UnauthorizedComponent },
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', component: NotfoundComponent}
