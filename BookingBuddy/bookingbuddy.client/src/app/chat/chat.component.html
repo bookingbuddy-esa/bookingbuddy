@@ -1,33 +1,29 @@
-<div *ngIf="!joined">
-  <strong>Chat de grupo</strong>
-  <div class="form-group row mb-2">
-    <label class="col-form-label col-md-3">Nome do grupo (ID)</label>
-    <div class="col-md-9">
-      <input type="text" class="form-control" name="groupName" [(ngModel)]="groupName" />
+<div class="join-form" *ngIf="!joined">
+  <h2>Chat de grupo</h2>
+  <form class="row mb-2">
+    <label for="groupName" class="col-sm-3 col-form-label">Nome do grupo (ID)</label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" id="groupName" [(ngModel)]="groupName" name="groupName" placeholder="Introduza o nome/ID do grupo">
     </div>
-  </div>
-  <div class="form-group row mb-2">
-    <label class="col-form-label col-md-3">Nome de utilizador</label>
-    <div class="col-md-9">
-      <input type="text" class="form-control" name="userName" [(ngModel)]="userName" />
+  </form>
+  <form class="row mb-2">
+    <label for="userName" class="col-sm-3 col-form-label">Nome de utilizador</label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" id="userName" [(ngModel)]="userName" name="userName" placeholder="Introduza o nome de utilizador">
     </div>
-  </div>
-  <div class="form-group row">
-    <div class="col-md-9 offset-3">
-      <button type="button" class="btn btn-primary" (click)="join()">
-        Entrar
-      </button>
-    </div>
-  </div>
+  </form>
+  <button class="btn btn-primary col-12" (click)="join()">Entrar</button>
 </div>
 
-<div *ngIf="joined">
+<div class="chat-area" *ngIf="joined">
   <div id="chat">
     <div *ngFor="let message of conversation">
       <div><strong>{{message.userName}}:</strong> {{message.message}}</div>
     </div>
   </div>
-  <input class="form-control mb-1" type="text" [(ngModel)]="messageToSend" name="messageToSend" />
-  <button class="btn btn-primary" (click)="sendMessage()">Enviar</button>
+  <form class="input-group mb-3">
+    <input type="text" class="form-control" id="messageToSend" [(ngModel)]="messageToSend" name="messageToSend" placeholder="Escreva a mensagem">
+    <button class="btn btn-primary" type="button" (click)="sendMessage()">Enviar</button>
+  </form>
   <button class="btn btn-secondary" (click)="leave()">Sair do grupo</button>
 </div>
