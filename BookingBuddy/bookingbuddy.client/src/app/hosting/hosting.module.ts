@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { CalendarComponent } from './calendar/calendar.component';
 import { HostingService } from './hosting.service';
 import { AppRoutingModule } from '../app-routing.module';
-//import { RouterModule } from '@angular/router';
+import { MatSliderModule } from '@angular/material/slider';
 import { HomepagePropertyComponent } from './calendar/homepage-property/homepage-property.component';
 import { PropertyPromoteComponent } from './property-promote/property-promote.component';
 import { SidePropertiesComponent } from './property-promote/side-properties/side-properties.component';
@@ -14,6 +14,7 @@ import { CalendarPopupComponent } from './calendar/calendar-popup/calendar-popup
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { PaymentComponent } from '../payment/payment.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { PaymentComponent } from '../payment/payment.component';
   imports: [
     CommonModule, BrowserModule,
     FullCalendarModule, AppRoutingModule,
-    ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent
+    ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent,
+    MatSliderModule, FormsModule
   ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]
