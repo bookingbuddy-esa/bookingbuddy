@@ -13,5 +13,5 @@ public class Rating
     
     public int Value { get; set; }
     
-    public ReturnUser? ApplicationUser { get; set; }
+    public ApplicationUser? ApplicationUser { get; set; }
 }

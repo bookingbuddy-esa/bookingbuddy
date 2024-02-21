@@ -158,30 +158,35 @@ namespace BookingBuddy.Server.Controllers
 
             var propertyRatings = await _context.Rating
                 .Where(r => r.PropertyId == propertyId)
-                .ToListAsync();
-
-            foreach (var rating in propertyRatings)
-            {
-                var userRating = await _userManager.FindByIdAsync(rating.ApplicationUserId);
-                rating.ApplicationUser = new ReturnUser()
+                .Include(r => r.ApplicationUser)
+                .Select(r => new
                 {
-                    Id = userRating!.Id,
-                    Name = userRating.Name
-                };
-            }
-
-            var orders = await _context.Order
-                .Where(o => o.PropertyId == propertyId).Include(o=> o.Payment).Select(o => new
-                {
-                    o.OrderId,
+                    r.RatingId,
                     applicationUser = new ReturnUser()
                     {
-                      Id  = o.ApplicationUserId,
-                      Name =  _context.Users.FirstOrDefault(u => u.Id == o.ApplicationUserId)!.Name
+                        Id = r.ApplicationUserId,
+                        Name = r.ApplicationUser!.Name
                     },
-                    o.StartDate,
-                    o.EndDate,
-                    o.Payment!.Amount
+                    r.Value,
+                })
+                .ToListAsync();
+
+            var bookingOrders = await _context.BookingOrder
+                .Include(bo => bo.Order)
+                .Include(o => o.Order!.Payment)
+                .Include(o => o.Order!.ApplicationUser)
+                .Where(bo => bo.Order!.PropertyId == property.PropertyId)
+                .Select(bo => new
+                {
+                    bo.BookingOrderId,
+                    applicationUser = new ReturnUser()
+                    {
+                        Id = bo.Order!.ApplicationUserId,
+                        Name = bo.Order.ApplicationUser!.Name
+                    },
+                    bo.Order!.StartDate,
+                    bo.Order!.EndDate,
+                    bo.Order.Payment!.Amount
                 })
                 .ToListAsync();
 
@@ -191,7 +196,7 @@ namespace BookingBuddy.Server.Controllers
                 propertyId = property.PropertyId,
                 clicks = property.Clicks,
                 ratings = propertyRatings,
-                orders
+                orders = bookingOrders
             };
 
             return Ok(metrics);

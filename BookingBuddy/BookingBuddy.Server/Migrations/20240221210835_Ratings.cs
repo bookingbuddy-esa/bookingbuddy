@@ -143,12 +143,18 @@ namespace BookingBuddy.Server.Migrations
                 {
                     RatingId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PropertyId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Rating", x => x.RatingId);
+                    table.ForeignKey(
+                        name: "FK_Rating_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -156,19 +162,19 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AmenityId", "DisplayName", "Name", "PropertyId" },
                 values: new object[,]
                 {
-                    { "07ab2812-bd3a-4c06-bfae-29c26f3f5f34", "Wifi", "Wifi", null },
-                    { "13709112-c0cc-4e07-b997-c328034a868a", "Microondas", "Microondas", null },
-                    { "19adb080-e7fd-428f-be9a-a6a82405ffd5", "Piscina Partilhada", "PiscinaPartilhada", null },
-                    { "2538f3f0-8604-4283-befa-24975f39e47e", "Máquina de Lavar", "MaquinaLavar", null },
-                    { "292f1b2c-36fb-4b13-91e4-d3b3d520792b", "Animais", "Animais", null },
-                    { "299cc16a-c9ca-4841-ade4-535b4dd59fa3", "Quintal", "Quintal", null },
-                    { "2aea0aba-61f8-4dec-a3fa-a32dcdc721a7", "Estacionamento", "Estacionamento", null },
-                    { "31548fb5-ead0-47dc-b4c2-0f81c0c71946", "Varanda", "Varanda", null },
-                    { "317cc2db-cef0-4c27-8ac9-bcc38e50f1ab", "TV", "Tv", null },
-                    { "752d2a95-82c5-412d-bd1e-d7bc75ef8dc2", "Frigorífico", "Frigorifico", null },
-                    { "91240cb2-bbb4-4a73-a845-06bb58e05413", "Piscina Individual", "PiscinaIndividual", null },
-                    { "cfdf2bd7-c811-4002-abe6-7ca5b1eca58b", "Cozinha", "Cozinha", null },
-                    { "f0a6a739-4031-4212-803a-859c42f5870e", "Câmaras", "Camaras", null }
+                    { "08da675b-4c42-4c92-bc80-8cf530451531", "Máquina de Lavar", "MaquinaLavar", null },
+                    { "145e667c-a7fd-488b-9243-4379f528b903", "Cozinha", "Cozinha", null },
+                    { "2913e613-e087-463f-8bea-abd99000ed32", "Microondas", "Microondas", null },
+                    { "330c8afc-5843-4e2e-a482-e9476d3b5646", "TV", "Tv", null },
+                    { "3a57446f-067d-4308-9bed-589137abcbcd", "Animais", "Animais", null },
+                    { "885607aa-28a3-4c40-b0af-6548c32e3ad3", "Wifi", "Wifi", null },
+                    { "8a9ce2c6-2a48-4291-b4e4-8d54b14a370d", "Piscina Partilhada", "PiscinaPartilhada", null },
+                    { "a04dd010-bb74-49de-bc5e-66269a31ec4c", "Estacionamento", "Estacionamento", null },
+                    { "a8cc57a0-430c-466e-bee3-bb0d62385f4a", "Câmaras", "Camaras", null },
+                    { "ad5c3780-d476-4ee8-b69e-04cba14613e1", "Piscina Individual", "PiscinaIndividual", null },
+                    { "d1264673-520b-44ea-b059-d1167884fe81", "Quintal", "Quintal", null },
+                    { "dd8fb3cc-583c-462b-bed5-4f89e04d5b3b", "Frigorífico", "Frigorifico", null },
+                    { "ed6fd758-5c19-4b53-94bc-61851ef0c57f", "Varanda", "Varanda", null }
                 });
 
             migrationBuilder.InsertData(
@@ -176,9 +182,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AspNetProviderId", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5f81672c-0661-4c1f-94b1-f6f07be91e35", "local", "LOCAL" },
-                    { "6e1ed02a-b052-4f02-a840-795d78ef2c41", "google", "GOOGLE" },
-                    { "a44e0229-ab31-47af-af15-e1fc779fb752", "microsoft", "MICROSOFT" }
+                    { "4c393618-868d-404d-bd1d-7f0a4cf9f5c5", "google", "GOOGLE" },
+                    { "4d30e315-1eeb-4ebf-93d4-b513d8d3bcb2", "local", "LOCAL" },
+                    { "eddd2412-121a-45f4-bde4-488bb49097c3", "microsoft", "MICROSOFT" }
                 });
 
             migrationBuilder.InsertData(
@@ -186,9 +192,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8b469e75-21f6-48e0-8e3d-c710506b5500", "89e77245-c8c6-4ef2-9f63-7cd047c151d2", "admin", "ADMIN" },
-                    { "c347a4aa-e15e-437d-8d9c-fccfd4efc0b4", "ebebf1d1-5dbb-4212-a11c-b1e505276aee", "landlord", "LANDLORD" },
-                    { "f2d3320c-78a2-45e7-a147-007f86e671eb", "d196d694-595a-4f20-b5da-d99ceae59d99", "user", "USER" }
+                    { "5e34358a-343b-4db0-9e91-e5f399cacbd6", "ed1b0558-59df-4b99-8422-ede7f06ef68d", "landlord", "LANDLORD" },
+                    { "7ab35194-5997-4185-90ed-c2edabb63b96", "97f698ab-5ba5-424d-9c31-b43b65793e40", "admin", "ADMIN" },
+                    { "c4111660-4886-42a0-9722-2830bfac1cc7", "b0a9d8f1-87af-4747-9264-215a2a1701bf", "user", "USER" }
                 });
 
             migrationBuilder.InsertData(
@@ -196,9 +202,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PictureUrl", "ProviderId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "34582dcb-97b1-46a0-a888-804a25111527", 0, "b857bade-3638-4665-8095-3794b16724b9", "bookingbuddy.admin@bookingbuddy.com", true, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEJ9HmPYNVXkyhOYwhCP7bwxDrWg1W2u1GRCQWSeZY1L6w9m9XONU874tGYLgHEq2xg==", null, false, null, "5f81672c-0661-4c1f-94b1-f6f07be91e35", "b216ded7-ca1c-4ca0-b48c-79e72314ab1a", false, "bookingbuddy.admin@bookingbuddy.com" },
-                    { "39018233-203a-47ef-8a78-9d3a678c0aff", 0, "c6222d85-25f0-4c89-af2b-ee79fedae78a", "bookingbuddy.landlord@bookingbuddy.com", true, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEOXa8F+siB+W9IURIZX8RXncx9C7BCn5RELl7jyqBPTn57+9H4Pn60n0gz9SqX2OKQ==", null, false, null, "5f81672c-0661-4c1f-94b1-f6f07be91e35", "4d976608-cea2-4d32-bf60-3d3e199e96e8", false, "bookingbuddy.landlord@bookingbuddy.com" },
-                    { "f8752e8b-4c81-4579-9a3c-57313c0f5647", 0, "cf9f61ad-b62f-4cf6-b5a9-71a7734418cf", "bookingbuddy.user@bookingbuddy.com", true, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEEp0RIBjanhHQvMIyi+9TRqmcX+wgDQJ63OxD2cPupTgStEQ/BvMiGlnuerULC02wQ==", null, false, null, "5f81672c-0661-4c1f-94b1-f6f07be91e35", "b7bea9ad-d190-4728-a14a-33f6d35689ae", false, "bookingbuddy.user@bookingbuddy.com" }
+                    { "129808f1-c20d-4fa1-a34a-689bc0b89f9a", 0, "a2890ca3-40ba-431f-9d51-866245553700", "bookingbuddy.landlord@bookingbuddy.com", true, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEP60aljRUtT9KdULM3RcINYm9ibZJHWqUwpmlB1uiKTeGeORy68O4Ivy4pxb4M0YkQ==", null, false, null, "4d30e315-1eeb-4ebf-93d4-b513d8d3bcb2", "27e72b63-7b68-4d93-82c0-28592ca74255", false, "bookingbuddy.landlord@bookingbuddy.com" },
+                    { "8f6ba4eb-12a6-4958-a554-da4df2de5bb5", 0, "99aabb2f-d474-41e6-a3c4-21f143efbd9f", "bookingbuddy.admin@bookingbuddy.com", true, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEFxssz0++kaf4JaAAJgSwkvYJj4OnfGRIPhgjRi2ZFoUU//ApvNNKRU7IY2AxZ2KXg==", null, false, null, "4d30e315-1eeb-4ebf-93d4-b513d8d3bcb2", "21c853d4-4571-422b-850b-42657b885c1c", false, "bookingbuddy.admin@bookingbuddy.com" },
+                    { "d2a440c0-732b-48da-b815-1105710ef153", 0, "e39d7a5b-4e38-441e-bf98-4e6325cd3716", "bookingbuddy.user@bookingbuddy.com", true, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAED+1wfPNRc5l/UxYsQpWNND1SjDyddoekC/ztbZamYM21iaG09Wx9pLLR5OhzdEVlg==", null, false, null, "4d30e315-1eeb-4ebf-93d4-b513d8d3bcb2", "b21e6875-8c29-42cf-bd53-28a2fb282395", false, "bookingbuddy.user@bookingbuddy.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -206,10 +212,15 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "8b469e75-21f6-48e0-8e3d-c710506b5500", "34582dcb-97b1-46a0-a888-804a25111527" },
-                    { "c347a4aa-e15e-437d-8d9c-fccfd4efc0b4", "39018233-203a-47ef-8a78-9d3a678c0aff" },
-                    { "f2d3320c-78a2-45e7-a147-007f86e671eb", "f8752e8b-4c81-4579-9a3c-57313c0f5647" }
+                    { "5e34358a-343b-4db0-9e91-e5f399cacbd6", "129808f1-c20d-4fa1-a34a-689bc0b89f9a" },
+                    { "7ab35194-5997-4185-90ed-c2edabb63b96", "8f6ba4eb-12a6-4958-a554-da4df2de5bb5" },
+                    { "c4111660-4886-42a0-9722-2830bfac1cc7", "d2a440c0-732b-48da-b815-1105710ef153" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rating_ApplicationUserId",
+                table: "Rating",
+                column: "ApplicationUserId");
         }
 
         /// <inheritdoc />
@@ -221,127 +232,127 @@ namespace BookingBuddy.Server.Migrations
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "07ab2812-bd3a-4c06-bfae-29c26f3f5f34");
+                keyValue: "08da675b-4c42-4c92-bc80-8cf530451531");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "13709112-c0cc-4e07-b997-c328034a868a");
+                keyValue: "145e667c-a7fd-488b-9243-4379f528b903");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "19adb080-e7fd-428f-be9a-a6a82405ffd5");
+                keyValue: "2913e613-e087-463f-8bea-abd99000ed32");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "2538f3f0-8604-4283-befa-24975f39e47e");
+                keyValue: "330c8afc-5843-4e2e-a482-e9476d3b5646");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "292f1b2c-36fb-4b13-91e4-d3b3d520792b");
+                keyValue: "3a57446f-067d-4308-9bed-589137abcbcd");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "299cc16a-c9ca-4841-ade4-535b4dd59fa3");
+                keyValue: "885607aa-28a3-4c40-b0af-6548c32e3ad3");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "2aea0aba-61f8-4dec-a3fa-a32dcdc721a7");
+                keyValue: "8a9ce2c6-2a48-4291-b4e4-8d54b14a370d");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "31548fb5-ead0-47dc-b4c2-0f81c0c71946");
+                keyValue: "a04dd010-bb74-49de-bc5e-66269a31ec4c");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "317cc2db-cef0-4c27-8ac9-bcc38e50f1ab");
+                keyValue: "a8cc57a0-430c-466e-bee3-bb0d62385f4a");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "752d2a95-82c5-412d-bd1e-d7bc75ef8dc2");
+                keyValue: "ad5c3780-d476-4ee8-b69e-04cba14613e1");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "91240cb2-bbb4-4a73-a845-06bb58e05413");
+                keyValue: "d1264673-520b-44ea-b059-d1167884fe81");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "cfdf2bd7-c811-4002-abe6-7ca5b1eca58b");
+                keyValue: "dd8fb3cc-583c-462b-bed5-4f89e04d5b3b");
 
             migrationBuilder.DeleteData(
                 table: "Amenity",
                 keyColumn: "AmenityId",
-                keyValue: "f0a6a739-4031-4212-803a-859c42f5870e");
+                keyValue: "ed6fd758-5c19-4b53-94bc-61851ef0c57f");
 
             migrationBuilder.DeleteData(
                 table: "AspNetProviders",
                 keyColumn: "AspNetProviderId",
-                keyValue: "6e1ed02a-b052-4f02-a840-795d78ef2c41");
+                keyValue: "4c393618-868d-404d-bd1d-7f0a4cf9f5c5");
 
             migrationBuilder.DeleteData(
                 table: "AspNetProviders",
                 keyColumn: "AspNetProviderId",
-                keyValue: "a44e0229-ab31-47af-af15-e1fc779fb752");
+                keyValue: "eddd2412-121a-45f4-bde4-488bb49097c3");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "8b469e75-21f6-48e0-8e3d-c710506b5500", "34582dcb-97b1-46a0-a888-804a25111527" });
+                keyValues: new object[] { "5e34358a-343b-4db0-9e91-e5f399cacbd6", "129808f1-c20d-4fa1-a34a-689bc0b89f9a" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "c347a4aa-e15e-437d-8d9c-fccfd4efc0b4", "39018233-203a-47ef-8a78-9d3a678c0aff" });
+                keyValues: new object[] { "7ab35194-5997-4185-90ed-c2edabb63b96", "8f6ba4eb-12a6-4958-a554-da4df2de5bb5" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetUserRoles",
                 keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "f2d3320c-78a2-45e7-a147-007f86e671eb", "f8752e8b-4c81-4579-9a3c-57313c0f5647" });
+                keyValues: new object[] { "c4111660-4886-42a0-9722-2830bfac1cc7", "d2a440c0-732b-48da-b815-1105710ef153" });
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "8b469e75-21f6-48e0-8e3d-c710506b5500");
+                keyValue: "5e34358a-343b-4db0-9e91-e5f399cacbd6");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "c347a4aa-e15e-437d-8d9c-fccfd4efc0b4");
+                keyValue: "7ab35194-5997-4185-90ed-c2edabb63b96");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "f2d3320c-78a2-45e7-a147-007f86e671eb");
+                keyValue: "c4111660-4886-42a0-9722-2830bfac1cc7");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "34582dcb-97b1-46a0-a888-804a25111527");
+                keyValue: "129808f1-c20d-4fa1-a34a-689bc0b89f9a");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "39018233-203a-47ef-8a78-9d3a678c0aff");
+                keyValue: "8f6ba4eb-12a6-4958-a554-da4df2de5bb5");
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
-                keyValue: "f8752e8b-4c81-4579-9a3c-57313c0f5647");
+                keyValue: "d2a440c0-732b-48da-b815-1105710ef153");
 
             migrationBuilder.DeleteData(
                 table: "AspNetProviders",
                 keyColumn: "AspNetProviderId",
-                keyValue: "5f81672c-0661-4c1f-94b1-f6f07be91e35");
+                keyValue: "4d30e315-1eeb-4ebf-93d4-b513d8d3bcb2");
 
             migrationBuilder.InsertData(
                 table: "Amenity",
