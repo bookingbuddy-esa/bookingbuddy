@@ -1,54 +1,44 @@
 import { Component, OnInit } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
-
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-
-  public userName = '';
-  public groupName = '';
-  public messageToSend = '';
-  public joined = false;
-  public conversation: NewMessage[] = [{
+  chatUsers: string[] = [];
+  userName: string = '';
+  groupName: string = '';
+  messageToSend: string = '';
+  joined: boolean = false;
+  conversation: NewMessage[] = [{
     message: 'Bem-vindo ao chat!',
     userName: 'Sistema'
   }];
 
   private connection: HubConnection;
 
-  public chatUsers: string[] = [];
-
   constructor() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7213/hubs/chat')
+      .withUrl('https://localhost:7213/hubs/chat') // TODO: mudar isto
       .build();
 
     this.connection.on("NewUser", message => this.newUser(message));
     this.connection.on("NewMessage", message => this.newMessage(message));
     this.connection.on("LeftUser", message => this.leftUser(message));
+    this.connection.on("UserList", users => {
+      this.chatUsers = users;
+    });
   }
 
   ngOnInit(): void {
     this.connection.start()
       .then(_ => {
         console.log('Connection Started');
-
-        if (this.connection.state === "Connected") {
-          this.connection.invoke('GetUsers', this.groupName)
-            .then(users => {
-              console.log('Received users:', users);
-              this.chatUsers = users;
-            })
-            .catch(error => console.error(error));
-        } else {
-          console.warn('Connection is not in "Connected" state.');
-        }
-      })
-      .catch(error => console.error(error));
+      }).catch(error => {
+        return console.error(error);
+      });
   }
 
   public join() {
@@ -78,7 +68,6 @@ export class ChatComponent implements OnInit {
 
   private newUser(message: string) {
     console.log(message);
-    const userName = this.extractUserName(message);
     this.conversation.push({
       userName: 'Sistema',
       message: message
@@ -86,25 +75,17 @@ export class ChatComponent implements OnInit {
   }
 
   private newMessage(message: NewMessage) {
-    console.log(message);
     this.conversation.push(message);
   }
 
   private leftUser(message: string) {
     console.log(message);
-    const userName = this.extractUserName(message);
-    //this.chatUsers = this.chatUsers.filter(user => user !== userName);
-
     this.conversation.push({
       userName: 'Sistema',
       message: message
     });
   }
 
-  private extractUserName(message: string): string {
-    const parts = message.split(' ');
-    return parts[0];
-  }
 }
 
 interface NewMessage {
