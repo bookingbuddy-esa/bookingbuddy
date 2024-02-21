@@ -8,12 +8,12 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-  onlineUsers: string[] = [];
-  userName: string = '';
-  groupName: string = '';
-  messageToSend: string = '';
-  joined: boolean = false;
-  conversation: NewMessage[] = [{
+
+  public userName = '';
+  public groupName = '';
+  public messageToSend = '';
+  public joined = false;
+  public conversation: NewMessage[] = [{
     message: 'Bem-vindo ao chat!',
     userName: 'Sistema'
   }];
@@ -24,15 +24,12 @@ export class ChatComponent implements OnInit {
 
   constructor() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7213/hubs/chat') // TODO: mudar isto
+      .withUrl('https://localhost:7213/hubs/chat')
       .build();
 
     this.connection.on("NewUser", message => this.newUser(message));
     this.connection.on("NewMessage", message => this.newMessage(message));
     this.connection.on("LeftUser", message => this.leftUser(message));
-    this.connection.on("UserList", users => {
-      this.chatUsers = users;
-    });
   }
 
   ngOnInit(): void {
@@ -89,6 +86,7 @@ export class ChatComponent implements OnInit {
   }
 
   private newMessage(message: NewMessage) {
+    console.log(message);
     this.conversation.push(message);
   }
 
