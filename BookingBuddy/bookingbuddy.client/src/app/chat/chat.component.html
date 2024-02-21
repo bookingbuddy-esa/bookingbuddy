@@ -1,4 +1,4 @@
-<div class="join-form" *ngIf="!joined">
+<div class="join-form mt-4 text-center" *ngIf="!joined">
   <h2>Chat de grupo</h2>
   <form class="row mb-2">
     <label for="groupName" class="col-sm-3 col-form-label">Nome do grupo (ID)</label>
@@ -15,9 +15,13 @@
   <button class="btn btn-primary col-12" (click)="join()">Entrar</button>
 </div>
 
-<div class="chat-area" *ngIf="joined">
+<div class="chat-header mt-4 text-center" *ngIf="joined">
+  <h2>{{ groupName }}</h2>
+</div>
+
+<div class="chat-area mt-2" *ngIf="joined">
   <div id="chat">
-    <div *ngFor="let message of conversation">
+    <div class="mb-2" *ngFor="let message of conversation">
       <div><strong>{{message.userName}}:</strong> {{message.message}}</div>
     </div>
   </div>
