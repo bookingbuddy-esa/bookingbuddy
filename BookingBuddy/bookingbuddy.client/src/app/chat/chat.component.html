@@ -1,34 +1,34 @@
 <div class="join-form mt-4 text-center" *ngIf="!joined">
-  <h2>Chat de grupo</h2>
-  <form class="row mb-2">
-    <label for="groupName" class="col-sm-3 col-form-label">Nome do grupo (ID)</label>
-    <div class="col-sm-9">
-      <input type="text" class="form-control" id="groupName" [(ngModel)]="groupName" name="groupName" placeholder="Introduza o nome/ID do grupo">
-    </div>
-  </form>
-  <form class="row mb-2">
-    <label for="userName" class="col-sm-3 col-form-label">Nome de utilizador</label>
-    <div class="col-sm-9">
-      <input type="text" class="form-control" id="userName" [(ngModel)]="userName" name="userName" placeholder="Introduza o nome de utilizador">
-    </div>
-  </form>
-  <button class="btn btn-primary col-12" (click)="join()">Entrar</button>
+    <h2>Chat de grupo</h2>
+    <form class="row mb-2">
+        <label for="groupName" class="col-sm-3 col-form-label">Nome do grupo (ID)</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="groupName" [(ngModel)]="groupName" name="groupName" placeholder="Introduza o nome/ID do grupo">
+        </div>
+    </form>
+    <form class="row mb-2">
+        <label for="userName" class="col-sm-3 col-form-label">Nome de utilizador</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" id="userName" [(ngModel)]="userName" name="userName" placeholder="Introduza o nome de utilizador">
+        </div>
+    </form>
+    <button class="btn btn-primary col-12" (click)="join()">Entrar</button>
 </div>
 
 <div class="chat-header mt-4 text-center" *ngIf="joined">
-  <h2>{{ groupName }}</h2>
-  <p>Utilizadores no chat: {{ chatUsers.join(', ') }}</p>
+    <h2>{{ groupName }}</h2>
+    <p>Utilizadores no chat: {{ chatUsers.join(', ') }}</p>
 </div>
 
 <div class="chat-area mt-2" *ngIf="joined">
-  <div id="chat">
-    <div class="mb-2" *ngFor="let message of conversation">
-      <div><strong>{{message.userName}}:</strong> {{message.message}}</div>
+    <div id="chat">
+        <div class="mb-2" *ngFor="let message of conversation">
+            <div><strong>{{message.userName}}:</strong> {{message.message}}</div>
+        </div>
     </div>
-  </div>
-  <form class="input-group mb-3">
-    <input type="text" class="form-control" id="messageToSend" [(ngModel)]="messageToSend" name="messageToSend" placeholder="Escreva a mensagem">
-    <button class="btn btn-primary" type="button" (click)="sendMessage()">Enviar</button>
-  </form>
-  <button class="btn btn-secondary" (click)="leave()">Sair do grupo</button>
+    <form class="input-group mb-3">
+        <input type="text" class="form-control" id="messageToSend" [(ngModel)]="messageToSend" name="messageToSend" placeholder="Escreva a mensagem">
+        <button class="btn btn-primary" type="button" (click)="sendMessage()">Enviar</button>
+    </form>
+    <button class="btn btn-secondary" (click)="leave()">Sair do grupo</button>
 </div>
