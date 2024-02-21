@@ -17,6 +17,7 @@
 
 <div class="chat-header mt-4 text-center" *ngIf="joined">
   <h2>{{ groupName }}</h2>
+  <p>Utilizadores no chat: {{ chatUsers.join(', ') }}</p>
 </div>
 
 <div class="chat-area mt-2" *ngIf="joined">

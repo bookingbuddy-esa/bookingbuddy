@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -18,6 +19,8 @@ export class ChatComponent implements OnInit {
   }];
 
   private connection: HubConnection;
+
+  public chatUsers: string[] = [];
 
   constructor() {
     this.connection = new HubConnectionBuilder()
@@ -39,6 +42,8 @@ export class ChatComponent implements OnInit {
   }
 
   public join() {
+    this.chatUsers.push(this.userName);
+
     this.connection.invoke('JoinGroup', this.groupName, this.userName)
       .then(_ => {
         this.joined = true;
