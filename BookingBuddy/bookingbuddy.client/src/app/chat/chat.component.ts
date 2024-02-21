@@ -7,12 +7,12 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
-
-  public userName = '';
-  public groupName = '';
-  public messageToSend = '';
-  public joined = false;
-  public conversation: NewMessage[] = [{
+  onlineUsers: string[] = [];
+  userName: string = '';
+  groupName: string = '';
+  messageToSend: string = '';
+  joined: boolean = false;
+  conversation: NewMessage[] = [{
     message: 'Bem-vindo ao chat!',
     userName: 'Sistema'
   }];
@@ -21,7 +21,7 @@ export class ChatComponent implements OnInit {
 
   constructor() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7213/hubs/chat')
+      .withUrl('https://localhost:7213/hubs/chat') // TODO: mudar isto
       .build();
 
     this.connection.on("NewUser", message => this.newUser(message));
