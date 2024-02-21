@@ -36,14 +36,22 @@ export class ChatComponent implements OnInit {
     this.connection.start()
       .then(_ => {
         console.log('Connection Started');
-      }).catch(error => {
-        return console.error(error);
-      });
+
+        if (this.connection.state === "Connected") {
+          this.connection.invoke('GetUsers', this.groupName)
+            .then(users => {
+              console.log('Received users:', users);
+              this.chatUsers = users;
+            })
+            .catch(error => console.error(error));
+        } else {
+          console.warn('Connection is not in "Connected" state.');
+        }
+      })
+      .catch(error => console.error(error));
   }
 
   public join() {
-    this.chatUsers.push(this.userName);
-
     this.connection.invoke('JoinGroup', this.groupName, this.userName)
       .then(_ => {
         this.joined = true;
@@ -70,6 +78,10 @@ export class ChatComponent implements OnInit {
 
   private newUser(message: string) {
     console.log(message);
+
+    const userName = this.extractUserName(message);
+    this.chatUsers.push(userName);
+
     this.conversation.push({
       userName: 'Sistema',
       message: message
@@ -83,12 +95,20 @@ export class ChatComponent implements OnInit {
 
   private leftUser(message: string) {
     console.log(message);
+
+    const userName = this.extractUserName(message);
+    this.chatUsers = this.chatUsers.filter(user => user !== userName);
+
     this.conversation.push({
       userName: 'Sistema',
       message: message
     });
   }
 
+  private extractUserName(message: string): string {
+    const parts = message.split(' ');
+    return parts[0];
+  }
 }
 
 interface NewMessage {
