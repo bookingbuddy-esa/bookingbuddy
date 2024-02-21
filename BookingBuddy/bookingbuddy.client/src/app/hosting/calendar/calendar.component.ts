@@ -51,31 +51,37 @@ export class CalendarComponent implements OnInit {
     };
   }
 
-  openPopup() {
-    const dialogRef = this.dialog.open(CalendarPopupComponent, {
-      data: {
-        selectedStartDate: this.selectedStartDate,
-        selectedEndDate: this.selectedEndDate,
-        property: this.currentProperty,
-        eventId: this.selectedEventId
-      }
-    });
+  openPopup(isDiscountEvent: boolean) {
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'calendarUpdate') {
-        this.fullcalendar.getApi().refetchEvents();
-      }
-    });
+     const dialogRef = this.dialog.open(CalendarPopupComponent, {
+       data: {
+         selectedStartDate: this.selectedStartDate,
+         selectedEndDate: this.selectedEndDate,
+         property: this.currentProperty,
+         eventId: this.selectedEventId,
+         isDiscountEvent: isDiscountEvent
+       }
+     });
+
+     dialogRef.afterClosed().subscribe(result => {
+       if (result === 'calendarUpdate') {
+         this.fullcalendar.getApi().refetchEvents();
+       }
+     });
+    
   }
 
   handleEventClick(info: any) {
+    const startDate = new Date(info.event.start);
+    const endDate = new Date(info.event.end);
+    this.selectedEventId = info.event.id;
+    this.selectedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
+    this.selectedEndDate = `${startDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate() - 1}`;
+    
     if (info.event.groupId == 'blocked') {
-      const startDate = new Date(info.event.start);
-      const endDate = new Date(info.event.end);
-      this.selectedEventId = info.event.id;
-      this.selectedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
-      this.selectedEndDate = `${startDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate() - 1}`;
-      this.openPopup();
+      this.openPopup(false);
+    } else if (info.event.groupId == 'discount') {
+      this.openPopup(true);
     }
   }
 
@@ -86,7 +92,7 @@ export class CalendarComponent implements OnInit {
     endDate.setDate(endDate.getDate() - 1);
 
     this.selectedEndDate = endDate.toISOString().split('T')[0];
-    this.openPopup();
+    this.openPopup(false);
   }
 
   setCurrentProperty(property: Property) {

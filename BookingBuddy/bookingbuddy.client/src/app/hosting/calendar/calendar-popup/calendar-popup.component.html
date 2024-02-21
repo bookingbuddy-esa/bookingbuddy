@@ -18,7 +18,7 @@
         <label id="ename-label" class="name-label">Valor</label>
         <label class="value-label">{{ discountValue }}%</label>
       </div>
-      <mat-slider min="1" max="99" step="1" discrete [displayWith]="formatLabel" >
+      <mat-slider min="1" max="99" step="1" discrete [displayWith]="formatLabel">
         <input matSliderThumb [(ngModel)]="discountValue">
       </mat-slider>
       <br />
@@ -26,10 +26,16 @@
     </div>
   </div>
 
-  <div *ngIf="eventId" mat-dialog-content class="popup-content">
-    <h4 *ngIf="eventId">Datas Bloqueadas</h4>
+  <div *ngIf="eventId && !isDiscountEvent" mat-dialog-content class="popup-content">
+    <h4>Datas Bloqueadas</h4>
     <p>{{ startDateOutput }} - {{ endDateOutput }}</p>
     <br />
-    <button class="btn btn-outline-success mb-5" *ngIf="eventId" (click)="unblockDates()">Desbloquear Datas</button>
+    <button class="btn btn-outline-success mb-5" (click)="unblockDates()">Desbloquear Datas</button>
+  </div>
+  <div *ngIf="eventId && isDiscountEvent" mat-dialog-content class="popup-content">
+    <h4>Desconto</h4>
+    <p>{{ startDateOutput }} - {{ endDateOutput }}</p>
+    <br />
+    <button class="btn btn-outline-success mb-5" (click)="removeDiscount()">Remover Desconto</button>
   </div>
 </div>

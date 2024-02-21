@@ -17,6 +17,7 @@ export class CalendarPopupComponent {
   endDateOutput: string | null = null;
   eventId: number | null = null;
   discountValue: number = 10;
+  isDiscountEvent: boolean | null = null;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -31,6 +32,7 @@ export class CalendarPopupComponent {
     this.eventId = this.data.eventId;
     this.startDateOutput = this.formatDate(this.selectedStartDate);
     this.endDateOutput = this.formatDate(this.selectedEndDate);
+    this.isDiscountEvent = this.data.isDiscountEvent;
   }
 
   blockSelectedDates() {
