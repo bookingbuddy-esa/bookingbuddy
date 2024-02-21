@@ -131,6 +131,72 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("metrics/{propertyId}")]
+        public async Task<IActionResult> GetMetrics(string propertyId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Id != property.ApplicationUserId)
+            {
+                return Forbid();
+            }
+
+
+            var propertyRatings = await _context.Rating
+                .Where(r => r.PropertyId == propertyId)
+                .ToListAsync();
+
+            foreach (var rating in propertyRatings)
+            {
+                var userRating = await _userManager.FindByIdAsync(rating.ApplicationUserId);
+                rating.ApplicationUser = new ReturnUser()
+                {
+                    Id = userRating!.Id,
+                    Name = userRating.Name
+                };
+            }
+
+            var orders = await _context.Order
+                .Where(o => o.PropertyId == propertyId).Include(o=> o.Payment).Select(o => new
+                {
+                    o.OrderId,
+                    applicationUser = new ReturnUser()
+                    {
+                      Id  = o.ApplicationUserId,
+                      Name =  _context.Users.FirstOrDefault(u => u.Id == o.ApplicationUserId)!.Name
+                    },
+                    o.StartDate,
+                    o.EndDate,
+                    o.Payment!.Amount
+                })
+                .ToListAsync();
+
+
+            var metrics = new
+            {
+                propertyId = property.PropertyId,
+                clicks = property.Clicks,
+                ratings = propertyRatings,
+                orders
+            };
+
+            return Ok(metrics);
+        }
+
         /// <summary>
         /// Método que atualiza uma propriedade existente na base de dados da aplicação.
         /// </summary>
