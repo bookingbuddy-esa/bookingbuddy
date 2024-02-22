@@ -51,31 +51,37 @@ export class CalendarComponent implements OnInit {
     };
   }
 
-  openPopup() {
-    const dialogRef = this.dialog.open(CalendarPopupComponent, {
-      data: {
-        selectedStartDate: this.selectedStartDate,
-        selectedEndDate: this.selectedEndDate,
-        property: this.currentProperty,
-        eventId: this.selectedEventId
-      }
-    });
+  openPopup(isDiscountEvent: boolean) {
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'calendarUpdate') {
-        this.fullcalendar.getApi().refetchEvents();
-      }
-    });
+     const dialogRef = this.dialog.open(CalendarPopupComponent, {
+       data: {
+         selectedStartDate: this.selectedStartDate,
+         selectedEndDate: this.selectedEndDate,
+         property: this.currentProperty,
+         eventId: this.selectedEventId,
+         isDiscountEvent: isDiscountEvent
+       }
+     });
+
+     dialogRef.afterClosed().subscribe(result => {
+       if (result === 'calendarUpdate') {
+         this.fullcalendar.getApi().refetchEvents();
+       }
+     });
+    
   }
 
   handleEventClick(info: any) {
+    const startDate = new Date(info.event.start);
+    const endDate = new Date(info.event.end);
+    this.selectedEventId = info.event.id;
+    this.selectedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
+    this.selectedEndDate = `${startDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate() - 1}`;
+    
     if (info.event.groupId == 'blocked') {
-      const startDate = new Date(info.event.start);
-      const endDate = new Date(info.event.end);
-      this.selectedEventId = info.event.id;
-      this.selectedStartDate = `${startDate.getFullYear()}-${startDate.getMonth() + 1}-${startDate.getDate()}`;
-      this.selectedEndDate = `${startDate.getFullYear()}-${endDate.getMonth() + 1}-${endDate.getDate() - 1}`;
-      this.openPopup();
+      this.openPopup(false);
+    } else if (info.event.groupId == 'discount') {
+      this.openPopup(true);
     }
   }
 
@@ -86,7 +92,7 @@ export class CalendarComponent implements OnInit {
     endDate.setDate(endDate.getDate() - 1);
 
     this.selectedEndDate = endDate.toISOString().split('T')[0];
-    this.openPopup();
+    this.openPopup(false);
   }
 
   setCurrentProperty(property: Property) {
@@ -95,6 +101,24 @@ export class CalendarComponent implements OnInit {
   }
 
   async getEventRanges(info: any) {
+    try {
+      if (this.currentProperty) {
+        const blockedDates = await this.getBlockedDates();
+        const discounts = await this.getDiscounts();
+
+        const allEvents = blockedDates.concat(discounts);
+
+        return allEvents;
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Erro ao obter eventos:', error);
+      return [];
+    }
+  }
+
+  async getBlockedDates() {
     try {
       if (this.currentProperty) {
         const blockedDates = await this.hostingService.getPropertyBlockedDates(this.currentProperty?.propertyId).toPromise();
@@ -108,6 +132,31 @@ export class CalendarComponent implements OnInit {
           end: this.adjustEndDate(blocked.end),
           display: 'background',
           color: 'red',
+        }));
+
+
+        return events;
+      }
+      return [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  async getDiscounts() {
+    try {
+      if (this.currentProperty) {
+        const discounts = await this.hostingService.getPropertyDiscounts(this.currentProperty?.propertyId).toPromise();
+        if (!discounts) {
+          return [];
+        }
+        const events = discounts.map((discount) => ({
+          groupId: "discount",
+          id: discount.discountId,
+          start: discount.startDate,
+          end: this.adjustEndDate(discount.endDate),
+          display: 'auto',
+          color: 'purple',
         }));
 
 

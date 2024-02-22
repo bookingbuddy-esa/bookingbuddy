@@ -335,7 +335,7 @@ namespace BookingBuddy.Server.Controllers
 
             if (blockedDates == null || blockedDates.Count == 0)
             {
-                return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+              //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
             }
 
             return blockedDates;
@@ -398,6 +398,84 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
+        /// Método que obtém os descontos de uma propriedade.
+        /// </summary>
+        /// <param name="propertyId">Identificador da propriedade</param>
+        /// <returns>Lista com os descontos de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
+        [HttpGet("discounts/{propertyId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<Discount>>> GetPropertyDiscounts(string propertyId)
+        {
+            var discounts = await _context.Discount
+                .Where(b => b.PropertyId == propertyId)
+                .ToListAsync();
+
+            if (discounts == null || discounts.Count == 0)
+            {
+              //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+            }
+
+            return discounts;
+        }
+
+        /// <summary>
+        /// Método que adiciona um desconto no calendario de uma propriedade.
+        /// </summary>
+        /// <param name="inputModel">Modelo de criação de um Discount</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Operação bem-sucedida, o desconto foi adicionado com sucesso.
+        /// - 400 Bad Request: O modelo de entrada é inválido.
+        /// </returns>
+        [HttpPost("createDiscount")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ApplyDiscount([FromBody] DiscountInputModel inputModel)
+        {
+            if (inputModel == null)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            var discount = new Discount
+            {
+                DiscountAmount = inputModel.Amount,
+                StartDate = inputModel.StartDate,
+                EndDate = inputModel.EndDate,
+                PropertyId = inputModel.PropertyId
+            };
+
+            _context.Discount.Add(discount);
+            await _context.SaveChangesAsync();
+
+            return Ok("Discount apllyied successfully");
+        }
+
+        /// <summary>
+        /// Método que remove um desconto de uma propriedade.
+        /// </summary>
+        /// <param name="id">Identificador do desconto</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Operação bem-sucedida, o desconto foi removido com sucesso.
+        /// - 404 Not Found: O desconto com o identificador fornecido não foi encontrada. 
+        /// </returns>
+        [HttpDelete("removeDiscount/{id}")]
+        public async Task<IActionResult> RemoveDiscount(int id)
+        {
+            var discount = await _context.Discount.FindAsync(id);
+
+            if (discount == null)
+            {
+                return NotFound();
+            }
+
+            _context.Discount.Remove(discount);
+            await _context.SaveChangesAsync();
+
+            return Ok("Discount removed successfully");
+        }
+
+        /// <summary>
         /// Método que verifica se uma propriedade existe.
         /// </summary>
         /// <param name="id">Identificador da propriedade.</param>
@@ -448,10 +526,19 @@ namespace BookingBuddy.Server.Controllers
         List<string> ImagesUrl);
 
     /// <summary>
-    /// Modelo de edição de propriedade
+    /// Modelo de criação de uma BlockedDate
     /// </summary>
     /// <param name="StartDate">Data Inicial do Bloqueio</param>
     /// <param name="EndDate">Data Final do bloqueio</param>
     /// <param name="PropertyId">Identificador da Propriedade</param>-
     public record BlockDateInputModel(string StartDate, string EndDate, string PropertyId);
+
+    /// <summary>
+    /// Modelo de criação de um desconto
+    /// </summary>
+    /// <param name="Amount">Quantia do Desconto</param>
+    /// <param name="StartDate">Data Inicial do Bloqueio</param>
+    /// <param name="EndDate">Data Final do bloqueio</param>
+    /// <param name="PropertyId">Identificador da Propriedade</param>-
+    public record DiscountInputModel(int Amount, string StartDate, string EndDate, string PropertyId);
 }
