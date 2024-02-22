@@ -51,4 +51,33 @@ export class PropertyAdService {
         return res;
       }));
   }
+
+  addToFavorites(propertyId: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/api/properties/favorites/add/${propertyId}`, {
+      propertyId
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
+  removeFromFavorites(propertyId: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/properties/favorites/remove/${propertyId}`, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(
+      map((res: HttpResponse<string>) => res.ok)
+    );
+  }
+
+  public isPropertyInFavorites(propertyId: string): Observable<boolean> {
+    return this.http.get<boolean>(`${environment.apiUrl}/api/properties/favorites/check/${propertyId}`, {
+      withCredentials: true
+    });
+  }
+
 }

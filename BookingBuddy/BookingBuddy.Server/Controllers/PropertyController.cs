@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -36,7 +37,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>Lista de propriedades</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Property>>> GetProperties()
+        public async Task<ActionResult<IEnumerable<Models.Property>>> GetProperties()
         {
             var properties = await _context.Property.ToListAsync();
             foreach (var property in properties)
@@ -88,7 +89,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="propertyId">Identificador da propriedade</param>
         /// <returns>A propriedade, caso exista, não encontrada, caso contrário</returns>
         [HttpGet("{propertyId}")]
-        public async Task<ActionResult<Property>> GetProperty(string propertyId)
+        public async Task<ActionResult<Models.Property>> GetProperty(string propertyId)
         {
             try
             {
@@ -212,7 +213,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>A propriedade criada, um conflito, caso já exista uma propriedade com o mesmo identificador, ou uma exceção caso contrário</returns>
         [HttpPost("create")]
         [Authorize]
-        public async Task<ActionResult<Property>> CreateProperty([FromBody] PropertyCreateModel model)
+        public async Task<ActionResult<Models.Property>> CreateProperty([FromBody] PropertyCreateModel model)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -233,7 +234,7 @@ namespace BookingBuddy.Server.Controllers
                 }
             });
 
-            var property = new Property
+            var property = new Models.Property
             {
                 PropertyId = Guid.NewGuid().ToString(),
                 ApplicationUserId = user.Id,
@@ -305,7 +306,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>Lista com as propriedades do utilizador, caso exista, ou não encontrada, caso contrário</returns>
         [HttpGet("user/{userId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Property>>> GetPropertiesByUserId(string userId)
+        public async Task<ActionResult<IEnumerable<Models.Property>>> GetPropertiesByUserId(string userId)
         {
             var properties = await _context.Property
                 .Where(p => p.ApplicationUserId == userId)
@@ -475,6 +476,82 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Discount removed successfully");
         }
 
+        [HttpPost("favorites/add/{propertyId}")]
+        public async Task<IActionResult> AddToFavorite(string propertyId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized("ISTO É UMA MERDA");
+
+            // Verifique se já está na lista de favoritos
+            if (_context.Favorites.Any(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId))
+                return BadRequest("A propriedade já está na lista de favoritos.");
+
+            var favorite = new Favorite
+            {
+                ApplicationUserId = user.Id,
+                PropertyId = propertyId
+            };
+
+            _context.Favorites.Add(favorite);
+            await _context.SaveChangesAsync();
+
+            return Ok("Propriedade adicionada aos favoritos com sucesso.");
+        }
+
+        [HttpDelete]
+        [Route("favorites/remove/{propertyId}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveFromFavorite(string propertyId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+
+            var favorite = _context.Favorites.FirstOrDefault(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
+
+            if (favorite == null)
+                return BadRequest("A propriedade não está na lista de favoritos.");
+
+            _context.Favorites.Remove(favorite);
+            await _context.SaveChangesAsync();
+
+            return Ok("Propriedade removida dos favoritos com sucesso.");
+        }
+
+        [HttpGet("/favorites/user/{userId}")]
+        public async Task<ActionResult<IEnumerable<Favorite>>> GetUserFavorites(string userId)
+        {
+            var favorites = await _context.Favorites
+                .Where(f => f.ApplicationUserId == userId)
+                .ToListAsync();
+
+            if (favorites == null || favorites.Count == 0)
+            {
+               //   return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+            }
+
+            return favorites;
+        }
+
+        [HttpGet("favorites/check/{propertyId}")]
+        public async Task<IActionResult> IsPropertyInFavorites(string propertyId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Verifique se a propriedade está nos favoritos do utilizador
+            var isInFavorites = await _context.Favorites
+                .AnyAsync(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
+
+            return Ok(isInFavorites);
+        }
+
+
         /// <summary>
         /// Método que verifica se uma propriedade existe.
         /// </summary>
@@ -483,21 +560,21 @@ namespace BookingBuddy.Server.Controllers
         /// Retorna verdadeiro se uma propriedade com o identificador fornecido existir; caso contrário, retorna falso.
         /// </returns>
         private bool PropertyExists(string id)
-        {
-            return _context.Property.Any(e => e.PropertyId == id);
-        }
+            {
+                return _context.Property.Any(e => e.PropertyId == id);
+            }
     }
-
-    /// <summary>
-    /// Modelo de criação de propriedade
-    /// </summary>
-    /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
-    /// <param name="Name">Nome da propriedade</param>
-    /// <param name="Description">Descrição da propriedade</param>
-    /// <param name="PricePerNight">Preço por noite da propriedade</param>
-    /// <param name="Location">Localização da propriedade</param>
-    /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-    public record PropertyCreateModel(
+    
+/// <summary>
+/// Modelo de criação de propriedade
+/// </summary>
+/// <param name="AmenityIds">Identificadores da lista de comodidades</param>
+/// <param name="Name">Nome da propriedade</param>
+/// <param name="Description">Descrição da propriedade</param>
+/// <param name="PricePerNight">Preço por noite da propriedade</param>
+/// <param name="Location">Localização da propriedade</param>
+/// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
+public record PropertyCreateModel(
         string Name,
         string Description,
         decimal PricePerNight,
