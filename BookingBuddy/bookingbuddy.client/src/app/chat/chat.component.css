@@ -1,0 +1,89 @@
+.join-form {
+  background-color: #ccd5cb;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.join-form h2 {
+  color: #3e5e38;
+}
+
+.join-form label {
+  color: #3e5e38;
+}
+
+.join-form input {
+  background-color: #ffffff;
+  border: 1px solid #82987e;
+  color: #5c7858;
+}
+
+.join-form button {
+  background-color: #82987e;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.join-form button:hover {
+  background-color: #718d73;
+}
+
+.join-form button:active {
+  background-color: #92a897;
+ }
+
+.chat-header {
+  background-color: #ccd5cb;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-header h2 {
+  color: #3e5e38;
+}
+
+.chat-header p {
+  color: #5c7858;
+}
+
+.chat-area {
+  background-color: #ccd5cb;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#chat {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.chat-area .input-group {
+  margin-top: 10px;
+}
+
+.chat-area input {
+  background-color: #ffffff;
+  border: 1px solid #82987e;
+  color: #5c7858;
+}
+
+.chat-area button {
+  background-color: #82987e;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.chat-area button:hover {
+  background-color: #718d73;
+}
+
+.chat-area button:active {
+  background-color: #92a897;
+}
