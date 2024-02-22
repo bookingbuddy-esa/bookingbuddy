@@ -3,10 +3,14 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .join-form h2 {
-  color: #3e5e38;
+    color: #3e5e38;
 }
 
 .join-form label {
