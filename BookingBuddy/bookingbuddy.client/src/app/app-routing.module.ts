@@ -21,7 +21,7 @@ const routes: Routes = [
   {path: 'properties/create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
   {path: 'properties/calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
   {path: 'properties/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
-  {path: 'properties/performance', component: PropertyPerformanceComponent},
+  { path: 'properties/performance', component: PropertyPerformanceComponent }, //TODO: meter o canActivate
   {path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
   {path: 'unauthorized', component: UnauthorizedComponent },
   {path: 'bad-request', component: BadRequestComponent},
