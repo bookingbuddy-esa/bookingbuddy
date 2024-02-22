@@ -42,7 +42,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Amenity");
+                    b.ToTable("Amenity", (string)null);
 
                     b.HasData(
                         new
@@ -274,7 +274,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("AspNetProviderId");
 
-                    b.ToTable("AspNetProviders");
+                    b.ToTable("AspNetProviders", (string)null);
 
                     b.HasData(
                         new
@@ -321,7 +321,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("BlockedDate");
+                    b.ToTable("BlockedDate", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.BookingOrder", b =>
@@ -340,7 +340,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("BookingOrder");
+                    b.ToTable("BookingOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Order", b =>
@@ -377,7 +377,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Payment", b =>
@@ -410,7 +410,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("PaymentId");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.PromoteOrder", b =>
@@ -426,7 +426,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("PromoteOrder");
+                    b.ToTable("PromoteOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.PromotionOrder", b =>
@@ -445,7 +445,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("PromotionOrder");
+                    b.ToTable("PromotionOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
@@ -486,7 +486,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("PropertyId");
 
-                    b.ToTable("Property");
+                    b.ToTable("Property", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
