@@ -3,4 +3,8 @@
     <div class="container-fluid d-flex flex-grow-1">
         <router-outlet/>
     </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1000;">
+        <app-chat *ngIf="showChat"></app-chat>
+    </div>
 </main>

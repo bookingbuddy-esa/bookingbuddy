@@ -348,6 +348,27 @@ namespace BookingBuddy.Server.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "BookingMessage",
+                columns: table => new
+                {
+                    BookingMessageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BookingOrderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingMessage", x => x.BookingMessageId);
+                    table.ForeignKey(
+                        name: "FK_BookingMessage_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Amenity",
                 columns: new[] { "AmenityId", "DisplayName", "Name", "PropertyId" },

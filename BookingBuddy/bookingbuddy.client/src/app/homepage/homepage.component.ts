@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {Property} from '../models/property';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {FeedbackService} from "../auxiliary/feedback.service";
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-homepage',
@@ -18,11 +19,13 @@ export class HomepageComponent implements OnInit {
   property_list: Property[] = [];
 
   constructor(
+    private appComponent: AppComponent,
     private authService: AuthorizeService,
     private propertyService: PropertyAdService,
     private router: Router,
     private FeedbackService: FeedbackService
   ) {
+    this.appComponent.showChat = true;
   }
 
   ngOnInit(): void {
