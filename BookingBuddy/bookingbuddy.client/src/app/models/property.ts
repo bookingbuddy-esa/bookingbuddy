@@ -1,5 +1,7 @@
-import { ApplicationUser } from "./applicationUser";
-import { Amenity } from "./amenity";
+import {ApplicationUser} from "./applicationUser";
+import {Amenity} from "./amenity";
+import {BookingOrder} from "./order";
+
 export interface Property {
   propertyId: string;
   applicationUserId: string;
@@ -20,4 +22,17 @@ export interface PropertyCreate {
   pricePerNight: number;
   amenities: string[];
   imagesUrl: string[];
+}
+
+export interface PropertyMetrics {
+  propertyId: string;
+  clicks: number;
+  ratings: Rating[];
+  orders: BookingOrder[];
+}
+
+interface Rating {
+  ratingId: string;
+  applicationUser: ApplicationUser;
+  value: number;
 }
