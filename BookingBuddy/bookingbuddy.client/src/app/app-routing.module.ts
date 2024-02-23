@@ -13,13 +13,15 @@ import {ForbiddenComponent} from "./auxiliary/forbidden/forbidden.component";
 import {AuthGuard} from "./auth/authorize.guard";
 import {LandlordRoleGuardService} from "./auth/role-guard/landlord-role-guard.service";
 import { ChatComponent } from './chat/chat.component';
+import { PropertyPerformanceComponent } from './hosting/property-performance/property-performance.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
   {path: 'property/:id', component: PropertyAdRetrieveComponent},
   {path: 'properties/create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
   {path: 'properties/calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
-  {path: 'properties/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
+  {path: 'properties/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
+  { path: 'properties/performance', component: PropertyPerformanceComponent }, //TODO: meter o canActivate
   {path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
   {path: 'unauthorized', component: UnauthorizedComponent },
   {path: 'bad-request', component: BadRequestComponent},
