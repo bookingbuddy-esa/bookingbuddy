@@ -9,7 +9,7 @@
 
     <div class="vr ms-3"></div>
 
-    <div class="conteudo-reserva ms-4 flex-grow-1 bd-highlight">
+    <div class="conteudo-reserva ms-4 flex-grow-1 bd-highlight d-flex align-items-center justify-content-center">
         <div *ngIf="selectedBooking">
             <h2>{{selectedBooking.name}}</h2>
             <p>Data Check-In: {{formatDate(selectedBooking.checkIn)}}</p>
@@ -17,7 +17,7 @@
             <p>Número de Hospedes: {{selectedBooking.numberOfGuests}}</p>
             <hr/>
             <h3>Chat com o Proprietário</h3>
-            <div class="chat">
+            <div class="chat align-items-center justify-content-center">
                 <div *ngFor="let m of messages">
                     <p>{{m.name}}: {{m.message}}</p>
                 </div>

@@ -1,7 +1,11 @@
 :host {
-    display: flex;
-    width: inherit;
-    height: inherit;
+  display: flex;
+  width: inherit;
+  height: inherit;
+}
+
+.conteudo-reserva {
+  text-align: center;
 }
 
 .chat {
@@ -9,6 +13,8 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 60%;
+  max-width: 60%;
 }
 
   .chat p {
