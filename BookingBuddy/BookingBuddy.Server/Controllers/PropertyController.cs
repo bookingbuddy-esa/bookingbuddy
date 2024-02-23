@@ -519,7 +519,7 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Propriedade removida dos favoritos com sucesso.");
         }
 
-        [HttpGet("/favorites/user/{userId}")]
+        [HttpGet("favorites/user/{userId}")]
         public async Task<ActionResult<IEnumerable<Favorite>>> GetUserFavorites(string userId)
         {
             var favorites = await _context.Favorites

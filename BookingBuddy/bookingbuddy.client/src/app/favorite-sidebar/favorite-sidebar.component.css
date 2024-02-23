@@ -1,0 +1,21 @@
+.green-banner {
+  background-color: #3b5d36;
+  padding: 20px;
+  color: white;
+  text-align: start;
+  align-items: end;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: white;
+}
+
+.favorite-sidebar {
+  width: 400px;
+}

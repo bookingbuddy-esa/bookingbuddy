@@ -26,6 +26,9 @@ import { AmenityComponent } from './property-ad/property-ad-create/amenities-ste
 import { AdInfoStepComponent } from './property-ad/property-ad-create/ad-info-step/ad-info-step.component';
 import { PhotosStepComponent } from './property-ad/property-ad-create/photos-step/photos-step.component';
 import { ChatComponent } from './chat/chat.component';
+import { FavoriteSidebarComponent } from './favorite-sidebar/favorite-sidebar.component';
+import { MatIconModule } from '@angular/material/icon';
+
 
 @NgModule({
   declarations: [
@@ -42,13 +45,15 @@ import { ChatComponent } from './chat/chat.component';
     AdInfoStepComponent,
     PhotosStepComponent,
     ChatComponent,
+    FavoriteSidebarComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,
     AppRoutingModule, FormsModule,
     ReactiveFormsModule, AuthModule,
     AuxiliaryModule, NgOptimizedImage,
-    HostingModule, GoogleMap, MapMarker
+    HostingModule, GoogleMap, MapMarker,
+    MatIconModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
