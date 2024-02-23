@@ -122,7 +122,6 @@ namespace BookingBuddy.Server.Controllers
             return Ok(bookingOrders);
         }
 
-        // Get all messages from a booking by bookingId
         [HttpGet("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string bookingId)
@@ -137,6 +136,7 @@ namespace BookingBuddy.Server.Controllers
             var bookingOrder = await _context.BookingOrder
                 .Include(bo => bo.Order)
                 .Include(o => o.Order!.ApplicationUser)
+                //.Include(o => o.Order!.Property)
                 .Where(bo => bo.BookingOrderId == bookingId)
                 .FirstOrDefaultAsync();
 
@@ -145,13 +145,15 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            if (bookingOrder.Order!.ApplicationUserId != user.Id)
+            /* TODO: esta verificação será necessária
+            if (bookingOrder.Order!.ApplicationUserId != user.Id || bookingOrder.Order!.Property!.ApplicationUserId != user.Id)
             {
                 return Unauthorized();
-            }
+            }*/
 
             var messages = await _context.BookingMessage
                 .Where(m => m.BookingOrderId == bookingOrder.BookingOrderId)
+                .OrderBy(m => m.SentAt) 
                 .Select(m => new {
                     m.ApplicationUser.Name,
                     m.Message,
@@ -161,7 +163,6 @@ namespace BookingBuddy.Server.Controllers
             return Ok(messages);
         }
 
-        // Create a message for a booking
         [HttpPost("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> CreateMessage(string bookingId, [FromBody] NewBookingMessage message)
@@ -176,6 +177,7 @@ namespace BookingBuddy.Server.Controllers
             var bookingOrder = await _context.BookingOrder
                 .Include(bo => bo.Order)
                 .Include(o => o.Order!.ApplicationUser)
+                //.Include(o => o.Order!.Property)
                 .Where(bo => bo.BookingOrderId == bookingId)
                 .FirstOrDefaultAsync();
 
@@ -184,10 +186,10 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            if (bookingOrder.Order!.ApplicationUserId != user.Id)
+            /*if (bookingOrder.Order!.ApplicationUserId != user.Id || bookingOrder.Order!.Property!.ApplicationUserId != user.Id)
             {
                 return Unauthorized();
-            }
+            }*/
 
             var newMessage = new BookingMessage
             {
@@ -199,7 +201,12 @@ namespace BookingBuddy.Server.Controllers
             };
 
             _context.BookingMessage.Add(newMessage);
-            await _context.SaveChangesAsync();
+
+            try {
+                await _context.SaveChangesAsync();
+            } catch (Exception e) {
+                return BadRequest(e.Message);
+            }
 
             return Ok();
         } 

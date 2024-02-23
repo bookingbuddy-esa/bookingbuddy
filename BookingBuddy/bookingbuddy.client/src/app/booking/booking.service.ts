@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,14 @@ export class BookingService {
   }
 
   public sendBookingMessage(bookingId: string, message: string){
-    return this.http.post(`${environment.apiUrl}/api/bookings/${bookingId}/messages`, { message }, { withCredentials: true });
+    return this.http.post(`${environment.apiUrl}/api/bookings/${bookingId}/messages`, {
+      message
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
   }
 }

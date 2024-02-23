@@ -48,5 +48,9 @@ export class HostingService {
       return res;
     }));
   }
+
+  public getAssociatedBookings() {
+    return this.http.get(`${environment.apiUrl}/api/properties/bookings`, { withCredentials: true });
+  }
 }
 

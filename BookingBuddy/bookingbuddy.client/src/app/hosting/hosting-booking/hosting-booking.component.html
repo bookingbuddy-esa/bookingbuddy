@@ -2,7 +2,7 @@
     <div class="lista-reservas ms-3">
         <div class="list-group">
             <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)">
-                {{booking.name}}
+                {{formatDate(booking.checkIn)}} - {{formatDate(booking.checkOut)}}
             </a>
         </div>
     </div>
@@ -12,8 +12,8 @@
     <div class="conteudo-reserva ms-4 flex-grow-1 bd-highlight">
         <div *ngIf="selectedBooking">
             <h2>{{selectedBooking.name}}</h2>
-            <p>Data Check-In: {{formatDate(selectedBooking.checkIn)}}</p>
-            <p>Data Check-Out: {{formatDate(selectedBooking.checkOut)}}</p>
+            <p>Data Check-In: {{selectedBooking.checkIn}}</p>
+            <p>Data Check-Out: {{selectedBooking.checkOut}}</p>
             <p>Número de Hospedes: {{selectedBooking.numberOfGuests}}</p>
             <hr/>
             <h3>Chat com o Proprietário</h3>
