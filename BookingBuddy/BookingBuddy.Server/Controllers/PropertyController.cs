@@ -173,8 +173,8 @@ namespace BookingBuddy.Server.Controllers
 
             var bookingOrders = await _context.BookingOrder
                 .Include(bo => bo.Order)
-                .Include(o => o.Order!.Payment)
-                .Include(o => o.Order!.ApplicationUser)
+                .Include(bo => bo.Order!.Payment)
+                .Include(bo => bo.Order!.ApplicationUser)
                 .Where(bo => bo.Order!.PropertyId == property.PropertyId)
                 .Select(bo => new
                 {

@@ -15,16 +15,17 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { PaymentComponent } from '../payment/payment.component';
 import { PropertyPerformanceComponent } from './property-performance/property-performance.component';
+import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
 
 @NgModule({
   declarations: [
     CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent, CalendarPopupComponent, PropertyPerformanceComponent
   ],
-  imports: [
-    CommonModule, BrowserModule,
-    FullCalendarModule, AppRoutingModule,
-    ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent
-  ],
+    imports: [
+        CommonModule, BrowserModule,
+        FullCalendarModule, AppRoutingModule,
+        ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent, AuxiliaryModule
+    ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]
 })
