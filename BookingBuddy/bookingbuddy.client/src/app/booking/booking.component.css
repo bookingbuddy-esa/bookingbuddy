@@ -4,6 +4,10 @@
   height: inherit;
 }
 
+.conteudo-reserva {
+  width: auto;
+}
+
 .chat {
   background-color: #ccd5cb;
   padding: 20px;
@@ -12,10 +16,6 @@
   width: 60%;
  
 }
-.conteudo-reserva{
-    width:auto;
-}
-
 
 .chat p {
   color: #3e5e38;

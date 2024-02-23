@@ -14,7 +14,7 @@
             <h2>{{selectedBooking.name}}</h2>
             <p>Data Check-In: {{selectedBooking.checkIn}}</p>
             <p>Data Check-Out: {{selectedBooking.checkOut}}</p>
-            <p>Número de Hospedes: {{selectedBooking.numberOfGuests}}</p>
+            <p>Número de Hóspedes: {{selectedBooking.numberOfGuests}}</p>
             <hr/>
             <h3>Chat com o Proprietário</h3>
             <div class="chat">
@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Digite sua mensagem" [(ngModel)]="newMessage">
+                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
                     <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
                 </div>
             </div>
