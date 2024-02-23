@@ -39,6 +39,8 @@ namespace BookingBuddy.Server.Data
         public DbSet<BookingMessage> BookingMessage { get; set; } = default!;
         public DbSet<Payment> Payment { get; set; } = default!;
         public DbSet<Amenity> Amenity { get; set; } = default!;
+        
+        public DbSet<Rating> Rating { get; set; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.

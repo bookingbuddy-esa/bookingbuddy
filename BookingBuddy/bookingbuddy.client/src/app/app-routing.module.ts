@@ -15,17 +15,21 @@ import {LandlordRoleGuardService} from "./auth/role-guard/landlord-role-guard.se
 import { ChatComponent } from './chat/chat.component';
 import { BookingComponent } from './booking/booking.component';
 import { ProfileComponent } from './profile/profile.component';
+import {PropertyPerformanceComponent} from './hosting/property-performance/property-performance.component';
+import { HostingBookingComponent } from './hosting/hosting-booking/hosting-booking.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
+  {path: 'hosting/create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
+  {path: 'hosting/calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
+  {path: 'hosting/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
+  {path: 'hosting/performance', component: PropertyPerformanceComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
+  {path: 'hosting/bookings', component: HostingBookingComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
   {path: 'property/:id', component: PropertyAdRetrieveComponent},
-  {path: 'properties/create', component: PropertyAdCreateComponent, canActivate: [AuthGuard]},
-  {path: 'properties/calendar', component: CalendarComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
-  {path: 'properties/promote', component: PropertyPromoteComponent, canActivate: [AuthGuard, LandlordRoleGuardService]},
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
-  {path: 'unauthorized', component: UnauthorizedComponent },
+  {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', component: NotfoundComponent}

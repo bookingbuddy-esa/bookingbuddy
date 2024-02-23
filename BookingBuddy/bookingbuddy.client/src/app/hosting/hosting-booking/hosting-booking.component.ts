@@ -1,26 +1,29 @@
 import { Component } from '@angular/core';
-import { AppComponent } from '../app.component';
-import { BookingService } from './booking.service';
+import { AppComponent } from '../../app.component';
+import { HostingService } from '../hosting.service';
+import { BookingService } from '../../booking/booking.service';
 
 @Component({
-  selector: 'app-booking',
-  templateUrl: './booking.component.html',
-  styleUrl: './booking.component.css'
+  selector: 'app-hosting-booking',
+  templateUrl: './hosting-booking.component.html',
+  styleUrl: './hosting-booking.component.css'
 })
-export class BookingComponent {
+
+export class HostingBookingComponent {
   bookings: any[] = [];
   messages: any[] = [];
   selectedBooking: any;
   newMessage: string = "";
 
-  constructor(private appComponent: AppComponent, private bookingService: BookingService) {
+  constructor(private appComponent: AppComponent, private hostingService: HostingService, private bookingService: BookingService) {
     this.appComponent.showChat = false;
   }
 
   ngOnInit() {
-    this.bookingService.getBookings().forEach(
+    this.hostingService.getAssociatedBookings().forEach(
       response => {
         if (response) {
+          console.log(response);
           this.bookings = response as any[];
         }
       }).catch(
@@ -53,7 +56,6 @@ export class BookingComponent {
     this.bookingService.getBookingMessages(this.selectedBooking.bookingOrderId).forEach(
       response => {
         if (response) {
-          console.log("Recebi mensagens: " + response)
           this.messages = response as any[];
         }
       }).catch(

@@ -1,0 +1,32 @@
+<div class="d-flex flex-row mt-5">
+    <div class="lista-reservas ms-3">
+        <div class="list-group">
+            <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)">
+                {{formatDate(booking.checkIn)}} - {{formatDate(booking.checkOut)}}
+            </a>
+        </div>
+    </div>
+
+    <div class="vr ms-3"></div>
+
+    <div class="conteudo-reserva ms-4 flex-grow-1 bd-highlight">
+        <div *ngIf="selectedBooking">
+            <h2>{{selectedBooking.name}}</h2>
+            <p>Data Check-In: {{selectedBooking.checkIn}}</p>
+            <p>Data Check-Out: {{selectedBooking.checkOut}}</p>
+            <p>Número de Hospedes: {{selectedBooking.numberOfGuests}}</p>
+            <hr/>
+            <h3>Chat com o Proprietário</h3>
+            <div class="chat">
+                <div *ngFor="let m of messages">
+                    <p>{{m.name}}: {{m.message}}</p>
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Digite sua mensagem" [(ngModel)]="newMessage">
+                    <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
