@@ -5,7 +5,7 @@
 }
 
 .conteudo-reserva {
-  text-align: center;
+  width: auto;
 }
 
 .chat {
@@ -14,12 +14,11 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 60%;
-  max-width: 60%;
 }
 
-  .chat p {
-    color: #3e5e38;
-  }
+.chat p {
+  color: #3e5e38;
+}
 
   .chat .input-group {
     margin-top: 10px;
