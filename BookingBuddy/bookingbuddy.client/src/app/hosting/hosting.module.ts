@@ -26,7 +26,7 @@ import { FormsModule } from '@angular/forms';
     imports: [
         CommonModule, BrowserModule, FormsModule,
         FullCalendarModule, AppRoutingModule,
-        ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent, AuxiliaryModule
+        ReactiveFormsModule, MatDialogModule, MatIconModule, MatSliderModule, PaymentComponent, AuxiliaryModule
     ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]
