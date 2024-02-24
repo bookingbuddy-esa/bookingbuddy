@@ -132,6 +132,77 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize]
+        [Route("metrics/{propertyId}")]
+        public async Task<IActionResult> GetMetrics(string propertyId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Id != property.ApplicationUserId)
+            {
+                return Forbid();
+            }
+
+
+            var propertyRatings = await _context.Rating
+                .Where(r => r.PropertyId == propertyId)
+                .Include(r => r.ApplicationUser)
+                .Select(r => new
+                {
+                    r.RatingId,
+                    applicationUser = new ReturnUser()
+                    {
+                        Id = r.ApplicationUserId,
+                        Name = r.ApplicationUser!.Name
+                    },
+                    r.Value,
+                })
+                .ToListAsync();
+
+            var bookingOrders = await _context.BookingOrder
+                .Include(bo => bo.Order)
+                .Include(bo => bo.Order!.Payment)
+                .Include(bo => bo.Order!.ApplicationUser)
+                .Where(bo => bo.Order!.PropertyId == property.PropertyId)
+                .Select(bo => new
+                {
+                    bo.BookingOrderId,
+                    applicationUser = new ReturnUser()
+                    {
+                        Id = bo.Order!.ApplicationUserId,
+                        Name = bo.Order.ApplicationUser!.Name
+                    },
+                    bo.Order!.StartDate,
+                    bo.Order!.EndDate,
+                    bo.Order.Payment!.Amount
+                })
+                .ToListAsync();
+
+
+            var metrics = new
+            {
+                propertyId = property.PropertyId,
+                clicks = property.Clicks,
+                ratings = propertyRatings,
+                orders = bookingOrders
+            };
+
+            return Ok(metrics);
+        }
+
         /// <summary>
         /// Método que atualiza uma propriedade existente na base de dados da aplicação.
         /// </summary>
@@ -396,6 +467,49 @@ namespace BookingBuddy.Server.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Dates unblocked successfully");
+        }
+
+        [HttpGet("bookings")]
+        [Authorize]
+        public async Task<IActionResult> GetAssociatedBookings()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var properties = await _context.Property
+                .Where(p => p.ApplicationUserId == user.Id)
+                .ToListAsync();
+
+            var associatedBookingOrders = await _context.BookingOrder
+                .Include(bo => bo.Order)
+                .Include(bo => bo.Order!.Payment)
+                .Include(bo => bo.Order!.ApplicationUser)
+                .Where(bo => properties.Select(p => p.PropertyId).Contains(bo.Order!.PropertyId))
+                .Select(bo => new
+                {
+                    bo.BookingOrderId,
+                    bo.OrderId,
+                    applicationUser = new ReturnUser()
+                    {
+                        Id = bo.Order!.ApplicationUserId,
+                        Name = bo.Order.ApplicationUser!.Name
+                    },
+                    bo.Order!.Property!.Name,
+                    guest = bo.Order!.ApplicationUser.Name,
+                    checkIn = bo.Order!.StartDate,
+                    checkOut = bo.Order!.EndDate,
+                    bo.Order!.State,
+                    bo.Order.Payment!.Amount,
+                    bo.NumberOfGuests,
+                })
+                .ToListAsync();
+
+
+            return Ok(associatedBookingOrders);
         }
 
         /// <summary>

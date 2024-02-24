@@ -70,7 +70,7 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
     app.UseSwaggerUI();
 }
 
-app.MapHub<ChatHub>("/hubs/chat");
+app.MapHub<ChatHubController>("/hubs/chat");
 
 app.UseCors("CorsPolicy");
 

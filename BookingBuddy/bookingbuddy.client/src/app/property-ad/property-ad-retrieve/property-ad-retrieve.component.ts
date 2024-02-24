@@ -7,6 +7,7 @@ import { AuthorizeService } from "../../auth/authorize.service";
 import { PropertyAdService } from '../property-ad.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AmenitiesHelper} from "../../models/amenityEnum";
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -19,12 +20,6 @@ import {AmenitiesHelper} from "../../models/amenityEnum";
 })
 
 export class PropertyAdRetrieveComponent implements OnInit {
-  // get the property ad id from the route
-  // retrieve the property ad from the server
-  // display the property ad
-  // handle the case when the property ad is not found
-  // handle the case when the server is not available
-
   property: Property | undefined;
   reservarPropriedadeForm!: FormGroup;
   reservarPropriedadeFailed: boolean;
@@ -33,7 +28,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
   isPropertyInFavorites: boolean = false;
   protected readonly AmenitiesHelper = AmenitiesHelper;
 
-  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService) {
+  constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService) {
+    this.appComponent.showChat = true;
     this.errors = [];
 
     this.reservarPropriedadeFailed = false;

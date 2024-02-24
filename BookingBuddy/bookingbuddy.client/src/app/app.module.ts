@@ -29,6 +29,8 @@ import { ChatComponent } from './chat/chat.component';
 import { FavoriteSidebarComponent } from './favorite-sidebar/favorite-sidebar.component';
 import { MatIconModule } from '@angular/material/icon';
 
+import { ProfileComponent } from './profile/profile.component';
+import { BookingComponent } from './booking/booking.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +48,8 @@ import { MatIconModule } from '@angular/material/icon';
     PhotosStepComponent,
     ChatComponent,
     FavoriteSidebarComponent,
+    ProfileComponent,
+    BookingComponent,
   ],
   imports: [
     BrowserModule, HttpClientModule,

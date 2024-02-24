@@ -46,10 +46,11 @@ namespace BookingBuddy.Server.Data
         public DbSet<PromotionOrder> PromotionOrder { get; set; } = default!;
         public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;
         public DbSet<BookingOrder> BookingOrder { get; set; } = default!;
-
+        public DbSet<BookingMessage> BookingMessage { get; set; } = default!;
         public DbSet<Payment> Payment { get; set; } = default!;
-
         public DbSet<Amenity> Amenity { get; set; } = default!;
+        
+        public DbSet<Rating> Rating { get; set; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.

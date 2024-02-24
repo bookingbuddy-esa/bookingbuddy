@@ -24,6 +24,7 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
+        /// <param name="configuration">Configuração da aplicação</param>
         public PaymentController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;

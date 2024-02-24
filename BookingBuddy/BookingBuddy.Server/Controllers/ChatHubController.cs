@@ -2,7 +2,9 @@
 
 namespace BookingBuddy.Server.Controllers
 {
-    public class ChatHub : Hub
+    // TODO: isto tem de ser refeito/melhorado quando for altura de comunicação entre membros de grupo
+    // passar a usar o username do Identity em vez de uma string passada por parâmetro
+    public class ChatHubController : Hub
     {
         private static Dictionary<string, List<UserInfo>> _groupUsers = new Dictionary<string, List<UserInfo>>();
         public async Task JoinGroup(string groupName, string userName)
