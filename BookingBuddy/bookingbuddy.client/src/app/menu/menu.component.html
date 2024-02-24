@@ -19,9 +19,9 @@
                         <input type="search" class="form-control" placeholder="Procurar" aria-label="Procurar" aria-describedby="basic-addon1">
                     </div>
                 </form>
-                <button class="favoritesBtn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                <i class="bi bi-star-fill text-warning"></i>
-              </button>
+                <button *ngIf="signedIn" class="favoritesBtn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                  <i class="bi bi-star-fill text-warning"></i>
+                </button>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -32,11 +32,11 @@
                             <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i></a></li>
                             <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['profile']">{{ user?.name }}<i class="bi bi-person ms-2"></i></a></li>
                             <hr *ngIf="signedIn" class="dropdown-divider">
-                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['bookings']">Reservas<i class="bi bi-journal-check ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/bookings']">Reservas<i class="bi bi-journal-check ms-2"></i></a></li>
-                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['properties/create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['properties/calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['properties/promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
+                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
+                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['bookings']">Reservas Pessoais<i class="bi bi-journals ms-2"></i></a></li>
+                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/bookings']">Reservas de Hóspedes<i class="bi bi-journal-check ms-2"></i></a></li>
+                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
                             <hr *ngIf="signedIn" class="dropdown-divider">
                             <li *ngIf="signedIn"><button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">Logout<i class="bi bi-door-open ms-2"></i></button></li>
                         </ul>
