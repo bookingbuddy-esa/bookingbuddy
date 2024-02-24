@@ -39,3 +39,8 @@ a.navbar-brand {
 .dropdown-toggle::after {
   display: none;
 }
+
+.favoritesBtn {
+  background: none;
+  border: none;
+}

@@ -32,6 +32,16 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<BlockedDate> BlockedDate { get; set; } = default!;
 
+        /// <summary>
+        /// Propriedade que diz respeito aos descontos de uma propriedade.
+        /// </summary>
+        public DbSet<Discount> Discount { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito a lista de favoritos de um utilizador.
+        /// </summary>
+        public DbSet<Favorite> Favorites{ get; set; } = default!;
+
         public DbSet<Order> Order { get; set; } = default!;
         public DbSet<PromotionOrder> PromotionOrder { get; set; } = default!;
         public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;

@@ -19,6 +19,7 @@
     width: 100%;
     
   }
+
 /*.carousel-item {
   transform: scale(1);*/ /* Garante que a escala seja mantida durante as transições */
   /*transition: transform 0.5s ease;*/ /* Adapte a duração e a função de temporização conforme necessário */
