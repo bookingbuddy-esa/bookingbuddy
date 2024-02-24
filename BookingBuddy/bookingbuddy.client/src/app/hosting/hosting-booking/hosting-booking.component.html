@@ -1,32 +1,39 @@
-<div class="d-flex flex-row mt-5">
-    <div class="lista-reservas ms-3">
-        <div class="list-group">
-            <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)">
-                {{formatDate(booking.checkIn)}} - {{formatDate(booking.checkOut)}}
-            </a>
-        </div>
+<div class="d-flex flex-row flex-grow-1 mt-5">
+  <div class="lista-reservas col-2">
+    <div class="list-group text-center">
+      <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)" [class.selected]="booking === selectedBooking">
+        {{booking.name}}
+      </a>
     </div>
+  </div>
 
-    <div class="vr ms-3"></div>
+  <div class="vr ms-3"></div>
 
-    <div class="conteudo-reserva ms-4 flex-grow-1 bd-highlight">
-        <div *ngIf="selectedBooking">
-            <h2>{{selectedBooking.name}}</h2>
-            <p>Data de Check-In: {{selectedBooking.checkIn}}</p>
-            <p>Data de Check-Out: {{selectedBooking.checkOut}}</p>
-            <p>Número de Hóspedes: {{selectedBooking.numberOfGuests}}</p>
-            <hr/>
-            <h3>Chat com o Proprietário</h3>
-            <div class="chat">
-                <div *ngFor="let m of messages">
-                    <p>{{m.name}}: {{m.message}}</p>
-                </div>
-
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
-                    <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
-                </div>
-            </div>
-        </div>
+  <div class="conteudo-reserva d-flex w-100">
+    <div *ngIf="!selectedBooking" class="d-flex justify-content-center mx-auto w-100">
+      <h3 class="mt-3">Selecione uma reserva do menu lateral para ver os seus detalhes</h3>
     </div>
+    <div *ngIf="selectedBooking" class="mx-auto w-100">
+      <div class="text-center">
+        <h2>{{selectedBooking.name}}</h2>
+        <p>Data de Check-In: {{formatDate(selectedBooking.checkIn)}}</p>
+        <p>Data de Check-Out: {{formatDate(selectedBooking.checkOut)}}</p>
+        <p>Número de Hóspedes: {{selectedBooking.numberOfGuests}}</p>
+      </div>
+      <hr />
+
+
+      <div class="chat mx-auto mb-3">
+        <h3>Chat com o Hóspede</h3>
+        <div *ngFor="let m of messages" class="text-left">
+          <p><strong>{{m.name}}:</strong> {{m.message}}</p>
+        </div>
+
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
+          <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
