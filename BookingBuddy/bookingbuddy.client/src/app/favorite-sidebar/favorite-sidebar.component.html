@@ -19,7 +19,7 @@
   </div>
   <div class="offcanvas-body">
     <div *ngIf="property_list.length > 0" class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
-      <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
+      <app-favoritebar-property *ngFor="let property of property_list" [property]="property"></app-favoritebar-property>
     </div>
   </div>
 </div>

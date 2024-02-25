@@ -634,18 +634,23 @@ namespace BookingBuddy.Server.Controllers
         }
 
         [HttpGet("favorites/user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Favorite>>> GetUserFavorites(string userId)
+        public async Task<ActionResult<IEnumerable<Models.Property>>> GetUserFavoriteProperties(string userId)
         {
-            var favorites = await _context.Favorites
+            var favoriteIds = await _context.Favorites
                 .Where(f => f.ApplicationUserId == userId)
+                .Select(f => f.PropertyId)
                 .ToListAsync();
 
-            if (favorites == null || favorites.Count == 0)
+            if (favoriteIds == null || favoriteIds.Count == 0)
             {
-               //   return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+                return NotFound("Nenhum favorito encontrado para o usuário fornecido.");
             }
 
-            return favorites;
+            var favoriteProperties = await _context.Property
+                .Where(p => favoriteIds.Contains(p.PropertyId))
+                .ToListAsync();
+
+            return favoriteProperties;
         }
 
         [HttpGet("favorites/check/{propertyId}")]

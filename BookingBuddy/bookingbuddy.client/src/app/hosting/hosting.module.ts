@@ -21,12 +21,14 @@ import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent, CalendarPopupComponent, PropertyPerformanceComponent, HostingBookingComponent
+    CalendarComponent, HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent,
+    CalendarPopupComponent, PropertyPerformanceComponent, HostingBookingComponent
   ],
     imports: [
         CommonModule, BrowserModule, FormsModule,
         FullCalendarModule, AppRoutingModule,
-        ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent, AuxiliaryModule
+        ReactiveFormsModule, MatDialogModule, MatIconModule, PaymentComponent,
+        AuxiliaryModule, MatSliderModule
     ],
   providers: [HostingService],
   bootstrap: [CalendarComponent]

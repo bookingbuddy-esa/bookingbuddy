@@ -28,7 +28,7 @@ import { PhotosStepComponent } from './property-ad/property-ad-create/photos-ste
 import { ChatComponent } from './chat/chat.component';
 import { FavoriteSidebarComponent } from './favorite-sidebar/favorite-sidebar.component';
 import { MatIconModule } from '@angular/material/icon';
-
+import { FavoritebarPropertyComponent } from './favorite-sidebar/favoritebar-property/favoritebar-property.component';
 import { ProfileComponent } from './profile/profile.component';
 import { BookingComponent } from './booking/booking.component';
 
@@ -49,7 +49,7 @@ import { BookingComponent } from './booking/booking.component';
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent,
+    BookingComponent, FavoritebarPropertyComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
