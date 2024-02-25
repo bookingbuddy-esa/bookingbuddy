@@ -7,6 +7,14 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Configuration;
+using BookingBuddy.Server.Services;
+using Microsoft.DotNet.Scaffolding.Shared;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using NuGet.Common;
+using System.Web;
+using System;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -17,18 +25,22 @@ namespace BookingBuddy.Server.Controllers
     [ApiController]
     public class PropertyController : ControllerBase
     {
+
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+
 
         /// <summary>
         /// Construtor da classe PropertyController.
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
+        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -533,6 +545,31 @@ namespace BookingBuddy.Server.Controllers
             return discounts;
         }
 
+
+        /// <summary>
+        /// Método que retorna todos os users que tiverem favoritos
+        /// </summary>
+        /// <param name="favoriteUserIds"></param>
+        /// <returns></returns>
+        ///[HttpGet('properties/fav')]
+        private async Task<IEnumerable<ApplicationUser>> GetUserListIdFavorites(IEnumerable<string> favoriteUserIds)
+        {
+            List<ApplicationUser> users = new List<ApplicationUser>();
+
+            foreach (var userId in favoriteUserIds)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user != null)
+                {
+                    users.Add(user);
+                }
+                
+            }
+            
+            return users;
+        }
+
         /// <summary>
         /// Método que adiciona um desconto no calendario de uma propriedade.
         /// </summary>
@@ -561,6 +598,26 @@ namespace BookingBuddy.Server.Controllers
 
             _context.Discount.Add(discount);
             await _context.SaveChangesAsync();
+
+            //TODO: select dos applicationUserId na tabela favoritos ao propertyid = inputModel.property id
+
+            var userIdsFavorites = await _context.Favorites
+                .Where(f => f.PropertyId == inputModel.PropertyId)
+                .Select(f => f.ApplicationUserId)
+                .ToListAsync();
+
+            IEnumerable<ApplicationUser> userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
+
+
+            foreach (var user in userListIdsFavorite)
+            {
+                var propertyLink =
+                   $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+
+                await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!, "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
+                new { propertyLink });
+            }
+
 
             return Ok("Discount apllyied successfully");
         }
