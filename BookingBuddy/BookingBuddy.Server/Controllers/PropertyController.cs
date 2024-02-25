@@ -643,7 +643,7 @@ namespace BookingBuddy.Server.Controllers
 
             if (favoriteIds == null || favoriteIds.Count == 0)
             {
-                return NotFound("Nenhum favorito encontrado para o usuário fornecido.");
+               // return NotFound("Nenhum favorito encontrado para o usuário fornecido.");
             }
 
             var favoriteProperties = await _context.Property

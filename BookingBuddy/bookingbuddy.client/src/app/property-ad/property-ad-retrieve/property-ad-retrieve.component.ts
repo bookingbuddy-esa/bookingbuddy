@@ -42,6 +42,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
+        this.checkPropertyIsFavorite()
       });
   }
 
@@ -52,7 +53,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         if (response) {
           console.log(response);
           this.property = response as Property;
-          this.checkPropertyIsFavorite();
+          
         }
       }).catch(
         error => {
@@ -107,19 +108,21 @@ export class PropertyAdRetrieveComponent implements OnInit {
         );
     }
   }
-
+  
   checkPropertyIsFavorite() {
-    if (this.signedIn && this.property) {
-      this.propertyService.isPropertyInFavorites(this.property?.propertyId).subscribe(
-        (result) => {
+    if (this.signedIn) {
+      this.propertyService.isPropertyInFavorites(this.route.snapshot.params['id']).forEach(
+        result => {
           this.isPropertyInFavorites = result;
-        },
-        (error) => {
+          console.log("RESULTADO: " + result);
+        }).catch(
+          error => {
           console.error('Erro ao verificar se a propriedade está nos favoritos:', error);
         }
       );
     }
   }
+
 
   public reservar(_: any) {
     this.reservarPropriedadeFailed = false;
