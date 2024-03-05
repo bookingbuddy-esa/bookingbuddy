@@ -55,7 +55,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'bookingbuddy'
+          app-name: 'booking-buddy'
           slot-name: 'Production'
           package: ./BookingBuddy/bookingbuddy.client/dist/bookingbuddy.client/browser
           publish-profile: ${{ secrets.CLIENT_PUBLISH_PROFILE }}
@@ -101,7 +101,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'bookingbuddy-api-server'
+          app-name: 'booking-buddy-api'
           slot-name: 'Production'
           package: .
           publish-profile: ${{ secrets.API_PUBLISH_PROFILE }}
