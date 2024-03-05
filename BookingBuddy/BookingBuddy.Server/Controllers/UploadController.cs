@@ -18,11 +18,10 @@ namespace BookingBuddy.Server.Controllers
     public class UploadController : ControllerBase
     {
         private readonly BlobServiceClient _blobServiceClient;
+
         public UploadController(IConfiguration configuration)
         {
-            var credential = new StorageSharedKeyCredential("bookingbuddystorage", configuration.GetSection("AzureStorageAccountKey").Value!);
-            var serviceUri = new Uri($"https://bookingbuddystorage.blob.core.windows.net");
-            _blobServiceClient = new BlobServiceClient(serviceUri, credential);
+            _blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("AzureStorageAccount"));
         }
 
 
@@ -34,7 +33,8 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> UploadFiles()
         {
-            if(Request.Form.Files.Count >= 1){
+            if (Request.Form.Files.Count >= 1)
+            {
                 var containerClient = _blobServiceClient.GetBlobContainerClient("images");
                 var files = Request.Form.Files;
                 var response = new List<string>();
