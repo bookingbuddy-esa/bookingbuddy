@@ -1,12 +1,32 @@
 .popup-content-container {
-  text-align: center;
+  /* text-align: center;*/
   margin: 0px;
-  width: 500px;
+  width: 700px;
 }
 
-.popup-content{
+.popup-content {
+text-align: center;
+}
+
+.blockDates {
+  margin-right: 0;
+  display: inline-block;
   text-align: center;
-  margin-top: 0;
+  padding: 2rem 2rem;
+  vertical-align: top;
+  border-right: 1px solid black;
+}
+
+.discount {
+  text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  padding: 2rem 2rem;
+  margin-left: 0;
+}
+
+.title{
+    text-align: center;
 }
 
 .close-button {
@@ -15,4 +35,16 @@
   right: 10px;
   background: none; 
   border: none; 
+}
+
+mat-slider {
+  width: 200px
+}
+
+.label-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 10px 0;
+  max-width: 184px;
+  font-weight:500;
 }

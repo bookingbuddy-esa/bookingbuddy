@@ -3,10 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { Property } from '../../models/property';
 
 import { Injectable } from '@angular/core';
-
+import { AuthorizeService } from "../../auth/authorize.service";
 import { PropertyAdService } from '../property-ad.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AmenitiesHelper} from "../../models/amenityEnum";
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -19,19 +20,16 @@ import {AmenitiesHelper} from "../../models/amenityEnum";
 })
 
 export class PropertyAdRetrieveComponent implements OnInit {
-  // get the property ad id from the route
-  // retrieve the property ad from the server
-  // display the property ad
-  // handle the case when the property ad is not found
-  // handle the case when the server is not available
-
   property: Property | undefined;
   reservarPropriedadeForm!: FormGroup;
   reservarPropriedadeFailed: boolean;
   errors: string[];
+  signedIn: boolean = false;
+  isPropertyInFavorites: boolean = false;
   protected readonly AmenitiesHelper = AmenitiesHelper;
 
-  constructor(private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder) {
+  constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService) {
+    this.appComponent.showChat = true;
     this.errors = [];
 
     this.reservarPropriedadeFailed = false;
@@ -40,6 +38,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
       checkOut: ['', Validators.required],
       numHospedes: ['1', Validators.required]
     });
+
+    this.authService.isSignedIn().forEach(
+      isSignedIn => {
+        this.signedIn = isSignedIn;
+      });
   }
 
   ngOnInit() {
@@ -49,12 +52,14 @@ export class PropertyAdRetrieveComponent implements OnInit {
         if (response) {
           console.log(response);
           this.property = response as Property;
+          this.checkPropertyIsFavorite();
         }
       }).catch(
         error => {
           // TODO return error message
         }
-      );
+    );
+    
   }
 
   calcularDiferencaDias(): number {
@@ -71,6 +76,49 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const diferencaDias: number = diferencaMilissegundos / (1000 * 60 * 60 * 24);
 
     return diferencaDias;
+  }
+
+  addToFavorites() {
+    if (this.property) {
+      this.propertyService.addToFavorites(this.property?.propertyId).forEach(
+        response => {
+          if (response) {
+            this.isPropertyInFavorites = true;
+          }
+        }).catch(
+          error => {
+            console.error('Erro ao adicionar ao favoritos:', error);
+          }
+        );
+    }
+  }
+
+  removeFromFavorites() {
+    if (this.property) {
+      this.propertyService.removeFromFavorites(this.property?.propertyId).forEach(
+        response => {
+          if (response) {
+            this.isPropertyInFavorites = false;
+          }
+        }).catch(
+          error => {
+            console.error('Erro ao adicionar ao favoritos:', error);
+          }
+        );
+    }
+  }
+
+  checkPropertyIsFavorite() {
+    if (this.signedIn && this.property) {
+      this.propertyService.isPropertyInFavorites(this.property?.propertyId).subscribe(
+        (result) => {
+          this.isPropertyInFavorites = result;
+        },
+        (error) => {
+          console.error('Erro ao verificar se a propriedade está nos favoritos:', error);
+        }
+      );
+    }
   }
 
   public reservar(_: any) {

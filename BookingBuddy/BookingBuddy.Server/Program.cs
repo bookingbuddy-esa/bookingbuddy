@@ -13,10 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
-        builder.WithOrigins("https://localhost:4200")
+        builder.WithOrigins("https://localhost:4200", "https://localhost:7048")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
+});
+
+string azureSignalrConnectionString = builder.Configuration["Azure:SignalR:ConnectionString"];
+builder.Services.AddSignalR().AddAzureSignalR(options =>
+{
+    options.ConnectionString = azureSignalrConnectionString;
 });
 
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
@@ -63,6 +69,8 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHub<ChatHubController>("/hubs/chat");
 
 app.UseCors("CorsPolicy");
 

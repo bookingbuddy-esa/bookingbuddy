@@ -1,0 +1,25 @@
+<!--<div class="favorite-sidebar">
+  <div class="green-banner">
+    <h3>Favoritos</h3>
+    <button mat-icon-button mat-dialog-close class="close-button" (click)="closeSidebar()">
+      <mat-icon aria-label="Fechar">close</mat-icon>
+    </button>
+  </div>
+  <div *ngIf="property_list.length > 0" class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
+    <app-homepage-property *ngFor="let property of property_list" [property]="property" ></app-homepage-property>
+  </div>
+</div>-->
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+  <div class="green-banner">
+    <h3>Favoritos</h3>
+    <button mat-icon-button  class="close-button" data-bs-dismiss="offcanvas">
+      <mat-icon aria-label="Fechar">close</mat-icon>
+    </button>
+  </div>
+  <div class="offcanvas-body">
+    <div *ngIf="property_list.length > 0" class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
+      <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
+    </div>
+  </div>
+</div>

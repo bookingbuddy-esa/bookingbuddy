@@ -16,6 +16,8 @@ export class CalendarPopupComponent {
   startDateOutput: string | null = null;
   endDateOutput: string | null = null;
   eventId: number | null = null;
+  discountValue: number = 10;
+  isDiscountEvent: boolean | null = null;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -30,6 +32,7 @@ export class CalendarPopupComponent {
     this.eventId = this.data.eventId;
     this.startDateOutput = this.formatDate(this.selectedStartDate);
     this.endDateOutput = this.formatDate(this.selectedEndDate);
+    this.isDiscountEvent = this.data.isDiscountEvent;
   }
 
   blockSelectedDates() {
@@ -50,6 +53,49 @@ export class CalendarPopupComponent {
     } else {
       console.warn('Selecione as datas antes de bloquear.');
     }
+  }
+
+  applyDiscount() {
+    if (this.selectedStartDate && this.selectedEndDate && this.currentProperty) {
+      const endDate = new Date(this.selectedEndDate);
+      endDate.setDate(endDate.getDate() + 1);
+      const adjustedEndDate = endDate.toISOString().split('T')[0];
+      this.hostingService.applyDiscount(this.discountValue,this.selectedStartDate, this.selectedEndDate, this.currentProperty.propertyId).forEach(
+        response => {
+          if (response) {
+            this.dialogRef.close('calendarUpdate');
+          }
+        }).catch(
+          error => {
+            console.error('Erro ao bloquear datas:', error);
+          }
+        );
+    } else {
+      console.warn('Selecione as datas.');
+    }
+  }
+
+  removeDiscount() {
+    if (this.eventId) {
+      this.hostingService.removeDiscount(this.eventId).forEach(
+        response => {
+          if (response) {
+            this.dialogRef.close('calendarUpdate');
+          }
+        }).catch(
+          error => {
+            console.error('Erro ao remover desconto:', error);
+          }
+        );
+    }
+  }
+
+  formatLabel(value: number): string {
+    if (value >= 1000) {
+      return Math.round(value / 1000) + 'k';
+    }
+
+    return `${value}`;
   }
 
   unblockDates() {

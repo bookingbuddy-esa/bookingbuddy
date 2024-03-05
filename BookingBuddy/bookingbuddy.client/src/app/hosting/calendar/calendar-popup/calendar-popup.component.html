@@ -1,14 +1,41 @@
 <div class="popup-content-container">
+  <div class="title"><h1 mat-dialog-title>Gestão do Calendario</h1></div>
 
-  <h1 mat-dialog-title>Gestão do Calendario</h1>
   <button mat-icon-button mat-dialog-close class="close-button">
     <mat-icon aria-label="Fechar">close</mat-icon>
   </button>
-  <div mat-dialog-content class="popup-content">
-    <h2 *ngIf="eventId"><strong>Datas Bloqueadas</strong></h2>
-    <p><strong>{{ startDateOutput }} - {{ endDateOutput }}</strong></p>
+
+  <div *ngIf="eventId == null" mat-dialog-content class="popup-content">
+    <div class='blockDates'>
+      <h4>Datas</h4>
+      <p><strong>{{ startDateOutput }} - {{ endDateOutput }}</strong></p>
+      <br />
+      <button class="btn btn-outline-danger mb-5" *ngIf="eventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
+    </div>
+    <div class='discount'>
+      <h4>Desconto</h4>
+      <div class="label-container">
+        <label id="ename-label" class="name-label">Valor</label>
+        <label class="value-label">{{ discountValue }}%</label>
+      </div>
+      <mat-slider min="1" max="99" step="1" discrete [displayWith]="formatLabel">
+        <input matSliderThumb [(ngModel)]="discountValue">
+      </mat-slider>
+      <br />
+      <button class="btn btn-outline-success mb-5" *ngIf="eventId == null" (click)="applyDiscount()">Aplicar Desconto</button>
+    </div>
+  </div>
+
+  <div *ngIf="eventId && !isDiscountEvent" mat-dialog-content class="popup-content">
+    <h4>Datas Bloqueadas</h4>
+    <p>{{ startDateOutput }} - {{ endDateOutput }}</p>
     <br />
-    <button class="btn btn-outline-success mb-5" *ngIf="eventId == null" (click)="blockSelectedDates()">Bloquear Datas</button>
-    <button class="btn btn-outline-success mb-5" *ngIf="eventId" (click)="unblockDates()">Desbloquear Datas</button>
+    <button class="btn btn-outline-success mb-5" (click)="unblockDates()">Desbloquear Datas</button>
+  </div>
+  <div *ngIf="eventId && isDiscountEvent" mat-dialog-content class="popup-content">
+    <h4>Desconto</h4>
+    <p>{{ startDateOutput }} - {{ endDateOutput }}</p>
+    <br />
+    <button class="btn btn-outline-success mb-5" (click)="removeDiscount()">Remover Desconto</button>
   </div>
 </div>

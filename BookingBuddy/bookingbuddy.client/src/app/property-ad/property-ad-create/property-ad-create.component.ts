@@ -8,6 +8,7 @@ import {UserInfo} from "../../auth/authorize.dto";
 import {Property, PropertyCreate} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
+import { AppComponent } from '../../app.component';
 
 @Component({
   selector: 'app-property-ad-create',
@@ -41,10 +42,12 @@ export class PropertyAdCreateComponent implements OnInit {
   protected adInfo: AdInfo | undefined;
   protected isAdInfoValid: boolean = false;
 
-  constructor(private authService: AuthorizeService,
+  constructor(private appComponent: AppComponent,
+              private authService: AuthorizeService,
               private router: Router,
               private propertyService: PropertyAdService) {
     this.errors = [];
+    this.appComponent.showChat = false;
   }
 
   ngOnInit(): void {
