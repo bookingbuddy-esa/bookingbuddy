@@ -25,7 +25,6 @@ namespace BookingBuddy.Server.Controllers
     [ApiController]
     public class PropertyController : ControllerBase
     {
-
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
@@ -36,7 +35,8 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -144,6 +144,11 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que retorna as métricas de uma propriedade.
+        /// </summary>
+        /// <param name="propertyId">Id da propriedade</param>
+        /// <returns>As métricas da propriedade</returns>
         [HttpGet]
         [Authorize]
         [Route("metrics/{propertyId}")]
@@ -419,7 +424,7 @@ namespace BookingBuddy.Server.Controllers
 
             if (blockedDates == null || blockedDates.Count == 0)
             {
-              //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+                //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
             }
 
             return blockedDates;
@@ -539,7 +544,7 @@ namespace BookingBuddy.Server.Controllers
 
             if (discounts == null || discounts.Count == 0)
             {
-              //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+                //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
             }
 
             return discounts;
@@ -564,9 +569,8 @@ namespace BookingBuddy.Server.Controllers
                 {
                     users.Add(user);
                 }
-                
             }
-            
+
             return users;
         }
 
@@ -612,10 +616,11 @@ namespace BookingBuddy.Server.Controllers
             foreach (var user in userListIdsFavorite)
             {
                 var propertyLink =
-                   $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+                    $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
 
-                await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!, "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
-                new { propertyLink });
+                await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                    "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
+                    new { propertyLink });
             }
 
 
@@ -679,7 +684,8 @@ namespace BookingBuddy.Server.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var favorite = _context.Favorites.FirstOrDefault(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
+            var favorite =
+                _context.Favorites.FirstOrDefault(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
 
             if (favorite == null)
                 return BadRequest("A propriedade não está na lista de favoritos.");
@@ -699,7 +705,7 @@ namespace BookingBuddy.Server.Controllers
 
             if (favorites == null || favorites.Count == 0)
             {
-               //   return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+                //   return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
             }
 
             return favorites;
@@ -731,21 +737,21 @@ namespace BookingBuddy.Server.Controllers
         /// Retorna verdadeiro se uma propriedade com o identificador fornecido existir; caso contrário, retorna falso.
         /// </returns>
         private bool PropertyExists(string id)
-            {
-                return _context.Property.Any(e => e.PropertyId == id);
-            }
+        {
+            return _context.Property.Any(e => e.PropertyId == id);
+        }
     }
-    
-/// <summary>
-/// Modelo de criação de propriedade
-/// </summary>
-/// <param name="AmenityIds">Identificadores da lista de comodidades</param>
-/// <param name="Name">Nome da propriedade</param>
-/// <param name="Description">Descrição da propriedade</param>
-/// <param name="PricePerNight">Preço por noite da propriedade</param>
-/// <param name="Location">Localização da propriedade</param>
-/// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-public record PropertyCreateModel(
+
+    /// <summary>
+    /// Modelo de criação de propriedade
+    /// </summary>
+    /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
+    /// <param name="Name">Nome da propriedade</param>
+    /// <param name="Description">Descrição da propriedade</param>
+    /// <param name="PricePerNight">Preço por noite da propriedade</param>
+    /// <param name="Location">Localização da propriedade</param>
+    /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
+    public record PropertyCreateModel(
         string Name,
         string Description,
         decimal PricePerNight,
