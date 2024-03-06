@@ -1,5 +1,9 @@
-﻿using BookingBuddy.Server.Controllers;
+﻿using System.Security.Claims;
+using BookingBuddy.Server.Controllers;
+using BookingBuddy.Server.Models;
 using BookingBuddyTest.Fixtures;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +29,27 @@ public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
             _signInManager.SignInManager,
             new Mock<IConfiguration>().Object
         );
+    }
+
+    private async Task<ApplicationUser?> CreateRandomUser()
+    {
+        var provider = _context.DbContext.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "LOCAL");
+        var email = $"bookingbuddy.{Guid.NewGuid().ToString()}@bookingbuddy.com";
+        var createResult = await _userManager.UserManager.CreateAsync(new ApplicationUser()
+        {
+            UserName = email,
+            Email = email,
+            Name = $"User {Guid.NewGuid().ToString()}",
+            EmailConfirmed = true,
+            ProviderId = provider!.AspNetProviderId
+        }, "Test123!");
+
+        if (!createResult.Succeeded)
+        {
+            return null;
+        }
+
+        return await _userManager.UserManager.FindByEmailAsync(email);
     }
 
     [Fact]
@@ -60,7 +85,7 @@ public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void ConfirmEmail_Succeeds_When_User_Not_Confirmed()
     {
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        var user = await CreateRandomUser();
         Assert.NotNull(user);
         var token = await _userManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
         var result = await _controller.ConfirmEmail(new EmailConfirmModel(user.Id, token));
@@ -70,7 +95,7 @@ public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void ConfirmEmail_Fails_When_User_Already_Confirmed_With_Same_Token()
     {
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        var user = await CreateRandomUser();
         Assert.NotNull(user);
         var token = await _userManager.UserManager.GenerateEmailConfirmationTokenAsync(user);
         var resultSuccessful = await _controller.ConfirmEmail(new EmailConfirmModel(user.Id, token));
@@ -85,7 +110,7 @@ public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
     [InlineData("valid-token", typeof(OkResult))]
     public async void CheckConfirmationToken_Returns_Expected_Result(string? token, Type expectedType)
     {
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        var user = await CreateRandomUser();
         Assert.NotNull(user);
         if (token?.Equals("valid-token") ?? false)
         {
@@ -104,5 +129,114 @@ public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
             "userBB123!"
         ), false);
         Assert.IsType<OkResult>(result);
+    }
+
+    [Fact]
+    public async void Login_Fails_When_User_Credentials_Are_Invalid()
+    {
+        var result = await _controller.Login(new LoginModel(
+            "bookingbuddy.invalid@bookingbuddy.com",
+            "invalid"
+        ), false);
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async void ResetPassword_Succeeds_When_Token_Is_Valid()
+    {
+        var user = await CreateRandomUser();
+        Assert.NotNull(user);
+        var token = await _userManager.UserManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _controller.ResetPassword(new PasswordResetModel(
+            user.Id,
+            token,
+            "NewPassword123!"
+        ));
+        Assert.IsType<OkResult>(result);
+    }
+
+    [Fact]
+    public async void ResetPassword_Fails_When_Token_Is_Invalid()
+    {
+        var user = await CreateRandomUser();
+        Assert.NotNull(user);
+        var result = await _controller.ResetPassword(new PasswordResetModel(
+            user.Id,
+            "invalid-token",
+            "NewPassword123!"
+        ));
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Theory]
+    [InlineData("invalid-token", typeof(BadRequestObjectResult))]
+    [InlineData(null, typeof(BadRequestObjectResult))]
+    [InlineData("valid-token", typeof(OkResult))]
+    public async void CheckPasswordResetToken_Returns_Expected_Result(string token, Type expectedType)
+    {
+        var user = await CreateRandomUser();
+        Assert.NotNull(user);
+
+        if (token?.Equals("valid-token") ?? false)
+        {
+            token = await _userManager.UserManager.GeneratePasswordResetTokenAsync(user);
+        }
+
+        var result = await _controller.CheckResetPasswordToken(new PasswordResetModel(
+            user.Id,
+            token!,
+            "NewPassword123!"
+        ));
+
+        Assert.IsType(expectedType, result);
+    }
+
+    [Fact]
+    public async void ManageInfo_Returns_Info_When_User_Is_Authenticated()
+    {
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+        var controller = new AccountController(
+            _context.DbContext,
+            _userManager.UserManager,
+            _signInManager.SignInManager,
+            new Mock<IConfiguration>().Object
+        )
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>()
+                    {
+                        new(ClaimTypes.NameIdentifier, user.Id),
+                    }, "TestAuthentication")),
+                }
+            }
+        };
+
+        var result = await controller.ManageInfo();
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async void ManageInfo_Returns_Unauthorized_When_User_Is_Not_Authenticated()
+    {
+        var controller = new AccountController(
+            _context.DbContext,
+            _userManager.UserManager,
+            _signInManager.SignInManager,
+            new Mock<IConfiguration>().Object
+        )
+        {
+            ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            }
+        };
+
+        var result = await controller.ManageInfo();
+        Assert.IsType<UnauthorizedResult>(result);
     }
 }
