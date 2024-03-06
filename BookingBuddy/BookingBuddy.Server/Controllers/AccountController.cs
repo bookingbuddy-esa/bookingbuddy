@@ -42,7 +42,8 @@ namespace BookingBuddy.Server.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] AccountRegisterModel model, bool sendConfirmationEmail = true)
+        public async Task<IActionResult> Register([FromBody] AccountRegisterModel model,
+            bool sendConfirmationEmail = true)
         {
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
@@ -66,6 +67,7 @@ namespace BookingBuddy.Server.Controllers
                 {
                     return Ok();
                 }
+
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
@@ -199,20 +201,21 @@ namespace BookingBuddy.Server.Controllers
         /// </remarks>
         /// <example>
         ///    POST /api/login
-        ///
+        /// 
         ///    {
         ///     "email": bookingbuddy.user@bookingbuddy.com,
         ///     "password": userBB123!
         ///    }
         /// </example>
         /// <param name="model">Modelo de login</param>
+        /// <param name="isPersistent">Opção que define se é guardada uma cookie de sessão</param>
         /// <returns>Resposta do pedido de login, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model, bool isPersistent = true)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
@@ -226,10 +229,21 @@ namespace BookingBuddy.Server.Controllers
                     });
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                if (result.Succeeded)
+                if (!isPersistent)
                 {
-                    return Ok();
+                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                }
+                else
+                {
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
                 }
             }
 
