@@ -15,7 +15,7 @@ public class UserManagerFixture : IDisposable
     public UserManagerFixture(ApplicationDbContextFixture context)
     {
         var services = new ServiceCollection();
-        services.AddIdentity<ApplicationUser,IdentityUserRole<string>>().AddDefaultTokenProviders();
+        services.AddIdentity<ApplicationUser, IdentityUserRole<string>>().AddDefaultTokenProviders();
         services.AddLogging();
         UserManager = new UserManager<ApplicationUser>(
             new UserStore<ApplicationUser>(context.DbContext, new IdentityErrorDescriber()),
@@ -28,7 +28,8 @@ public class UserManagerFixture : IDisposable
                         [TokenOptions.DefaultProvider] = new(typeof(DataProtectorTokenProvider<ApplicationUser>)),
                         [TokenOptions.DefaultEmailProvider] = new(typeof(EmailTokenProvider<ApplicationUser>)),
                         [TokenOptions.DefaultPhoneProvider] = new(typeof(PhoneNumberTokenProvider<ApplicationUser>)),
-                        [TokenOptions.DefaultAuthenticatorProvider] = new(typeof(AuthenticatorTokenProvider<ApplicationUser>))
+                        [TokenOptions.DefaultAuthenticatorProvider] =
+                            new(typeof(AuthenticatorTokenProvider<ApplicationUser>))
                     }
                 }
             }),

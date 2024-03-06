@@ -12,11 +12,11 @@ public class SignInManagerFixture(UserManagerFixture userManagerFixture)
 {
     public SignInManager<ApplicationUser> SignInManager { get; private set; } = new(
         userManagerFixture.UserManager,
-        new Mock<IHttpContextAccessor>().Object,
+        new HttpContextAccessor(),
         new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>().Object,
         new Mock<IOptions<IdentityOptions>>().Object,
         new Mock<ILogger<SignInManager<ApplicationUser>>>().Object,
         new Mock<IAuthenticationSchemeProvider>().Object,
-        new Mock<IUserConfirmation<ApplicationUser>>().Object
+        new DefaultUserConfirmation<ApplicationUser>()
     );
 }
