@@ -496,6 +496,11 @@ namespace BookingBuddy.Server.Controllers
         [Route("manage/info")]
         public async Task<IActionResult> ManageInfo()
         {
+            if (!User.Identity?.IsAuthenticated ?? false)
+            {
+                return Unauthorized();
+            }
+
             var existingUser = await _userManager.GetUserAsync(User);
             if (existingUser == null)
                 return BadRequest(new[]
