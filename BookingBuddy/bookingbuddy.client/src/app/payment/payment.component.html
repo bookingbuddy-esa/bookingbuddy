@@ -1,4 +1,4 @@
-<div class="form-group mt-4 d-flex flex-column align-items-center" *ngIf="data && currentPhase === 1">
+<div class="form-group d-flex flex-column align-items-center" *ngIf="data && currentPhase === 1">
     <label for="paymentMethod">Escolha o método de pagamento:</label>
     <select #paymentMethod name="paymentMethod" id="paymentMethod" class="form-control" (change)="addPaymentMethod(paymentMethod.value)">
     <option value="multibanco">Ref. Multibanco</option>

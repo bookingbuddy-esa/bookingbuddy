@@ -1,8 +1,10 @@
 <div class="row flex-nowrap">
   <!-- Primeira coluna -->
-  <div class="col-auto col-2 px-sm-2 px-0 bg-white box-shadow ">
-    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark ">
-      <p class="custom-h4 text-sm mt-2 font-weight-bold">Propriedades</p>
+  <div class="col-2 px-sm-2 px-0 bg-white box-shadow">
+    <div class="d-flex flex-column align-items-center px-3 text-dark ">
+      
+        <h5 class="custom-h4 text-sm mt-2 ">Propriedades</h5>
+     
       <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-side-properties>
     </div>
   </div>
@@ -28,7 +30,7 @@
   </div>
 
   <!-- Terceira coluna -->
-  <div class="col-md-6 mt-5 d-flex justify-content-center align-items-center mx-auto" *ngIf="propertyPromote">
+  <div class="col-md-6 mt-5 d-flex flex-column align-items-center mx-auto" *ngIf="propertyPromote">
     <app-payment [data]="propertyPromote" *ngIf="propertyPromote"></app-payment>
   </div>
 </div>

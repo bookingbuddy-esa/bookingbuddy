@@ -17,6 +17,12 @@
 }
 
 
+  .custom-h4{
+  font-size: 15px;
+  font-weight:bold;
+}
+
+
 /* Quando o ecrã é grande (24 polegadas ou maior) */
 @media (min-width: 1600px) {
   .divwidth {
