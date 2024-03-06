@@ -1,9 +1,8 @@
 ﻿using BookingBuddy.Server.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.Sqlite;
-using BookingBuddy.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace BookingBuddyTest
+namespace BookingBuddyTest.Fixtures
 {
     public class ApplicationDbContextFixture : IDisposable
     {
@@ -14,8 +13,8 @@ namespace BookingBuddyTest
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
             var options = new DbContextOptionsBuilder<BookingBuddyServerContext>()
-                    .UseSqlite(connection)
-                    .Options;
+                .UseSqlite(connection)
+                .Options;
             DbContext = new BookingBuddyServerContext(options);
 
             DbContext.Database.EnsureCreated();
