@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-string azureSignalrConnectionString = builder.Configuration["Azure:SignalR:ConnectionString"];
+string azureSignalrConnectionString = builder.Configuration.GetConnectionString("AzureSignalR") ?? throw new InvalidOperationException("Connection string 'AzureSignalR' not found.");
 builder.Services.AddSignalR().AddAzureSignalR(options =>
 {
     options.ConnectionString = azureSignalrConnectionString;

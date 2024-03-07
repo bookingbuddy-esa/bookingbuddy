@@ -48,8 +48,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
-        this.checkPropertyIsFavorite()
-        this.signedIn = isSignedIn;
+        this.checkPropertyIsFavorite();
         if (isSignedIn) {
           this.authService.user().forEach(user => {
             this.user = user

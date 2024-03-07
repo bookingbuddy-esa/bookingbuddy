@@ -4,14 +4,16 @@
 
 ### Rápidos
 - [ ] Tabela da tecnologias - adicionar o vsdocman  
-- [ ] Procurar ferramenta de documentação em Angular  
-- [ ] Tabela da tecnologia - adicionar ferramenta a cima  
-- [ ] Limpar branches  
-- [X] Responsaveis pela documentação, testes, manual tecnico  
-- [ ] Alterar API da Google para a conta do bookingbuddy  
-- [ ] Alterar API do Google Maps para a conta do bookingbuddy  
-- [ ] Footer & Página de FAQ   
+- [ ] Tabela da tecnologia - adicionar o compodoc  
+- [ ] Resolver bug de menu dentro de menu (quando a tela é pequena)  
+- [X] Alterar API da Google para a conta do bookingbuddy  
+- [X] Alterar API do Google Maps para a conta do bookingbuddy  
+- [ ] Footer & Página de FAQ  
 - [ ] (Opcional) Pedir ao Pina/Cordeiro ajuda como resolver login da Microsoft ao usar conta do IPS
+- [X] Procurar ferramenta de documentação em Angular  
+- [X] Limpar branches  
+- [X] Responsaveis pela documentação, testes, manual tecnico  
+
 
 ### Geral
 - [ ] Remover mensagens console (log, error)  
