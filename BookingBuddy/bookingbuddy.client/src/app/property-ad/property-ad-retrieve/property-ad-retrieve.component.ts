@@ -9,6 +9,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AmenitiesHelper} from "../../models/amenityEnum";
 import { AppComponent } from '../../app.component';
 
+import { UserInfo } from "../../auth/authorize.dto";
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-property-ad-retrieve',
   templateUrl: './property-ad-retrieve.component.html',
@@ -27,6 +30,9 @@ export class PropertyAdRetrieveComponent implements OnInit {
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   protected readonly AmenitiesHelper = AmenitiesHelper;
+  protected isLandlord: boolean = false;
+
+  protected user: UserInfo | undefined;
 
   constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService) {
     this.appComponent.showChat = true;
@@ -43,6 +49,15 @@ export class PropertyAdRetrieveComponent implements OnInit {
       isSignedIn => {
         this.signedIn = isSignedIn;
         this.checkPropertyIsFavorite()
+        this.signedIn = isSignedIn;
+        if (isSignedIn) {
+          this.authService.user().forEach(user => {
+            this.user = user
+            if (user.roles.includes('landlord') || user.roles.includes('admin')) {
+              this.isLandlord = true;
+            }
+          });
+        }
       });
   }
 
@@ -137,4 +152,5 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
     // TODO: reservar a propriedade
   }
+  
 }

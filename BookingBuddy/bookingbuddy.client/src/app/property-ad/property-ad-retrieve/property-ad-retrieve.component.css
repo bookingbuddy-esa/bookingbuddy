@@ -20,9 +20,60 @@
     
   }
 
-/*.carousel-item {
-  transform: scale(1);*/ /* Garante que a escala seja mantida durante as transições */
-  /*transition: transform 0.5s ease;*/ /* Adapte a duração e a função de temporização conforme necessário */
-/*}*/
+/* Adicione este estilo para esconder a checkbox */
+.hidden-checkbox {
+  display: none;
+}
+
+/* Estilo para o label simulando o botão */
+.btn {
+  cursor: pointer;
+}
+
+/* Estilo para o dropdown que é ativado pelo estado :checked da checkbox */
+.hidden-checkbox:checked + label + .dropdown-menu {
+  display: block;
+}
+
+/* Estilo básico para o dropdown */
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  z-index: 1;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+  .dropdown-item:hover {
+    background-color: #f8f9fa;
+  }
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Posiciona a dropdown abaixo do botão */
+  right: 0; /* Alinha a dropdown à direita */
+  display: none;
+}
+
+.hidden-checkbox:checked + label + .dropdown-menu {
+  display: block;
+}
+
+.beautifications{
+    background-color: #9DAE9A;
+    border: none;
+}
 
 
