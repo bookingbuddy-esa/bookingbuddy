@@ -3,7 +3,7 @@
         <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
           <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
             <h3 class="text-center">Propriedades</h3>
-            <app-homepage-property *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)"></app-homepage-property>
+            <app-homepage-property *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-homepage-property>
           </div>
         </div>
         <div class="col py-3">
