@@ -9,6 +9,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {AmenitiesHelper} from "../../models/amenityEnum";
 import { AppComponent } from '../../app.component';
 
+import { UserInfo } from "../../auth/authorize.dto";
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-property-ad-retrieve',
   templateUrl: './property-ad-retrieve.component.html',
@@ -27,6 +30,9 @@ export class PropertyAdRetrieveComponent implements OnInit {
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   protected readonly AmenitiesHelper = AmenitiesHelper;
+  protected isLandlord: boolean = false;
+
+  protected user: UserInfo | undefined;
 
   constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService) {
     this.appComponent.showChat = true;
@@ -42,6 +48,15 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.authService.isSignedIn().forEach(
       isSignedIn => {
         this.signedIn = isSignedIn;
+        this.checkPropertyIsFavorite();
+        if (isSignedIn) {
+          this.authService.user().forEach(user => {
+            this.user = user
+            if (user.roles.includes('landlord') || user.roles.includes('admin')) {
+              this.isLandlord = true;
+            }
+          });
+        }
       });
   }
 
@@ -52,7 +67,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         if (response) {
           console.log(response);
           this.property = response as Property;
-          this.checkPropertyIsFavorite();
+          
         }
       }).catch(
         error => {
@@ -107,19 +122,21 @@ export class PropertyAdRetrieveComponent implements OnInit {
         );
     }
   }
-
+  
   checkPropertyIsFavorite() {
-    if (this.signedIn && this.property) {
-      this.propertyService.isPropertyInFavorites(this.property?.propertyId).subscribe(
-        (result) => {
+    if (this.signedIn) {
+      this.propertyService.isPropertyInFavorites(this.route.snapshot.params['id']).forEach(
+        result => {
           this.isPropertyInFavorites = result;
-        },
-        (error) => {
+          console.log("RESULTADO: " + result);
+        }).catch(
+          error => {
           console.error('Erro ao verificar se a propriedade está nos favoritos:', error);
         }
       );
     }
   }
+
 
   public reservar(_: any) {
     this.reservarPropriedadeFailed = false;
@@ -134,4 +151,5 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
     // TODO: reservar a propriedade
   }
+  
 }

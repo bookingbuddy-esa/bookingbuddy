@@ -6,7 +6,10 @@
     </select>
 
     <input type="text" class="form-control mt-4" *ngIf="paymentMethod.value === 'mbway'" placeholder="Número de telemóvel" name="phoneNumber" [(ngModel)]="phoneNumber" required>
-    <button class="btn btn-success mt-4" type="button" (click)="submitPayment()">Efetuar pagamento</button>
+
+    <label for="nif" class="mt-4">NIF:</label>
+    <input type="text" class="form-control" name="nif" [(ngModel)]="nif" required>
+    <button class="btn btn-success mt-4" type="button" (click)="submitPaymentRequest()">Efetuar pagamento</button>
 </div>
 
 <div *ngIf="currentPhase === 2">

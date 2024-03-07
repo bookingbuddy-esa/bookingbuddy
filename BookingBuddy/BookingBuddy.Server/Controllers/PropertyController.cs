@@ -810,6 +810,7 @@ namespace BookingBuddy.Server.Controllers
             
             var favorites = await _context.Favorites
                 .Where(f => f.ApplicationUserId == userId)
+                .Select(f => f.PropertyId)
                 .ToListAsync();
 
             return Ok(favorites);

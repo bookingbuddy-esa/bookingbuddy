@@ -13,6 +13,7 @@ import { PaymentService } from './payment.service';
 
 export class PaymentComponent {
   @Input() data!: any;
+  nif: string | undefined = undefined;
   paymentMethod: string = "multibanco";
   phoneNumber: string | undefined = undefined;
   currentPhase: number = 1;
@@ -28,8 +29,8 @@ export class PaymentComponent {
     this.paymentMethod = newPaymentMethod
   }
 
-  public submitPayment(): void {
-    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || null};
+  public submitPaymentRequest(): void {
+    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || null, nif: this.nif || null};
     console.log(JSON.stringify(this.data));
 
     this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, "promote", this.phoneNumber).forEach((response) => {
