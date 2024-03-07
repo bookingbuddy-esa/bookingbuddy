@@ -738,9 +738,16 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Unauthorized();
             }
-            
+
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
             if (_context.Favorites.Any(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId))
-                return BadRequest("A propriedade já está na lista de favoritos.");
+                return Conflict("A propriedade já está na lista de favoritos.");
 
             var favorite = new Favorite
             {
@@ -763,31 +770,49 @@ namespace BookingBuddy.Server.Controllers
             if (user == null)
                 return Unauthorized();
 
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
             var favorite =
                 _context.Favorites.FirstOrDefault(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
 
             if (favorite == null)
+            {
                 return BadRequest("A propriedade não está na lista de favoritos.");
+            }
 
             _context.Favorites.Remove(favorite);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest("Erro ao remover a propriedade dos favoritos.");
+            }
 
             return Ok("Propriedade removida dos favoritos com sucesso.");
         }
-
+        
         [HttpGet("favorites/user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Favorite>>> GetUserFavorites(string userId)
+        public async Task<IActionResult> GetUserFavorites(string userId)
         {
+            var user = await _userManager.FindByIdAsync(userId);
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
             var favorites = await _context.Favorites
                 .Where(f => f.ApplicationUserId == userId)
                 .ToListAsync();
 
-            if (favorites == null || favorites.Count == 0)
-            {
-                //   return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
-            }
-
-            return favorites;
+            return Ok(favorites);
         }
 
         [HttpGet("favorites/check/{propertyId}")]
@@ -799,8 +824,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Unauthorized();
             }
-
-            // Verifique se a propriedade está nos favoritos do utilizador
+            
             var isInFavorites = await _context.Favorites
                 .AnyAsync(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
 
