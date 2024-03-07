@@ -358,7 +358,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void GetPropertiesByUserId_Returns_NotFound_When_NoPropertiesFound()
     {
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
         Assert.NotNull(user);
 
         var controller = CreateController(user.Id);
@@ -892,7 +892,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
             EndDate = DateTime.Now.AddDays(1).ToLongDateString(),
         })).Entity;
         Assert.NotNull(discount);
-        
+
         try
         {
             await _context.DbContext.SaveChangesAsync();
@@ -901,11 +901,168 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         {
             Assert.True(false);
         }
-        
+
         var controller = CreateController(ownerUser.Id);
         Assert.NotNull(controller);
-        
+
         var result = await controller.RemoveDiscount(discount.DiscountId);
         Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async void AddToFavorite_Returns_Unauthorized_When_User_NotAuthenticated()
+    {
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+
+        var controller = CreateController();
+        Assert.NotNull(controller);
+
+        var result = await controller.AddToFavorite(property!.PropertyId);
+        Assert.IsType<UnauthorizedResult>(result);
+    }
+
+    [Fact]
+    public async void AddToFavorite_Returns_NotFound_When_PropertyNotFound()
+    {
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var result = await controller.AddToFavorite(Guid.NewGuid().ToString());
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async void AddToFavorite_Returns_Ok_When_User_IsAuthenticated()
+    {
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var result = await controller.AddToFavorite(property!.PropertyId);
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async void AddToFavorite_Returns_Conflict_When_PropertyAlreadyInFavorites()
+    {
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var result = await controller.AddToFavorite(property!.PropertyId);
+        Assert.IsType<OkObjectResult>(result);
+
+        result = await controller.AddToFavorite(property!.PropertyId);
+        Assert.IsType<ConflictObjectResult>(result);
+    }
+
+    [Fact]
+    public async void RemoveFromFavorite_Returns_Unauthorized_When_User_NotAuthenticated()
+    {
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+
+        var controller = CreateController();
+        Assert.NotNull(controller);
+
+        var result = await controller.RemoveFromFavorite(property!.PropertyId);
+        Assert.IsType<UnauthorizedResult>(result);
+    }
+
+    [Fact]
+    public async void RemoveFromFavorite_Returns_NotFound_When_PropertyNotFound()
+    {
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var result = await controller.RemoveFromFavorite(Guid.NewGuid().ToString());
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async void RemoveFromFavorite_Returns_Ok_When_User_IsAuthenticated()
+    {
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var result = await controller.AddToFavorite(property!.PropertyId);
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async void RemoveFromFavorite_Returns_NotFound_When_PropertyNotInFavorites()
+    {
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var result = await controller.RemoveFromFavorite(property!.PropertyId);
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async void GetFavorites_Returns_NotFound_When_UserNotExists()
+    {
+        var controller = CreateController(Guid.NewGuid().ToString());
+        Assert.NotNull(controller);
+
+        var result = await controller.GetUserFavorites(Guid.NewGuid().ToString());
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async void GetFavorites_Returns_Ok_When_UserExists()
+    {
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var property = await CreateRandomProperty();
+        Assert.NotNull(property);
+        
+        var property2 = await CreateRandomProperty();
+        Assert.NotNull(property2);
+        
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+        
+        var addToFavoriteResult = await controller.AddToFavorite(property!.PropertyId);
+        Assert.IsType<OkObjectResult>(addToFavoriteResult);
+        
+        addToFavoriteResult = await controller.AddToFavorite(property2!.PropertyId);
+        Assert.IsType<OkObjectResult>(addToFavoriteResult);
+        
+        var result = await controller.GetUserFavorites(user.Id);
+        Assert.IsType<OkObjectResult>(result);
+        var favorites = (result as OkObjectResult)?.Value as IEnumerable<dynamic>;
+        Assert.NotNull(favorites);
+        Assert.Equal(2,favorites.Count());
     }
 }
