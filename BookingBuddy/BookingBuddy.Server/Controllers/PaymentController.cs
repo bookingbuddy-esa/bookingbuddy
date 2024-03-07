@@ -32,9 +32,23 @@ namespace BookingBuddy.Server.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Método que retorna um pagamento.
+        /// </summary>
+        /// <param name="paymentId">Identificador do pagamento</param>
+        /// <returns>Retorna: 
+        /// - O pagamento, caso exista um pagamento com o identificador inserido.
+        /// - 400 Bad Request, caso o identificador inserido seja uma string nula ou vazia.
+        /// - 404 Not Found, caso não exista nenhum pagamento com o id inserido.
+        /// </returns>
         [HttpGet("{paymentId}")]
         public async Task<ActionResult<Payment>> GetPayment(string paymentId)
         {
+            if (string.IsNullOrEmpty(paymentId))
+            {
+                return BadRequest("O identificador do pagamento é inválido.");
+            }
+
             var payment = await _context.Payment.FindAsync(paymentId);
 
             if (payment == null)
@@ -211,11 +225,29 @@ namespace BookingBuddy.Server.Controllers
         }
     }
 
+    /// <summary>
+    /// Classe interna para representar uma resposta de um pagamento.
+    /// </summary>
     public class PaymentResponse {
+        /// <summary>
+        /// Representa a chave.
+        /// </summary>
         public string key { get; set; }
+        /// <summary>
+        /// Representa o identificador da reserva.
+        /// </summary>
         public string orderId { get; set; }
+        /// <summary>
+        /// Representa a quantia monetária.
+        /// </summary>
         public string amount { get; set; }
+        /// <summary>
+        /// Representa o identificador do pedido.
+        /// </summary>
         public string requestId { get; set; }
+        /// <summary>
+        /// Representa a data e a hora do pagamento.
+        /// </summary>
         public string payment_datetime { get; set; }
     }
 }
