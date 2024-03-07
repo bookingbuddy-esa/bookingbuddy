@@ -84,6 +84,11 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
+            if (string.IsNullOrEmpty(orderId) || string.IsNullOrEmpty(amount) || string.IsNullOrEmpty(requestId) || string.IsNullOrEmpty(paymentDatetime))
+            {
+                return BadRequest("Dados de pagamento incompletos ou inválidos.");
+            }
+
             var payment = await _context.Payment.FindAsync(requestId);
             if (payment == null)
             {
@@ -114,7 +119,7 @@ namespace BookingBuddy.Server.Controllers
                     // TODO: criar BookingOrder se a orderID tiver "BOOKING-" no início
                 }
             } catch (Exception ex) {
-                return StatusCode(500, $"An error occurred while updating payment status: {ex.Message}");
+                return StatusCode(500, $"Ocorreu um erro: {ex.Message}");
             }
 
             return Ok();
