@@ -21,7 +21,8 @@ namespace BookingBuddy.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly PaymentController _paymentController;
 
-        public OrderController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, PaymentController paymentController)
+        public OrderController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
+            PaymentController paymentController)
         {
             _context = context;
             _userManager = userManager;
@@ -34,7 +35,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="orderId"></param>
         /// <returns></returns>
         [HttpGet("{orderId}")]
-        public async Task<ActionResult<Order>> GetOrder(string orderId)
+        public async Task<IActionResult> GetOrder(string orderId)
         {
             var order = await _context.Order.FindAsync(orderId);
 
@@ -43,19 +44,22 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            return order;
+            return Ok(order);
         }
 
         /// <summary>
         /// Método que representa o endpoint de criação de um pedido de promover uma propriedade.
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="createPayment">Especifica se deve ser criado um pagamento</param>
         /// <returns></returns>
         [HttpPost("promote")]
         [Authorize]
-        public async Task<ActionResult<Order>> CreateOrderPromote([FromBody] PropertyPromoteModel model)
+        public async Task<IActionResult> CreateOrderPromote([FromBody] PropertyPromoteModel model,
+            bool createPayment = true)
         {
-            try {
+            try
+            {
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
@@ -68,32 +72,54 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound();
                 }
 
-                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber);
-                if (newPaymentResult is ActionResult<Payment> { Value: Payment newPayment } && newPayment != null)
+                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod,
+                    Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber);
+                if (!createPayment)
+                {
+                    var payment = new Payment
+                    {
+                        PaymentId = Guid.NewGuid().ToString(),
+                        Method = model.PaymentMethod,
+                        Entity = model.PaymentMethod == "Multibanco" ? $"{new Random().Next(10000, 99999)}" : null,
+                        Reference = model.PaymentMethod == "Multibanco"
+                            ? $"{new Random().Next(10000000, 99999999)}"
+                            : null,
+                        Amount = new Random().Next(),
+                        Status = "Pending",
+                        CreatedAt = DateTime.Now,
+                        ExpiryDate = DateTime.Now.AddDays(1).ToLongDateString(),
+                    };
+                    _context.Payment.Add(payment);
+                    newPaymentResult = new ActionResult<Payment>(payment);
+                }
+
+
+                if (newPaymentResult is { Value: Payment newPayment })
                 {
                     var order = new Order
                     {
-                        OrderId = "PROMOTE-" + Guid.NewGuid().ToString(),
-                        PaymentId = newPayment.PaymentId,
+                        OrderId = "PROMOTE-" + Guid.NewGuid(),
+                        PaymentId = newPayment!.PaymentId,
                         ApplicationUserId = user.Id,
                         PropertyId = model.PropertyId,
                         StartDate = model.StartDate,
                         EndDate = model.EndDate,
                         State = false
                     };
-
                     _context.Order.Add(order);
 
-                    try {
+                    try
+                    {
                         await _context.SaveChangesAsync();
-                    } catch (Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
                     }
 
                     order.ApplicationUser = null;
                     order.Property = null;
-                    return order;
+                    return Ok(order);
                 }
             }
             catch (Exception ex)
@@ -130,7 +156,6 @@ namespace BookingBuddy.Server.Controllers
                 return Convert.ToDecimal(5 * duration);
             }
         }
-
     }
 
     /// <summary>
@@ -140,5 +165,10 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="StartDate"></param>
     /// <param name="EndDate"></param>
     /// <param name="PaymentMethod"></param>
-    public record PropertyPromoteModel(string PropertyId, DateTime StartDate, DateTime EndDate, string PaymentMethod, string? PhoneNumber = null);
+    public record PropertyPromoteModel(
+        string PropertyId,
+        DateTime StartDate,
+        DateTime EndDate,
+        string PaymentMethod,
+        string? PhoneNumber = null);
 }
