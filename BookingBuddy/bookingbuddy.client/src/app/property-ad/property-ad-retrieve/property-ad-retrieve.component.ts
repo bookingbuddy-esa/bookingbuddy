@@ -11,6 +11,7 @@ import { AppComponent } from '../../app.component';
 
 import { UserInfo } from "../../auth/authorize.dto";
 import { Router } from '@angular/router';
+import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -31,6 +32,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   blockedDates: Date[] = [];
+  discounts: Discount[] = [];
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
 
@@ -69,6 +71,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         if (response) {
           console.log(response);
           this.property = response as Property;
+          this.loadDiscounts();
           this.loadBlockedDates();
         }
       }).catch(
@@ -80,6 +83,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   }
 
   loadBlockedDates() {
+
     if (this.property) {
       this.propertyService.getPropertyBlockedDates(this.property.propertyId)
         .forEach(
@@ -110,12 +114,47 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
+  loadDiscounts() {
+    if (this.property) {
+      this.propertyService.getPropertyDiscounts(this.property.propertyId)
+        .forEach(
+          (dateRanges: any[]) => {
+            console.log("Todos os intervalos de DESCONTOS obtidos:", dateRanges);
+
+            this.discounts = [];
+
+            dateRanges.forEach(dateRange => {
+              const startDate = new Date(dateRange.startDate);
+              const endDate = new Date(dateRange.endDate);
+
+              const currentDate = new Date(startDate);
+              while (currentDate <= endDate) {
+                this.discounts.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+              }
+            });
+
+            console.log("DATAS COM DESCONTO: ", this.discounts);
+          }).catch(error => {
+            console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+          }
+          );
+    }
+  }
+
+  discountClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+    if (this.discounts.some(discountDate => this.isSameDay(cellDate, discountDate))) {
+      return 'discount-date-class';
+    }
+
+    return '';
+  };
+
   dateFilter = (date: Date | null): boolean => {
     if (!date) {
       return false;
     }
 
-    // Verificar se a data está bloqueada
     return !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
   };
 

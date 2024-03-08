@@ -78,6 +78,10 @@ export class PropertyAdService {
     return this.http.get<any[]>(`${environment.apiUrl}/api/properties/blockedDates/${propertyId}`);
   }
 
+  public getPropertyDiscounts(propertyId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/properties/discounts/${propertyId}`);
+  }
+
   public isPropertyInFavorites(propertyId: string): Observable<boolean> {
     return this.http.get<boolean>(`${environment.apiUrl}/api/properties/favorites/check/${propertyId}`, {
       withCredentials: true

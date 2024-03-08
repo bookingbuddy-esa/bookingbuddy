@@ -61,5 +61,12 @@ body {
   background-color: #176b17;
 }
 
+button.discount-date-class {
+  background: #9DAE9A;
+  border-radius: 100%;
+  width: 80%; /* Defina a largura desejada */
+  height: 80%;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
