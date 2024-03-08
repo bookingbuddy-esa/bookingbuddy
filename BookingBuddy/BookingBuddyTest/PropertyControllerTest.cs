@@ -48,7 +48,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         return property;
     }
 
-    public PropertyController CreateController(string? userId = null)
+    private PropertyController CreateController(string? userId = null)
     {
         return new PropertyController(
             _context.DbContext,

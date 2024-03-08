@@ -33,7 +33,7 @@ namespace BookingBuddy.Server.Controllers
         }
 
         [HttpGet("{paymentId}")]
-        public async Task<ActionResult<Payment>> GetPayment(string paymentId)
+        public async Task<IActionResult> GetPayment(string paymentId)
         {
             var payment = await _context.Payment.FindAsync(paymentId);
 
@@ -42,7 +42,7 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            return payment;
+            return Ok(payment);
         }
 
 
