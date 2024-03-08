@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 
+
 export class PropertyAdRetrieveComponent implements OnInit {
   property: Property | undefined;
   reservarPropriedadeForm!: FormGroup;
@@ -29,6 +30,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   errors: string[];
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
+  blockedDates: Date[] = [];
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
 
@@ -67,7 +69,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         if (response) {
           console.log(response);
           this.property = response as Property;
-          
+          this.loadBlockedDates();
         }
       }).catch(
         error => {
@@ -75,6 +77,53 @@ export class PropertyAdRetrieveComponent implements OnInit {
         }
     );
     
+  }
+
+  loadBlockedDates() {
+    if (this.property) {
+      this.propertyService.getPropertyBlockedDates(this.property.propertyId)
+        .forEach(
+          (dateRanges: any[]) => {
+            console.log("Todos os intervalos de datas obtidos:", dateRanges);
+
+            // Processa os intervalos de datas
+            this.blockedDates = [];
+
+            dateRanges.forEach(dateRange => {
+              const startDate = new Date(dateRange.start);
+              const endDate = new Date(dateRange.end);
+
+              // Adiciona todas as datas entre startDate e endDate (inclusive)
+              const currentDate = new Date(startDate);
+              while (currentDate <= endDate) {
+                this.blockedDates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+              }
+            });
+
+            // Log das datas bloqueadas
+            console.log("DATAS BLOQUEADAS: ", this.blockedDates);
+          }).catch(error => {
+            console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+          }
+        );
+    }
+  }
+
+  dateFilter = (date: Date | null): boolean => {
+    if (!date) {
+      return false;
+    }
+
+    // Verificar se a data está bloqueada
+    return !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
+  };
+
+  // Função para verificar se duas datas são o mesmo dia
+  private isSameDay(date1: Date, date2: Date): boolean {
+    return date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate();
   }
 
   calcularDiferencaDias(): number {
@@ -128,7 +177,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
       this.propertyService.isPropertyInFavorites(this.route.snapshot.params['id']).forEach(
         result => {
           this.isPropertyInFavorites = result;
-          console.log("RESULTADO: " + result);
         }).catch(
           error => {
           console.error('Erro ao verificar se a propriedade está nos favoritos:', error);

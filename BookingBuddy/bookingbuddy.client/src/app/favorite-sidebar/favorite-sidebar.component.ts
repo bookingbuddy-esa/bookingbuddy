@@ -38,7 +38,6 @@ export class FavoriteSidebarComponent {
         response => {
           if (response) {
             this.property_list = response as Property[];
-            console.log("LISTA: " + this.property_list.length);
           }
         }).catch(
           error => {

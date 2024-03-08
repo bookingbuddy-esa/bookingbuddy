@@ -31,6 +31,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { FavoritebarPropertyComponent } from './favorite-sidebar/favoritebar-property/favoritebar-property.component';
 import { ProfileComponent } from './profile/profile.component';
 import { BookingComponent } from './booking/booking.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -57,7 +61,9 @@ import { BookingComponent } from './booking/booking.component';
     ReactiveFormsModule, AuthModule,
     AuxiliaryModule, NgOptimizedImage,
     HostingModule, GoogleMap, MapMarker,
-    MatIconModule
+    MatIconModule, MatDatepickerModule,
+    MatFormFieldModule, MatInputModule,
+    MatNativeDateModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
