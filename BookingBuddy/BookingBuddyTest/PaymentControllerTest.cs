@@ -45,7 +45,7 @@ public class PaymentControllerTest : IClassFixture<ApplicationDbContextFixture>
 
     [Theory]
     [InlineData("non-existing-id", typeof(NotFoundResult))]
-    [InlineData(null, typeof(NotFoundResult))]
+    [InlineData(null, typeof(BadRequestObjectResult))]
     [InlineData("valid-id", typeof(OkObjectResult))]
     public async Task GetPayment_Returns_Expected_Result(string paymentId, Type resultType)
     {

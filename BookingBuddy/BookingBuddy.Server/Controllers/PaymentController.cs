@@ -169,6 +169,16 @@ namespace BookingBuddy.Server.Controllers
                     };
                     
                     endpointUrl = "https://ifthenpay.com/api/spg/payment/mbway";
+                    
+                    // regex com o padrão de um número de telemóvel em Portugal, a começar por 9 seguido por 1, 2, 3 ou 6 e por fim seguido por quaisquer 7 dígitos entre 0 e 9
+                    string regexPattern = @"^(9[1236]\d{7})$";
+
+                    Regex regex = new Regex(regexPattern);
+
+                    if (!regex.IsMatch(phoneNumber))
+                    {
+                        throw new ArgumentException("O número de telemóvel introduzido é inválido. Tem de começar pelo dígito 9, seguido por 1, 2, 3 ou 6, e com 9 dígitos no total.");
+                    }
 
                 } else if (paymentMethod == "multibanco")
                 {
@@ -196,16 +206,6 @@ namespace BookingBuddy.Server.Controllers
                 if (amount < 0.0M || amount > 100000.0M)
                 {
                     throw new ArgumentOutOfRangeException(nameof(amount), "A quantia monetária deve estar entre 0.0€ e 100000.0€.");
-                }
-
-                // regex com o padrão de um número de telemóvel em Portugal, a começar por 9 seguido por 1, 2, 3 ou 6 e por fim seguido por quaisquer 7 dígitos entre 0 e 9
-                string regexPattern = @"^(9[1236]\d{7})$";
-
-                Regex regex = new Regex(regexPattern);
-
-                if (!regex.IsMatch(phoneNumber))
-                {
-                    throw new ArgumentException("O número de telemóvel introduzido é inválido. Tem de começar pelo dígito 9, seguido por 1, 2, 3 ou 6, e com 9 dígitos no total.");
                 }
 
                 /*Console.WriteLine("request to ifthenpay: " + Newtonsoft.Json.JsonConvert.SerializeObject(requestData));
