@@ -32,7 +32,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   blockedDates: Date[] = [];
-  discounts: Discount[] = [];
+  discounts: Date[] = [];
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
 
