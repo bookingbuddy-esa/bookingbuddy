@@ -4,14 +4,16 @@
 
 ### Rápidos
 - [ ] Tabela da tecnologias - adicionar o vsdocman  
-- [ ] Procurar ferramenta de documentação em Angular  
-- [ ] Tabela da tecnologia - adicionar ferramenta a cima  
-- [ ] Limpar branches  
+- [ ] Tabela da tecnologia - adicionar o compodoc  
+- [ ] Resolver bug de menu dentro de menu (quando a tela é pequena)  
+- [ ] Footer & Página de FAQ  
+- [ ] (Opcional) Pedir ao Pina/Cordeiro ajuda como resolver login da Microsoft ao usar conta do IPS  
+- [X] Alterar API da Google para a conta do bookingbuddy  
+- [X] Alterar API do Google Maps para a conta do bookingbuddy  
+- [X] Procurar ferramenta de documentação em Angular  
+- [X] Limpar branches  
 - [X] Responsaveis pela documentação, testes, manual tecnico  
-- [ ] Alterar API da Google para a conta do bookingbuddy  
-- [ ] Alterar API do Google Maps para a conta do bookingbuddy  
-- [ ] Footer & Página de FAQ   
-- [ ] (Opcional) Pedir ao Pina/Cordeiro ajuda como resolver login da Microsoft ao usar conta do IPS
+
 
 ### Geral
 - [ ] Remover mensagens console (log, error)  
@@ -20,11 +22,11 @@
 - [ ] (Opcional) Adicionar i18n  
 
 ### Payments
-- [ ] NIF nos pagamentos do bookingbuddy - adicionar ao componente payment  
+- [X] NIF nos pagamentos do bookingbuddy - adicionar ao componente payment  
 
 ### Properties
-- [ ] Adicionar botão 3 pontos com editar, apagar, promover no anúncio de propriedade  
-- [ ] Adicionar número de favoritos no anúncio de propriedade  
+- [ ] Adicionar botão 3 pontos com editar, apagar, promover no anúncio de propriedade (EM FALTA: BACKEND) 
+- [ ] Adicionar a pontuação (com base nas reservas) no anúncio de propriedade  
 - [ ] Criar permissões novas para um administrador (poder apagar, editar todas as propriedades) 
 
 ## Sprints

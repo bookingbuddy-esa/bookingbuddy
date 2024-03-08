@@ -43,7 +43,7 @@ namespace BookingBuddy.Server.Controllers
         /// - 404 Not Found, caso não exista nenhum pagamento com o id inserido.
         /// </returns>
         [HttpGet("{paymentId}")]
-        public async Task<ActionResult<Payment>> GetPayment(string paymentId)
+        public async Task<IActionResult> GetPayment(string paymentId)
         {
             if (string.IsNullOrEmpty(paymentId))
             {
@@ -57,7 +57,7 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            return payment;
+            return Ok(payment);
         }
 
 

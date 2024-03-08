@@ -67,6 +67,7 @@ export class PropertyPromoteComponent implements OnInit {
 
   setCurrentProperty(property: Property) {
     this.currentProperty = property;
+    this.propertyPromote = null;
   }
 
   private loadUserProperties() {
