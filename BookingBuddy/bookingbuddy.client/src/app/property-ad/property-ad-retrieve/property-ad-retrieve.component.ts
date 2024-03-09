@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Property } from '../../models/property';
-
+import { Discount } from '../../models/discount';
 import { Injectable } from '@angular/core';
 import { AuthorizeService } from "../../auth/authorize.service";
 import { PropertyAdService } from '../property-ad.service';
@@ -34,11 +34,13 @@ export class PropertyAdRetrieveComponent implements OnInit {
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   blockedDates: Date[] = [];
-  discounts: Date[] = [];
+  discounts: Discount[] = [];
+  discountDates: Date[] = [];
   checkInDate: Date | undefined;
   checkOutDate: Date | undefined;
   calendarMaxDate: Date = new Date(8640000000000000);
   maxDate: Date = this.calendarMaxDate;
+  pricesMap: Map<number, number> = new Map<number, number>();
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
 
@@ -121,18 +123,28 @@ export class PropertyAdRetrieveComponent implements OnInit {
       this.propertyService.getPropertyDiscounts(this.property.propertyId)
         .forEach(
           (dateRanges: any[]) => {
-
             this.discounts = [];
 
             dateRanges.forEach(dateRange => {
+              const discount: Discount = {
+                discountId: dateRange.discountId,
+                startDate: dateRange.startDate,
+                endDate: dateRange.endDate,
+                discountAmount: dateRange.discountAmount,
+                dates: []
+              };
+
               const startDate = new Date(dateRange.startDate);
               const endDate = new Date(dateRange.endDate);
 
               const currentDate = new Date(startDate);
               while (currentDate <= endDate) {
-                this.discounts.push(new Date(currentDate));
+                discount.dates.push(new Date(currentDate));
+                this.discountDates.push(new Date(currentDate));
                 currentDate.setDate(currentDate.getDate() + 1);
               }
+
+              this.discounts.push(discount);
             });
 
           }).catch(error => {
@@ -143,7 +155,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   }
 
   discountClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    if (this.discounts.some(discountDate => this.isSameDay(cellDate, discountDate))) {
+    if (this.discountDates.some(discountDate => this.isSameDay(cellDate, discountDate))) {
       return 'discount-date-class';
     }
 
@@ -243,6 +255,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         );
     }
   }
+
   //TODO: Adicionar os valores da taxa de limpeza
   calcularTotal() {
     if (this.property) {
@@ -251,7 +264,64 @@ export class PropertyAdRetrieveComponent implements OnInit {
     return 0;
     
   }
-  
+
+  calcularTotalDesconto() {
+    const selectedDates: Date[] = [];
+    this.pricesMap = new Map();
+    if (this.property && this.checkInDate && this.checkOutDate) {
+      const currentDate = new Date(this.checkInDate);
+      while (currentDate < this.checkOutDate) {
+        selectedDates.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      selectedDates.forEach(selectedDate => {
+        const matchingDiscounts = this.discounts.filter(discount =>
+          discount.dates.some(date => this.isSameDay(date, selectedDate))
+        );
+
+        if (matchingDiscounts.length > 0) {
+          matchingDiscounts.forEach(discount => {
+            const newPrice = this.priceWithDiscount(discount.discountAmount);
+            const currentCount = this.pricesMap.get(newPrice) || 0;
+            this.pricesMap.set(newPrice, currentCount + 1);
+          });
+        } else {
+          const currentCount = this.pricesMap.get(this.property?.pricePerNight!) || 0;
+          this.pricesMap.set(this.property?.pricePerNight!, currentCount + 1);
+        }
+      });
+
+      let totalPrice = 0;
+
+      this.pricesMap.forEach((count, price) => {
+        const aux = count * price;
+        totalPrice += aux;
+      });
+      return totalPrice + 25 + 20;
+    }
+
+    return 0;
+  }
+
+  priceWithDiscount(discountAmount: number): number {
+    if (this.property) {
+      const discountMultiplier = 1 - discountAmount / 100; 
+      return this.property.pricePerNight * discountMultiplier;
+    }
+    return 0;
+  }
+
+  formatPricesMap(): string[] {
+    const formattedStrings: string[] = [];
+
+    this.pricesMap.forEach((count, price) => {
+      formattedStrings.push(`${price}€ x ${count} noites - ${price * count}€`);
+    });
+
+    return formattedStrings;
+  }
+
   checkPropertyIsFavorite() {
     if (this.signedIn) {
       this.propertyService.isPropertyInFavorites(this.route.snapshot.params['id']).forEach(

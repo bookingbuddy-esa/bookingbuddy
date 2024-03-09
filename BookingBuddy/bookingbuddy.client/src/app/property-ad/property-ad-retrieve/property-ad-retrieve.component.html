@@ -81,7 +81,7 @@
                 <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
               </mat-date-range-input>
               <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
+              <mat-datepicker-toggle *ngIf="  checkInDate" matSuffix (click)="clearDates()">
                 <mat-icon matDatepickerToggleIcon>clear</mat-icon>
               </mat-datepicker-toggle>
               <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
@@ -100,19 +100,16 @@
             <button class="btn btn-success mt-1">Reservar</button>
             <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
             <div class="precos mt-2">
-              <h6 class="text-secondary">
-                <u>
-                  {{ property.pricePerNight }} x {{ calcularDiferencaDias() }} noites
-                  - {{ property.pricePerNight * calcularDiferencaDias() }}€
-                </u>
-              </h6>
+              <div *ngFor="let formattedString of formatPricesMap()">
+                <h6 class="text-secondary"><u>{{ formattedString }}</u></h6>
+              </div>
               <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
               <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
             </div>
             <hr class="mt-2 mb-2">
             <div class="total d-flex justify-content-between">
               <span>Total</span>
-              <span>{{ calcularTotal() }}€</span>
+              <span>{{ calcularTotalDesconto() }}€</span>
             </div>
           </div>
         </form>
