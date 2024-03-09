@@ -11,7 +11,7 @@ import { AppComponent } from '../../app.component';
 
 import { UserInfo } from "../../auth/authorize.dto";
 import { Router } from '@angular/router';
-import { MatCalendarCellClassFunction } from '@angular/material/datepicker';
+import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -33,6 +33,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
   isPropertyInFavorites: boolean = false;
   blockedDates: Date[] = [];
   discounts: Date[] = [];
+  checkInDate: Date | undefined;
+  checkOutDate: Date | undefined;
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
 
@@ -65,7 +67,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   }
 
   ngOnInit() {
-    // TODO: obter as datas bloqueadas da propriedade
+
     this.propertyService.getProperty(this.route.snapshot.params['id']).forEach(
       response => {
         if (response) {
@@ -158,11 +160,21 @@ export class PropertyAdRetrieveComponent implements OnInit {
     return !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
   };
 
-  // Função para verificar se duas datas são o mesmo dia
+
   private isSameDay(date1: Date, date2: Date): boolean {
     return date1.getFullYear() === date2.getFullYear() &&
       date1.getMonth() === date2.getMonth() &&
       date1.getDate() === date2.getDate();
+  }
+
+  onDateChange(event: MatDatepickerInputEvent<Date>, type: 'start' | 'end'): void {
+    if (type === 'start' && event.value) {
+      this.checkInDate = event.value;
+      console.log(this.checkInDate);
+    } else if (event.value){        
+      this.checkOutDate = event.value;
+      console.log(this.checkOutDate);
+    }
   }
 
   calcularDiferencaDias(): number {
@@ -171,11 +183,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const checkInDate: Date = new Date(checkInDateString);
     const checkOutDate: Date = new Date(checkOutDateString);
 
-    if(checkInDateString === '' || checkOutDateString === '' || checkOutDate <= checkInDate) {
+    if(!this.checkInDate || !this.checkOutDate|| this.checkOutDate <= this.checkInDate) {
       return 1;
     }
 
-    const diferencaMilissegundos: number = checkOutDate.getTime() - checkInDate.getTime();
+    const diferencaMilissegundos: number = this.checkOutDate.getTime() - this.checkInDate.getTime();
     const diferencaDias: number = diferencaMilissegundos / (1000 * 60 * 60 * 24);
 
     return diferencaDias;
