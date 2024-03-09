@@ -13,10 +13,12 @@ import { UserInfo } from "../../auth/authorize.dto";
 import { Router } from '@angular/router';
 import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
 
+
+
 @Component({
   selector: 'app-property-ad-retrieve',
   templateUrl: './property-ad-retrieve.component.html',
-  styleUrl: './property-ad-retrieve.component.css'
+  styleUrl: './property-ad-retrieve.component.css',
 })
 
 @Injectable({
@@ -157,7 +159,9 @@ export class PropertyAdRetrieveComponent implements OnInit {
       return false;
     }
 
-    return !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
+    const currentDate = new Date();
+
+    return date >= currentDate && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
   };
 
 
@@ -221,6 +225,14 @@ export class PropertyAdRetrieveComponent implements OnInit {
           }
         );
     }
+  }
+  //TODO: Adicionar os valores da taxa de limpeza
+  calcularTotal() {
+    if (this.property) {
+      return this.calcularDiferencaDias() * this.property.pricePerNight;
+    }
+    return 0;
+    
   }
   
   checkPropertyIsFavorite() {

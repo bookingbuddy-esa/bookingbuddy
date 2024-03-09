@@ -74,26 +74,26 @@
             </div>
             <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
             <!--
-    <div class="d-flex flex-row gap-3 mt-1">
-      <div>
-        <label for="checkIn">Check-In</label>
-        <input type="date" id="checkIn" name="checkIn" class="form-control" formControlName="checkIn">
-      </div>
-      <div>
-        <label for="checkOut">Check-Out</label>
-        <input type="date" id="checkOut" name="checkOut" class="form-control" formControlName="checkOut">
-      </div>
-    </div>-->
+  <div class="d-flex flex-row gap-3 mt-1">
+    <div>
+      <label for="checkIn">Check-In</label>
+      <input type="date" id="checkIn" name="checkIn" class="form-control" formControlName="checkIn">
+    </div>
+    <div>
+      <label for="checkOut">Check-Out</label>
+      <input type="date" id="checkOut" name="checkOut" class="form-control" formControlName="checkOut">
+    </div>
+  </div>-->
 
             <mat-form-field>
               <mat-label>Selecione as datas</mat-label>
               <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter">
-                <input matStartDate placeholder="Check-In" (dateChange)="onDateChange($event, 'start')">
-                <input matEndDate placeholder="Check-Out" (dateChange)="onDateChange($event, 'end')">
+                <input matStartDate placeholder="Check-In" (click)="picker.open()" (dateChange)="onDateChange($event, 'start')">
+                <input matEndDate placeholder="Check-Out" (click)="picker.open()" (dateChange)="onDateChange($event, 'end')">
               </mat-date-range-input>
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
-            </mat-form-field> 
+            </mat-form-field>
 
             <div class="d-flex flex-row gap-3 mt-1 align-items-center">
               <label for="hospedes">Hóspedes</label>
@@ -116,6 +116,11 @@
               </h6>
               <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
               <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
+            </div>
+            <hr class="mt-2 mb-2">
+            <div class="total d-flex justify-content-between">
+              <span>Total</span>
+              <span>{{ calcularTotal() }}€</span>
             </div>
           </div>
         </form>
