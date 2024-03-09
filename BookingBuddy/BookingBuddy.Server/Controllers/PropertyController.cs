@@ -25,7 +25,6 @@ namespace BookingBuddy.Server.Controllers
     [ApiController]
     public class PropertyController : ControllerBase
     {
-
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
@@ -36,7 +35,8 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -144,6 +144,11 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que retorna as métricas de uma propriedade.
+        /// </summary>
+        /// <param name="propertyId">Id da propriedade</param>
+        /// <returns>As métricas da propriedade</returns>
         [HttpGet]
         [Authorize]
         [Route("metrics/{propertyId}")]
@@ -296,7 +301,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>A propriedade criada, um conflito, caso já exista uma propriedade com o mesmo identificador, ou uma exceção caso contrário</returns>
         [HttpPost("create")]
         [Authorize]
-        public async Task<ActionResult<Models.Property>> CreateProperty([FromBody] PropertyCreateModel model)
+        public async Task<IActionResult> CreateProperty([FromBody] PropertyCreateModel model)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -389,7 +394,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>Lista com as propriedades do utilizador, caso exista, ou não encontrada, caso contrário</returns>
         [HttpGet("user/{userId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Models.Property>>> GetPropertiesByUserId(string userId)
+        public async Task<IActionResult> GetPropertiesByUserId(string userId)
         {
             var properties = await _context.Property
                 .Where(p => p.ApplicationUserId == userId)
@@ -397,10 +402,10 @@ namespace BookingBuddy.Server.Controllers
 
             if (properties == null || properties.Count == 0)
             {
-                return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+                return NotFound("Nenhuma propriedade encontrada para o utilizador fornecido.");
             }
 
-            return properties;
+            return Ok(properties);
         }
 
 
@@ -411,18 +416,20 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>Lista com as datas bloqueadas de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
         [HttpGet("blockedDates/{propertyId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<BlockedDate>>> GetPropertyBlockedDates(string propertyId)
+        public async Task<IActionResult> GetPropertyBlockedDates(string propertyId)
         {
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
             var blockedDates = await _context.BlockedDate
                 .Where(b => b.PropertyId == propertyId)
                 .ToListAsync();
 
-            if (blockedDates == null || blockedDates.Count == 0)
-            {
-              //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
-            }
-
-            return blockedDates;
+            return Ok(blockedDates);
         }
 
         /// <summary>
@@ -434,13 +441,27 @@ namespace BookingBuddy.Server.Controllers
         /// - 200 OK: Operação bem-sucedida, as datas foram bloqueadas com sucesso.
         /// - 400 Bad Request: O modelo de entrada é inválido.
         /// </returns>
+        [Authorize]
         [HttpPost("blockDates")]
-        [AllowAnonymous]
         public async Task<IActionResult> BlockDates([FromBody] BlockDateInputModel inputModel)
         {
-            if (inputModel == null)
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
             {
-                return BadRequest("Invalid input");
+                return Unauthorized();
+            }
+
+            var property = await _context.Property.FindAsync(inputModel.PropertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
+            if (user.Id != property.ApplicationUserId)
+            {
+                return Forbid();
             }
 
             var blockedDate = new BlockedDate
@@ -450,10 +471,17 @@ namespace BookingBuddy.Server.Controllers
                 PropertyId = inputModel.PropertyId
             };
 
-            _context.BlockedDate.Add(blockedDate);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.BlockedDate.Add(blockedDate);
+                await _context.SaveChangesAsync();
 
-            return Ok("Dates blocked successfully");
+                return Ok("Datas bloqueadas com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         /// <summary>
@@ -465,14 +493,29 @@ namespace BookingBuddy.Server.Controllers
         /// - 200 OK: Operação bem-sucedida, a data foi desbloqueada com sucesso.
         /// - 404 Not Found: A data com o identificador fornecido não foi encontrada. 
         /// </returns>
+        [Authorize]
         [HttpDelete("unblock/{id}")]
         public async Task<IActionResult> UnblockDates(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var blockedDate = await _context.BlockedDate.FindAsync(id);
 
             if (blockedDate == null)
             {
                 return NotFound();
+            }
+
+            var property = await _context.Property.FindAsync(blockedDate.PropertyId);
+
+            if (user.Id != property.ApplicationUserId)
+            {
+                return Forbid();
             }
 
             _context.BlockedDate.Remove(blockedDate);
@@ -529,20 +572,22 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="propertyId">Identificador da propriedade</param>
         /// <returns>Lista com os descontos de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
-        [HttpGet("discounts/{propertyId}")]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Discount>>> GetPropertyDiscounts(string propertyId)
+        [HttpGet("discounts/{propertyId}")]
+        public async Task<IActionResult> GetPropertyDiscounts(string propertyId)
         {
             var discounts = await _context.Discount
                 .Where(b => b.PropertyId == propertyId)
                 .ToListAsync();
 
-            if (discounts == null || discounts.Count == 0)
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
             {
-              //  return NotFound("Nenhuma propriedade encontrada para o usuário fornecido.");
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
             }
 
-            return discounts;
+            return Ok(discounts);
         }
 
 
@@ -564,9 +609,8 @@ namespace BookingBuddy.Server.Controllers
                 {
                     users.Add(user);
                 }
-                
             }
-            
+
             return users;
         }
 
@@ -574,18 +618,33 @@ namespace BookingBuddy.Server.Controllers
         /// Método que adiciona um desconto no calendario de uma propriedade.
         /// </summary>
         /// <param name="inputModel">Modelo de criação de um Discount</param>
+        /// <param name="sendEmail">Indica se deve enviar um email para os utilizadores que têm a propriedade nos favoritos</param>
         /// <returns>
         /// Retorna um IActionResult indicando o resultado da operação:
         /// - 200 OK: Operação bem-sucedida, o desconto foi adicionado com sucesso.
         /// - 400 Bad Request: O modelo de entrada é inválido.
         /// </returns>
+        [Authorize]
         [HttpPost("createDiscount")]
-        [AllowAnonymous]
-        public async Task<IActionResult> ApplyDiscount([FromBody] DiscountInputModel inputModel)
+        public async Task<IActionResult> ApplyDiscount([FromBody] DiscountInputModel inputModel, bool sendEmail = true)
         {
-            if (inputModel == null)
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser == null)
             {
-                return BadRequest("Invalid input");
+                return Unauthorized();
+            }
+
+            var property = await _context.Property.FindAsync(inputModel.PropertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
+            if (currentUser.Id != property.ApplicationUserId)
+            {
+                return Forbid();
             }
 
             var discount = new Discount
@@ -599,27 +658,30 @@ namespace BookingBuddy.Server.Controllers
             _context.Discount.Add(discount);
             await _context.SaveChangesAsync();
 
-            //TODO: select dos applicationUserId na tabela favoritos ao propertyid = inputModel.property id
-
-            var userIdsFavorites = await _context.Favorites
-                .Where(f => f.PropertyId == inputModel.PropertyId)
-                .Select(f => f.ApplicationUserId)
-                .ToListAsync();
-
-            IEnumerable<ApplicationUser> userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
-
-
-            foreach (var user in userListIdsFavorite)
+            if (sendEmail)
             {
-                var propertyLink =
-                   $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+                //TODO: select dos applicationUserId na tabela favoritos ao propertyid = inputModel.property id
 
-                await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!, "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
-                new { propertyLink });
+                var userIdsFavorites = await _context.Favorites
+                    .Where(f => f.PropertyId == inputModel.PropertyId)
+                    .Select(f => f.ApplicationUserId)
+                    .ToListAsync();
+
+                IEnumerable<ApplicationUser> userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
+
+
+                foreach (var user in userListIdsFavorite)
+                {
+                    var propertyLink =
+                        $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+
+                    await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                        "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
+                        new { propertyLink });
+                }
             }
 
-
-            return Ok("Discount apllyied successfully");
+            return Ok("Disconto aplicado com sucesso.");
         }
 
         /// <summary>
@@ -631,14 +693,34 @@ namespace BookingBuddy.Server.Controllers
         /// - 200 OK: Operação bem-sucedida, o desconto foi removido com sucesso.
         /// - 404 Not Found: O desconto com o identificador fornecido não foi encontrada. 
         /// </returns>
+        [Authorize]
         [HttpDelete("removeDiscount/{id}")]
         public async Task<IActionResult> RemoveDiscount(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var discount = await _context.Discount.FindAsync(id);
 
             if (discount == null)
             {
                 return NotFound();
+            }
+
+            var property = await _context.Property.FindAsync(discount.PropertyId);
+
+            if (property == null)
+            {
+                return BadRequest("Propriedade não encontrada.");
+            }
+
+            if (user.Id != property.ApplicationUserId)
+            {
+                return Forbid();
             }
 
             _context.Discount.Remove(discount);
@@ -647,16 +729,25 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Discount removed successfully");
         }
 
+        [Authorize]
         [HttpPost("favorites/add/{propertyId}")]
         public async Task<IActionResult> AddToFavorite(string propertyId)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-                return Unauthorized("ISTO É UMA MERDA");
+            {
+                return Unauthorized();
+            }
 
-            // Verifique se já está na lista de favoritos
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
             if (_context.Favorites.Any(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId))
-                return BadRequest("A propriedade já está na lista de favoritos.");
+                return Conflict("A propriedade já está na lista de favoritos.");
 
             var favorite = new Favorite
             {
@@ -679,35 +770,50 @@ namespace BookingBuddy.Server.Controllers
             if (user == null)
                 return Unauthorized();
 
-            var favorite = _context.Favorites.FirstOrDefault(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound("Nenhuma propriedade encontrada para o identificador fornecido.");
+            }
+
+            var favorite =
+                _context.Favorites.FirstOrDefault(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
 
             if (favorite == null)
+            {
                 return BadRequest("A propriedade não está na lista de favoritos.");
+            }
 
             _context.Favorites.Remove(favorite);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest("Erro ao remover a propriedade dos favoritos.");
+            }
 
             return Ok("Propriedade removida dos favoritos com sucesso.");
         }
-
+        
         [HttpGet("favorites/user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Models.Property>>> GetUserFavoriteProperties(string userId)
+        public async Task<IActionResult> GetUserFavorites(string userId)
         {
-            var favoriteIds = await _context.Favorites
+            var user = await _userManager.FindByIdAsync(userId);
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
+            var favorites = await _context.Favorites
                 .Where(f => f.ApplicationUserId == userId)
                 .Select(f => f.PropertyId)
                 .ToListAsync();
 
-            if (favoriteIds == null || favoriteIds.Count == 0)
-            {
-               // return NotFound("Nenhum favorito encontrado para o usuário fornecido.");
-            }
-
-            var favoriteProperties = await _context.Property
-                .Where(p => favoriteIds.Contains(p.PropertyId))
-                .ToListAsync();
-
-            return favoriteProperties;
+            return Ok(favorites);
         }
 
         [HttpGet("favorites/check/{propertyId}")]
@@ -719,8 +825,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Unauthorized();
             }
-
-            // Verifique se a propriedade está nos favoritos do utilizador
+            
             var isInFavorites = await _context.Favorites
                 .AnyAsync(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
 
@@ -736,21 +841,21 @@ namespace BookingBuddy.Server.Controllers
         /// Retorna verdadeiro se uma propriedade com o identificador fornecido existir; caso contrário, retorna falso.
         /// </returns>
         private bool PropertyExists(string id)
-            {
-                return _context.Property.Any(e => e.PropertyId == id);
-            }
+        {
+            return _context.Property.Any(e => e.PropertyId == id);
+        }
     }
-    
-/// <summary>
-/// Modelo de criação de propriedade
-/// </summary>
-/// <param name="AmenityIds">Identificadores da lista de comodidades</param>
-/// <param name="Name">Nome da propriedade</param>
-/// <param name="Description">Descrição da propriedade</param>
-/// <param name="PricePerNight">Preço por noite da propriedade</param>
-/// <param name="Location">Localização da propriedade</param>
-/// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
-public record PropertyCreateModel(
+
+    /// <summary>
+    /// Modelo de criação de propriedade
+    /// </summary>
+    /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
+    /// <param name="Name">Nome da propriedade</param>
+    /// <param name="Description">Descrição da propriedade</param>
+    /// <param name="PricePerNight">Preço por noite da propriedade</param>
+    /// <param name="Location">Localização da propriedade</param>
+    /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
+    public record PropertyCreateModel(
         string Name,
         string Description,
         decimal PricePerNight,

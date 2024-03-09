@@ -30,7 +30,7 @@ export class PaymentComponent {
   }
 
   public submitPaymentRequest(): void {
-    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || null, nif: this.nif || null};
+    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || /*null, nif: this.nif */ null};
     console.log(JSON.stringify(this.data));
 
     this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, "promote", this.phoneNumber).forEach((response) => {
@@ -40,7 +40,7 @@ export class PaymentComponent {
         console.log(response);
       }
     }).catch((err) => {
-      console.error("Erro no servidor: " + err);
+      console.error("Erro no servidor: " + JSON.stringify(err));
     });
   }
 
@@ -52,7 +52,7 @@ export class PaymentComponent {
         alert('Esta mensagem é de teste - O pagamento foi confirmado com sucesso!')
       }
     }).catch((err) => {
-      console.error("Erro no servidor: " + err);
+      console.error("Erro no servidor: " + JSON.stringify(err));
     });
   }
 }
