@@ -37,6 +37,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
   discounts: Date[] = [];
   checkInDate: Date | undefined;
   checkOutDate: Date | undefined;
+  calendarMaxDate: Date = new Date(8640000000000000);
+  maxDate: Date = this.calendarMaxDate;
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
 
@@ -47,6 +49,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.errors = [];
 
     this.reservarPropriedadeFailed = false;
+    
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required],
@@ -92,16 +95,13 @@ export class PropertyAdRetrieveComponent implements OnInit {
       this.propertyService.getPropertyBlockedDates(this.property.propertyId)
         .forEach(
           (dateRanges: any[]) => {
-            console.log("Todos os intervalos de datas obtidos:", dateRanges);
 
-            // Processa os intervalos de datas
             this.blockedDates = [];
 
             dateRanges.forEach(dateRange => {
               const startDate = new Date(dateRange.start);
               const endDate = new Date(dateRange.end);
 
-              // Adiciona todas as datas entre startDate e endDate (inclusive)
               const currentDate = new Date(startDate);
               while (currentDate <= endDate) {
                 this.blockedDates.push(new Date(currentDate));
@@ -109,8 +109,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
               }
             });
 
-            // Log das datas bloqueadas
-            console.log("DATAS BLOQUEADAS: ", this.blockedDates);
           }).catch(error => {
             console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
           }
@@ -123,7 +121,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
       this.propertyService.getPropertyDiscounts(this.property.propertyId)
         .forEach(
           (dateRanges: any[]) => {
-            console.log("Todos os intervalos de DESCONTOS obtidos:", dateRanges);
 
             this.discounts = [];
 
@@ -138,7 +135,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
               }
             });
 
-            console.log("DATAS COM DESCONTO: ", this.discounts);
           }).catch(error => {
             console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
           }
@@ -174,11 +170,32 @@ export class PropertyAdRetrieveComponent implements OnInit {
   onDateChange(event: MatDatepickerInputEvent<Date>, type: 'start' | 'end'): void {
     if (type === 'start' && event.value) {
       this.checkInDate = event.value;
-      console.log(this.checkInDate);
+      this.updateMaxDate();
     } else if (event.value){        
       this.checkOutDate = event.value;
-      console.log(this.checkOutDate);
     }
+  }
+
+  updateMaxDate(): void {
+    if (this.checkInDate) {
+      const nextBlockedDate = this.blockedDates.find(date => date > this.checkInDate!);
+
+      if (nextBlockedDate) {
+        this.maxDate = nextBlockedDate;
+      } else {  
+        this.maxDate =this.calendarMaxDate;
+      }
+    }
+  }
+
+  clearDates() {
+    this.reservarPropriedadeForm.patchValue({
+      checkIn: null,
+      checkOut: null
+    });
+
+    this.checkInDate = this.checkOutDate = undefined;
+    this.maxDate = this.calendarMaxDate;
   }
 
   calcularDiferencaDias(): number {
@@ -255,10 +272,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
     const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
 
-    if(checkOutDate <= checkInDate){
-      this.errors.push("A data de check-out não pode ser igual ou menor do que a data de check-in.");
-      return;
-    }
 
     // TODO: reservar a propriedade
   }

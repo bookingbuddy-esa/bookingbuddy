@@ -73,25 +73,17 @@
               </div>
             </div>
             <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
-            <!--
-  <div class="d-flex flex-row gap-3 mt-1">
-    <div>
-      <label for="checkIn">Check-In</label>
-      <input type="date" id="checkIn" name="checkIn" class="form-control" formControlName="checkIn">
-    </div>
-    <div>
-      <label for="checkOut">Check-Out</label>
-      <input type="date" id="checkOut" name="checkOut" class="form-control" formControlName="checkOut">
-    </div>
-  </div>-->
 
-            <mat-form-field>
+            <mat-form-field (click)="picker.open()">
               <mat-label>Selecione as datas</mat-label>
-              <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter">
-                <input matStartDate placeholder="Check-In" (click)="picker.open()" (dateChange)="onDateChange($event, 'start')">
-                <input matEndDate placeholder="Check-Out" (click)="picker.open()" (dateChange)="onDateChange($event, 'end')">
+              <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">
+                <input matStartDate placeholder="Check-In" formControlName="checkIn" (dateChange)="onDateChange($event, 'start')">
+                <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
               </mat-date-range-input>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
+                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+              </mat-datepicker-toggle>
               <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
             </mat-form-field>
 
