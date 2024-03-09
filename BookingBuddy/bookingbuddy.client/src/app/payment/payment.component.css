@@ -1,0 +1,12 @@
+.imagesize{
+    width:150px;
+    height:150px;
+}
+@media screen and (max-width: 600px) {
+  .imagesize {
+    width: 100px; /* Altere o tamanho desejado para telas pequenas */
+    height: 100px; /* Altere o tamanho desejado para telas pequenas */
+  }
+}
+
+
