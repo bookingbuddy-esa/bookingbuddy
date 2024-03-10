@@ -1,133 +1,119 @@
-<div class="main d-flex flex-column w-100" *ngIf="property">
+  <div class="main d-flex flex-column w-100" *ngIf="property">
 
-  <!-- TODO: isLandlord nao chega, tem de ser utilizador ser landlord da casa do anuncio -->
-  <div class="d-flex justify-content-end mt-2" *ngIf="signedIn && isLandlord">
-    <div class="dropdown">
-      <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-three-dots bi"></i>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="dropdownMenuButton1">
-        <li><a class="dropdown-item" href="#">Editar <i class="bi bi-pencil-square"></i></a></li>
-        <li><a class="dropdown-item" href="#">Apagar <i class="bi bi-trash3"></i></a></li>
-        <li><a class="dropdown-item" href="#">Promover <i class="bi bi-arrow-up-circle"></i></a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="info d-flex mt-2 flex-column justify-content-center align-items-center ">
-    <h4>{{ property.name }}</h4>
-    <div class="d-flex flex-row gap-2">
-      <h5>★ 4.9</h5>
-      <h5>{{ property.location }}</h5>
-    </div>
-    <div id="carouselExampleControls" class="mt-1 carousel mycarousel slidev img-shorter" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        <div *ngFor="let imagem of property.imagesUrl; let i = index" class="carousel-item" [class.active]="i === 0">
-          <img [src]="imagem" class="d-block w-100 h-50" alt="Imagem {{ i + 1 }}">
-        </div>
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
-  </div>
-  <div class="d-flex mt-5 mb-5 gap-5 ms-5 me-5">
-    <div class="owner w-75 gap-2">
-      <div class="d-flex justify-content-between align-items-center w-100">
-        <h5>Hospedado por {{ property.applicationUser?.name }}</h5>
-        <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
-          <i class="bi bi-star text-warning"></i>
+    <!-- TODO: isLandlord nao chega, tem de ser utilizador ser landlord da casa do anuncio -->
+    <div class="d-flex justify-content-end mt-2" *ngIf="signedIn && isLandlord">
+      <div class="dropdown">
+        <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-three-dots bi"></i>
         </button>
-        <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
-          <i class="bi bi-star-fill text-warning"></i>
+        <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="dropdownMenuButton1">
+          <li><a class="dropdown-item" href="#">Editar <i class="bi bi-pencil-square"></i></a></li>
+          <li><a class="dropdown-item" href="#">Apagar <i class="bi bi-trash3"></i></a></li>
+          <li><a class="dropdown-item" href="#">Promover <i class="bi bi-arrow-up-circle"></i></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="info d-flex mt-2 flex-column justify-content-center align-items-center ">
+      <h4>{{ property.name }}</h4>
+      <div class="d-flex flex-row gap-2">
+        <h5>★ 4.9</h5>
+        <h5>{{ property.location }}</h5>
+      </div>
+      <div id="carouselExampleControls" class="mt-1 carousel mycarousel slidev img-shorter" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div *ngFor="let imagem of property.imagesUrl; let i = index" class="carousel-item" [class.active]="i === 0">
+            <img [src]="imagem" class="d-block w-100 h-50" alt="Imagem {{ i + 1 }}">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
         </button>
       </div>
-      <!--<div class="info d-flex align-items-center gap-3">
-          <h6>5 hóspedes</h6>
-          <h6>2 quartos</h6>
-          <h6>5 camas</h6>
-          <h6>1 casa de banho</h6>
-      </div>-->
-      <hr />
-      <p>{{ property.description }}</p>
-      <div class="comodidades mt-5">
-        <h5>Comodidades</h5>
-        <div *ngFor="let amenity of property.amenities" class="d-flex flex-row py-2 align-items-center">
-          <span class="text-center material-symbols-outlined" style="width: 5%;">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
-          <h6 class="flex-grow-1 my-auto">{{ amenity.displayName }}</h6>
+    </div>
+    <div class="d-flex mt-5 mb-5 gap-5 ms-5 me-5">
+      <div class="owner w-75 gap-2">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <h5>Hospedado por {{ property.applicationUser?.name }}</h5>
+          <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
+            <i class="bi bi-star text-warning"></i>
+          </button>
+          <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
+            <i class="bi bi-star-fill text-warning"></i>
+          </button>
+        </div>
+        <!--<div class="info d-flex align-items-center gap-3">
+            <h6>5 hóspedes</h6>
+            <h6>2 quartos</h6>
+            <h6>5 camas</h6>
+            <h6>1 casa de banho</h6>
+        </div>-->
+        <hr />
+        <p>{{ property.description }}</p>
+        <div class="comodidades mt-5">
+          <h5>Comodidades</h5>
+          <div *ngFor="let amenity of property.amenities" class="d-flex flex-row py-2 align-items-center">
+            <span class="text-center material-symbols-outlined" style="width: 5%;">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
+            <h6 class="flex-grow-1 my-auto">{{ amenity.displayName }}</h6>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="reservar p-3 border border-secondary rounded d-flex text-center">
-      <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
-        <div class="d-flex flex-column justify-content-around gap-3">
-          <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
-            <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
-            <div class="d-flex flex-column align-items-start">
-              <span *ngFor="let error of errors">{{ error }}</span>
+      <div class="reservar p-3 border border-secondary rounded d-flex text-center">
+        <form class="form center-form d-flex flex-column align-items-center flex-grow-1 mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
+          <div class="d-flex flex-column justify-content-around gap-3">
+            <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+              <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
+              <div class="d-flex flex-column align-items-start">
+                <span *ngFor="let error of errors">{{ error }}</span>
+              </div>
+            </div>
+            <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
+
+            <mat-form-field (click)="picker.open()">
+              <mat-label>Selecione as datas</mat-label>
+              <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">
+                <input matStartDate placeholder="Check-In" formControlName="checkIn" (dateChange)="onDateChange($event, 'start')">
+                <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
+              </mat-date-range-input>
+              <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker-toggle *ngIf="  checkInDate" matSuffix (click)="clearDates()">
+                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+              </mat-datepicker-toggle>
+              <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <div class="d-flex flex-row gap-3 mt-1 align-items-center">
+              <label for="hospedes">Hóspedes</label>
+              <select name="hospedes" id="hospedes" class="form-select" formControlName="numHospedes">
+                <option value="1">1 hóspede</option>
+                <option value="2">2 hóspedes</option>
+                <option value="3">3 hóspedes</option>
+                <option value="4">4 hóspedes</option>
+                <option value="5">5 hóspedes</option>
+              </select>
+            </div>
+            <button class="btn btn-success mt-1">Reservar</button>
+            <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
+            <div class="precos mt-2">
+              <div *ngFor="let formattedString of formatPricesMap()">
+                <h6 class="text-secondary"><u>{{ formattedString }}</u></h6>
+              </div>
+              <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
+              <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
+            </div>
+            <hr class="mt-2 mb-2">
+            <div class="total d-flex justify-content-between">
+              <span>Total</span>
+              <span>{{ calcularTotalDesconto() }}€</span>
             </div>
           </div>
-          <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
-          <!--
-  <div class="d-flex flex-row gap-3 mt-1">
-    <div>
-      <label for="checkIn">Check-In</label>
-      <input type="date" id="checkIn" name="checkIn" class="form-control" formControlName="checkIn">
-    </div>
-    <div>
-      <label for="checkOut">Check-Out</label>
-      <input type="date" id="checkOut" name="checkOut" class="form-control" formControlName="checkOut">
-    </div>
-  </div>-->
-
-          <mat-form-field>
-            <mat-label>Selecione as datas</mat-label>
-            <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter">
-              <input matStartDate placeholder="Check-In">
-              <input matEndDate placeholder="Check-Out">
-            </mat-date-range-input>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
-          </mat-form-field>
-          <!--
-  <mat-form-field class="example-full-width">
-    <mat-label>Choose a date</mat-label>
-    <input matInput [matDatepicker]="picker">
-    <mat-hint>MM/DD/YYYY</mat-hint>
-    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker [dateClass]="dateClass" #picker></mat-datepicker>
-  </mat-form-field>-->
-
-          <div class="d-flex flex-row gap-3 mt-1 align-items-center">
-            <label for="hospedes">Hóspedes</label>
-            <select name="hospedes" id="hospedes" class="form-select" formControlName="numHospedes">
-              <option value="1">1 hóspede</option>
-              <option value="2">2 hóspedes</option>
-              <option value="3">3 hóspedes</option>
-              <option value="4">4 hóspedes</option>
-              <option value="5">5 hóspedes</option>
-            </select>
-          </div>
-          <button class="btn btn-success mt-1">Reservar</button>
-          <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
-          <div class="precos mt-2">
-            <h6 class="text-secondary">
-              <u>
-                {{ property.pricePerNight }} x {{ calcularDiferencaDias() }} noites
-                - {{ property.pricePerNight * calcularDiferencaDias() }}€
-              </u>
-            </h6>
-            <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
-            <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
-</div>
                                 

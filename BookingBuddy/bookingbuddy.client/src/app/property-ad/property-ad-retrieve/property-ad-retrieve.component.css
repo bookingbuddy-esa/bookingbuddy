@@ -21,3 +21,19 @@
     width: 100%;
 }
 
+.reservar {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+}
+
+.border-secondary {
+  border-color: #F9F9F9 !important; 
+}
+
+hr {
+  border: 1px solid #000; 
+}
+
+.total {
+  margin-top: 10px; 
+  font-weight: bold; 
+}
