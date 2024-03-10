@@ -12,6 +12,7 @@ import { AppComponent } from '../../app.component';
 import { UserInfo } from "../../auth/authorize.dto";
 import { Router } from '@angular/router';
 import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { PaymentService } from '../../payment/payment.service';
 
 
 
@@ -46,7 +47,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   protected user: UserInfo | undefined;
 
-  constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService) {
+  constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
     this.appComponent.showChat = true;
     this.errors = [];
 
@@ -339,11 +340,23 @@ export class PropertyAdRetrieveComponent implements OnInit {
   public reservar(_: any) {
     this.reservarPropriedadeFailed = false;
 
+    const numHospedes: number = this.reservarPropriedadeForm.get('numHospedes')?.value;
     const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
     const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
 
+    console.log("Check-in: " + checkInDate);
+    console.log("Check-out: " + checkOutDate);
 
-    // TODO: reservar a propriedade
+    // TODO: verificar se datas sao validas antes de fazer a order
+
+    this.router.navigate(['/transaction-handler'], { 
+        queryParams: {
+            propertyId: this.property?.propertyId,
+            startDate: checkInDate.toISOString(),
+            endDate: checkOutDate.toISOString(),
+            numHospedes: numHospedes,
+            orderType: 'booking'
+        }
+    });
   }
-  
 }

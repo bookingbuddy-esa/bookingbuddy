@@ -35,6 +35,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { PaymentComponent } from './payment/payment.component';
+import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,7 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -63,7 +65,7 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
     HostingModule, GoogleMap, MapMarker,
     MatIconModule, MatDatepickerModule,
     MatFormFieldModule, MatInputModule,
-    MatNativeDateModule
+    MatNativeDateModule, PaymentComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

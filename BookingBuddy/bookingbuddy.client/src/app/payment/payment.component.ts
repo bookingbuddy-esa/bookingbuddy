@@ -21,19 +21,15 @@ export class PaymentComponent {
 
   constructor(private paymentService: PaymentService){}
 
-  public dataToJson(): string {
-    return JSON.stringify(this.data);
-  }
-
   public addPaymentMethod(newPaymentMethod: string): void {
     this.paymentMethod = newPaymentMethod
   }
 
   public submitPaymentRequest(): void {
-    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || /*null, nif: this.nif */ null};
+    this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || null, nif: this.nif || null};
     console.log(JSON.stringify(this.data));
 
-    this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, "promote", this.phoneNumber).forEach((response) => {
+    this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.phoneNumber).forEach((response) => {
       if(response){
         this.currentPhase = 2;
         this.paymentResponse = response;

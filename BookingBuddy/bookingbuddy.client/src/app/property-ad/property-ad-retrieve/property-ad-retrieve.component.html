@@ -81,7 +81,7 @@
                 <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
               </mat-date-range-input>
               <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker-toggle *ngIf="  checkInDate" matSuffix (click)="clearDates()">
+              <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
                 <mat-icon matDatepickerToggleIcon>clear</mat-icon>
               </mat-datepicker-toggle>
               <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>

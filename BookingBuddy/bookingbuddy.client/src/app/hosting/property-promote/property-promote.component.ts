@@ -61,7 +61,8 @@ export class PropertyPromoteComponent implements OnInit {
     this.propertyPromote = {
       propertyId: this.currentProperty?.propertyId!,
       startDate: new Date(),
-      endDate: calculatedEndDate
+      endDate: calculatedEndDate,
+      orderType: 'promote'
     }
   }
 

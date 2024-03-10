@@ -130,6 +130,96 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest();
         }
 
+        [HttpPost("booking")]
+        [Authorize]
+        public async Task<IActionResult> CreateOrderBooking([FromBody] PropertyBookingModel model,
+            bool createPayment = true){
+                try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                var property = await _context.Property.FindAsync(model.PropertyId);
+                if (property == null)
+                {
+                    return NotFound();
+                }
+
+                Console.WriteLine("----------------------- Creating Payment -----------------------");
+                Console.WriteLine(model.PaymentMethod);
+                Console.WriteLine(model.Amount);
+                Console.WriteLine(model.PhoneNumber);
+                Console.WriteLine("----------------------- Creating Payment -----------------------");
+
+                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, model.Amount, model.PhoneNumber);
+
+                Console.WriteLine("Result: " + newPaymentResult.Value);
+                if (!createPayment)
+                {
+                    var payment = new Payment
+                    {
+                        PaymentId = Guid.NewGuid().ToString(),
+                        Method = model.PaymentMethod,
+                        Entity = model.PaymentMethod == "Multibanco" ? $"{new Random().Next(10000, 99999)}" : null,
+                        Reference = model.PaymentMethod == "Multibanco"
+                            ? $"{new Random().Next(10000000, 99999999)}"
+                            : null,
+                        Amount = new Random().Next(),
+                        Status = "Pending",
+                        CreatedAt = DateTime.Now,
+                        ExpiryDate = DateTime.Now.AddDays(1).ToLongDateString(),
+                    };
+                    _context.Payment.Add(payment);
+                    newPaymentResult = new ActionResult<Payment>(payment);
+                }
+
+
+                if (newPaymentResult is { Value: Payment newPayment })
+                {
+                    var order = new Order
+                    {
+                        OrderId = "BOOKING-" + Guid.NewGuid(),
+                        PaymentId = newPayment!.PaymentId,
+                        ApplicationUserId = user.Id,
+                        PropertyId = model.PropertyId,
+                        StartDate = model.StartDate,
+                        EndDate = model.EndDate,
+                        State = false
+                    };
+                    _context.Order.Add(order);
+
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        var bookingOrder = new BookingOrder {
+                            OrderId = order.OrderId,
+                            NumberOfGuests = model.NumberOfGuests
+                        };
+
+                        _context.BookingOrder.Add(bookingOrder);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
+                    }
+
+                    order.ApplicationUser = null;
+                    order.Property = null;
+                    return Ok(order);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while creating order: {ex.Message}");
+            }
+
+            return BadRequest();
+        }
+
         private decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
         {
             if (startingDate > endingDate)
@@ -170,5 +260,24 @@ namespace BookingBuddy.Server.Controllers
         DateTime StartDate,
         DateTime EndDate,
         string PaymentMethod,
+        string? PhoneNumber = null);
+
+    
+    /// <summary>
+    /// Classe que representa o modelo de um pedido de reserva de uma propriedade.
+    /// </summary>
+    /// <param name="PropertyId"></param>
+    /// <param name="StartDate"></param>
+    /// <param name="EndDate"></param>
+    /// <param name="PaymentMethod"></param>
+    /// <param name="PhoneNumber"></param>
+    /// <param name="NumberOfGuests"></param>
+    public record PropertyBookingModel(
+        string PropertyId,
+        DateTime StartDate,
+        DateTime EndDate,
+        string PaymentMethod,
+        int NumberOfGuests,
+        decimal Amount,
         string? PhoneNumber = null);
 }
