@@ -47,7 +47,7 @@ export class HostingService {
     return this.http.get<any[]>(`${environment.apiUrl}/api/properties/discounts/${propertyId}`);
   }
 
-  public applyDiscount(amount: number, startDate: string, endDate: string, propertyId: string) {
+  public applyDiscount(amount: number, startDate: Date, endDate: Date, propertyId: string) {
     console.log("DESCONTO DE: " + amount);
     return this.http.post(`${environment.apiUrl}/api/properties/createDiscount`, {
       amount: amount,

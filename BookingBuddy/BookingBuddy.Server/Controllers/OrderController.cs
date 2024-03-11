@@ -156,6 +156,7 @@ namespace BookingBuddy.Server.Controllers
                 decimal reservationAmount = property.PricePerNight * (decimal)(model.EndDate - model.StartDate).TotalDays;
 
                 // for each day in the reservation, check if there is a discount
+                /*
                 foreach (var day in Enumerable.Range(0, (int)(model.EndDate - model.StartDate).TotalDays))
                 {
                     var discount = await _context.Discount
@@ -168,7 +169,7 @@ namespace BookingBuddy.Server.Controllers
                         decimal discountAmountPerNight = property.PricePerNight * (discount.DiscountAmount / 100);
                         reservationAmount -= discountAmountPerNight;
                     }
-                }
+                }*/
 
                 /*var discount = await _context.Discount
                     .Where(d => d.PropertyId == model.PropertyId)

@@ -735,8 +735,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var result = await controller.ApplyDiscount(
             new DiscountInputModel(
                 10,
-                DateTime.Now.ToLongDateString(),
-                DateTime.Now.AddDays(1).ToLongDateString(),
+                DateTime.Now,
+                DateTime.Now.AddDays(1),
                 property.PropertyId
             ),
             false
@@ -756,8 +756,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var result = await controller.ApplyDiscount(
             new DiscountInputModel(
                 10,
-                DateTime.Now.ToLongDateString(),
-                DateTime.Now.AddDays(1).ToLongDateString(),
+                DateTime.Now,
+                DateTime.Now.AddDays(1),
                 Guid.NewGuid().ToString()
             ),
             false
@@ -780,8 +780,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var result = await controller.ApplyDiscount(
             new DiscountInputModel(
                 10,
-                DateTime.Now.ToLongDateString(),
-                DateTime.Now.AddDays(1).ToLongDateString(),
+                DateTime.Now,
+                DateTime.Now.AddDays(1),
                 property.PropertyId
             ),
             false
@@ -804,8 +804,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var result = await controller.ApplyDiscount(
             new DiscountInputModel(
                 10,
-                DateTime.Now.ToLongDateString(),
-                DateTime.Now.AddDays(1).ToLongDateString(),
+                DateTime.Now,
+                DateTime.Now.AddDays(1),
                 property.PropertyId
             ),
             false
@@ -822,7 +822,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.RemoveDiscount(0);
+        var result = await controller.RemoveDiscount("0");
         Assert.IsType<UnauthorizedResult>(result);
     }
 
@@ -835,7 +835,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.RemoveDiscount(0);
+        var result = await controller.RemoveDiscount("0");
         Assert.IsType<NotFoundResult>(result);
     }
 
@@ -850,11 +850,11 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
 
         var discount = (await _context.DbContext.Discount.AddAsync(new Discount()
         {
-            DiscountId = 0,
+            DiscountId = "0",
             PropertyId = property.PropertyId,
             DiscountAmount = 10,
-            StartDate = DateTime.Now.ToLongDateString(),
-            EndDate = DateTime.Now.AddDays(1).ToLongDateString(),
+            StartDate = DateTime.Now,
+            EndDate = DateTime.Now.AddDays(1),
         })).Entity;
         Assert.NotNull(discount);
 
@@ -885,11 +885,11 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
 
         var discount = (await _context.DbContext.Discount.AddAsync(new Discount()
         {
-            DiscountId = 0,
+            DiscountId = "0",
             PropertyId = property.PropertyId,
             DiscountAmount = 10,
-            StartDate = DateTime.Now.ToLongDateString(),
-            EndDate = DateTime.Now.AddDays(1).ToLongDateString(),
+            StartDate = DateTime.Now,
+            EndDate = DateTime.Now.AddDays(1),
         })).Entity;
         Assert.NotNull(discount);
 

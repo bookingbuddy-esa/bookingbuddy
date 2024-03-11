@@ -299,7 +299,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         const aux = count * price;
         totalPrice += aux;
       });
-      return totalPrice + 25 + 20;
+      return totalPrice /*+ 25 + 20*/;
     }
 
     return 0;
@@ -308,7 +308,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   priceWithDiscount(discountAmount: number): number {
     if (this.property) {
       const discountMultiplier = 1 - discountAmount / 100; 
-      return this.property.pricePerNight * discountMultiplier;
+      return Math.round(((this.property.pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
     }
     return 0;
   }

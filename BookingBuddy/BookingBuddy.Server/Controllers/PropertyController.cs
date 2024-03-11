@@ -650,6 +650,7 @@ namespace BookingBuddy.Server.Controllers
             try {
                 var discount = new Discount
                 {
+                    DiscountId = Guid.NewGuid().ToString(),
                     DiscountAmount = inputModel.Amount,
                     StartDate = inputModel.StartDate,
                     EndDate = inputModel.EndDate,
@@ -700,7 +701,7 @@ namespace BookingBuddy.Server.Controllers
         /// </returns>
         [Authorize]
         [HttpDelete("removeDiscount/{id}")]
-        public async Task<IActionResult> RemoveDiscount(int id)
+        public async Task<IActionResult> RemoveDiscount(string id)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -904,5 +905,5 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="StartDate">Data Inicial do Bloqueio</param>
     /// <param name="EndDate">Data Final do bloqueio</param>
     /// <param name="PropertyId">Identificador da Propriedade</param>-
-    public record DiscountInputModel(int Amount, String StartDate, String EndDate, string PropertyId);
+    public record DiscountInputModel(int Amount, DateTime StartDate, DateTime EndDate, string PropertyId);
 }

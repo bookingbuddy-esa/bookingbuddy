@@ -45,6 +45,7 @@ export class CalendarComponent implements OnInit {
       events: this.getEventRanges.bind(this),
       selectable: true,
       eventClick: this.handleEventClick.bind(this),
+      displayEventTime: false,
       selectOverlap: function (event: { groupId: string; }) {
         return !(event.groupId == "blocked");
       },
@@ -153,6 +154,7 @@ export class CalendarComponent implements OnInit {
         const events = discounts.map((discount) => ({
           groupId: "discount",
           id: discount.discountId,
+          title: "",
           start: discount.startDate,
           end: this.adjustEndDate(discount.endDate),
           display: 'auto',
