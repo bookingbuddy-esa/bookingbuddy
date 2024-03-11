@@ -27,8 +27,20 @@
                     <li class="list-group-item mt-4"><strong>Estado Pagamento:</strong> {{paymentResponse.payment.status}}</li>
                 </ul>
 
-                <button class="btn btn-success mt-4" type="button" (click)="confirmarPagamento()">Confirmar Pagamento (DEV)</button>
+                <button class="btn btn-success mt-4 ms-1" type="button" (click)="confirmarPagamento()">Confirmar Pagamento (DEV)</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div *ngIf="currentPhase === 3">
+    <div class="container mt-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="card-title">Pagamento Confirmado</h4>
+                <h5 *ngIf="data.orderType === 'booking'">A sua reserva está confirmada!</h5>
+                <h5 *ngIf="data.orderType === 'booking'">Entra em contacto com o host se precisares de informações adicionais através do Menu > Reservas Pessoais</h5>
+                <h5 *ngIf="data.orderType === 'booking'">ou clicando diretamente <a href="/bookings">aqui</a></h5>
             </div>
         </div>
     </div>
