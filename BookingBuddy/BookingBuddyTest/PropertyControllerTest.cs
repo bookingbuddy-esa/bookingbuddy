@@ -835,7 +835,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.RemoveDiscount("0");
+        var result = await controller.RemoveDiscount("invalid-id");
         Assert.IsType<NotFoundResult>(result);
     }
 

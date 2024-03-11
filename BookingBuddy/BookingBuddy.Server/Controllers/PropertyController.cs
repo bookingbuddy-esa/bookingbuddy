@@ -350,6 +350,11 @@ namespace BookingBuddy.Server.Controllers
                 throw;
             }
 
+            if (!await _userManager.IsInRoleAsync(user, "landlord"))
+            {
+                await _userManager.AddToRoleAsync(user, "landlord");
+            }
+
             return CreatedAtAction("GetProperty", new { propertyId = property.PropertyId }, property);
         }
 
@@ -384,6 +389,11 @@ namespace BookingBuddy.Server.Controllers
             _context.Property.Remove(property);
             await _context.SaveChangesAsync();
 
+            if(!_context.Property.Any(p => p.ApplicationUserId == user.Id))
+            {
+                await _userManager.RemoveFromRoleAsync(user, "landlord");
+            }
+            
             return NoContent();
         }
 
@@ -647,7 +657,8 @@ namespace BookingBuddy.Server.Controllers
                 return Forbid();
             }
 
-            try {
+            try
+            {
                 var discount = new Discount
                 {
                     DiscountId = Guid.NewGuid().ToString(),
@@ -682,7 +693,8 @@ namespace BookingBuddy.Server.Controllers
                             new { propertyLink });
                     }
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -803,17 +815,17 @@ namespace BookingBuddy.Server.Controllers
 
             return Ok("Propriedade removida dos favoritos com sucesso.");
         }
-        
+
         [HttpGet("favorites/user/{userId}")]
         public async Task<IActionResult> GetUserFavorites(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            
+
             if (user == null)
             {
                 return NotFound();
             }
-            
+
             var favorites = await _context.Favorites
                 .Include(f => f.Property)
                 .Where(f => f.ApplicationUserId == userId)
@@ -832,7 +844,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Unauthorized();
             }
-            
+
             var isInFavorites = await _context.Favorites
                 .AnyAsync(f => f.ApplicationUserId == user.Id && f.PropertyId == propertyId);
 
