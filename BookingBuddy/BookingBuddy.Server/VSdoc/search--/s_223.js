@@ -1,0 +1,1 @@
+search_result['223']=["topic_000000000000008B.html","BlockedDate.PropertyId Property","Propriedade que diz respeito ao identificador da propriedade das dadas bloqueadas."];

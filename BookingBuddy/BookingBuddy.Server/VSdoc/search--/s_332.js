@@ -1,0 +1,1 @@
+search_result['332']=["topic_00000000000000CB.html","Property.ImagesUrl Property","Propriedade que diz respeito às fotografias da propriedade física a anunciar."];

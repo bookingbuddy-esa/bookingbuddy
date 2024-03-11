@@ -1,0 +1,1 @@
+search_result['100']=["topic_000000000000003A.html","PropertyController.BlockDates Method","Método que bloqueia as datas no calendario de uma propriedade."];

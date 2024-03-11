@@ -91,6 +91,7 @@ export class PaymentComponent {
         console.log(response);
         alert('Esta mensagem é de teste - O pagamento foi confirmado com sucesso!')
       }
+      this.currentPhase = 3;
     }).catch((err) => {
       console.error("Erro no servidor: " + JSON.stringify(err));
     });

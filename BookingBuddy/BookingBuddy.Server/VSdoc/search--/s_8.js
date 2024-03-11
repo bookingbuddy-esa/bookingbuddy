@@ -1,0 +1,1 @@
+search_result['8']=["topic_0000000000000003.html","AccountController.ResendConfirmationEmail Method","Reenvia o email de confirmação da conta."];

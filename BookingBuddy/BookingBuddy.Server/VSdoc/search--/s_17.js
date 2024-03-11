@@ -1,0 +1,1 @@
+search_result['17']=["topic_000000000000000C.html","AccountController.CheckResetPasswordToken Method","Verifica se o token de reset da palavra-passe é válido."];
