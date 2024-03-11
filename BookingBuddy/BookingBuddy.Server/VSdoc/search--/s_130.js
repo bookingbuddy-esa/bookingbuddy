@@ -1,0 +1,1 @@
+search_result['130']=["topic_000000000000004E.html","BookingBuddyServerContext.Favorites Property","Propriedade que diz respeito a lista de favoritos de um utilizador."];

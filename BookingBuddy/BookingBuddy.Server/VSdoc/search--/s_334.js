@@ -1,0 +1,1 @@
+search_result['334']=["topic_00000000000000CD.html","Property.BlockedDates Property","Propriedade que diz respeito às datas bloqueadas da propriedade física a anunciar."];

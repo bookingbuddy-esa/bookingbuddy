@@ -1,0 +1,1 @@
+search_result['97']=["topic_0000000000000037.html","PropertyController.DeleteProperty Method","Método que remove uma propriedade da base de dados da aplicação."];

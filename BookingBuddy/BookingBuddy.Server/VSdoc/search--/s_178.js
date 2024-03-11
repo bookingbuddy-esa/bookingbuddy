@@ -1,0 +1,1 @@
+search_result['178']=["topic_000000000000006A.html","Amenity Class","Classe que representa as comodidades de uma propriedade física na plataforma."];

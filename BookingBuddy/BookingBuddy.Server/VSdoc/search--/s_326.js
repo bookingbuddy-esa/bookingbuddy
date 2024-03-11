@@ -1,0 +1,1 @@
+search_result['326']=["topic_00000000000000C5.html","Property.AmenityIds Property","Propriedade que diz respeito aos identificadores das comodidades da propriedade."];

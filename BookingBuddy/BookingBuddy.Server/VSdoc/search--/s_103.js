@@ -1,0 +1,1 @@
+search_result['103']=["topic_000000000000003D.html","PropertyController.GetPropertyDiscounts Method","Método que obtém os descontos de uma propriedade."];

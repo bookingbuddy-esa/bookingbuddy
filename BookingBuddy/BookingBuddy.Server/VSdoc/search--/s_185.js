@@ -1,0 +1,1 @@
+search_result['185']=["topic_000000000000006C.html","Amenity.Name Property","Propriedade que diz respeito ao nome de uma comodidade de uma propriedade física a anunciar."];
