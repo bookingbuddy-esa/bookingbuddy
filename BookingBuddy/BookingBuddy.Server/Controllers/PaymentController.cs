@@ -121,9 +121,17 @@ namespace BookingBuddy.Server.Controllers
                         };
                         _context.PromoteOrder.Add(promoteOrder);
                         await _context.SaveChangesAsync();
-                    }
+                    } else if (orderId.StartsWith("BOOKING-")) {
+                        // TODO: Diogo Rosa - BlockedDates passa a ter StartDate e EndDate (invex de Start e End) e com o tipo DateTime - fazer alterações necessários do frontend?
+                        var blockDates = new BlockedDate {
+                            PropertyId = order.PropertyId,
+                            Start = order.StartDate.ToString("yyyy-MM-dd"),
+                            End = order.EndDate.ToString("yyyy-MM-dd")
+                        };
 
-                    // TODO: criar BookingOrder se a orderID tiver "BOOKING-" no início
+                        _context.BlockedDate.Add(blockDates);
+                        await _context.SaveChangesAsync();
+                    }
                 }
             } catch (Exception ex) {
                 return StatusCode(500, $"Ocorreu um erro: {ex.Message}");

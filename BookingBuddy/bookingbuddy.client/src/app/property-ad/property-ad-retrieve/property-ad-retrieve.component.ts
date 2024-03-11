@@ -56,7 +56,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required],
-      numHospedes: ['1', Validators.required]
+      numberOfGuests: ['1', Validators.required]
     });
 
     this.authService.isSignedIn().forEach(
@@ -299,7 +299,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         const aux = count * price;
         totalPrice += aux;
       });
-      return totalPrice /*+ 25 + 20*/;
+      return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
     }
 
     return 0;
@@ -317,7 +317,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const formattedStrings: string[] = [];
 
     this.pricesMap.forEach((count, price) => {
-      formattedStrings.push(`${price}€ x ${count} noites - ${price * count}€`);
+      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100)/ 100}€`);
     });
 
     return formattedStrings;
@@ -340,7 +340,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   public reservar(_: any) {
     this.reservarPropriedadeFailed = false;
 
-    const numHospedes: number = this.reservarPropriedadeForm.get('numHospedes')?.value;
+    const numberOfGuests: number = this.reservarPropriedadeForm.get('numberOfGuests')?.value;
     const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
     const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
 
@@ -354,7 +354,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
             propertyId: this.property?.propertyId,
             startDate: checkInDate.toISOString().split('T')[0],
             endDate: checkOutDate.toISOString().split('T')[0],
-            numHospedes: numHospedes,
+            numberOfGuests: numberOfGuests,
             orderType: 'booking'
         }
     });

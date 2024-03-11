@@ -29,7 +29,7 @@ export class PaymentComponent {
     this.data = {... this.data, paymentMethod: this.paymentMethod, phoneNumber: this.phoneNumber || null, nif: this.nif || null};
     console.log(JSON.stringify(this.data));
 
-    this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.phoneNumber).forEach((response) => {
+    this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.data.numberOfGuests, this.data.phoneNumber).forEach((response) => {
       if(response){
         this.currentPhase = 2;
         this.paymentResponse = response;

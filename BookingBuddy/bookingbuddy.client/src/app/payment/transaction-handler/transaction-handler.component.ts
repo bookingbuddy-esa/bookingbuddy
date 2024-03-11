@@ -14,7 +14,7 @@ export class TransactionHandlerComponent implements OnInit {
   startDate: string | null = null;
   endDate: string | null = null;
   orderType: string | null = null;
-  numHospedes: number | null = null;
+  numberOfGuests: number | null = null;
   data: any;
 
   constructor(private route: ActivatedRoute) { }
@@ -27,7 +27,7 @@ export class TransactionHandlerComponent implements OnInit {
       this.startDate = params.get('startDate');
       this.endDate = params.get('endDate');
       this.orderType = params.get('orderType');
-      this.numHospedes = Number(params.get('numHospedes'));
+      this.numberOfGuests = Number(params.get('numberOfGuests'));
 
       if (!this.propertyId || !this.startDate || !this.endDate || !this.orderType) {
         console.error('Dados da ordem incompletos na rota.');
@@ -36,11 +36,11 @@ export class TransactionHandlerComponent implements OnInit {
         console.log('Start Date:', this.startDate);
         console.log('End Date:', this.endDate);
         console.log('Order Type:', this.orderType);
-        console.log('Num Hospedes:', this.numHospedes);
+        console.log('Num Guests:', this.numberOfGuests);
       }
 
       this.isLoaded = true;
-      this.data = { propertyId: this.propertyId, startDate: this.startDate, endDate: this.endDate, orderType: this.orderType, numHospedes: this.numHospedes };
+      this.data = { propertyId: this.propertyId, startDate: this.startDate, endDate: this.endDate, orderType: this.orderType, numberOfGuests: this.numberOfGuests };
     });
   }
 }

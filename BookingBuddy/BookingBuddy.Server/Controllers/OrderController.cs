@@ -22,7 +22,6 @@ namespace BookingBuddy.Server.Controllers
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly PaymentController _paymentController;
-
         public OrderController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
             PaymentController paymentController)
         {
@@ -185,19 +184,7 @@ namespace BookingBuddy.Server.Controllers
                 }
 
                 decimal reservationAmount = pricesMap.Sum(entry => entry.Key * entry.Value);
-
-
                 var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber);
-
-                Console.WriteLine("--------------------------------------------");
-                Console.WriteLine("NUMERO DATAS: " + selectedDates.Count);
-                Console.WriteLine("CheckIn: " + model.StartDate);
-                Console.WriteLine("CheckOut: " + model.EndDate);
-                Console.WriteLine("Reservation Amount: " + reservationAmount);
-                Console.WriteLine("Payment Method: " + model.PaymentMethod);
-                Console.WriteLine("PhoneNumber: " + model.PhoneNumber);
-                Console.WriteLine("Result: " + newPaymentResult.Value);
-                Console.WriteLine("--------------------------------------------");
 
                 if (!createPayment)
                 {
@@ -235,8 +222,8 @@ namespace BookingBuddy.Server.Controllers
 
                     try
                     {
-                        await _context.SaveChangesAsync();
                         var bookingOrder = new BookingOrder {
+                            BookingOrderId = Guid.NewGuid().ToString(),
                             OrderId = order.OrderId,
                             NumberOfGuests = model.NumberOfGuests
                         };

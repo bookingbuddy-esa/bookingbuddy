@@ -10,13 +10,14 @@ export class PaymentService {
 
   constructor(private http: HttpClient) { }
 
-  public createOrder(propertyId: string, startDate: Date, endDate: Date, paymentMethod: string, orderType: string, phoneNumber?: string){ // orderType: promote, book
+  public createOrder(propertyId: string, startDate: Date, endDate: Date, paymentMethod: string, orderType: string, numberOfGuests?: number, phoneNumber?: string){ // orderType: promote, book
     return this.http.post(`${environment.apiUrl}/api/orders/${orderType}`, {
       propertyId: propertyId,
       startDate: startDate,
       endDate: endDate,
       paymentMethod: paymentMethod,
-      phoneNumber: phoneNumber
+      phoneNumber: phoneNumber,
+      numberOfGuests: numberOfGuests
     }, {
       withCredentials: true,
       observe: 'response',
