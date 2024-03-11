@@ -113,6 +113,7 @@ namespace BookingBuddy.Server.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                await NotifyAll(payment);
                 var order = await _context.Order.FindAsync(orderId);
                 if (order != null)
                 {
@@ -141,7 +142,6 @@ namespace BookingBuddy.Server.Controllers
 
                         _context.BlockedDate.Add(blockDates);
                         await _context.SaveChangesAsync();
-                        await NotifyAll(payment);
                     }
                 }
             }
