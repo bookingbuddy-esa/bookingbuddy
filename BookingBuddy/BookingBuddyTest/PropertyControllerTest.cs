@@ -835,7 +835,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.RemoveDiscount("0");
+        var result = await controller.RemoveDiscount("invalid-id");
         Assert.IsType<NotFoundResult>(result);
     }
 
@@ -885,7 +885,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
 
         var discount = (await _context.DbContext.Discount.AddAsync(new Discount()
         {
-            DiscountId = "0",
+            DiscountId = Guid.NewGuid().ToString(),
             PropertyId = property.PropertyId,
             DiscountAmount = 10,
             StartDate = DateTime.Now,
