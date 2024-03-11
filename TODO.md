@@ -4,7 +4,6 @@
 
 ### Rápidos
 - [ ] Tabela da tecnologias - adicionar o vsdocman  
-- [ ] Tabela da tecnologia - adicionar o compodoc  
 - [ ] Resolver bug de menu dentro de menu (quando a tela é pequena)  
 - [ ] Footer & Página de FAQ  
 - [ ] (Opcional) Pedir ao Pina/Cordeiro ajuda como resolver login da Microsoft ao usar conta do IPS  
@@ -13,10 +12,11 @@
 - [X] Procurar ferramenta de documentação em Angular  
 - [X] Limpar branches  
 - [X] Responsaveis pela documentação, testes, manual tecnico  
+- [X] Tabela da tecnologia - adicionar o compodoc  
 
 
 ### Geral
-- [ ] Remover mensagens console (log, error)  
+- [ ] Remover mensagens console (log, error) e console.writeline  
 - [ ] Remover os TODOs  
 - [ ] Adicionar codigos de erro e fazer uma lista dos mesmos  
 - [ ] (Opcional) Adicionar i18n  
@@ -37,6 +37,6 @@
 - [ ] Documentação  
 
 ## Trabalhos
-- [ ] PowerPoint DevOps - em falta exemplo (12 março)  
+- [X] PowerPoint DevOps - em falta exemplo (12 março)  
 - [ ] Pré-projeto - falta tudo (14 março)  
 - [ ] PowerPoint com as métricas todas de análise de requisitos, ferramentas para ver as métricas a funcionar e exemplo prático a serem aplicadas (19 março) 

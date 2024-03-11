@@ -148,15 +148,51 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound();
                 }
 
-                Console.WriteLine("----------------------- Creating Payment -----------------------");
-                Console.WriteLine(model.PaymentMethod);
-                Console.WriteLine(model.Amount);
-                Console.WriteLine(model.PhoneNumber);
-                Console.WriteLine("----------------------- Creating Payment -----------------------");
+                if (model.StartDate > model.EndDate)
+                {
+                    return BadRequest("Invalid dates");
+                }
 
-                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, model.Amount, model.PhoneNumber);
+                decimal reservationAmount = property.PricePerNight * (decimal)(model.EndDate - model.StartDate).TotalDays;
 
+                // for each day in the reservation, check if there is a discount
+                foreach (var day in Enumerable.Range(0, (int)(model.EndDate - model.StartDate).TotalDays))
+                {
+                    var discount = await _context.Discount
+                        .Where(d => d.PropertyId == model.PropertyId)
+                        .Where(d => d.StartDate <= model.StartDate.AddDays(day) && d.EndDate >= model.StartDate.AddDays(day))
+                        .FirstOrDefaultAsync();
+
+                    if (discount != null)
+                    {
+                        decimal discountAmountPerNight = property.PricePerNight * (discount.DiscountAmount / 100);
+                        reservationAmount -= discountAmountPerNight;
+                    }
+                }
+
+                /*var discount = await _context.Discount
+                    .Where(d => d.PropertyId == model.PropertyId)
+                    .Where(d => d.StartDate <= model.StartDate && d.EndDate >= model.EndDate)
+                    .FirstOrDefaultAsync();
+
+                if (discount != null){
+                    decimal discountAmountPerNight = property.PricePerNight * (discount.DiscountAmount / 100);
+                    decimal discountNights = (decimal)(discount.EndDate - discount.StartDate).TotalDays;
+
+                    reservationAmount -= discountNights * discountAmountPerNight;
+                }*/
+
+                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber);
+
+                Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("CheckIn: " + model.StartDate);
+                Console.WriteLine("CheckOut: " + model.EndDate);
+                Console.WriteLine("Reservation Amount: " + reservationAmount);
+                Console.WriteLine("Payment Method: " + model.PaymentMethod);
+                Console.WriteLine("PhoneNumber: " + model.PhoneNumber);
                 Console.WriteLine("Result: " + newPaymentResult.Value);
+                Console.WriteLine("--------------------------------------------");
+
                 if (!createPayment)
                 {
                     var payment = new Payment
@@ -255,6 +291,7 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="StartDate"></param>
     /// <param name="EndDate"></param>
     /// <param name="PaymentMethod"></param>
+    /// <param name="PhoneNumber"></param>
     public record PropertyPromoteModel(
         string PropertyId,
         DateTime StartDate,
@@ -270,14 +307,13 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="StartDate"></param>
     /// <param name="EndDate"></param>
     /// <param name="PaymentMethod"></param>
-    /// <param name="PhoneNumber"></param>
     /// <param name="NumberOfGuests"></param>
+    /// <param name="PhoneNumber"></param>
     public record PropertyBookingModel(
         string PropertyId,
         DateTime StartDate,
         DateTime EndDate,
         string PaymentMethod,
         int NumberOfGuests,
-        decimal Amount,
         string? PhoneNumber = null);
 }

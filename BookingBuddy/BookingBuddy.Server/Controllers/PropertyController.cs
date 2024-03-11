@@ -647,38 +647,43 @@ namespace BookingBuddy.Server.Controllers
                 return Forbid();
             }
 
-            var discount = new Discount
-            {
-                DiscountAmount = inputModel.Amount,
-                StartDate = inputModel.StartDate,
-                EndDate = inputModel.EndDate,
-                PropertyId = inputModel.PropertyId
-            };
-
-            _context.Discount.Add(discount);
-            await _context.SaveChangesAsync();
-
-            if (sendEmail)
-            {
-                //TODO: select dos applicationUserId na tabela favoritos ao propertyid = inputModel.property id
-
-                var userIdsFavorites = await _context.Favorites
-                    .Where(f => f.PropertyId == inputModel.PropertyId)
-                    .Select(f => f.ApplicationUserId)
-                    .ToListAsync();
-
-                IEnumerable<ApplicationUser> userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
-
-
-                foreach (var user in userListIdsFavorite)
+            try {
+                var discount = new Discount
                 {
-                    var propertyLink =
-                        $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+                    DiscountAmount = inputModel.Amount,
+                    StartDate = inputModel.StartDate,
+                    EndDate = inputModel.EndDate,
+                    PropertyId = inputModel.PropertyId
+                };
 
-                    await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
-                        "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
-                        new { propertyLink });
+                _context.Discount.Add(discount);
+                await _context.SaveChangesAsync();
+
+                if (sendEmail)
+                {
+                    //TODO: select dos applicationUserId na tabela favoritos ao propertyid = inputModel.property id
+
+                    var userIdsFavorites = await _context.Favorites
+                        .Where(f => f.PropertyId == inputModel.PropertyId)
+                        .Select(f => f.ApplicationUserId)
+                        .ToListAsync();
+
+                    IEnumerable<ApplicationUser> userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
+
+
+                    foreach (var user in userListIdsFavorite)
+                    {
+                        var propertyLink =
+                            $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+
+                        await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                            "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
+                            new { propertyLink });
+                    }
                 }
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
 
             return Ok("Disconto aplicado com sucesso.");
@@ -899,5 +904,5 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="StartDate">Data Inicial do Bloqueio</param>
     /// <param name="EndDate">Data Final do bloqueio</param>
     /// <param name="PropertyId">Identificador da Propriedade</param>-
-    public record DiscountInputModel(int Amount, string StartDate, string EndDate, string PropertyId);
+    public record DiscountInputModel(int Amount, String StartDate, String EndDate, string PropertyId);
 }

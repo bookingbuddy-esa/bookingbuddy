@@ -352,8 +352,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.router.navigate(['/transaction-handler'], { 
         queryParams: {
             propertyId: this.property?.propertyId,
-            startDate: checkInDate.toISOString(),
-            endDate: checkOutDate.toISOString(),
+            startDate: checkInDate.toISOString().split('T')[0],
+            endDate: checkOutDate.toISOString().split('T')[0],
             numHospedes: numHospedes,
             orderType: 'booking'
         }
