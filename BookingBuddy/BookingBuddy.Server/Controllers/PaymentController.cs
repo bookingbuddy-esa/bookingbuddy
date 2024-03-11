@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Net.WebSockets;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
 using BookingBuddy.Server.Data;
@@ -19,6 +21,8 @@ namespace BookingBuddy.Server.Controllers
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private static readonly Dictionary<string, WebSocket> Sockets = new();
+        private static readonly Dictionary<string, List<WebSocket>> SocketsPaymentId = new();
 
         /// <summary>
         /// Construtor da classe PaymentController.
@@ -26,7 +30,8 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
         /// <param name="configuration">Configuração da aplicação</param>
-        public PaymentController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public PaymentController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -91,7 +96,8 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
-            if (string.IsNullOrEmpty(orderId) || string.IsNullOrEmpty(amount) || string.IsNullOrEmpty(requestId) || string.IsNullOrEmpty(paymentDatetime))
+            if (string.IsNullOrEmpty(orderId) || string.IsNullOrEmpty(amount) || string.IsNullOrEmpty(requestId) ||
+                string.IsNullOrEmpty(paymentDatetime))
             {
                 return BadRequest("Dados de pagamento incompletos ou inválidos.");
             }
@@ -104,8 +110,10 @@ namespace BookingBuddy.Server.Controllers
 
             payment.Status = "Paid";
 
-            try {
+            try
+            {
                 await _context.SaveChangesAsync();
+                await NotifyAll(payment);
                 var order = await _context.Order.FindAsync(orderId);
                 if (order != null)
                 {
@@ -121,9 +129,12 @@ namespace BookingBuddy.Server.Controllers
                         };
                         _context.PromoteOrder.Add(promoteOrder);
                         await _context.SaveChangesAsync();
-                    } else if (orderId.StartsWith("BOOKING-")) {
+                    }
+                    else if (orderId.StartsWith("BOOKING-"))
+                    {
                         // TODO: Diogo Rosa - BlockedDates passa a ter StartDate e EndDate (invex de Start e End) e com o tipo DateTime - fazer alterações necessários do frontend?
-                        var blockDates = new BlockedDate {
+                        var blockDates = new BlockedDate
+                        {
                             PropertyId = order.PropertyId,
                             Start = order.StartDate.ToString("yyyy-MM-dd"),
                             End = order.EndDate.ToString("yyyy-MM-dd")
@@ -133,7 +144,9 @@ namespace BookingBuddy.Server.Controllers
                         await _context.SaveChangesAsync();
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 return StatusCode(500, $"Ocorreu um erro: {ex.Message}");
             }
 
@@ -152,11 +165,13 @@ namespace BookingBuddy.Server.Controllers
         /// </returns>
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<Payment>> CreatePayment(ApplicationUser user, string paymentMethod, decimal amount, string phoneNumber)
+        public async Task<ActionResult<Payment>> CreatePayment(ApplicationUser user, string paymentMethod,
+            decimal amount, string phoneNumber)
         {
             try
             {
-                if(user == null) {
+                if (user == null)
+                {
                     return Unauthorized();
                 }
 
@@ -164,7 +179,7 @@ namespace BookingBuddy.Server.Controllers
                 dynamic requestData = null;
                 string endpointUrl = "";
 
-                if(paymentMethod == "mbway")
+                if (paymentMethod == "mbway")
                 {
                     requestData = new
                     {
@@ -175,9 +190,9 @@ namespace BookingBuddy.Server.Controllers
                         email = user.Email,
                         description = "Pagamento de teste - Booking Buddy"
                     };
-                    
+
                     endpointUrl = "https://ifthenpay.com/api/spg/payment/mbway";
-                    
+
                     // regex com o padrão de um número de telemóvel em Portugal, a começar por 9 seguido por 1, 2, 3 ou 6 e por fim seguido por quaisquer 7 dígitos entre 0 e 9
                     string regexPattern = @"^(9[1236]\d{7})$";
 
@@ -185,10 +200,11 @@ namespace BookingBuddy.Server.Controllers
 
                     if (!regex.IsMatch(phoneNumber))
                     {
-                        throw new ArgumentException("O número de telemóvel introduzido é inválido. Tem de começar pelo dígito 9, seguido por 1, 2, 3 ou 6, e com 9 dígitos no total.");
+                        throw new ArgumentException(
+                            "O número de telemóvel introduzido é inválido. Tem de começar pelo dígito 9, seguido por 1, 2, 3 ou 6, e com 9 dígitos no total.");
                     }
-
-                } else if (paymentMethod == "multibanco")
+                }
+                else if (paymentMethod == "multibanco")
                 {
                     requestData = new
                     {
@@ -206,20 +222,23 @@ namespace BookingBuddy.Server.Controllers
                     };
 
                     endpointUrl = "https://ifthenpay.com/api/multibanco/reference/sandbox";
-                } else
+                }
+                else
                 {
                     return BadRequest("Método de pagamento inválido.");
                 }
 
                 if (amount < 0.0M || amount > 100000.0M)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(amount), "A quantia monetária deve estar entre 0.0€ e 100000.0€.");
+                    throw new ArgumentOutOfRangeException(nameof(amount),
+                        "A quantia monetária deve estar entre 0.0€ e 100000.0€.");
                 }
 
                 /*Console.WriteLine("request to ifthenpay: " + Newtonsoft.Json.JsonConvert.SerializeObject(requestData));
                 Console.WriteLine("endpoint: " + endpointUrl);*/
 
-                var jsonContent = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(requestData), Encoding.UTF8, "application/json");
+                var jsonContent = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(requestData),
+                    Encoding.UTF8, "application/json");
                 var response = await _httpClient.PostAsync(endpointUrl, jsonContent);
 
                 if (!response.IsSuccessStatusCode)
@@ -251,12 +270,13 @@ namespace BookingBuddy.Server.Controllers
                         newPayment.Reference = responseJson.Reference;
                         newPayment.ExpiryDate = responseJson.ExpiryDate;
                     }
-                    
+
                     return newPayment;
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, $"Ocorreu um erro enquanto o pagamento estava a ser guardado na base de dados: {ex.Message}");
+                    return StatusCode(500,
+                        $"Ocorreu um erro enquanto o pagamento estava a ser guardado na base de dados: {ex.Message}");
                 }
             }
             catch (Exception ex)
@@ -264,28 +284,105 @@ namespace BookingBuddy.Server.Controllers
                 return StatusCode(500, $"Ocorreu um erro: {ex.Message}");
             }
         }
+
+        [NonAction]
+        public async Task HandleWebSocketAsync(string paymentId, WebSocket webSocket)
+        {
+            var payment = await _context.Payment.FindAsync(paymentId);
+            if (payment == null)
+            {
+                await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "Payment not found", default);
+                return;
+            }
+
+            var socketId = Guid.NewGuid().ToString();
+            Sockets.Add(socketId, webSocket);
+            if (SocketsPaymentId.TryGetValue(paymentId, out var value))
+            {
+                value.Add(webSocket);
+            }
+            else
+            {
+                SocketsPaymentId.Add(paymentId, [webSocket]);
+            }
+
+            Console.WriteLine($"WebSocket connected ({Sockets.Count - 1} -> {Sockets.Count}): {socketId}");
+            Console.WriteLine($"Tracking payment: {paymentId}");
+
+            var buffer = new byte[1024 * 4];
+            while (webSocket.State == WebSocketState.Open)
+            {
+                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), default);
+                if (result.MessageType != WebSocketMessageType.Close) continue;
+                await webSocket.CloseAsync(result.CloseStatus!.Value, result.CloseStatusDescription, default);
+                break;
+            }
+
+            Sockets.Remove(socketId);
+            SocketsPaymentId[paymentId].Remove(webSocket);
+
+            Console.WriteLine($"WebSocket disconnected ({Sockets.Count + 1} -> {Sockets.Count}): {socketId}");
+        }
+
+        [NonAction]
+        public static async Task NotifyAll(Payment? payment)
+        {
+            if (payment == null) return;
+            var socketPayment = SocketsPaymentId.FirstOrDefault(sp => sp.Key == payment.PaymentId);
+            foreach (var socket in socketPayment.Value)
+            {
+                var socketId = Sockets.FirstOrDefault(s => s.Value == socket).Key;
+                Console.WriteLine($"Notifying socket ({socketId}) with payment ({payment.PaymentId})");
+                await socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payment)),
+                    WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+
+        [NonAction]
+        public static void RemoveWebSocket(WebSocket webSocket)
+        {
+            var socketId = Sockets.FirstOrDefault(s => s.Value == webSocket).Key;
+            Sockets.Remove(socketId);
+            var socketPayment = SocketsPaymentId.FirstOrDefault(sp => sp.Value.Contains(webSocket));
+            if (socketPayment.Value.Count == 1)
+            {
+                SocketsPaymentId.Remove(socketPayment.Key);
+            }
+            else
+            {
+                socketPayment.Value.Remove(webSocket);
+            }
+
+            Console.WriteLine($"WebSocket forced disconnect ({Sockets.Count + 1} -> {Sockets.Count}): {socketId}");
+        }
     }
 
     /// <summary>
     /// Classe interna para representar uma resposta de um pagamento.
     /// </summary>
-    public class PaymentResponse {
+    public class PaymentResponse
+    {
         /// <summary>
         /// Representa a chave.
         /// </summary>
         public string key { get; set; }
+
         /// <summary>
         /// Representa o identificador da reserva.
         /// </summary>
         public string orderId { get; set; }
+
         /// <summary>
         /// Representa a quantia monetária.
         /// </summary>
         public string amount { get; set; }
+
         /// <summary>
         /// Representa o identificador do pedido.
         /// </summary>
         public string requestId { get; set; }
+
         /// <summary>
         /// Representa a data e a hora do pagamento.
         /// </summary>
