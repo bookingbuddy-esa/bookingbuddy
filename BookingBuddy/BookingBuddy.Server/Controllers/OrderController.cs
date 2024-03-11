@@ -1,12 +1,14 @@
 using System.Text;
 using System.Web;
 using BookingBuddy.Server.Data;
+using BookingBuddy.Server.Migrations;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
+using Discount = BookingBuddy.Server.Models.Discount;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -153,39 +155,42 @@ namespace BookingBuddy.Server.Controllers
                     return BadRequest("Invalid dates");
                 }
 
-                decimal reservationAmount = property.PricePerNight * (decimal)(model.EndDate - model.StartDate).TotalDays;
+                List<DateTime> selectedDates = new List<DateTime>();
+                Dictionary<decimal, int> pricesMap = new Dictionary<decimal, int>();
 
-                // for each day in the reservation, check if there is a discount
-                /*
-                foreach (var day in Enumerable.Range(0, (int)(model.EndDate - model.StartDate).TotalDays))
+                for (DateTime date = model.StartDate; date < model.EndDate; date = date.AddDays(1))
                 {
-                    var discount = await _context.Discount
-                        .Where(d => d.PropertyId == model.PropertyId)
-                        .Where(d => d.StartDate <= model.StartDate.AddDays(day) && d.EndDate >= model.StartDate.AddDays(day))
+                    selectedDates.Add(date);
+                }
+
+                foreach (DateTime selectedDate in selectedDates)
+                {
+                    var matchingDiscount = await _context.Discount.Where(d => d.PropertyId == model.PropertyId)
+                        .Where(d => d.StartDate <= selectedDate && d.EndDate >= selectedDate)
                         .FirstOrDefaultAsync();
 
-                    if (discount != null)
+                    if (matchingDiscount != null)
                     {
-                        decimal discountAmountPerNight = property.PricePerNight * (discount.DiscountAmount / 100);
-                        reservationAmount -= discountAmountPerNight;
+                        decimal discountMultiplier = 1 - (decimal)matchingDiscount.DiscountAmount / 100;
+                        decimal newPrice = Math.Round(property.PricePerNight * discountMultiplier, 2);
+                        int currentCount = pricesMap.ContainsKey(newPrice) ? pricesMap[newPrice] : 0;
+                        pricesMap[newPrice] = currentCount + 1;
                     }
-                }*/
+                    else
+                    {
+                        decimal currentPrice = property.PricePerNight;
+                        int currentCount = pricesMap.ContainsKey(currentPrice) ? pricesMap[currentPrice] : 0;
+                        pricesMap[currentPrice] = currentCount + 1;
+                    }
+                }
 
-                /*var discount = await _context.Discount
-                    .Where(d => d.PropertyId == model.PropertyId)
-                    .Where(d => d.StartDate <= model.StartDate && d.EndDate >= model.EndDate)
-                    .FirstOrDefaultAsync();
+                decimal reservationAmount = pricesMap.Sum(entry => entry.Key * entry.Value);
 
-                if (discount != null){
-                    decimal discountAmountPerNight = property.PricePerNight * (discount.DiscountAmount / 100);
-                    decimal discountNights = (decimal)(discount.EndDate - discount.StartDate).TotalDays;
-
-                    reservationAmount -= discountNights * discountAmountPerNight;
-                }*/
 
                 var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber);
 
                 Console.WriteLine("--------------------------------------------");
+                Console.WriteLine("NUMERO DATAS: " + selectedDates.Count);
                 Console.WriteLine("CheckIn: " + model.StartDate);
                 Console.WriteLine("CheckOut: " + model.EndDate);
                 Console.WriteLine("Reservation Amount: " + reservationAmount);

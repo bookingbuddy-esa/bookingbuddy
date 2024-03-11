@@ -33,5 +33,9 @@ namespace BookingBuddy.Server.Models
         /// </summary>
         public string PropertyId { get; set; }
 
+        public static implicit operator List<object>(Discount? v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
