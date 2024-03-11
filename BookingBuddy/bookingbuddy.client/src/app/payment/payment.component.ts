@@ -52,9 +52,9 @@ export class PaymentComponent {
           entity: this.paymentResponse.payment.entity,
           reference: this.paymentResponse.payment.reference
         }
+        console.log(response);
 
-        console.log(this.payment);
-        if(this.payment){
+        if (this.payment) {
           let url = environment.apiUrl;
           url = url.replace('https', 'wss');
           let ws = new WebSocket(`${url}/api/payments/ws?paymentId=${this.payment.paymentId}`);
@@ -72,6 +72,9 @@ export class PaymentComponent {
                 reference: data["Reference"],
               }
               console.log(this.payment);
+              if (this.payment.status.toUpperCase() === 'PAID') {
+                ws.close();
+              }
             }
           }
         }
