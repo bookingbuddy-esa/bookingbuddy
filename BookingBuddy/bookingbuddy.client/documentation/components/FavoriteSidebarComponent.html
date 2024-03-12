@@ -1,0 +1,664 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>bookingbuddy.client documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avaoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+
+               if ($darkModeToggles.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-block d-sm-none">
+            <a href="../" class="navbar-brand">bookingbuddy.client documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content component">
+                   <div class="content-data">
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Components</li>
+  <li class="breadcrumb-item"
+  >
+  FavoriteSidebarComponent</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" class="nav-link"
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+        <li class="nav-item">
+            <a href="#templateData" class="nav-link"
+                role="tab" id="templateData-tab" data-bs-toggle="tab" data-link="template">Template</a>
+        </li>
+        <li class="nav-item">
+            <a href="#tree" class="nav-link"
+                role="tab" id="tree-tab" data-bs-toggle="tab" data-link="dom-tree">DOM Tree</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info"><p class="comment">
+    <h3>File</h3>
+</p>
+<p class="comment">
+    <code>src/app/favorite-sidebar/favorite-sidebar.component.ts</code>
+</p>
+
+
+
+
+
+
+<section data-compodoc="block-metadata">
+    <h3>Metadata</h3>
+    <table class="table table-sm table-hover metadata">
+        <tbody>
+
+
+
+
+
+
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">selector</td>
+                <td class="col-md-9"><code>app-favorite-sidebar</code></td>
+            </tr>
+
+
+
+
+
+
+            <tr>
+                <td class="col-md-3">templateUrl</td>
+                <td class="col-md-9"><code>./favorite-sidebar.component.html</code></td>
+            </tr>
+
+
+
+            <tr>
+                <td class="col-md-3">styleUrl</td>
+                <td class="col-md-9"><code>./favorite-sidebar.component.css</code></td>
+            </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#property_list" >property_list</a>
+                            </li>
+                            <li>
+                                <a href="#signedIn" >signedIn</a>
+                            </li>
+                            <li>
+                                <a href="#user" >user</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#loadFavorites" >loadFavorites</a>
+                            </li>
+                            <li>
+                                <a href="#ngOnInit" >ngOnInit</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+    <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(favoriteService: <a href="../injectables/FavoriteService.html" target="_self">FavoriteService</a>, authService: <a href="../injectables/AuthorizeService.html" target="_self">AuthorizeService</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/app/favorite-sidebar/favorite-sidebar.component.ts:15</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>favoriteService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/FavoriteService.html" target="_self" >FavoriteService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>authService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AuthorizeService.html" target="_self" >AuthorizeService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+    <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="loadFavorites"></a>
+                    <span class="name">
+                        <span ><b>loadFavorites</b></span>
+                        <a href="#loadFavorites"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>loadFavorites()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="35"
+                                    class="link-to-prism">src/app/favorite-sidebar/favorite-sidebar.component.ts:35</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ngOnInit"></a>
+                    <span class="name">
+                        <span ><b>ngOnInit</b></span>
+                        <a href="#ngOnInit"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>ngOnInit()</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="20"
+                                    class="link-to-prism">src/app/favorite-sidebar/favorite-sidebar.component.ts:20</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+    <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="property_list"></a>
+                    <span class="name">
+                        <span ><b>property_list</b></span>
+                        <a href="#property_list"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/Property.html" target="_self" >Property[]</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">src/app/favorite-sidebar/favorite-sidebar.component.ts:14</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="signedIn"></a>
+                    <span class="name">
+                        <span ><b>signedIn</b></span>
+                        <a href="#signedIn"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>false</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">src/app/favorite-sidebar/favorite-sidebar.component.ts:15</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="user"></a>
+                    <span class="name">
+                        <span ><b>user</b></span>
+                        <a href="#user"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../interfaces/UserInfo.html" target="_self" >UserInfo | undefined</a></code>
+
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="13" class="link-to-prism">src/app/favorite-sidebar/favorite-sidebar.component.ts:13</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component } from &#x27;@angular/core&#x27;;
+import { Property } from &#x27;../models/property&#x27;;
+import { AuthorizeService } from &#x27;../auth/authorize.service&#x27;;
+import { FavoriteService } from &#x27;./favorite.service&#x27;;
+import { UserInfo } from &#x27;../auth/authorize.dto&#x27;;
+
+@Component({
+  selector: &#x27;app-favorite-sidebar&#x27;,
+  templateUrl: &#x27;./favorite-sidebar.component.html&#x27;,
+  styleUrl: &#x27;./favorite-sidebar.component.css&#x27;
+})
+export class FavoriteSidebarComponent {
+  user: UserInfo | undefined;
+  property_list: Property[] &#x3D; [];
+  signedIn: boolean &#x3D; false;
+
+  constructor(private favoriteService: FavoriteService, private authService: AuthorizeService) {
+  }
+
+  ngOnInit(): void {
+    this.authService.isSignedIn().forEach(
+      isSignedIn &#x3D;&gt; {
+        this.signedIn &#x3D; isSignedIn;
+        if (isSignedIn) {
+          this.authService.user().forEach(user &#x3D;&gt; this.user &#x3D; user);
+        }
+      });
+    this.authService.user().forEach(async user &#x3D;&gt; {
+      this.user &#x3D; user;
+      this.loadFavorites();
+    });
+
+  }
+
+  loadFavorites() {
+    if (this.user) {
+      this.favoriteService.getUserFavorites(this.user?.userId).forEach(
+        response &#x3D;&gt; {
+          if (response) {
+            this.property_list &#x3D; response as Property[];
+            console.log(&quot;LISTA: &quot; + this.property_list.length);
+          }
+        }).catch(
+          error &#x3D;&gt; {
+            //this.errors.push(&quot;TODO&quot;);
+          }
+        );
+    }
+  }
+}
+</code></pre>
+    </div>
+
+    <div class="tab-pane fade " id="templateData">
+        <pre class="line-numbers"><code class="language-html">&lt;!--&lt;div class&#x3D;&quot;favorite-sidebar&quot;&gt;
+  &lt;div class&#x3D;&quot;green-banner&quot;&gt;
+    &lt;h3&gt;Favoritos&lt;/h3&gt;
+    &lt;button mat-icon-button mat-dialog-close class&#x3D;&quot;close-button&quot; (click)&#x3D;&quot;closeSidebar()&quot;&gt;
+      &lt;mat-icon aria-label&#x3D;&quot;Fechar&quot;&gt;close&lt;/mat-icon&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div *ngIf&#x3D;&quot;property_list.length &gt; 0&quot; class&#x3D;&quot;d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center&quot;&gt;
+    &lt;app-homepage-property *ngFor&#x3D;&quot;let property of property_list&quot; [property]&#x3D;&quot;property&quot; &gt;&lt;/app-homepage-property&gt;
+  &lt;/div&gt;
+&lt;/div&gt;--&gt;
+
+&lt;div class&#x3D;&quot;offcanvas offcanvas-end&quot; tabindex&#x3D;&quot;-1&quot; id&#x3D;&quot;offcanvasNavbar&quot; aria-labelledby&#x3D;&quot;offcanvasNavbarLabel&quot;&gt;
+  &lt;div class&#x3D;&quot;green-banner&quot;&gt;
+    &lt;h3&gt;Favoritos&lt;/h3&gt;
+    &lt;button mat-icon-button  class&#x3D;&quot;close-button&quot; data-bs-dismiss&#x3D;&quot;offcanvas&quot;&gt;
+      &lt;mat-icon aria-label&#x3D;&quot;Fechar&quot;&gt;close&lt;/mat-icon&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class&#x3D;&quot;offcanvas-body&quot;&gt;
+    &lt;div *ngIf&#x3D;&quot;property_list.length &gt; 0&quot; class&#x3D;&quot;d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center&quot;&gt;
+      &lt;app-favoritebar-property *ngFor&#x3D;&quot;let property of property_list&quot; [property]&#x3D;&quot;property&quot;&gt;&lt;/app-favoritebar-property&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+    </div>
+
+
+    <div class="tab-pane fade " id="tree">
+        <div id="tree-container"></div>
+        <div class="tree-legend">
+            <div class="title">
+                <b>Legend</b>
+            </div>
+            <div>
+                <div class="color htmlelement"></div><span>Html element</span>
+            </div>
+            <div>
+                <div class="color component"></div><span>Component</span>
+            </div>
+            <div>
+                <div class="color directive"></div><span>Html element with directive</span>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+
+<script src="../js/libs/vis.min.js"></script>
+<script src="../js/libs/htmlparser.js"></script>
+<script src="../js/libs/deep-iterator.js"></script>
+<script>
+        var COMPONENT_TEMPLATE = '<div><!--<div class="favorite-sidebar">  <div class="green-banner">    <h3>Favoritos</h3>    <button mat-icon-button mat-dialog-close class="close-button" (click)="closeSidebar()">      <mat-icon aria-label="Fechar">close</mat-icon>    </button>  </div>  <div *ngIf="property_list.length > 0" class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">    <app-homepage-property *ngFor="let property of property_list" [property]="property" ></app-homepage-property>  </div></div>--><div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">  <div class="green-banner">    <h3>Favoritos</h3>    <button mat-icon-button  class="close-button" data-bs-dismiss="offcanvas">      <mat-icon aria-label="Fechar">close</mat-icon>    </button>  </div>  <div class="offcanvas-body">    <div *ngIf="property_list.length > 0" class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">      <app-favoritebar-property *ngFor="let property of property_list" [property]="property"></app-favoritebar-property>    </div>  </div></div></div>'
+    var COMPONENTS = [{'name': 'AdInfoStepComponent', 'selector': 'app-ad-info-step'},{'name': 'AmenitiesStepComponent', 'selector': 'app-amenities-step'},{'name': 'AmenityComponent', 'selector': 'app-amenity'},{'name': 'AppComponent', 'selector': 'app-root'},{'name': 'BadRequestComponent', 'selector': 'app-bad-request'},{'name': 'BookingComponent', 'selector': 'app-booking'},{'name': 'CalendarComponent', 'selector': 'app-calendar'},{'name': 'CalendarPopupComponent', 'selector': 'app-calendar-popup'},{'name': 'ChatComponent', 'selector': 'app-chat'},{'name': 'ConfirmEmailComponent', 'selector': 'app-confirm-email'},{'name': 'FavoritebarPropertyComponent', 'selector': 'app-favoritebar-property'},{'name': 'FavoriteSidebarComponent', 'selector': 'app-favorite-sidebar'},{'name': 'ForbiddenComponent', 'selector': 'app-forbidden'},{'name': 'GoogleComponent', 'selector': 'app-google'},{'name': 'HomepageComponent', 'selector': 'app-homepage'},{'name': 'HomepagePropertyComponent', 'selector': 'app-homepage-property'},{'name': 'HomepagePropertyComponent', 'selector': 'app-homepage-property'},{'name': 'HostingBookingComponent', 'selector': 'app-hosting-booking'},{'name': 'InitialStepComponent', 'selector': 'app-initial-step'},{'name': 'LoaderComponent', 'selector': 'app-loader'},{'name': 'LocationStepComponent', 'selector': 'app-location-step'},{'name': 'LogoutComponent', 'selector': 'app-logout'},{'name': 'MenuComponent', 'selector': 'app-menu'},{'name': 'MicrosoftComponent', 'selector': 'app-microsoft'},{'name': 'NotfoundComponent', 'selector': 'app-notfound'},{'name': 'PaymentComponent', 'selector': 'app-payment'},{'name': 'PhotosStepComponent', 'selector': 'app-photos-step'},{'name': 'ProfileComponent', 'selector': 'app-profile'},{'name': 'PropertyAdCreateComponent', 'selector': 'app-property-ad-create'},{'name': 'PropertyAdRetrieveComponent', 'selector': 'app-property-ad-retrieve'},{'name': 'PropertyPerformanceComponent', 'selector': 'app-property-performance'},{'name': 'PropertyPromoteComponent', 'selector': 'app-property-promote'},{'name': 'RecoverPwComponent', 'selector': 'app-recover-pw'},{'name': 'RegisterComponent', 'selector': 'app-register-component'},{'name': 'ResetPwComponent', 'selector': 'app-reset-pw'},{'name': 'SidePropertiesComponent', 'selector': 'app-side-properties'},{'name': 'SidePropertiesComponent', 'selector': 'app-side-properties'},{'name': 'SignInComponent', 'selector': 'app-signin-component'},{'name': 'UnauthorizedComponent', 'selector': 'app-unauthorized'}];
+    var DIRECTIVES = [];
+    var ACTUAL_COMPONENT = {'name': 'FavoriteSidebarComponent'};
+</script>
+<script src="../js/tree.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'component';
+            var COMPODOC_CURRENT_PAGE_URL = 'FavoriteSidebarComponent.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

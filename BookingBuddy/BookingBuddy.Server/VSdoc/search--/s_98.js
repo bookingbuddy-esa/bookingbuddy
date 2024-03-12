@@ -1,0 +1,1 @@
+search_result['98']=["topic_0000000000000038.html","PropertyController.GetPropertiesByUserId Method","Método que obtém as propriedades de um utilizador."];

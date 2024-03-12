@@ -1,0 +1,1 @@
+search_result['203']=["topic_0000000000000081.html","ApplicationUser.ProviderId Property","Propriedade que diz respeito ao identificador do fornecedor de login do utilizador."];

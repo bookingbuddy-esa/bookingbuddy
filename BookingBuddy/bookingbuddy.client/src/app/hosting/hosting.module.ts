@@ -21,7 +21,8 @@ import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    CalendarComponent , HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent, CalendarPopupComponent, PropertyPerformanceComponent, HostingBookingComponent
+    CalendarComponent, HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent,
+    CalendarPopupComponent, PropertyPerformanceComponent, HostingBookingComponent
   ],
     imports: [
         CommonModule, BrowserModule, FormsModule,

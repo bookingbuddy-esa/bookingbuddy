@@ -1,28 +1,39 @@
-
 :host {
     display: flex;
     height: inherit;
     width: inherit;
 }
+
 .img-shorter {
-  max-width: 50%; /* Ajuste a largura máxima conforme necessário */
-  height: 100%;
+    max-width: 50%;
+    /* Ajuste a largura máxima conforme necessário */
+    height: 100%;
 }
 
 .mycarousel {
-  display: flex;
-  max-height: 600px; /* Substitua pela altura desejada */
-  overflow: hidden;
+    display: flex;
+    max-height: 600px;
+    /* Substitua pela altura desejada */
+    overflow: hidden;
 }
 
-  .mycarousel img {
+.mycarousel img {
     width: 100%;
-    
-  }
+}
 
-/*.carousel-item {
-  transform: scale(1);*/ /* Garante que a escala seja mantida durante as transições */
-  /*transition: transform 0.5s ease;*/ /* Adapte a duração e a função de temporização conforme necessário */
-/*}*/
+.reservar {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+}
 
+.border-secondary {
+  border-color: #F9F9F9 !important; 
+}
 
+hr {
+  border: 1px solid #000; 
+}
+
+.total {
+  margin-top: 10px; 
+  font-weight: bold; 
+}

@@ -28,9 +28,15 @@ import { PhotosStepComponent } from './property-ad/property-ad-create/photos-ste
 import { ChatComponent } from './chat/chat.component';
 import { FavoriteSidebarComponent } from './favorite-sidebar/favorite-sidebar.component';
 import { MatIconModule } from '@angular/material/icon';
-
+import { FavoritebarPropertyComponent } from './favorite-sidebar/favoritebar-property/favoritebar-property.component';
 import { ProfileComponent } from './profile/profile.component';
 import { BookingComponent } from './booking/booking.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { PaymentComponent } from './payment/payment.component';
+import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +55,7 @@ import { BookingComponent } from './booking/booking.component';
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent,
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -57,10 +63,13 @@ import { BookingComponent } from './booking/booking.component';
     ReactiveFormsModule, AuthModule,
     AuxiliaryModule, NgOptimizedImage,
     HostingModule, GoogleMap, MapMarker,
-    MatIconModule
+    MatIconModule, MatDatepickerModule,
+    MatFormFieldModule, MatInputModule,
+    MatNativeDateModule, PaymentComponent
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-Br' },
     AuthGuard,
     AuthorizeService,
     provideAnimationsAsync()

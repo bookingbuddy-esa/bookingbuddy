@@ -1,31 +1,36 @@
 <div class="row flex-nowrap">
-    <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
-        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark">
-            <h4>Propriedades</h4>
-            <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-side-properties>
-        </div>
+  <!-- Primeira coluna -->
+  <div class="col-2 px-sm-2 px-0 bg-white box-shadow">
+    <div class="d-flex flex-column align-items-center px-3 text-dark ">
+      
+        <h5 class="custom-h4 text-sm mt-2 ">Propriedades</h5>
+     
+      <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-side-properties>
     </div>
-    <div class="col-md-6 mt-5" *ngIf="!propertyPromote">
-        <div class="d-flex justify-content-end mx-auto">
-            <form class="form" [formGroup]="propertyPromoteForm" (submit)="submitPromotion()">
-                <div class="d-flex flex-column">
-                    <h2>Promover propriedade</h2>
+  </div>
 
-                    <div class="form-group mt-2">
-                        <label for="duration">Escolha a duração:</label>
-                        <select name="duration" id="duration" class="form-control" formControlName="duration">
-              <option value="week">1 Semana</option>
-              <option value="month">1 Mês</option>
-              <option value="year">1 Ano</option>
-            </select>
-                    </div>
+  <!-- Segunda coluna -->
+  <div class="col-md-6 mt-5 d-flex flex-column align-items-center mx-auto" *ngIf="!propertyPromote">
+    <form class="form" [formGroup]="propertyPromoteForm" (submit)="submitPromotion()">
+      <div class="d-flex flex-column">
+        <h2>Promover propriedade</h2>
 
-                    <button class="btn btn-success mt-4" type="submit">Promover</button>
-                </div>
-            </form>
+        <div class="form-group mt-2">
+          <label for="duration">Escolha a duração:</label>
+          <select name="duration" id="duration" class="form-control" formControlName="duration">
+            <option value="week">1 Semana</option>
+            <option value="month">1 Mês</option>
+            <option value="year">1 Ano</option>
+          </select>
         </div>
-    </div>
-    <div class="col-md-3 mt-3 mx-auto d-flex justify-content-center">
-        <app-payment [data]="propertyPromote" *ngIf="propertyPromote"></app-payment>
-    </div>
+
+        <button class="btn btn-success mt-4" type="submit">Promover</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Terceira coluna -->
+  <div class="col-md-6 mt-5 d-flex flex-column align-items-center mx-auto" *ngIf="propertyPromote">
+    <app-payment [data]="propertyPromote" *ngIf="propertyPromote"></app-payment>
+  </div>
 </div>

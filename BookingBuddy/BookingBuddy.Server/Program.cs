@@ -19,11 +19,10 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-string azureSignalrConnectionString = builder.Configuration["Azure:SignalR:ConnectionString"];
-builder.Services.AddSignalR().AddAzureSignalR(options =>
-{
-    options.ConnectionString = azureSignalrConnectionString;
-});
+string azureSignalrConnectionString = builder.Configuration.GetConnectionString("AzureSignalR") ??
+                                      throw new InvalidOperationException(
+                                          "Connection string 'AzureSignalR' not found.");
+builder.Services.AddSignalR().AddAzureSignalR(options => { options.ConnectionString = azureSignalrConnectionString; });
 
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ??
@@ -71,6 +70,33 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
 }
 
 app.MapHub<ChatHubController>("/hubs/chat");
+
+app.UseWebSockets(new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(30)
+});
+
+app.Map("/api/payments/ws",
+    async (HttpContext httpContext, BookingBuddyServerContext context, PaymentController paymentController,
+        string paymentId) =>
+    {
+        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
+        {
+            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+            try
+            {
+                await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+            }
+            catch
+            {
+                PaymentController.RemoveWebSocket(webSocket);
+            }
+        }
+        else
+        {
+            httpContext.Response.StatusCode = 400;
+        }
+    });
 
 app.UseCors("CorsPolicy");
 

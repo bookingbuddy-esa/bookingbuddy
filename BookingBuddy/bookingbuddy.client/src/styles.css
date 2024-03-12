@@ -8,8 +8,6 @@ body {
   --fc-daygrid-event-dot-width: 5px;
 }
 
-
-
 .fc {
   background-color: white;
 }
@@ -59,6 +57,17 @@ body {
 
 .fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
   background-color: #176b17;
+}
+
+button.discount-date-class {
+  background: #9DAE9A;
+  border-radius: 100%;
+  width: 80%; 
+  height: 80%;
+}
+
+.mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  background-color: #fff !important; 
 }
 
 html, body { height: 100%; }

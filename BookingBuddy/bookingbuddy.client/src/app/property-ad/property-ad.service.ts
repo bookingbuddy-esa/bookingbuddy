@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, Component} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject, catchError, map, of} from 'rxjs';
 import {environment} from "../../environments/environment";
@@ -72,6 +72,14 @@ export class PropertyAdService {
     }).pipe(
       map((res: HttpResponse<string>) => res.ok)
     );
+  }
+
+  public getPropertyBlockedDates(propertyId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/properties/blockedDates/${propertyId}`);
+  }
+
+  public getPropertyDiscounts(propertyId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/properties/discounts/${propertyId}`);
   }
 
   public isPropertyInFavorites(propertyId: string): Observable<boolean> {

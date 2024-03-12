@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Property } from '../models/property';
 import { AuthorizeService } from '../auth/authorize.service';
+import { FavoriteService } from './favorite.service';
 import { UserInfo } from '../auth/authorize.dto';
 
 @Component({
@@ -13,7 +14,7 @@ export class FavoriteSidebarComponent {
   property_list: Property[] = [];
   signedIn: boolean = false;
 
-  constructor(private authService: AuthorizeService) {
+  constructor(private favoriteService: FavoriteService, private authService: AuthorizeService) {
   }
 
   ngOnInit(): void {
@@ -32,6 +33,17 @@ export class FavoriteSidebarComponent {
   }
 
   loadFavorites() {
-
+    if (this.user) {
+      this.favoriteService.getUserFavorites(this.user?.userId).forEach(
+        response => {
+          if (response) {
+            this.property_list = response as Property[];
+          }
+        }).catch(
+          error => {
+            //this.errors.push("TODO");
+          }
+        );
+    }
   }
 }

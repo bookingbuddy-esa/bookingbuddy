@@ -1,0 +1,1 @@
+search_result['82']=["topic_000000000000002D.html","PaymentResponse.amount Property","Representa a quantia monetária."];

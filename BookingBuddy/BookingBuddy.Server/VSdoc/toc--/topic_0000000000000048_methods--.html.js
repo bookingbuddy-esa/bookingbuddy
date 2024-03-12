@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"BookingBuddy.Server Reference","topic_00000000000000F1.html"],['85',"BookingBuddy.Server.Data Namespace","topic_0000000000000047.html"],['86',"BookingBuddyServerContext Class","topic_0000000000000048.html"],['102',"Methods","topic_0000000000000048_methods--.html"]];

@@ -57,10 +57,11 @@ export class CalendarPopupComponent {
 
   applyDiscount() {
     if (this.selectedStartDate && this.selectedEndDate && this.currentProperty) {
+      const startDate = new Date(this.selectedStartDate);
       const endDate = new Date(this.selectedEndDate);
-      endDate.setDate(endDate.getDate() + 1);
+      endDate.setDate(endDate.getDate());
       const adjustedEndDate = endDate.toISOString().split('T')[0];
-      this.hostingService.applyDiscount(this.discountValue,this.selectedStartDate, this.selectedEndDate, this.currentProperty.propertyId).forEach(
+      this.hostingService.applyDiscount(this.discountValue,startDate, endDate, this.currentProperty.propertyId).forEach(
         response => {
           if (response) {
             this.dialogRef.close('calendarUpdate');

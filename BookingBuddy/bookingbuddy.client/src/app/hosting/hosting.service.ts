@@ -21,6 +21,7 @@ export class HostingService {
       endDate: endDate,
       propertyId: propertyId
     }, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
     }).pipe<boolean>(map((res: HttpResponse<string>) => {
@@ -34,6 +35,7 @@ export class HostingService {
 
   public unblockDates(id: number): Observable<boolean> {
     return this.http.delete(`${environment.apiUrl}/api/properties/unblock/${id}`, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
     }).pipe(
@@ -45,7 +47,7 @@ export class HostingService {
     return this.http.get<any[]>(`${environment.apiUrl}/api/properties/discounts/${propertyId}`);
   }
 
-  public applyDiscount(amount: number, startDate: string, endDate: string, propertyId: string) {
+  public applyDiscount(amount: number, startDate: Date, endDate: Date, propertyId: string) {
     console.log("DESCONTO DE: " + amount);
     return this.http.post(`${environment.apiUrl}/api/properties/createDiscount`, {
       amount: amount,
@@ -53,6 +55,7 @@ export class HostingService {
       endDate: endDate,
       propertyId: propertyId
     }, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
     }).pipe<boolean>(map((res: HttpResponse<string>) => {
@@ -62,13 +65,14 @@ export class HostingService {
 
   public removeDiscount(id: number): Observable<boolean> {
     return this.http.delete(`${environment.apiUrl}/api/properties/removeDiscount/${id}`, {
+      withCredentials: true,
       observe: 'response',
       responseType: 'text'
     }).pipe(
       map((res: HttpResponse<string>) => res.ok)
     );
   }
-  
+
   public getPropertyMetrics(propertyId: string): Observable<PropertyMetrics> {
     return this.http.get(`${environment.apiUrl}/api/properties/metrics/${propertyId}`, {
       withCredentials: true
@@ -78,7 +82,9 @@ export class HostingService {
   }
 
   public getAssociatedBookings() {
-    return this.http.get(`${environment.apiUrl}/api/properties/bookings`, { withCredentials: true });
+    return this.http.get(`${environment.apiUrl}/api/properties/bookings`, {
+      withCredentials: true
+    });
   }
 }
 

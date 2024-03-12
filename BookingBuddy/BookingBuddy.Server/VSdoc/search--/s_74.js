@@ -1,0 +1,1 @@
+search_result['74']=["topic_000000000000002A.html","PaymentResponse Class","Classe interna para representar uma resposta de um pagamento."];

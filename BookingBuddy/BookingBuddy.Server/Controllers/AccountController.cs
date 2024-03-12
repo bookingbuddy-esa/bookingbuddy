@@ -37,11 +37,13 @@ namespace BookingBuddy.Server.Controllers
         /// Nenhum dos parâmetros pode ser null.
         /// </remarks>
         /// <param name="model">Modelo de registo de utilizador</param>
+        /// <param name="sendConfirmationEmail">Opção para enviar email de confirmação de conta</param>
         /// <returns>Resposta do pedido de criar conta de utilizador, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] AccountRegisterModel model)
+        public async Task<IActionResult> Register([FromBody] AccountRegisterModel model,
+            bool sendConfirmationEmail = true)
         {
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
@@ -58,14 +60,19 @@ namespace BookingBuddy.Server.Controllers
                 ProviderId = provider!.AspNetProviderId
             };
             var result = await _userManager.CreateAsync(user, model.Password);
-
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, "user");
+                if (!sendConfirmationEmail)
+                {
+                    return Ok();
+                }
+
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var confirmationLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={user.Id}";
-                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value! ,"d-a8fe3a81f5d44b4f9a3602650d0f8c8a", user.Email, user.Name,
+                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,
+                    "d-a8fe3a81f5d44b4f9a3602650d0f8c8a", user.Email, user.Name,
                     new { confirmationLink });
                 return Ok();
             }
@@ -106,7 +113,8 @@ namespace BookingBuddy.Server.Controllers
                 var token = await _userManager.GenerateEmailConfirmationTokenAsync(existingUser);
                 var confirmationLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/confirm-email?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
-                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,"d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email!,
+                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,
+                    "d-a8fe3a81f5d44b4f9a3602650d0f8c8a", existingUser.Email!,
                     existingUser.Name, new { confirmationLink });
                 return Ok();
             }
@@ -147,10 +155,8 @@ namespace BookingBuddy.Server.Controllers
                 await _userManager.UpdateSecurityStampAsync(user);
                 return Ok();
             }
-            else
-            {
-                return BadRequest(result.Errors);
-            }
+
+            return BadRequest(result.Errors);
         }
 
         /// <summary>
@@ -195,20 +201,21 @@ namespace BookingBuddy.Server.Controllers
         /// </remarks>
         /// <example>
         ///    POST /api/login
-        ///
+        /// 
         ///    {
         ///     "email": bookingbuddy.user@bookingbuddy.com,
         ///     "password": userBB123!
         ///    }
         /// </example>
         /// <param name="model">Modelo de login</param>
+        /// <param name="isPersistent">Opção que define se é guardada uma cookie de sessão</param>
         /// <returns>Resposta do pedido de login, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model, bool isPersistent = true)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
@@ -222,10 +229,21 @@ namespace BookingBuddy.Server.Controllers
                     });
                 }
 
-                var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                if (result.Succeeded)
+                if (!isPersistent)
                 {
-                    return Ok();
+                    var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
+                }
+                else
+                {
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, false);
+                    if (result.Succeeded)
+                    {
+                        return Ok();
+                    }
                 }
             }
 
@@ -374,7 +392,8 @@ namespace BookingBuddy.Server.Controllers
                 var token = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
                 var recoverLink =
                     $"{configuration.GetSection("Front-End-Url").Value!}/reset-password?token={HttpUtility.UrlEncode(token)}&uid={existingUser.Id}";
-                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,"d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email!,
+                await EmailSender.SendTemplateEmail(configuration.GetSection("MailAPIKey").Value!,
+                    "d-1a60ea506e2d4e26b3221bd331286533", existingUser.Email!,
                     existingUser.Name, new { recoverLink });
                 return Ok();
             }
@@ -477,6 +496,11 @@ namespace BookingBuddy.Server.Controllers
         [Route("manage/info")]
         public async Task<IActionResult> ManageInfo()
         {
+            if (!User.Identity?.IsAuthenticated ?? false)
+            {
+                return Unauthorized();
+            }
+
             var existingUser = await _userManager.GetUserAsync(User);
             if (existingUser == null)
                 return BadRequest(new[]
