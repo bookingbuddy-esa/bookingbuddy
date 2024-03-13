@@ -18,6 +18,7 @@ import { ProfileComponent } from './profile/profile.component';
 import {PropertyPerformanceComponent} from './hosting/property-performance/property-performance.component';
 import { HostingBookingComponent } from './hosting/hosting-booking/hosting-booking.component';
 import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
+import { GroupComponent } from './group/group.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -27,10 +28,11 @@ const routes: Routes = [
   {path: 'hosting/performance', component: PropertyPerformanceComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
   {path: 'hosting/bookings', component: HostingBookingComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
   {path: 'property/:id', component: PropertyAdRetrieveComponent},
-  {path: 'transaction-handler', component: TransactionHandlerComponent},
+  {path: 'transaction-handler', component: TransactionHandlerComponent, canActivate: [AuthGuard]},
+  {path: 'group/:id', component: GroupComponent, canActivate: [AuthGuard]},
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
-  //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
+  {path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
   {path: 'unauthorized', component: UnauthorizedComponent},
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
