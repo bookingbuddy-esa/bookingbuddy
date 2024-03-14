@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using BookingBuddy.Server.Controllers;
 using BookingBuddy.Server.Models;
-using BookingBuddyTest.Fixtures;
+using BookingBuddyServerTest.Fixtures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 
-namespace BookingBuddyTest;
+namespace BookingBuddyServerTest;
 
 public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
 {

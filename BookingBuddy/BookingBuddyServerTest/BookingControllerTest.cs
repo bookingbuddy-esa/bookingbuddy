@@ -1,12 +1,12 @@
 ﻿using System.Security.Claims;
 using BookingBuddy.Server.Controllers;
-using BookingBuddyTest.Fixtures;
+using BookingBuddyServerTest.Fixtures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
 
-namespace BookingBuddyTest;
+namespace BookingBuddyServerTest;
 
 public class BookingControllerTest : IClassFixture<ApplicationDbContextFixture>
 {

@@ -2,7 +2,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookingBuddyTest.Fixtures
+namespace BookingBuddyServerTest.Fixtures
 {
     public class ApplicationDbContextFixture : IDisposable
     {
