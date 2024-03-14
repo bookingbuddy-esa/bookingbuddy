@@ -8,3 +8,7 @@ import { Component } from '@angular/core';
 export class GroupLinkStepComponent {
 
 }
+
+export interface GroupLink {
+  link: string;
+}

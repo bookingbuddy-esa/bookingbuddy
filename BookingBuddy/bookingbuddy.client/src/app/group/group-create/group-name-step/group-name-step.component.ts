@@ -8,3 +8,7 @@ import { Component } from '@angular/core';
 export class GroupNameStepComponent {
 
 }
+
+export interface GroupName {
+  name: string;
+}
