@@ -76,27 +76,18 @@ app.UseWebSockets(new WebSocketOptions
     KeepAliveInterval = TimeSpan.FromSeconds(30)
 });
 
-app.Map("/api/payments/ws",
-    async (HttpContext httpContext, BookingBuddyServerContext context, PaymentController paymentController,
-        string paymentId) =>
+app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string paymentId) =>
+{
+    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
     {
-        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
-        {
-            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-            try
-            {
-                await paymentController.HandleWebSocketAsync(paymentId, webSocket);
-            }
-            catch
-            {
-                PaymentController.RemoveWebSocket(webSocket);
-            }
-        }
-        else
-        {
-            httpContext.Response.StatusCode = 400;
-        }
-    });
+        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+        await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+    }
+    else
+    {
+        httpContext.Response.StatusCode = 400;
+    }
+});
 
 app.UseCors("CorsPolicy");
 
