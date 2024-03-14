@@ -31,7 +31,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
   property: Property | undefined;
   reservarPropriedadeForm!: FormGroup;
   reservarPropriedadeFailed: boolean;
-  errors: string[];
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   blockedDates: Date[] = [];
@@ -49,8 +48,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
     this.appComponent.showChat = true;
-    this.errors = [];
-
     this.reservarPropriedadeFailed = false;
     
     this.reservarPropriedadeForm = this.formBuilder.group({

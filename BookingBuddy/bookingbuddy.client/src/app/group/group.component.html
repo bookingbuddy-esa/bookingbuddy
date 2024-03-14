@@ -1,5 +1,5 @@
 <div class="row justify-content-center mt-5">
-    <div class="col-md-3 ms-2 mb-5">
+    <div class="col-md-3 mb-5">
         <!--<h3 class="text-center">Lista de Grupos</h3>-->
         <div class="accordion" id="accordionExample">
             <div class="accordion-item">
@@ -11,7 +11,9 @@
                 <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                     <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
                         <div class="list-group list-group-flush overflow-auto">
-                            <span class="text-muted small mx-auto p-2" *ngIf="group_list.length == 0">Não existem grupos de reserva.</span>
+                            <div *ngIf="group_list.length == 0" class="mx-auto p-2">
+                                <span class="text-muted small">Não existem grupos de reserva.<button type="button" class="btn btn-outline-success btn-sm rounded-pill ms-2"><i class="bi bi-person-fill-add"></i></button></span>
+                            </div>
                             <a *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="chooseGroup(group)">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="fw-bold">Grupo {{group.id}}</div>
@@ -25,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-7 ms-2 mb-5">
+    <div class="col-md-7 mb-5">
         <h2 class="text-center">Conteúdo</h2>
         <div class="d-flex flex-column flex-md-row">
             <div class="card mb-3 me-md-2">
