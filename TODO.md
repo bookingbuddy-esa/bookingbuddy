@@ -3,7 +3,7 @@
 ## Projeto
 
 ### Rápidos
-- [ ] Tabela da tecnologias - adicionar o vsdocman  
+- [X] Tabela da tecnologias - adicionar o vsdocman  
 - [ ] Resolver bug de menu dentro de menu (quando a tela é pequena)  
 - [ ] Footer & Página de FAQ  
 - [ ] (Opcional) Pedir ao Pina/Cordeiro ajuda como resolver login da Microsoft ao usar conta do IPS  
@@ -15,14 +15,22 @@
 - [X] Tabela da tecnologia - adicionar o compodoc  
 
 
+
 ### Geral
 - [ ] Remover mensagens console (log, error) e console.writeline  
 - [ ] Remover os TODOs  
 - [ ] Adicionar codigos de erro e fazer uma lista dos mesmos  
 - [ ] (Opcional) Adicionar i18n  
 
+### Documentação 
+- [ ] Rever os BPDS especialmente da Gestão de Acessos e Grupos de viagem, colocar as business rules, validação email, passwords, ...
+- [ ] Realizar script do video com os Business Scenario objeto da demo.
+- [ ] Orçamento
+
 ### Payments
 - [X] NIF nos pagamentos do bookingbuddy - adicionar ao componente payment  
+
+### Payments
 
 ### Properties
 - [ ] Adicionar botão 3 pontos com editar, apagar, promover no anúncio de propriedade (EM FALTA: BACKEND) 
@@ -40,3 +48,5 @@
 - [X] PowerPoint DevOps - em falta exemplo (12 março)  
 - [ ] Pré-projeto - falta tudo (14 março)  
 - [ ] PowerPoint com as métricas todas de análise de requisitos, ferramentas para ver as métricas a funcionar e exemplo prático a serem aplicadas (19 março) 
+- [ ] Trabalho sobre Orquestração de contentores, Kubernetes e Maquinas-Virtuais. (21 março)
+- [ ] Orçamento (2 abril)
