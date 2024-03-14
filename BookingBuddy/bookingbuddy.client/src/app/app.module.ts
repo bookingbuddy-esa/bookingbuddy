@@ -38,6 +38,9 @@ import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { PaymentComponent } from './payment/payment.component';
 import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
 import { GroupComponent } from './group/group.component';
+import { GroupCreateComponent } from './group/group-create/group-create.component';
+import { GroupNameStepComponent } from './group/group-create/group-name-step/group-name-step.component';
+import { GroupLinkStepComponent } from './group/group-create/group-link-step/group-link-step.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +59,7 @@ import { GroupComponent } from './group/group.component';
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupLinkStepComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
