@@ -37,6 +37,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { PaymentComponent } from './payment/payment.component';
 import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
+import { GroupComponent } from './group/group.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,7 @@ import { TransactionHandlerComponent } from './payment/transaction-handler/trans
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

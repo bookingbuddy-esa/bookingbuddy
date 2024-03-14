@@ -75,7 +75,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("oiiiii eddy");
     this.propertyService.getProperty(this.route.snapshot.params['id']).forEach(
       response => {
         if (response) {
