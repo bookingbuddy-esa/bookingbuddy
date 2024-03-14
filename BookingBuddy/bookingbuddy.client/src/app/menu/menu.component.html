@@ -38,6 +38,7 @@
                           <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['bookings']">Reservas Pessoais<i class="bi bi-journals ms-2"></i></a></li>
                           <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/bookings']">Reservas de Hóspedes<i class="bi bi-journal-check ms-2"></i></a></li>
                           <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
+                          <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['group/create']">Criar Grupo<i class="bi bi-people ms-2"></i></a></li>
                           <hr *ngIf="signedIn" class="dropdown-divider">
                           <li *ngIf="signedIn"><button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">Logout<i class="bi bi-door-open ms-2"></i></button></li>
                         </ul>

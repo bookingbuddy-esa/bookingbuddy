@@ -15,6 +15,114 @@ import { AppComponent } from '../../app.component';
   templateUrl: './group-create.component.html',
   styleUrl: './group-create.component.css'
 })
-export class GroupCreateComponent {
+export class GroupCreateComponent implements OnInit {
+  protected user: UserInfo | undefined;
+  protected submitting: boolean = false;
+  protected errors: string[] = [];
+  protected currentStep: number = 0;
+  protected readonly numberOfSteps: number = 2;
+  protected step: Subject<number> = new BehaviorSubject(0);
 
+  protected onStepChange() {
+    return this.step.asObservable();
+  }
+
+  // Group Name
+  protected groupName: GroupName ! undefined;
+  protected isGroupNameValid: boolean = false;
+
+  // Group Link
+  protected groupLink: GroupLink ! undefined;
+  protected isGroupLinkValid: boolean = false;
+
+  constructor(private appComponent: AppComponent,
+    private authService: AuthorizeService,
+    private router: Router,
+    private groupService: GroupService) {
+    this.errors = [];
+    this.appComponent.showChat = false;
+  }
+
+  ngOnInit(): void {
+    this.authService.user().forEach(user => {
+      this.user = user;
+    });
+    this.onStepChange().forEach(step => {
+      this.currentStep = step;
+    });
+  }
+
+  previousStep() {
+    if (this.currentStep > 0) {
+      switch (this.currentStep) {
+        case 1:
+          this.groupName = undefined;
+          this.isGroupNameValid = false;
+          break;
+        case 2:
+          this.groupLink = undefined;
+          this.isGroupLinkValid = false;
+          break;
+      }
+      this.step.next(this.currentStep - 1);
+    }
+  }
+
+  nextStep() {
+    if (this.currentStep < this.numberOfSteps) {
+      this.step.next(this.currentStep + 1);
+    }
+  }
+
+  get currentCompletePercentage() {
+    return ((this.currentStep) / this.numberOfSteps) * 100;
+  }
+
+  setGroupName($event: GroupName | undefined) {
+    this.groupName = $event;
+  }
+
+  groupNameValid($event: boolean) {
+    this.isGroupNameValid = $event;
+  }
+
+  setGroupLink($event: GroupLink | undefined) {
+    this.groupLink = $event;
+  }
+
+  groupLinkValid($event: boolean) {
+    this.isGroupLinkValid = $event;
+  }
+
+  isValid(): boolean {
+    switch (this.currentStep) {
+      case 1:
+        return this.isGroupNameValid;
+      case 2:
+        return this.isGroupLinkValid;
+      default:
+        return true;
+    }
+  }
+
+  public create(_: any) {
+    this.submitting = true;
+    this.errors = [];
+
+    const newGroup: GroupCreate = {
+      name: this.groupName?.name ?? '',
+      properties: [],
+      members: []
+      };
+      this.groupService.createGroup(newGroup).forEach(success => {
+        if (success) {
+          this.router.navigateByUrl('/');
+        }
+      }
+      ).catch(() => {
+        this.errors.push('Erro ao criar grupo.');
+        this.submitting = false;
+        return of(null);
+      });
+  }
 }

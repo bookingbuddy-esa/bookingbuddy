@@ -6,7 +6,7 @@ import { FormBuilder, Validators } from "@angular/forms";
   templateUrl: './group-name-step.component.html',
   styleUrl: './group-name-step.component.css'
 })
-export class GroupNameStepComponent {
+export class GroupNameStepComponent implements OnInit {
   @Input() errors: string[] = [];
   @Input() groupName: GroupName | undefined;
   @Output() groupNameValid = new EventEmitter<boolean>();

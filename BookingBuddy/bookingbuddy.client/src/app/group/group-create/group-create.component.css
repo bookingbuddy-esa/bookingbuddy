@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  height: inherit;
+  width: inherit;
+}
+
+.form-input-rounded-right {
+  border-radius: 0 5px 5px 0 !important;
+}
+
+.input-form-field {
+  width: 30%;
+}
+
+.bottom-button {
+  width: 10%;
+}
+
+.image-right {
+  max-height: 70%;
+  max-width: 70%;
+  object-fit: contain;
+}
+
+
+@media only screen and (max-width: 1700px) {
+  .input-form-field {
+    width: 40%;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .input-form-field {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  .input-form-field {
+    width: 60%;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .input-form-field {
+    width: 70%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .input-form-field {
+    width: 100%;
+  }
+}

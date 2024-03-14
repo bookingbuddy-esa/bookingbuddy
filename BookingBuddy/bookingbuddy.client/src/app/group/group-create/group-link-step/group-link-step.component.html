@@ -1,1 +1,5 @@
-<p>group-link-step works!</p>
+<div class="d-flex flex-column align-items-center justify-content-start p-5">
+  <div class="fs-1 p-3 fw-bold text-center">Partilhe este link com outros utilizadores para os mesmos se tornarem membros do grupo:</div>
+  <input type="text" #groupLinkInput readonly>
+  <button (click)="copyGroupLink(groupLinkInput)">Copiar Link</button>
+</div>
