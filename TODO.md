@@ -48,4 +48,5 @@
 - [X] PowerPoint DevOps - em falta exemplo (12 março)  
 - [ ] Pré-projeto - falta tudo (14 março)  
 - [ ] PowerPoint com as métricas todas de análise de requisitos, ferramentas para ver as métricas a funcionar e exemplo prático a serem aplicadas (19 março) 
-- [ ] Trabalho sobre Orquestração de contentores, Kubernetes e Maquinas-Virtuais.
+- [ ] Trabalho sobre Orquestração de contentores, Kubernetes e Maquinas-Virtuais. (21 março)
+- [ ] Orçamento (2 abril)
