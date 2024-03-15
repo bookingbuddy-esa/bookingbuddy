@@ -12,18 +12,18 @@ namespace BookingBuddy.Server.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+
 
             migrationBuilder.CreateTable(
                 name: "Groups",
                 columns: table => new
                 {
                     GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ChoosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GroupOwnerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     Members = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ChoosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

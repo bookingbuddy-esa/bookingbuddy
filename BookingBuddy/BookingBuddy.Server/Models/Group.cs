@@ -20,7 +20,7 @@ namespace BookingBuddy.Server.Models
 
         public List<string> Properties {  get; set; }
 
-        public string ChoosenProperty { get; set; } 
+        public string? ChoosenProperty { get; set; } 
 
     }
 }
