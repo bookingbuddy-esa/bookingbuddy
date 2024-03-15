@@ -16,11 +16,15 @@ namespace BookingBuddy.Server.Models
         [StringLength(25)]
         public string Name { get; set; }
 
-        public List<string> Members { get; set; }
+        public List<string> MembersId { get; set; }
 
-        public List<string> Properties {  get; set; }
+        public List<string> PropertiesId {  get; set; }
 
         public string? ChoosenProperty { get; set; } 
+
+        public List<Property>? Properties { get; set; }  
+
+        public List<ReturnUser>? Members {  get; set; }
 
     }
 }

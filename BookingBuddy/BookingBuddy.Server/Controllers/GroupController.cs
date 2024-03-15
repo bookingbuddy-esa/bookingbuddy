@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Property = BookingBuddy.Server.Models.Property;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -13,7 +14,7 @@ namespace BookingBuddy.Server.Controllers
     [ApiController]
     public class GroupController : Controller
     {
-
+        
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -56,8 +57,8 @@ namespace BookingBuddy.Server.Controllers
                 GroupId = Guid.NewGuid().ToString(),
                 GroupOwnerId = user.Id,
                 Name = model.name,
-                Members = members,
-                Properties = properties,
+                MembersId = members,
+                PropertiesId = properties,
             };  
 
             try
@@ -92,6 +93,30 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound();
                 }
 
+                List<Property> properties = new List<Property>();
+
+                group.PropertiesId?.ForEach(propertyId =>
+                {
+                    var property = _context.Property.FirstOrDefault(p => p.PropertyId == propertyId);
+                    if (property != null)
+                    {
+                        properties.Add(property);
+                    }
+                }
+                );
+
+                group.Properties = properties;
+                List<ReturnUser> users = new List<ReturnUser>();
+
+                group.MembersId?.ForEach(async memberId => {
+                    var user = await _userManager.FindByIdAsync(memberId);
+                    users.Add(new ReturnUser(){
+                        Id = user!.Id,
+                        Name = user.Name
+                    });
+                });
+
+                group.Members = users;
 
                 return group;
             }
@@ -111,7 +136,7 @@ namespace BookingBuddy.Server.Controllers
         public async Task<IActionResult> GetGroupsByUserId(string userId)
         {
             var groups = await _context.Groups
-                .Where(g => g.Members.Contains(userId))
+                .Where(g => g.MembersId.Contains(userId))
                 .ToListAsync();
 
             if (groups == null || groups.Count == 0)
@@ -138,7 +163,7 @@ namespace BookingBuddy.Server.Controllers
 
             }
 
-            group.Properties.Add(propertyId);
+            group.PropertiesId.Add(propertyId);
             try
             {
                 await _context.SaveChangesAsync();
@@ -189,7 +214,7 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            group.Members.Add(userId);
+            group.MembersId.Add(userId);
             try
             {
                 await _context.SaveChangesAsync();
@@ -206,7 +231,7 @@ namespace BookingBuddy.Server.Controllers
 
 
 
-
+        
     }
 
     public record GroupInputModel(string name, string? propertyId);
