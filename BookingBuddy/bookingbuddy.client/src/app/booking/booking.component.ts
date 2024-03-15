@@ -22,6 +22,7 @@ export class BookingComponent {
       response => {
         if (response) {
           this.bookings = response as any[];
+          this.selectedBooking = this.bookings[0];
         }
       }).catch(
         error => {

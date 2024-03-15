@@ -1,5 +1,9 @@
-﻿using BookingBuddy.Server.Data;
+﻿using System.Net.WebSockets;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
+using BookingBuddy.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +21,7 @@ namespace BookingBuddy.Server.Controllers
         
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private static readonly WebSocketWrapper<Group> WebSocketWrapper = new();
 
         /// <summary>
         /// Construtor da classe PropertyController.
@@ -54,7 +58,7 @@ namespace BookingBuddy.Server.Controllers
 
             var group = new Models.Group
             {
-                GroupId = Guid.NewGuid().ToString(),
+                GroupId = Guid.NewGuid().ToString().Split("-").Last(),
                 GroupOwnerId = user.Id,
                 Name = model.name,
                 MembersId = members,
@@ -228,10 +232,16 @@ namespace BookingBuddy.Server.Controllers
         }
 
 
+        [NonAction]
+        public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            await WebSocketWrapper.HandleAsync(group, webSocket, async groupReceived => {
+                Console.WriteLine("Group received: " + JsonSerializer.Serialize(groupReceived));
+                await WebSocketWrapper.NotifyAllAsync(groupReceived);
+            });
+        }
 
-
-
-        
     }
 
     public record GroupInputModel(string name, string? propertyId);
