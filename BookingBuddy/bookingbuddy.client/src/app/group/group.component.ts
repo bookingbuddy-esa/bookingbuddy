@@ -57,7 +57,7 @@ export class GroupComponent {
   }
 
   public vote(): void {
-    this.currentGroup?.properties.push('0c86d812-7f1c-4beb-ab78-4270dba7025f');
+    this.currentGroup?.propertiesId.push(this.currentGroup?.propertiesId[0]);
     if (this.ws) {
       this.ws.send(JSON.stringify(this.currentGroup));
     }
