@@ -42,6 +42,11 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<Favorite> Favorites{ get; set; } = default!;
 
+        /// <summary>
+        /// Propriedade que diz respeito aos grupos de viagem.
+        /// </summary>
+        public DbSet<Group> Groups { get; set; } = default!;
+
         public DbSet<Order> Order { get; set; } = default!;
         public DbSet<PromotionOrder> PromotionOrder { get; set; } = default!;
         public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;
