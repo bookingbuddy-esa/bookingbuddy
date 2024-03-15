@@ -29,7 +29,7 @@ const routes: Routes = [
   {path: 'hosting/bookings', component: HostingBookingComponent, canActivate: [AuthGuard, LandlordRoleGuardService] },
   {path: 'property/:id', component: PropertyAdRetrieveComponent},
   {path: 'transaction-handler', component: TransactionHandlerComponent, canActivate: [AuthGuard]},
-  {path: 'group/:id', component: GroupComponent, canActivate: [AuthGuard]},
+  {path: 'group', component: GroupComponent, canActivate: [AuthGuard]},
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},

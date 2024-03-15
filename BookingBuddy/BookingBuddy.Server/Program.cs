@@ -89,6 +89,20 @@ app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController pa
     }
 });
 
+app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupController, string groupId) =>
+{
+    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
+    {
+        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+        //await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+    }
+    else
+    {
+        httpContext.Response.StatusCode = 400;
+    }
+});
+
+
 app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
