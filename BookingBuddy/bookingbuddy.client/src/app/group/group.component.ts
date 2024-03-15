@@ -35,17 +35,19 @@ export class GroupComponent {
         if (params['groupId']) {
           this.groupService.getGroup(params['groupId']).forEach(response => {
             if (response) {
-              /*let url = environment.apiUrl;
+              let url = environment.apiUrl;
               url = url.replace('https', 'wss');
 
               if (this.ws) {
                 this.ws.close();
               }
 
-              let ws = new WebSocket(`${url}/api/groups/ws?groupId=${params['groupId']}`);
-              ws.onmessage = (event) => {
-
-              }*/
+              this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${params['groupId']}`);
+              this.ws.onmessage = (event) => {
+                console.log("Mensagem recebida: " + event.data);
+                let message = JSON.parse(event.data);
+                this.currentGroup = message;
+              };
             }
           }).catch(error => {
             console.log("Erro ao receber grupo: " + error);
@@ -53,9 +55,16 @@ export class GroupComponent {
         }
       });
   }
+
+  public vote(): void {
+    this.currentGroup?.properties.push('0c86d812-7f1c-4beb-ab78-4270dba7025f');
+    if (this.ws) {
+      this.ws.send(JSON.stringify(this.currentGroup));
+    }
+  }
   
   public chooseGroup(group: Group): void {
-    console.log("Escolher este grupo: " + group);
+    console.log("Escolher este grupo: " + JSON.stringify(group));
     this.currentGroup = group;
     this.router.navigate([], { 
       queryParams: {

@@ -55,6 +55,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<PaymentController, PaymentController>();
+builder.Services.AddScoped<GroupController, GroupController>();
 
 var app = builder.Build();
 
@@ -94,7 +95,7 @@ app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupC
     if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
     {
         var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        //await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+        await groupController.HandleWebSocketAsync(groupId, webSocket);
     }
     else
     {
