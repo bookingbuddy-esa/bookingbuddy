@@ -53,7 +53,7 @@ namespace BookingBuddy.Server.Controllers
 
             var group = new Models.Group
             {
-                GroupId = Guid.NewGuid().ToString(),
+                GroupId = Guid.NewGuid().ToString().Split("-").Last(),
                 GroupOwnerId = user.Id,
                 Name = model.name,
                 Members = members,

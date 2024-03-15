@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import {environment} from "../../environments/environment";
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from './group.service';
+import { timeout } from 'rxjs';
+import { AuthorizeService } from '../auth/authorize.service';
+import { UserInfo } from '../auth/authorize.dto';
+import { Group } from '../models/group';
 
 @Component({
   selector: 'app-group',
@@ -9,63 +13,66 @@ import { GroupService } from './group.service';
   styleUrl: './group.component.css'
 })
 export class GroupComponent {
-  //group_list: [] = [];
+  submitting: boolean = false;
+  user: UserInfo | undefined;
+  group_list: Group[] = [];
+  currentGroup: Group | null = null;
+  ws: WebSocket | undefined;
 
-  /*{ id: "sIc92wa4", members: ["eduardo", "pedro"], lastMessage: { member: "eduardo", message: "olá, espero que esteja tudo bem com vocês"} },
-    { id: "M5zklaw0", members: ["joao", "andre", "diogo"], lastMessage: { member: "diogo", message: "vamos fazer a reserva então?"} },*/
-    
-    group_list: { id: string; members: string[]; lastMessage: { member: string; message: string; }; }[] = [];
-    ws: WebSocket | undefined;
+  constructor(private authService: AuthorizeService, private route: ActivatedRoute, private router: Router, private groupService: GroupService) {
+  }
 
-    constructor(private route: ActivatedRoute, private router: Router, private groupService : GroupService) {
-    }
+  ngOnInit(): void {
+      this.authService.user().forEach(async user => {
+        this.user = user;
+        this.loadUserGroups();
+      });
 
-    ngOnInit(): void {
-        for (let i = 0; i < 10; i++) {
-            let members = Array.from({length: Math.floor(Math.random() * 5) + 1}, () => Math.random().toString(36).substring(2, 9));
-            let group = { 
-                id: Math.random().toString(36).substring(2, 9), 
-                members: members, 
-                lastMessage: { 
-                    member: "user1", 
-                    message: "Mensagem de placeholder não liguem a isto..."
-                } 
-            };
-            this.group_list.push(group);
-        }
+      this.route.queryParams.forEach(params => {
+        // Aqui faz o load do grupo
+        //console.log("Query params: " + params['groupId']);
 
-        this.route.queryParams.forEach(params => {
-          // Aqui faz o load do grupo
-          console.log("Query params: " + params['groupId']);
-          
+        if (params['groupId']) {
           this.groupService.getGroup(params['groupId']).forEach(response => {
             if (response) {
-              console.log("existe um grupo na db com este id");
+              /*let url = environment.apiUrl;
+              url = url.replace('https', 'wss');
+
+              if (this.ws) {
+                this.ws.close();
+              }
+
+              let ws = new WebSocket(`${url}/api/groups/ws?groupId=${params['groupId']}`);
+              ws.onmessage = (event) => {
+
+              }*/
             }
           }).catch(error => {
             console.log("Erro ao receber grupo: " + error);
           });
-
-
-          /*let url = environment.apiUrl;
-          url = url.replace('https', 'wss');
-
-          if (this.ws) {
-            this.ws.close();
-          }
-
-          let ws = new WebSocket(`${url}/api/groups/ws?groupId=${this.payment.paymentId}`);
-            ws.onmessage = (event) => {
-          }*/
-        });
-    }
+        }
+      });
+  }
   
-  public chooseGroup(group: any): void {
+  public chooseGroup(group: Group): void {
     console.log("Escolher este grupo: " + group);
+    this.currentGroup = group;
     this.router.navigate([], { 
       queryParams: {
-        groupId: group.id
+        groupId: group.groupId
       }
     });
+  }
+
+  private loadUserGroups() {
+    if(this.user){
+      this.submitting = true;
+      this.groupService.getGroupByUserId(this.user?.userId).pipe(timeout(10000)).forEach(groups => {
+        console.log(groups);
+        this.group_list = groups;
+        this.chooseGroup(this.group_list[0]);
+        this.submitting = false;
+      })
+    }
   }
 }
