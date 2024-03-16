@@ -31,6 +31,10 @@ namespace BookingBuddy.Server.Controllers
 
 
         // create "dev" endpoint to create 5 bookings
+        /// <summary>
+        /// Criação de reservas
+        /// </summary>
+        /// <returns>Retorna o resultado da criação das reservas.</returns>
         [HttpGet("dev")]
         [Authorize]
         public async Task<ActionResult> CreateBookings()
@@ -86,6 +90,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Obtém as reservas do utilizador.
+        /// </summary>
+        /// <returns>Retorna as reservas do utilizador.</returns>
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetBookings()
@@ -122,6 +131,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok(bookingOrders);
         }
 
+        /// <summary>
+        /// Obtém as mensagens relacionadas a uma reserva específica.
+        /// </summary>
+        /// <param name="bookingId">O ID da reserva para a qual as mensagens serão obtidas.</param>
+        /// <returns>Retorna as mensagens relacionadas à reserva.</returns>
         [HttpGet("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string bookingId)
@@ -162,6 +176,13 @@ namespace BookingBuddy.Server.Controllers
 
             return Ok(messages);
         }
+
+        /// <summary>
+        /// Cria uma nova mensagem relacionada a uma reserva específica.
+        /// </summary>
+        /// <param name="bookingId">O ID da reserva à qual a mensagem será adicionada.</param>
+        /// <param name="message">Os dados da nova mensagem a ser criada.</param>
+        /// <returns>Retorna o resultado da criação da mensagem.</returns>
 
         [HttpPost("{bookingId}/messages")]
         [Authorize]
@@ -212,5 +233,9 @@ namespace BookingBuddy.Server.Controllers
         } 
     }
 
+    /// <summary>
+    /// Representa os dados de uma nova mensagem relacionada a uma reserva.
+    /// </summary>
+    /// <param name="Message">O conteúdo da mensagem.</param>
     public record NewBookingMessage(string Message);
 }
