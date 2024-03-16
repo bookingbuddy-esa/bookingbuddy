@@ -1,4 +1,10 @@
-:host {
+.img-shorter {
+    max-width: 50%;
+    height: 100%;
+}
+
+
+/*:host {
     display: flex;
     height: inherit;
     width: inherit;
@@ -6,14 +12,12 @@
 
 .img-shorter {
     max-width: 50%;
-    /* Ajuste a largura máxima conforme necessário */
     height: 100%;
 }
 
 .mycarousel {
     display: flex;
     max-height: 600px;
-    /* Substitua pela altura desejada */
     overflow: hidden;
 }
 
@@ -36,4 +40,4 @@ hr {
 .total {
   margin-top: 10px; 
   font-weight: bold; 
-}
+}*/

@@ -1,3 +1,55 @@
+<!--<div class="row justify-content-center mt-5">
+    <div class="col-md-3 mb-5">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        Lista de Reservas
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 400px">
+                        <div class="list-group list-group-flush overflow-auto">
+                            <div *ngIf="bookings.length == 0" class="mx-auto p-2">
+                                <span class="text-muted small">Não existem grupos de reserva.<button type="button" class="btn btn-outline-success btn-sm rounded-pill ms-2"><i class="bi bi-person-fill-add"></i></button></span>
+                            </div>
+                            <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)" [class.selected]="booking === selectedBooking">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="fw-bold">{{selectedBooking.name}}</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9 mb-5">
+        <h2 class="text-center">Conteúdo</h2>
+        <div class="d-flex flex-column flex-md-row">
+            <div class="text-center">
+                <h2>{{selectedBooking.name}}</h2>
+                <p>Data de Check-In: {{formatDate(selectedBooking.checkIn)}}</p>
+                <p>Data de Check-Out: {{formatDate(selectedBooking.checkOut)}}</p>
+                <p>Número de Hóspedes: {{selectedBooking.numberOfGuests}}</p>
+            </div>
+            <hr />
+
+
+            <div class="chat mx-auto mb-3">
+                <h3>Chat com o Proprietário</h3>
+                <div *ngFor="let m of messages" class="text-left">
+                    <p><strong>{{m.name}}:</strong> {{m.message}}</p>
+                </div>
+
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
+                    <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
 <div class="d-flex flex-row flex-grow-1 mt-5">
     <div class="lista-reservas col-2">
         <div class="list-group text-center">

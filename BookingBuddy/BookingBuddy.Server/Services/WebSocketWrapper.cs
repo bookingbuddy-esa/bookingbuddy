@@ -19,7 +19,8 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
     /// </summary>
     /// <param name="objectToTrack">Objeto que será rastreado.</param>
     /// <param name="socket">WebSocket que se conectou.</param>
-    public async Task HandleAsync(T? objectToTrack, WebSocket socket)
+    /// <param name="onReceive">Função que será executada quando o WebSocket receber uma mensagem.</param>
+    public async Task HandleAsync(T? objectToTrack, WebSocket socket, Func<T, Task>? onReceive = null)
     {
         if (objectToTrack == null)
         {
@@ -31,7 +32,8 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
         {
             var socketId = Guid.NewGuid().ToString();
             _sockets.Add(socketId, socket);
-            var socketObjectPair = _trackingObject.FirstOrDefault(to => to.Key.GetPrimaryKey() == objectToTrack.GetPrimaryKey());
+            var socketObjectPair =
+                _trackingObject.FirstOrDefault(to => to.Key.GetPrimaryKey() == objectToTrack.GetPrimaryKey());
             if (socketObjectPair.Value != null)
             {
                 socketObjectPair.Value.Add(socket);
@@ -50,11 +52,30 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
             while (socket.State == WebSocketState.Open)
             {
                 var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), default);
+                if (onReceive != null && result.MessageType == WebSocketMessageType.Text)
+                {
+                    try
+                    {
+                        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                        var receivedObject = JsonSerializer.Deserialize<T>(message);
+                        if (receivedObject != null)
+                        {
+                            await onReceive(receivedObject);
+                        }
+
+                        continue;
+                    }
+                    catch
+                    {
+                        Console.WriteLine($"{objectToTrack.GetType().Name} WebSocket ({socketId}) received an invalid message.");
+                    }
+                }
+
                 if (result.MessageType != WebSocketMessageType.Close) continue;
                 await socket.CloseAsync(result.CloseStatus!.Value, result.CloseStatusDescription, default);
                 break;
             }
-            
+
             _sockets.Remove(socketId);
             _trackingObject.Where(to => to.Value.Contains(socket)).ToList().ForEach(to => to.Value.Remove(socket));
 
@@ -74,7 +95,8 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
     public async Task NotifyAllAsync(T? trackedObject)
     {
         if (trackedObject == null) return;
-        var socketTracking = _trackingObject.FirstOrDefault(sp => sp.Key.GetPrimaryKey() == trackedObject.GetPrimaryKey());
+        var socketTracking =
+            _trackingObject.FirstOrDefault(sp => sp.Key.GetPrimaryKey() == trackedObject.GetPrimaryKey());
         foreach (var socket in socketTracking.Value)
         {
             var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;
@@ -110,7 +132,6 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
 /// </summary>
 public interface IPrimaryKey
 {
-    
     /// <summary>
     /// Método que retorna a chave primária do objeto.
     /// </summary>
