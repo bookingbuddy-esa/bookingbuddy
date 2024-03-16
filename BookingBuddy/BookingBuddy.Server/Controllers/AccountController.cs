@@ -194,7 +194,7 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Login com um email e uma palavra-passe.
+        /// Login com um email e uma palavra-passe (conta de utilizador do site).
         /// </summary>
         /// <remarks>
         /// Nenhum dos parâmetros pode ser null.
@@ -252,7 +252,7 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Login com um fornecedor.
+        /// Login com um fornecedor, neste caso, Microsoft e Google.
         /// </summary>
         /// <param name="model">Modelo de login com fornecedor</param>
         /// <returns></returns>
