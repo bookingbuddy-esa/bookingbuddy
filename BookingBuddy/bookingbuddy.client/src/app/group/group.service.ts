@@ -12,8 +12,16 @@ export class GroupService {
   constructor(private http: HttpClient) {
   }
 
-  public getProperty(groupId: string) {
+  public getGroups() {
+    return this.http.get(`${environment.apiUrl}/api/groups/`);
+  }
+
+  public getGroup(groupId: string) {
     return this.http.get(`${environment.apiUrl}/api/groups/${groupId}`);
+  }
+
+  public getGroupByUserId(userId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.apiUrl}/api/groups/user/${userId}`);
   }
 
   public createGroup(group: GroupCreate) {
@@ -29,9 +37,5 @@ export class GroupService {
       .pipe<boolean>(map((res: HttpResponse<string>) => {
         return res.ok;
       }));
-  }
-
-  public getGroups() {
-    return this.http.get(`${environment.apiUrl}/api/groups/`);
   }
 }
