@@ -32,6 +32,13 @@
             <app-loader></app-loader>
         </div>
         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+            <div *ngIf="!currentGroup">
+                <!-- COLOCAR O GRUPO QUE ESTA ATIVO COM OUTRA COR -->
+                <h5>Selecione um grupo na barra lateral</h5>
+            </div>
+            <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
+                <span class="text-muted small">Não existem propriedades para este grupo.</span>
+            </div>
             <div class="card mb-3 me-md-2 w-75 w-lg-25" *ngFor="let property of currentGroup?.propertiesId">
                 <img src="https://bookingbuddyrepository.blob.core.windows.net/images/284c96f1-af95-4600-9e94-da5a6b84ad8e.jpg" class="card-img-top object-fit-fill" alt="Imagem do Card">
                 <div class="card-body">

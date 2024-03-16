@@ -35,6 +35,7 @@ export class GroupComponent {
         if (params['groupId']) {
           this.groupService.getGroup(params['groupId']).forEach(response => {
             if (response) {
+              this.currentGroup = response as Group;
               let url = environment.apiUrl;
               url = url.replace('https', 'wss');
 
@@ -50,7 +51,7 @@ export class GroupComponent {
               };
             }
           }).catch(error => {
-            console.log("Erro ao receber grupo: " + error);
+            console.log("Erro ao receber grupo: " + JSON.stringify(error));
           });
         }
       });
@@ -76,10 +77,9 @@ export class GroupComponent {
   private loadUserGroups() {
     if(this.user){
       this.submitting = true;
-      this.groupService.getGroupByUserId(this.user?.userId).pipe(timeout(10000)).forEach(groups => {
-        console.log(groups);
+      this.groupService.getGroupsByUserId(this.user?.userId).pipe(timeout(10000)).forEach(groups => {
+        //console.log(groups);
         this.group_list = groups;
-        this.chooseGroup(this.group_list[0]);
         this.submitting = false;
       })
     }

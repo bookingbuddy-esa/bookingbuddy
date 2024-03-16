@@ -45,32 +45,39 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
-            List<string> properties = [];
-
-            if (model.propertyId != null)
-            {
-                properties.Add(model.propertyId);
-            }
-
-            List<string> members = [];
-
-            members.Add(user.Id);
-
             var group = new Models.Group
             {
                 GroupId = Guid.NewGuid().ToString().Split("-").Last(),
                 GroupOwnerId = user.Id,
                 Name = model.name,
-                MembersId = members,
-                PropertiesId = properties,
-            };  
+                MembersId = new List<string> { user.Id },
+                PropertiesId = new List<string>()
+            };
+
+            if (model.propertyId != null)
+            {
+                group.PropertiesId.Add(model.propertyId);
+            }
+
+            if(model.memberEmails != null)
+            {
+                foreach (var email in model.memberEmails)
+                {
+                    var member = await _userManager.FindByEmailAsync(email);
+                    if (member != null)
+                    {
+                        // TODO: send invite link para o endpoint /invite
+                        Console.WriteLine("TODO");
+                    }
+                }
+            }
 
             try
             {
                 _context.Groups.Add(group);
                 await _context.SaveChangesAsync();
-
-                return Ok("Grupo criado com sucesso.");
+                //return Ok("Grupo criado com sucesso.");
+                return CreatedAtAction(nameof(GetGroup), new { groupId = group.GroupId }, group);
             }
             catch (Exception)
             {
@@ -91,37 +98,36 @@ namespace BookingBuddy.Server.Controllers
             try
             {
                 var group = await _context.Groups.FindAsync(groupId);
-
                 if (group == null)
                 {
                     return NotFound();
                 }
 
                 List<Property> properties = new List<Property>();
-
-                group.PropertiesId?.ForEach(propertyId =>
-                {
+                group.PropertiesId?.ForEach(propertyId => {
                     var property = _context.Property.FirstOrDefault(p => p.PropertyId == propertyId);
                     if (property != null)
                     {
-                        properties.Add(property);
+                        properties.Add(property); // TODO: não acho que seja necessário adicionar tudo o que retorna da property
                     }
-                }
-                );
+                });
 
                 group.Properties = properties;
+
+
                 List<ReturnUser> users = new List<ReturnUser>();
 
-                group.MembersId?.ForEach(async memberId => {
-                    var user = await _userManager.FindByIdAsync(memberId);
-                    users.Add(new ReturnUser(){
-                        Id = user!.Id,
-                        Name = user.Name
-                    });
+                group.MembersId?.ForEach(memberId => {
+                    var user = _context.Users.FirstOrDefault(u => u.Id == memberId);
+                    if(user != null){
+                        users.Add(new ReturnUser(){
+                            Id = user.Id,
+                            Name = user.Name
+                        });
+                    }
                 });
 
                 group.Members = users;
-
                 return group;
             }
             catch (Exception ex)
@@ -139,16 +145,28 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetGroupsByUserId(string userId)
         {
-            var groups = await _context.Groups
-                .Where(g => g.MembersId.Contains(userId))
-                .ToListAsync();
+            try {
+                var groups = await _context.Groups.Where(g => g.MembersId.Contains(userId)).ToListAsync();
+                if (groups == null)
+                {
+                    return NotFound();
+                }
 
-            if (groups == null || groups.Count == 0)
-            {
-                return NotFound("Nenhum grupo encontrado para o utilizador fornecido.");
+                List<Group> groupsList = new List<Group>();
+                foreach (var group in groups)
+                {
+                    var groupResult = await GetGroup(group.GroupId);
+                    if (groupResult != null)
+                    {
+                        groupsList.Add((Group)groupResult.Value);
+                    }
+                }
+
+                return Ok(groupsList);
+            } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+                return NotFound();
             }
-
-            return Ok(groups);
         }
 
 
@@ -244,5 +262,5 @@ namespace BookingBuddy.Server.Controllers
 
     }
 
-    public record GroupInputModel(string name, string? propertyId);
+    public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
 }
