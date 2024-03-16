@@ -33,7 +33,12 @@ namespace BookingBuddy.Server.Controllers
             _context = context;
             _userManager = userManager;
         }
-        
+
+        /// <summary>
+        /// Método para criar um novo grupo.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Retorna o resultado da criação do grupo.</returns>
         [HttpPost("create")]
         [Authorize]
         public async Task<IActionResult> CreateGroup(GroupInputModel model)
@@ -91,7 +96,7 @@ namespace BookingBuddy.Server.Controllers
         /// Caso não exista retorna que não foi encontrado.
         /// </summary>
         /// <param name="groupId">Identificador do grupo</param>
-        /// <returns>O grupo, caso exista, não encontrado, caso contrário</returns>
+        /// <returns>O grupo, caso exista ou não encontrado, caso contrário</returns>
         [HttpGet("{groupId}")]
         public async Task<ActionResult<Models.Group>> GetGroup(string groupId)
         {
@@ -141,7 +146,7 @@ namespace BookingBuddy.Server.Controllers
         /// Método que obtém os grupos de um utilizador.
         /// </summary>
         /// <param name="userId">Identificador do utilizador</param>
-        /// <returns>Lista com os grupos do utilizador, caso exista, ou não encontrada, caso contrário</returns>
+        /// <returns>Lista com os grupos do utilizador, caso exista ou não encontrada, caso contrário</returns>
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetGroupsByUserId(string userId)
         {
@@ -170,6 +175,12 @@ namespace BookingBuddy.Server.Controllers
         }
 
 
+        /// <summary>
+        /// Adiciona uma propriedade a um grupo existente.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
+        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpPut("addProperty")]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
@@ -198,6 +209,12 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Define uma propriedade como a propriedade escolhida para um grupo.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo para o qual a propriedade será definida como escolhida.</param>
+        /// <param name="propertyId">O ID da propriedade que será definida como escolhida.</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpPut("setChoosenProperty")]
         public async Task<IActionResult> SetChoosenProperty(string groupId, string propertyId)
         {
@@ -226,6 +243,13 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Adiciona um utilizador como membro de um grupo existente.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo ao qual o usuário será adicionado como membro.</param>
+        /// <param name="userId">O ID do usuário a ser adicionado como membro.</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+
         [HttpPut("addMember")]
         public async Task<IActionResult> AddMember(string groupId, string userId)
         {
@@ -250,6 +274,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
 
+        /// <summary>
+        /// Manipula a comunicação WebSocket para um grupo específico.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
+        /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
+
         [NonAction]
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
@@ -262,5 +293,11 @@ namespace BookingBuddy.Server.Controllers
 
     }
 
+    /// <summary>
+    /// Modelo que representa a criação de um grupo.
+    /// </summary>
+    /// <param name="name">O nome do grupo.</param>
+    /// <param name="propertyId">O ID da propriedade associada ao grupo (opcional).</param>
+    /// <param name="memberEmails">Uma lista de endereços de e-mail dos membros a serem adicionados ao grupo (opcional).</param>
     public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
 }
