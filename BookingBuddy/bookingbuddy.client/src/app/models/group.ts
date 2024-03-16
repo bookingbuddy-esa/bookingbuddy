@@ -1,18 +1,18 @@
-import { ApplicationUser } from "./applicationUser";
 import { Property } from "./property";
 
 export interface Group {
-  groupId: string;
-  groupOwnerId: string;
-  groupOwner?: ApplicationUser;
-  name: string;
-  properties?: Property[];
-  members?: string[];
-  chosenProperty?: Property;
+  groupId: string,
+  groupOwnerId: string,
+  name: string,
+  membersId: string[],
+  members: string[],
+  propertiesId: string[],
+  properties: Property[],
+  choosenProperty: string
 }
 
 export interface GroupCreate {
   name: string;
-  properties: string[];
-  members: string[];
+  propertyId?: string;
+  members?: string[]
 }
