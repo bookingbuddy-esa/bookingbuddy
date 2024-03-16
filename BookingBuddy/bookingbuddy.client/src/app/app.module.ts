@@ -40,7 +40,7 @@ import { TransactionHandlerComponent } from './payment/transaction-handler/trans
 import { GroupComponent } from './group/group.component';
 import { GroupCreateComponent } from './group/group-create/group-create.component';
 import { GroupNameStepComponent } from './group/group-create/group-name-step/group-name-step.component';
-import { GroupLinkStepComponent } from './group/group-create/group-link-step/group-link-step.component';
+import { GroupMembersStepComponent } from './group/group-create/group-members-step/group-members-step.component';
 import { FirstStepComponent } from './group/group-create/first-step/first-step.component';
 
 @NgModule({
@@ -60,7 +60,7 @@ import { FirstStepComponent } from './group/group-create/first-step/first-step.c
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupLinkStepComponent, FirstStepComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupMembersStepComponent, FirstStepComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

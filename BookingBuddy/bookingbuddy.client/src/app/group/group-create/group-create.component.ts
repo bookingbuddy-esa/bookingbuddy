@@ -7,7 +7,7 @@ import { AuthorizeService } from '../../auth/authorize.service';
 import { UserInfo } from "../../auth/authorize.dto";
 import { Group, GroupCreate } from "../../models/group";
 import { GroupName } from "./group-name-step/group-name-step.component";
-import { GroupLink } from "./group-link-step/group-link-step.component";
+import { GroupMembers } from "./group-members-step/group-members-step.component";
 import { AppComponent } from '../../app.component';
 
 @Component({
@@ -28,12 +28,12 @@ export class GroupCreateComponent implements OnInit {
   }
 
   // Group Name
-  protected groupName: GroupName ! undefined;
+  protected groupName: GroupName | undefined;
   protected isGroupNameValid: boolean = false;
 
-  // Group Link
-  protected groupLink: GroupLink ! undefined;
-  protected isGroupLinkValid: boolean = false;
+  // Group Members
+  protected groupMembers: GroupMembers | undefined;
+  protected isGroupMembersValid: boolean = false;
 
   constructor(private appComponent: AppComponent,
     private authService: AuthorizeService,
@@ -60,8 +60,8 @@ export class GroupCreateComponent implements OnInit {
           this.isGroupNameValid = false;
           break;
         case 2:
-          this.groupLink = undefined;
-          this.isGroupLinkValid = false;
+          this.groupMembers = undefined;
+          this.isGroupMembersValid = false;
           break;
       }
       this.step.next(this.currentStep - 1);
@@ -86,12 +86,12 @@ export class GroupCreateComponent implements OnInit {
     this.isGroupNameValid = $event;
   }
 
-  setGroupLink($event: GroupLink | undefined) {
-    this.groupLink = $event;
+  setGroupMembers($event: GroupMembers | undefined) {
+    this.groupMembers = $event;
   }
 
-  groupLinkValid($event: boolean) {
-    this.isGroupLinkValid = $event;
+  groupMembersValid($event: boolean) {
+    this.isGroupMembersValid = $event;
   }
 
   isValid(): boolean {
@@ -99,7 +99,7 @@ export class GroupCreateComponent implements OnInit {
       case 1:
         return this.isGroupNameValid;
       case 2:
-        return this.isGroupLinkValid;
+        return this.isGroupMembersValid;
       default:
         return true;
     }
@@ -111,7 +111,7 @@ export class GroupCreateComponent implements OnInit {
 
     const newGroup: GroupCreate = {
       name: this.groupName?.name ?? '',
-      properties: [],
+      propertyId: '',
       members: []
       };
       this.groupService.createGroup(newGroup).forEach(success => {

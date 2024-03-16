@@ -1,0 +1,24 @@
+<div class="d-flex flex-column align-items-center justify-content-start p-5 flex-grow-1">
+  <div class="d-flex flex-column align-items-center w-100">
+    <div *ngIf="errors.length !== 0"
+         class="alert alert-danger alert-dismissible d-flex w-75 align-items-center fade show my-2" role="alert">
+      <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
+              (click)="errors=[]"></button>
+      <div class="d-flex flex-column align-items-start">
+        <span *ngFor="let error of errors">{{ error }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="fs-1 p-3 fw-bold text-center">Preencher informações sobre o grupo</div>
+  <div class="fs-6 p-2 text-center">Preencha o seguinte campo com a informação relativa ao email do membro a convidar para o grupo.</div>
+  <form class="d-flex w-75 mt-3 h-50 flex-column align-items-center justify-content-center p5" [formGroup]="infoForm">
+    <div class="d-flex w-100 flex-column mb-3 flex-grow-1">
+      <input type="text" name="members" class="form-control h-100" formControlName="members" style="resize: none"
+             placeholder="Introduza o email de um membro"
+             [ngClass]="{'is-valid':membersFormField?.valid && membersFormField?.dirty,'is-invalid':membersFormField?.invalid && membersFormField?.dirty}" />
+      <div *ngIf="nenbersFormField?.value!.length === 0" class="invalid-feedback">
+        Insira um email para convidar um membro para o grupo.
+      </div>
+    </div>
+  </form>
+</div>

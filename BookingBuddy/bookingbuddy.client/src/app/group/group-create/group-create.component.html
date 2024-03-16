@@ -2,7 +2,7 @@
   <app-first-step *ngSwitchCase="0" (nextStep)="nextStep()" [currentPercentage]="currentCompletePercentage">
   </app-first-step>
   <app-group-name-step *ngSwitchCase="1" [groupName]="groupName" (groupNameValid)="groupNameValid($event)" (groupNameSubmit)="setGroupName($event)"></app-group-name-step>
-  <app-group-link-step *ngSwitchCase="2" [groupLink]="groupLink" (groupLinkValid)="groupLinkValid($event)" (groupLinkSubmit)="setGroupLink($event)"></app-group-link-step>
+  <app-group-members-step *ngSwitchCase="2" [groupMembers]="groupMembers" (groupMembersValid)="groupMembersValid($event)" (groupMembersSubmit)="setGroupMembers($event)"></app-group-members-step>
   <div class="d-flex flex-column w-100 align-items-center" style="height: 15%">
     <div class="progress w-100 rounded-0" role="progressbar" aria-label="Progress Bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="progress-bar bg-dark" [style.width.%]="currentCompletePercentage"></div>

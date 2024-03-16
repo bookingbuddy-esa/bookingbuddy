@@ -27,7 +27,7 @@ export class GroupService {
   public createGroup(group: GroupCreate) {
     return this.http.post(`${environment.apiUrl}/api/groups/create`, {
       name: group.name,
-      properties: group.properties,
+      propertyId: group.propertyId,
       members: group.members,
     }, {
       withCredentials: true,
