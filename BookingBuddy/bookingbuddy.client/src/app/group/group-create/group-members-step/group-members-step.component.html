@@ -16,7 +16,7 @@
       <input type="text" name="members" class="form-control h-100" formControlName="members" style="resize: none"
              placeholder="Introduza o email de um membro"
              [ngClass]="{'is-valid':membersFormField?.valid && membersFormField?.dirty,'is-invalid':membersFormField?.invalid && membersFormField?.dirty}" />
-      <div *ngIf="nenbersFormField?.value!.length === 0" class="invalid-feedback">
+      <div *ngIf="membersFormField?.value!.length === 0" class="invalid-feedback">
         Insira um email para convidar um membro para o grupo.
       </div>
     </div>
