@@ -10,3 +10,9 @@ export interface Group {
   properties: Property[],
   choosenProperty: string
 }
+
+export interface GroupCreate {
+  name: string;
+  propertyId?: string;
+  members?: string[]
+}

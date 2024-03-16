@@ -1,44 +1,46 @@
 <header>
-    <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow" aria-label="Fourth navbar example">
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm sticky-top navbar-light bg-white border-bottom box-shadow">
         <div class="container-fluid mx-5 px-5">
             <a class="navbar-brand" href="#">
                 <img src="../../assets/img/logo.png" width="64" height="64" alt="">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarsExample04">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{ show: isExpanded }">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
+                        <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
                     </li>
                 </ul>
                 <form class="d-flex me-auto">
                     <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
                         <input type="search" class="form-control" placeholder="Procurar" aria-label="Procurar" aria-describedby="basic-addon1">
                     </div>
                 </form>
-                <button *ngIf="signedIn" class="nav-item favoritesBtn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-                    <i class="bi bi-star-fill text-warning"></i>
+                <button *ngIf="signedIn" class="favoritesBtn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                  <i class="bi bi-star-fill text-warning"></i>
                 </button>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-list"></i></a>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-list"></i>
+                        </a>
                         <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDarkDropdownMenuLink">
-                            <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['register']">Registar<i class="bi bi-person-add ms-2"></i></a></li>
-                            <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i></a></li>
-                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['profile']">{{ user?.name }}<i class="bi bi-person ms-2"></i></a></li>
-                            <hr *ngIf="signedIn" class="dropdown-divider">
-                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/performance']">Estatísticas <i class="bi bi-graph-up ms-2"></i></a></li>
-                            <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['bookings']">Reservas Pessoais<i class="bi bi-journals ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/bookings']">Reservas de Hóspedes<i class="bi bi-journal-check ms-2"></i></a></li>
-                            <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
-                            <hr *ngIf="signedIn" class="dropdown-divider">
-                            <li *ngIf="signedIn"><button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">Logout<i class="bi bi-door-open ms-2"></i></button></li>
+                          <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['register']">Registar<i class="bi bi-person-add ms-2"></i></a></li>
+                          <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i></a></li>
+                          <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['profile']">{{ user?.name }}<i class="bi bi-person ms-2"></i></a></li>
+                          <hr *ngIf="signedIn" class="dropdown-divider">
+                          <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/create']">Criar Anúncio<i class="bi bi-house-add ms-2"></i></a></li>
+                          <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/calendar']">Calendário<i class="bi bi-calendar-date ms-2"></i></a></li>
+                          <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/performance']">Estatísticas <i class="bi bi-graph-up ms-2"></i></a></li>
+                          <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['bookings']">Reservas Pessoais<i class="bi bi-journals ms-2"></i></a></li>
+                          <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/bookings']">Reservas de Hóspedes<i class="bi bi-journal-check ms-2"></i></a></li>
+                          <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['hosting/promote']">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a></li>
+                          <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['group/create']">Criar Grupo<i class="bi bi-people ms-2"></i></a></li>
+                          <hr *ngIf="signedIn" class="dropdown-divider">
+                          <li *ngIf="signedIn"><button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">Logout<i class="bi bi-door-open ms-2"></i></button></li>
                         </ul>
                     </li>
                 </ul>
