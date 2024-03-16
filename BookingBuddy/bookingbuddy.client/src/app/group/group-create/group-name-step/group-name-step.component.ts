@@ -12,7 +12,7 @@ export class GroupNameStepComponent implements OnInit {
   @Output() groupNameValid = new EventEmitter<boolean>();
   @Output() groupNameSubmit = new EventEmitter<GroupName>();
   protected currentGroupName: GroupName | undefined;
-  protected nameForm = this.formBuilder.group({
+  protected groupNameForm = this.formBuilder.group({
     name: ['', Validators.required, Validators.minLength(3), Validators.maxLength(20)]
   });
 
@@ -23,20 +23,20 @@ export class GroupNameStepComponent implements OnInit {
   ngOnInit(): void {
     if (this.groupName) {
       this.currentGroupName = this.groupName;
-      this.nameForm.get('name')?.setValue(this.groupName.name);
+      this.groupNameForm.get('name')?.setValue(this.groupName.name);
     }
 
-    this.nameForm.valueChanges.forEach(() => {
-      this.groupNameValid.emit(this.nameForm.valid);
+    this.groupNameForm.valueChanges.forEach(() => {
+      this.groupNameValid.emit(this.groupNameForm.valid);
       this.currentGroupName = {
-        name: this.nameFormField!.value ?? ""
+        name: this.groupNameFormField!.value ?? ""
       };
       this.groupNameSubmit.emit(this.currentGroupName);
     })
   }
 
-  get nameFormField() {
-    return this.nameForm.get('name');
+  get groupNameFormField() {
+    return this.groupNameForm.get('name');
   }
 }
 

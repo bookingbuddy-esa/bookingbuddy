@@ -112,11 +112,11 @@ export class GroupCreateComponent implements OnInit {
     const newGroup: GroupCreate = {
       name: this.groupName?.name ?? '',
       propertyId: '',
-      members: []
+      members: this.groupMembers?.members ?? []
       };
       this.groupService.createGroup(newGroup).forEach(success => {
         if (success) {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('group');
         }
       }
       ).catch(() => {

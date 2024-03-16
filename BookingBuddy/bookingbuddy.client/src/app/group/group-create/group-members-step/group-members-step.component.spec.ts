@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GroupLinkStepComponent } from './group-link-step.component';
+import { GroupMembersStepComponent } from './group-members-step.component';
 
-describe('GroupLinkStepComponent', () => {
-  let component: GroupLinkStepComponent;
-  let fixture: ComponentFixture<GroupLinkStepComponent>;
+describe('GroupMembersStepComponent', () => {
+  let component: GroupMembersStepComponent;
+  let fixture: ComponentFixture<GroupMembersStepComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GroupLinkStepComponent]
+      declarations: [GroupMembersStepComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(GroupLinkStepComponent);
+    fixture = TestBed.createComponent(GroupMembersStepComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
