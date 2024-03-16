@@ -13,7 +13,7 @@ export class GroupNameStepComponent implements OnInit {
   @Output() groupNameSubmit = new EventEmitter<GroupName>();
   protected currentGroupName: GroupName | undefined;
   protected groupNameForm = this.formBuilder.group({
-    name: ['', Validators.required, Validators.minLength(3), Validators.maxLength(20)]
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]]
   });
 
   constructor(private formBuilder: FormBuilder) {

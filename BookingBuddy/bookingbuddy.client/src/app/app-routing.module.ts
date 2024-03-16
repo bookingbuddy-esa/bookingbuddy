@@ -31,7 +31,7 @@ const routes: Routes = [
   {path: 'property/:id', component: PropertyAdRetrieveComponent},
   {path: 'transaction-handler', component: TransactionHandlerComponent, canActivate: [AuthGuard]},
   {path: 'group', component: GroupComponent, canActivate: [AuthGuard]},
-  {path: 'group/create', component: GroupCreateComponent, canActivate: [AuthGuard]},
+  {path: 'group-booking', component: GroupCreateComponent, canActivate: [AuthGuard]},
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},

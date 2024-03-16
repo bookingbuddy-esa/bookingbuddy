@@ -13,7 +13,7 @@ export class GroupMembersStepComponent {
   @Output() groupMembersSubmit = new EventEmitter<GroupMembers>();
   protected currentGroupMembers: GroupMembers | undefined;
   protected groupMembersForm = this.formBuilder.group({
-    members: ['', Validators.required, Validators.email]
+    members: ['', [Validators.required, Validators.email]]
   });
 
   constructor(private formBuilder: FormBuilder) {
@@ -36,6 +36,10 @@ export class GroupMembersStepComponent {
         this.groupMembersSubmit.emit(this.currentGroupMembers);
       }
     })
+  }
+
+  save(event: any): void {
+    console.log("You entered: ", event.target.value);
   }
 
   get groupMembersFormField() {
