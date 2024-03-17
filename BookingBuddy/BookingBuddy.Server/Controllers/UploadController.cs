@@ -19,6 +19,10 @@ namespace BookingBuddy.Server.Controllers
     {
         private readonly BlobServiceClient _blobServiceClient;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration"></param>
         public UploadController(IConfiguration configuration)
         {
             _blobServiceClient = new BlobServiceClient(configuration.GetConnectionString("AzureStorageAccount"));
@@ -26,9 +30,9 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// escrever
+        /// Método para fazer upload de ficheiros para o AzureStorageAccount
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Mensagem de feedback: BadRequest ou Ok</returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UploadFiles()
