@@ -534,6 +534,10 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Dates unblocked successfully");
         }
 
+        /// <summary>
+        /// Obtém as reservas associadas do utilizador com login efetuado.
+        /// </summary>
+        /// <returns>Ação HTTP que representa o resultado da operação.</returns>
         [HttpGet("bookings")]
         [Authorize]
         public async Task<IActionResult> GetAssociatedBookings()
@@ -747,6 +751,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Discount removed successfully");
         }
 
+        /// <summary>
+        /// Adiciona um propriedade aos favoritos
+        /// </summary>
+        /// <param name="propertyId"> Parametro que contém o id da propriedade a ser adicionada aos favoritos</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [Authorize]
         [HttpPost("favorites/add/{propertyId}")]
         public async Task<IActionResult> AddToFavorite(string propertyId)
@@ -779,6 +788,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Propriedade adicionada aos favoritos com sucesso.");
         }
 
+        /// <summary>
+        /// Remove uma propriedade dos favoritos
+        /// </summary>
+        /// <param name="propertyId">Parametro que contém o id da propriedade a ser removida dos favoritos</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpDelete]
         [Route("favorites/remove/{propertyId}")]
         [Authorize]
@@ -816,6 +830,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Propriedade removida dos favoritos com sucesso.");
         }
 
+        /// <summary>
+        /// Método que obtem as propriedades que o utilizador marcou como favoritas
+        /// </summary>
+        /// <param name="userId"> Parametro que fornece o id do utilizador</param>
+        /// <returns>Ação HTTP que representa o resultado da operação, neste caso, os favoritos</returns>
         [HttpGet("favorites/user/{userId}")]
         public async Task<IActionResult> GetUserFavorites(string userId)
         {
@@ -835,6 +854,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok(favorites);
         }
 
+        /// <summary>
+        /// Método que verifica se a propriedade escolhida está nos favoritos do utilizador
+        /// </summary>
+        /// <param name="propertyId">Parametro que contém o id da propriedade a ser analisada</param>
+        /// <returns>ação HTTP que representa o resultado da operação.</returns>
         [HttpGet("favorites/check/{propertyId}")]
         public async Task<IActionResult> IsPropertyInFavorites(string propertyId)
         {
