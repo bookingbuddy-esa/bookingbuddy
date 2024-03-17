@@ -21,6 +21,7 @@ namespace BookingBuddy.Server.Controllers
         
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
         private static readonly WebSocketWrapper<Group> WebSocketWrapper = new();
 
         /// <summary>
@@ -28,10 +29,11 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        public GroupController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
+        public GroupController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -52,7 +54,7 @@ namespace BookingBuddy.Server.Controllers
 
             var group = new Models.Group
             {
-                GroupId = Guid.NewGuid().ToString().Split("-").Last(),
+                GroupId = Guid.NewGuid().ToString().Substring(0, 16),
                 GroupOwnerId = user.Id,
                 Name = model.name,
                 MembersId = new List<string> { user.Id },
@@ -71,8 +73,13 @@ namespace BookingBuddy.Server.Controllers
                     var member = await _userManager.FindByEmailAsync(email);
                     if (member != null)
                     {
-                        // TODO: send invite link para o endpoint /invite
-                        Console.WriteLine("TODO");
+                        Console.WriteLine("------------> encontrado: " + member.Name);
+                        var groupReservationLink = $"{_configuration.GetSection("Front-End-Url").Value!}/group?groupId={group.GroupId}";
+                        await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                            "d-d42dbf24249347e98a2e869043c21b26", email, member.Name,
+                            new { groupReservationLink });
+
+                        group.MembersId.Add(member.Id);
                     }
                 }
             }
@@ -98,6 +105,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="groupId">Identificador do grupo</param>
         /// <returns>O grupo, caso exista ou não encontrado, caso contrário</returns>
         [HttpGet("{groupId}")]
+        [Authorize]
         public async Task<ActionResult<Models.Group>> GetGroup(string groupId)
         {
             try
@@ -105,7 +113,7 @@ namespace BookingBuddy.Server.Controllers
                 var group = await _context.Groups.FindAsync(groupId);
                 if (group == null)
                 {
-                    return NotFound();
+                    return NotFound("Não foi encontrado nenhum grupo com este ID. Certifique-se que o URL está correto.");
                 }
 
                 List<Property> properties = new List<Property>();
@@ -148,6 +156,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="userId">Identificador do utilizador</param>
         /// <returns>Lista com os grupos do utilizador, caso exista ou não encontrada, caso contrário</returns>
         [HttpGet("user/{userId}")]
+        [Authorize]
         public async Task<IActionResult> GetGroupsByUserId(string userId)
         {
             try {
@@ -182,6 +191,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpPut("addProperty")]
+        [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
             var group = await _context.Groups.FindAsync(groupId);
@@ -216,6 +226,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="propertyId">O ID da propriedade que será definida como escolhida.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpPut("setChoosenProperty")]
+        [Authorize]
         public async Task<IActionResult> SetChoosenProperty(string groupId, string propertyId)
         {
             var group = await _context.Groups.FindAsync(groupId);
@@ -250,22 +261,28 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="userId">O ID do usuário a ser adicionado como membro.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
 
+        [Authorize]
         [HttpPut("addMember")]
-        public async Task<IActionResult> AddMember(string groupId, string userId)
+        public async Task<IActionResult> AddMember(string groupId)
         {
             var group = await _context.Groups.FindAsync(groupId);
-
             if (group == null)
             {
                 return NotFound();
             }
 
-            group.MembersId.Add(userId);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            group.MembersId.Add(user.Id);
             try
             {
                 await _context.SaveChangesAsync();
 
-                return Ok("Propriedade escolhida com sucesso.");
+                return Ok("Membro adicionado ao grupo com sucesso.");
             }
             catch (Exception)
             {
