@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { BehaviorSubject, interval, map, Observable, of, Subject, timeout } from 'rxjs';
 import { GroupService } from '../group.service';
@@ -9,6 +9,7 @@ import { Group, GroupCreate } from "../../models/group";
 import { GroupName } from "./group-name-step/group-name-step.component";
 import { GroupMembers } from "./group-members-step/group-members-step.component";
 import { AppComponent } from '../../app.component';
+import { PropertyAdService } from '../../property-ad/property-ad.service';
 
 @Component({
   selector: 'app-group-create',
@@ -35,8 +36,13 @@ export class GroupCreateComponent implements OnInit {
   protected groupMembers: GroupMembers | undefined;
   protected isGroupMembersValid: boolean = false;
 
+  // Property
+  protected propertyId: string = '';
+
   constructor(private appComponent: AppComponent,
+    private propertyService: PropertyAdService,
     private authService: AuthorizeService,
+    private route: ActivatedRoute,
     private router: Router,
     private groupService: GroupService) {
     this.errors = [];
@@ -47,8 +53,23 @@ export class GroupCreateComponent implements OnInit {
     this.authService.user().forEach(user => {
       this.user = user;
     });
+
     this.onStepChange().forEach(step => {
       this.currentStep = step;
+    });
+
+    this.route.queryParams.forEach(params => {
+      if (params['propertyId']) {
+        this.propertyService.getProperty(params['propertyId']).forEach(response => {
+          if (response) {
+            this.propertyId = params['propertyId'];
+          }
+        }).catch(
+          error => {
+            this.router.navigate(['group-booking']);
+          }
+        );
+      }
     });
   }
 
@@ -111,18 +132,18 @@ export class GroupCreateComponent implements OnInit {
 
     const newGroup: GroupCreate = {
       name: this.groupName?.name ?? '',
-      propertyId: '',
+      propertyId: this.propertyId,
       members: this.groupMembers?.members ?? []
       };
-      this.groupService.createGroup(newGroup).forEach(success => {
-        if (success) {
-          this.router.navigateByUrl('group');
+      this.groupService.createGroup(newGroup).forEach(response => {
+        if (response) {
+          this.router.navigate(['group'], { queryParams: { groupId: response.groupId } });
         }
       }
       ).catch(() => {
         this.errors.push('Erro ao criar grupo.');
         this.submitting = false;
-        return of(null);
+        return;
       });
   }
 }

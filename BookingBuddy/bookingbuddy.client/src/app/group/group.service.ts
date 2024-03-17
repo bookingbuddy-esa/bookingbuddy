@@ -13,15 +13,15 @@ export class GroupService {
   }
 
   public getGroups() {
-    return this.http.get(`${environment.apiUrl}/api/groups/`);
+    return this.http.get(`${environment.apiUrl}/api/groups/`, { withCredentials: true });
   }
 
   public getGroup(groupId: string) {
-    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}`);
+    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}`, { withCredentials: true });
   }
 
   public getGroupsByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/groups/user/${userId}`);
+    return this.http.get<any[]>(`${environment.apiUrl}/api/groups/user/${userId}`, { withCredentials: true });
   }
 
   public createGroup(group: GroupCreate) {
@@ -33,9 +33,19 @@ export class GroupService {
       withCredentials: true,
       observe: 'response',
       responseType: 'text'
-    })
-      .pipe<boolean>(map((res: HttpResponse<string>) => {
-        return res.ok;
-      }));
+    }).pipe(map((res: any) => {
+      return res.body;
+    }));
+  }
+
+  public addMemberToGroup(groupId: string) {
+    return this.http.put(`${environment.apiUrl}/api/groups/addMember?groupId=${groupId}`, {}, 
+    {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(map((res: any) => { 
+      return res.body; 
+    }));
   }
 }
