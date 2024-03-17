@@ -131,6 +131,14 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Cria uma reserva para uma propriedade desejada.
+        /// </summary>
+        /// <param name="model">O modelo PropertyBookingModel que contém os detalhes da reserva.</param>
+        /// <param name="createPayment">Determina se deve criar um pagamento para a reserva.</param>
+        /// <returns> 
+        /// Mensagem de feedback, notFound, BadRequest ou Ok
+        /// </returns>
         [HttpPost("booking")]
         [Authorize]
         public async Task<IActionResult> CreateOrderBooking([FromBody] PropertyBookingModel model,
@@ -248,6 +256,14 @@ namespace BookingBuddy.Server.Controllers
 
             return BadRequest();
         }
+
+        /// <summary>
+        /// Calcula o valor da promoção com base na duração entre as datas de início e fim.
+        /// </summary>
+        /// <param name="startingDate">A data de início do período de promoção.</param>
+        /// <param name="endingDate">A data de fim do período de promoção.</param>
+        /// <returns>O valor calculado da promoção.</returns>
+        /// <exception cref="Exception">Lançada quando a data de início é posterior à data de fim.</exception>
 
         private decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
         {
