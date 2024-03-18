@@ -11,8 +11,8 @@
   <div class="fs-6 p-2 text-center">Preencha o seguinte campo com a informação relativa aos emails dos membros, separados por vírgulas, a convidar para o grupo.</div>
   <form class="d-flex w-75 mt-3 h-50 flex-column align-items-center justify-content-center p5" [formGroup]="groupMembersForm">
     <div class="d-flex w-100 flex-column mb-3 flex-grow-1">
-      <input type="text" name="members" class="form-control h-100" [formControl]="emailControl" style="resize: none" placeholder="Introduza o email de um membro" (keydown)="save($event)" [ngClass]="{'is-valid': emailControl.valid && emailControl.dirty, 'is-invalid': emailControl.invalid && emailControl.dirty}" />   
-      <div class="badge-list">
+      <input type="text" name="members" class="form-control " [formControl]="emailControl" style="resize: none" placeholder="Introduza o email de um membro" (keydown)="save($event)" [ngClass]="{'is-valid': emailControl.valid && emailControl.dirty, 'is-invalid': emailControl.invalid && emailControl.dirty}" />   
+      <div class="badge-list h-100">
         <div *ngFor="let email of currentGroupMembers.members" class="badge badge-primary m-1" style="background-color: #9DAE9A;">{{ email }}
         <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="removeEmail(email)"></button>
         </div>
