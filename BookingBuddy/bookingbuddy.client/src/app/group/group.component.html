@@ -80,9 +80,9 @@
         <div class="d-flex flex-row justify-content-center align-items-center mt-2 mb-2" *ngIf="currentGroup">
             <div class="chat mx-auto mt-2 mb-3">
                 <h3>Chat com o grupo</h3>
-                <!--<div *ngFor="let m of messages" class="text-left">
-                    <p><strong>{{m.name}}:</strong> {{m.message}}</p>
-                </div>-->
+                <div *ngFor="let m of currentGroup.messages" class="text-left">
+                    <p><strong>{{m.userName}}:</strong> {{m.message}}</p>
+                </div>
 
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
@@ -91,7 +91,7 @@
             </div>
         </div>
         <div class="d-flex flex-row justify-content-around align-items-center mt-5" *ngIf="currentGroup">
-            <button type="button" class="btn btn-md btn-success" data-bs-toggle="modal" data-bs-target="#teste">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i></button>
+            <button type="button" class="btn btn-md btn-success me-2" data-bs-toggle="modal" data-bs-target="#teste">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i></button>
             <div class="flex-fill"></div>
             <button class="btn btn-md btn-dark" (click)="testSendWS()">Reservar Selecionada<i class="bi bi-arrow-right ms-2"></i></button>
         </div>

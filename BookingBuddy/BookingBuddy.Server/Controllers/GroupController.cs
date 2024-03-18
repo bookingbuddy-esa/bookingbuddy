@@ -58,7 +58,8 @@ namespace BookingBuddy.Server.Controllers
                 GroupOwnerId = user.Id,
                 Name = model.name,
                 MembersId = new List<string> { user.Id },
-                PropertiesId = new List<string>()
+                PropertiesId = new List<string>(),
+                MessagesId = new List<string>()
             };
 
             if (model.propertyId != null)
@@ -125,7 +126,6 @@ namespace BookingBuddy.Server.Controllers
 
                 group.Properties = properties;
 
-
                 List<ReturnUser> users = new List<ReturnUser>();
 
                 group.MembersId?.ForEach(memberId => {
@@ -139,6 +139,17 @@ namespace BookingBuddy.Server.Controllers
                 });
 
                 group.Members = users;
+
+                List<GroupMessage> messages = new List<GroupMessage>();
+                group.MessagesId?.ForEach(messageId => {
+                    var message = _context.GroupMessage.FirstOrDefault(m => m.MessageId == messageId);
+                    if (message != null)
+                    {
+                        messages.Add(message);
+                    }
+                });
+
+                group.Messages = messages;
                 return group;
             }
             catch (Exception ex)

@@ -8,11 +8,18 @@ export interface Group {
   members: string[],
   propertiesId: string[],
   properties: Property[],
-  choosenProperty: string
+  choosenProperty: string,
+  messages: GroupMessage[]
 }
 
 export interface GroupCreate {
   name: string;
   propertyId?: string;
   members?: string[]
+}
+
+export interface GroupMessage {
+  messageId?: string,
+  userName: string,
+  message: string
 }

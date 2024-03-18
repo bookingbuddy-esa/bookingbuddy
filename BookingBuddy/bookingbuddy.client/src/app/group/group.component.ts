@@ -6,6 +6,7 @@ import { timeout } from 'rxjs';
 import { AuthorizeService } from '../auth/authorize.service';
 import { UserInfo } from '../auth/authorize.dto';
 import { Group } from '../models/group';
+import { Property } from '../models/property';
 
 @Component({
   selector: 'app-group',
@@ -58,12 +59,24 @@ export class GroupComponent {
 
   public testSendWS(): void {
     if(this.ws){
+      //this.currentGroup!.name = "Teste Novo";
+      //this.currentGroup!.membersId.push("5f3e3e3e3e3e3e3e3e3e3e3e");
       this.ws.send(JSON.stringify(this.currentGroup));
-      console.log("sent to ws");
+      console.log("Sending to ws: " + JSON.stringify(this.currentGroup));
     }
   }
 
   public sendMessage(): void {
+    let message = {
+      userName: this.user!.name,
+      message: this.newMessage.trim()
+    };
+
+    // TODO: enviar a mensagem para a base de dados com o service
+
+    this.currentGroup!.messages.push(message);
+    this.newMessage = '';
+    this.testSendWS();
   }
   
   public chooseGroup(group: Group): void {
@@ -84,8 +97,16 @@ export class GroupComponent {
     this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
     this.ws.onmessage = (event) => {
       console.log("Mensagem recebida: " + event.data);
-      let message = JSON.parse(event.data);
-      this.currentGroup = message;
+      let newGroupState = JSON.parse(event.data);
+
+      let index = this.group_list.findIndex(g => g.groupId == newGroupState.groupId);
+      if(index >= 0){
+        this.group_list[index] = newGroupState;
+      }
+
+      if(this.currentGroup?.groupId == newGroupState.groupId){
+        this.currentGroup = newGroupState;
+      }
     };
   }
 

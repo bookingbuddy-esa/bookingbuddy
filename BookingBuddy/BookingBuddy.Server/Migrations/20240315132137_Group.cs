@@ -29,7 +29,8 @@ namespace BookingBuddy.Server.Migrations
                     Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     MembersId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PropertiesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ChoosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ChoosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MessagesId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

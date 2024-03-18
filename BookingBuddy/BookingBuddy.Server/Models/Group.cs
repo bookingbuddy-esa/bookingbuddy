@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using BookingBuddy.Server.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingBuddy.Server.Models
 {
@@ -30,10 +31,6 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("choosenProperty")]
         public string? ChoosenProperty { get; set; } 
-        public string GetPrimaryKey()
-        {
-            return GroupId;
-        }
 
         [JsonPropertyName("properties")]
         public List<Property>? Properties { get; set; }  
@@ -41,5 +38,27 @@ namespace BookingBuddy.Server.Models
         [JsonPropertyName("members")]
         public List<ReturnUser>? Members {  get; set; }
 
+        [JsonPropertyName("messagesId")]
+        public List<string> MessagesId { get; set; }
+
+        [JsonPropertyName("messages")]
+        public List<GroupMessage>? Messages { get; set; }
+
+        public string GetPrimaryKey()
+        {
+            return GroupId;
+        }
+    }
+
+    public class GroupMessage {
+        [Key]
+        [JsonPropertyName("messageId")]
+        public string MessageId { get; set; }
+        
+        [JsonPropertyName("userName")]
+        public string UserName { get; set; }
+
+        [JsonPropertyName("message")]
+        public string Message { get; set; }
     }
 }
