@@ -7,7 +7,7 @@
    <selectorCollection>
       <entry>
          <key>XPATH</key>
-         <value>(.//*[normalize-space(text()) and normalize-space(.)='Iniciar Sessão'])[1]/following::div[3]</value>
+         <value>//app-homepage-property/div</value>
       </entry>
       <entry>
          <key>CSS</key>

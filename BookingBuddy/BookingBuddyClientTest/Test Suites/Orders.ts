@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TestSuiteEntity>
    <description></description>
-   <name>Hosting</name>
+   <name>Orders</name>
    <tag></tag>
    <isRerun>false</isRerun>
    <mailRecipient></mailRecipient>
@@ -10,19 +10,12 @@
    <pageLoadTimeoutDefault>true</pageLoadTimeoutDefault>
    <rerunFailedTestCasesOnly>false</rerunFailedTestCasesOnly>
    <rerunImmediately>true</rerunImmediately>
-   <testSuiteGuid>9a2f2609-3c7b-4638-9810-f7a3fa0cf20d</testSuiteGuid>
+   <testSuiteGuid>ec6e72f8-71f3-4d4b-a387-923a10b32a9e</testSuiteGuid>
    <testCaseLink>
-      <guid>ef530360-023c-4175-abd5-54ba1869f4c4</guid>
+      <guid>92016d68-b159-4c0c-b223-03fd452c5c07</guid>
       <isReuseDriver>false</isReuseDriver>
       <isRun>true</isRun>
-      <testCaseId>Test Cases/Hosting/Calendar_Flow_Test</testCaseId>
-      <usingDataBindingAtTestSuiteLevel>true</usingDataBindingAtTestSuiteLevel>
-   </testCaseLink>
-   <testCaseLink>
-      <guid>2a4f483b-8ed0-4961-b4fe-24343c2a30fa</guid>
-      <isReuseDriver>false</isReuseDriver>
-      <isRun>true</isRun>
-      <testCaseId>Test Cases/Hosting/PropertyAd_Create_Test</testCaseId>
+      <testCaseId>Test Cases/Orders/Booking_Order_Test</testCaseId>
       <usingDataBindingAtTestSuiteLevel>true</usingDataBindingAtTestSuiteLevel>
    </testCaseLink>
 </TestSuiteEntity>

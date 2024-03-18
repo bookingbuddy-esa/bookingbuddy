@@ -13,6 +13,7 @@
   </app-amenities-step>
   <app-photos-step *ngSwitchCase="3"
                    [photos]="photos"
+                   [user]="user"
                    (photosSubmit)="setPhotos($event)"
                    (photosValid)="photosValid($event)">
   </app-photos-step>

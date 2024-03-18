@@ -10,8 +10,8 @@ import com.kms.katalon.core.model.FailureHandling as FailureHandling
 import com.kms.katalon.core.testcase.TestCase as TestCase
 import com.kms.katalon.core.testdata.TestData as TestData
 import com.kms.katalon.core.testng.keyword.TestNGBuiltinKeywords as TestNGKW
-import com.kms.katalon.core.testobject.TestObject
-import com.kms.katalon.core.util.KeywordUtil
+import com.kms.katalon.core.testobject.TestObject as TestObject
+import com.kms.katalon.core.util.KeywordUtil as KeywordUtil
 import com.kms.katalon.core.webservice.keyword.WSBuiltInKeywords as WS
 import com.kms.katalon.core.webui.keyword.WebUiBuiltInKeywords as WebUI
 import com.kms.katalon.core.windows.keyword.WindowsBuiltinKeywords as Windows
@@ -22,16 +22,32 @@ WebUI.openBrowser('https://localhost:4200/signin')
 
 WebUI.waitForPageLoad(30)
 
-WebUI.setText(findTestObject('Authentication/Page_Login/input_email'), 'bookingbuddy.landlord@bookingbuddy.com')
+WebUI.setText(findTestObject('Authentication/Page_Login/input_email'), 'bookingbuddy.user@bookingbuddy.com')
 
-WebUI.setEncryptedText(findTestObject('Authentication/Page_Login/input_password'), 'CecxTDGnl/aOPUEZOhmOjg==')
+WebUI.setEncryptedText(findTestObject('Authentication/Page_Login/input_password'), 'rmPWz4Y+3TnrVr7CE0MgbA==')
 
 WebUI.click(findTestObject('Authentication/Page_Login/button_SignIn'))
 
-boolean present = WebUI.waitForElementPresent(findTestObject('Page_Home/div_homepage'), 30)
+boolean visible = WebUI.waitForElementVisible(findTestObject('Page_Home/div_firstProperty'), 30)
 
-if(!present) {
-	KeywordUtil.markFailed("Element 'div_homepage' was not present within the specified timeout.")
+if (visible) {
+    WebUI.click(findTestObject('Page_Home/img_firstProperty'))
+
+    WebUI.verifyElementVisible(findTestObject('Page_PropertyAd/div_propertyInfo'))
+
+    String value = WebUI.getAttribute(findTestObject('Page_PropertyAd/button_Favorite'), 'title')
+	
+	if(value.equals('Adicionar aos Favoritos')) {
+		WebUI.click(findTestObject('Page_PropertyAd/button_Favorite'))
+		
+		WebUI.verifyElementAttributeValue(findTestObject('Page_PropertyAd/button_Favorite'), 'title', 'Remover dos Favoritos', 30)
+	}else {
+		WebUI.click(findTestObject('Page_PropertyAd/button_Favorite'))
+		
+		WebUI.verifyElementAttributeValue(findTestObject('Page_PropertyAd/button_Favorite'), 'title', 'Adicionar aos Favoritos', 30)
+	}
+} else {
+    KeywordUtil.markWarning('No property listed!')
 }
 
-WebUI.navigateToUrl('https://localhost:4200/hosting/create')
+WebUI.closeBrowser()

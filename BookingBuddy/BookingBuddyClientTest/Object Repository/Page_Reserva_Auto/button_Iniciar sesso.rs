@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>button_Iniciar sesso</name>
+   <tag></tag>
+   <elementGuidId>ae4a682e-2eef-4ca4-942a-1609a3b735a9</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>//button[@type='submit']</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>button.btn.btn-login.mt-4.w-100.p-2</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;Iniciar sessão&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>29dec53c-5b25-4ea0-9036-0892d09ac963</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>type</name>
+      <type>Main</type>
+      <value>submit</value>
+      <webElementGuid>4f9bbc63-055a-46cf-9a1e-a7d3475b63df</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>btn btn-login mt-4 w-100 p-2</value>
+      <webElementGuid>749e11fd-6e47-4840-aaa2-0e1633b51e6a</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Iniciar sessão </value>
+      <webElementGuid>423f4acc-6671-4929-93a8-3d399b3aaca7</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[1]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-signin-component[1]/div[@class=&quot;d-flex w-100 flex-column align-items-center justify-content-between&quot;]/div[@class=&quot;d-flex flex-column align-items-center justify-content-center&quot;]/form[@class=&quot;d-flex mb-3 w-100 flex-column align-items-center ng-dirty ng-touched ng-valid&quot;]/div[@class=&quot;w-100 py-2 d-flex flex-column align-items-end&quot;]/button[@class=&quot;btn btn-login mt-4 w-100 p-2&quot;]</value>
+      <webElementGuid>46e1d948-637c-4707-842c-1a182efa317d</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:attributes</name>
+      <type>Main</type>
+      <value>//button[@type='submit']</value>
+      <webElementGuid>876e69d0-191c-4b50-9c10-86db6617d5e2</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Esqueceu se da palavra-passe?'])[1]/following::button[1]</value>
+      <webElementGuid>95366e8d-cf8c-4787-afb2-145f21d016ff</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='O email é inválido!'])[1]/following::button[2]</value>
+      <webElementGuid>c5d031fd-05ef-4994-9fd2-8098ab989bbb</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Ou faça login com'])[1]/preceding::button[1]</value>
+      <webElementGuid>b0e07a4d-ce41-437f-bb2c-5cf6612a8a5a</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Iniciar sessão']/parent::*</value>
+      <webElementGuid>97fd65ae-e463-4492-92b1-43c5c0662069</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//button[2]</value>
+      <webElementGuid>6355f102-7416-45ec-82aa-026425247761</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//button[@type = 'submit' and (text() = 'Iniciar sessão ' or . = 'Iniciar sessão ')]</value>
+      <webElementGuid>383aa874-3c46-410d-b2ee-be3b891f4a8f</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>
