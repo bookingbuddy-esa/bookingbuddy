@@ -13,7 +13,7 @@
     <div class="d-flex w-100 flex-column mb-3 flex-grow-1">
       <input type="text" name="members" class="form-control h-100" [formControl]="emailControl" style="resize: none" placeholder="Introduza o email de um membro" (keydown)="save($event)" [ngClass]="{'is-valid': emailControl.valid && emailControl.dirty, 'is-invalid': emailControl.invalid && emailControl.dirty}" />   
       <div class="badge-list">
-        <div *ngFor="let email of emails" class="badge badge-primary m-1" style="background-color: #9DAE9A;">{{ email }}
+        <div *ngFor="let email of currentGroupMembers.members" class="badge badge-primary m-1" style="background-color: #9DAE9A;">{{ email }}
         <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="removeEmail(email)"></button>
         </div>
       </div>

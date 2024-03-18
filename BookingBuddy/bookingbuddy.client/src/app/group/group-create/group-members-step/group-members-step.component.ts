@@ -17,7 +17,6 @@ export class GroupMembersStepComponent {
     members: ['', [Validators.required, Validators.email]]
   });
 
-  emails: string[] = [];
   emailControl: FormControl = new FormControl('', [Validators.required, Validators.email]);
   invalidEmailError = false;
   constructor(private formBuilder: FormBuilder) {
@@ -37,8 +36,7 @@ export class GroupMembersStepComponent {
   save(event: any): void {
     const email = event.target.value.trim();
     if (event.key === 'Enter' || event.key === 'Space') {
-      if (email && this.emailControl.valid && !this.emails.includes(email)) {
-        this.emails.push(email); 
+      if (email && this.emailControl.valid && !this.currentGroupMembers.members.includes(email)) {
         event.target.value = ''; 
         this.currentGroupMembers.members.push(email);
         this.groupMembersSubmit.emit(this.currentGroupMembers);
@@ -47,12 +45,6 @@ export class GroupMembersStepComponent {
 
   }
 
-
-  remove(index: number): void {
-    if (index >= 0) {
-      this.emails.splice(index, 1);
-    }
-  }
 
   get groupMembersFormField() {
     return this.groupMembersForm.get('members');
