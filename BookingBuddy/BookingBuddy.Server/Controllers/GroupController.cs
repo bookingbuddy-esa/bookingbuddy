@@ -78,8 +78,6 @@ namespace BookingBuddy.Server.Controllers
                         await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
                             "d-d42dbf24249347e98a2e869043c21b26", email, member.Name,
                             new { groupReservationLink });
-
-                        group.MembersId.Add(member.Id);
                     }
                 }
             }
@@ -257,8 +255,8 @@ namespace BookingBuddy.Server.Controllers
         /// <summary>
         /// Adiciona um utilizador como membro de um grupo existente.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual o usuário será adicionado como membro.</param>
-        /// <param name="userId">O ID do usuário a ser adicionado como membro.</param>
+        /// <param name="groupId">O ID do grupo ao qual o utilizador será adicionado como membro.</param>
+        /// <param name="userId">O ID do utilizador a ser adicionado como membro.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
 
         [Authorize]
@@ -281,13 +279,29 @@ namespace BookingBuddy.Server.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-
-                return Ok("Membro adicionado ao grupo com sucesso.");
+                return CreatedAtAction("GetGroup", new { groupId = group.GroupId }, group);
+                //return Ok("Membro adicionado ao grupo com sucesso.");
             }
             catch (Exception)
             {
                 return BadRequest();
             }
+        }
+
+        [HttpDelete("delete/{groupId}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteGroup(string groupId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            _context.Groups.Remove(group);
+            await _context.SaveChangesAsync();
+
+            return Ok("Grupo eliminado com sucesso.");
         }
 
 

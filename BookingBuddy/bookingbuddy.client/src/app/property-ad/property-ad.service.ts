@@ -30,9 +30,9 @@ export class PropertyAdService {
       observe: 'response',
       responseType: 'text'
     })
-      .pipe<boolean>(map((res: HttpResponse<string>) => {
-        return res.ok;
-      }));
+    .pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
   }
 
 

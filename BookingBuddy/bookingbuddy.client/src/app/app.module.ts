@@ -42,6 +42,7 @@ import { GroupCreateComponent } from './group/group-create/group-create.componen
 import { GroupNameStepComponent } from './group/group-create/group-name-step/group-name-step.component';
 import { GroupMembersStepComponent } from './group/group-create/group-members-step/group-members-step.component';
 import { FirstStepComponent } from './group/group-create/first-step/first-step.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,7 @@ import { FirstStepComponent } from './group/group-create/first-step/first-step.c
     HostingModule, GoogleMap, MapMarker,
     MatIconModule, MatDatepickerModule,
     MatFormFieldModule, MatInputModule,
-    MatNativeDateModule, PaymentComponent
+    MatNativeDateModule, PaymentComponent, MatChipsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

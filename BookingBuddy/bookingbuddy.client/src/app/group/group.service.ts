@@ -43,9 +43,19 @@ export class GroupService {
     {
       withCredentials: true,
       observe: 'response',
-      responseType: 'text'
+      //responseType: 'text'
     }).pipe(map((res: any) => { 
-      return res.body; 
+      return res.body as Group; 
     }));
+  }
+
+  public deleteGroup(groupId: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/groups/delete/${groupId}`, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(
+      map((res: HttpResponse<string>) => res.ok)
+    );
   }
 }

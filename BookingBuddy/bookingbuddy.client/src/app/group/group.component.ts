@@ -21,6 +21,10 @@ export class GroupComponent {
   group_list: Group[] = [];
   currentGroup: Group | undefined;
   ws: WebSocket | undefined;
+ 
+  newMessage: string = '';
+  modalOpen: boolean = false;
+  isGroupOwner: boolean = false;
 
   constructor(private authService: AuthorizeService, private route: ActivatedRoute, private router: Router, private groupService: GroupService) {
   }
@@ -28,15 +32,38 @@ export class GroupComponent {
   ngOnInit(): void {
       this.authService.user().forEach(async user => {
         this.user = user;
-        this.loadUserGroups();
+        this.setupGroupById().then(() => {
+          this.loadUserGroups();
+        });
       });
   }
 
-  public vote(): void {
-    this.currentGroup?.propertiesId.push(this.currentGroup?.propertiesId[0]);
-    if (this.ws) {
+  public copyGroupLink(): void {
+    let url = window.location.href;
+    navigator.clipboard.writeText(url);
+  }
+
+  public deleteGroup(): void {
+    this.groupService.deleteGroup(this.currentGroup!.groupId).forEach(response => {
+      if (response) {
+        this.success_alerts.push("Grupo removido com sucesso!");
+        this.loadUserGroups();
+        this.currentGroup = undefined;
+        this.router.navigateByUrl('/group');
+      }
+    }).catch(error => {
+      this.errors.push(error.error);
+    });
+  }
+
+  public testSendWS(): void {
+    if(this.ws){
       this.ws.send(JSON.stringify(this.currentGroup));
+      console.log("sent to ws");
     }
+  }
+
+  public sendMessage(): void {
   }
   
   public chooseGroup(group: Group): void {
@@ -45,65 +72,67 @@ export class GroupComponent {
     this.success_alerts = [];
     this.router.navigate([], { queryParams: { groupId: group.groupId }});
     this.currentGroup = group;
+    this.isGroupOwner = this.currentGroup.groupOwnerId == this.user?.userId;
+
+    let url = environment.apiUrl;
+    url = url.replace('https', 'wss');
+
+    if (this.ws) {
+      this.ws.close();
+    }
+
+    this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
+    this.ws.onmessage = (event) => {
+      console.log("Mensagem recebida: " + event.data);
+      let message = JSON.parse(event.data);
+      this.currentGroup = message;
+    };
   }
 
   private loadUserGroups() {
+    this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
+      console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
+      this.group_list = groups;
+      this.submitting = false;
+    }).catch(error => {
+      this.errors.push(error.error);
+      this.submitting = false;
+      //console.log("Erro ao receber grupos: " + JSON.stringify(error));
+    });
+  }
+
+  private async setupGroupById() {
     if(this.user){
       this.submitting = true;
-      this.groupService.getGroupsByUserId(this.user?.userId).pipe(timeout(10000)).forEach(groups => {
-        this.group_list = groups;
-        this.submitting = false;
-      }).then(() => {
-        this.route.queryParams.forEach(params => {
-          if (params['groupId']) {
-            this.groupService.getGroup(params['groupId']).forEach(response => {
-              if (response) {
-                let isMemberOfGroup = this.group_list.some(group => group.groupId === params['groupId']);
-                if (!isMemberOfGroup) {
-                  this.groupService.addMemberToGroup(params['groupId']).forEach(response => {
-                    if (response) {
-                      //console.log("Membro adicionado ao grupo: " + JSON.stringify(response));
-                      this.success_alerts.push(response);
-                      this.loadUserGroups();
-                    }
-                  }).catch(error => {
-                    this.errors.push(error.error);
-                    //console.log("Erro ao adicionar membro ao grupo: " + JSON.stringify(error));
-                  });
-                }
-                
-                let url = environment.apiUrl;
-                url = url.replace('https', 'wss');
-
-                if (this.ws) {
-                  this.ws.close();
-                }
-
-                this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${params['groupId']}`);
-                this.ws.onmessage = (event) => {
-                  console.log("Mensagem recebida: " + event.data);
-                  let message = JSON.parse(event.data);
-                  this.currentGroup = message;
-                };
+      this.route.queryParams.forEach(params => {
+        if (params['groupId']) {
+          this.groupService.getGroup(params['groupId']).forEach(getGroupResponse => {
+            if (getGroupResponse) {
+              //console.log("Grupo: " + JSON.stringify(getGroupResponse));
+              const group: Group = getGroupResponse as Group;
+              let isMemberOfGroup = group.membersId.includes(this.user!.userId);
+              if (!isMemberOfGroup) {
+                this.groupService.addMemberToGroup(params['groupId']).forEach(addMemberResponse => {
+                  if (addMemberResponse) {
+                    //console.log("Membro adicionado ao grupo: " + JSON.stringify(response));
+                    //console.log("Grupo: " + JSON.stringify(getGroupResponse));
+                    console.log("AddMemberResponse: " + JSON.stringify(addMemberResponse));
+                    this.loadUserGroups();
+                    this.success_alerts.push("Membro adicionado ao grupo com sucesso!");
+                  }
+                }).catch(error => {
+                  this.errors.push("Erro ao adicionar membro ao grupo!");
+                  //console.log("Erro ao adicionar membro ao grupo: " + JSON.stringify(error));
+                });
               }
-            }).catch(error => {
-              this.errors.push(error.error);
-              //console.log("Erro ao receber grupo: " + JSON.stringify(error));
-            });
-          }
-        });
-      /*}).then(() => {
-        setTimeout(() => {
-          console.log("Esperando 5 segundos para carregar grupos");
-          this.alertContainers.forEach(alertContainer => {
-            alertContainer.nativeElement.classList.remove('show');
-          });
-        }, 5000);
+            }
 
-        this.errors = [];
-        this.success_alerts = [];*/
-      }).catch(error => {
-        console.log("Erro ao carregar grupos: " + JSON.stringify(error));
+            return Promise.resolve();
+          }).catch(error => {
+            this.errors.push(error.error);
+            //console.log("Erro ao receber grupo: " + JSON.stringify(error));
+          });
+        }
       });
     }
   }

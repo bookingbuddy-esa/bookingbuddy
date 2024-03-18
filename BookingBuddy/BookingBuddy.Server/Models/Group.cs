@@ -22,8 +22,10 @@ namespace BookingBuddy.Server.Models
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
+        [JsonPropertyName("membersId")]
         public List<string> MembersId { get; set; }
 
+        [JsonPropertyName("propertiesId")]
         public List<string> PropertiesId {  get; set; }
 
         [JsonPropertyName("choosenProperty")]

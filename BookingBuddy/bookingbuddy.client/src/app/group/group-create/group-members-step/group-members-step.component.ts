@@ -1,6 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {MatChipInputEvent} from '@angular/material/chips';
+
 @Component({
   selector: 'app-group-members-step',
   templateUrl: './group-members-step.component.html',
@@ -15,6 +18,8 @@ export class GroupMembersStepComponent {
   protected groupMembersForm = this.formBuilder.group({
     members: ['', [Validators.required, Validators.email]]
   });
+
+  protected members: string[] = [];
 
   constructor(private formBuilder: FormBuilder) {
 
@@ -39,7 +44,10 @@ export class GroupMembersStepComponent {
   }
 
   save(event: any): void {
-    console.log("You entered: ", event.target.value);
+
+    if(this.groupMembersForm.valid){
+      console.log("You entered: ", event.target.value);
+    }
   }
 
   get groupMembersFormField() {

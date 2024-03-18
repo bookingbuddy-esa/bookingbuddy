@@ -50,6 +50,7 @@ export class GroupCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.authService.user().forEach(user => {
       this.user = user;
     });
@@ -64,8 +65,7 @@ export class GroupCreateComponent implements OnInit {
           if (response) {
             this.propertyId = params['propertyId'];
           }
-        }).catch(
-          error => {
+        }).catch(error => {
             this.router.navigate(['group-booking']);
           }
         );

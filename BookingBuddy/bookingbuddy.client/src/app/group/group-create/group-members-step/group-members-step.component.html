@@ -11,10 +11,13 @@
     <div class="fs-6 p-2 text-center">Preencha o seguinte campo com a informação relativa aos emails dos membros, separados por vírgulas, a convidar para o grupo.</div>
     <form class="d-flex w-75 mt-3 h-50 flex-column align-items-center justify-content-center p5" [formGroup]="groupMembersForm">
         <div class="d-flex w-100 flex-column mb-3 flex-grow-1">
-            <input type="text" name="members" class="form-control h-100" formControlName="members" style="resize: none" placeholder="Introduza o email de um membro" (keydown.enter)="save($event)" [ngClass]="{'is-valid':groupMembersFormField?.valid && groupMembersFormField?.dirty,'is-invalid':groupMembersFormField?.invalid && groupMembersFormField?.dirty}"
+            <input type="text" name="members" class="form-control" formControlName="members" style="resize: none" placeholder="Introduza o email de um membro" (keydown.enter)="save($event)" [ngClass]="{'is-valid':groupMembersFormField?.valid && groupMembersFormField?.dirty,'is-invalid':groupMembersFormField?.invalid && groupMembersFormField?.dirty}"
             />
             <div *ngIf="groupMembersFormField?.value!.length === 0" class="invalid-feedback">
                 Insira um ou mais emails, separados por vírgulas, para convidar o(s) membro(s) para o grupo.
+            </div>
+            <div *ngFor="let email of members">
+                {{ email }}
             </div>
         </div>
     </form>
