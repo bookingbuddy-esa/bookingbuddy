@@ -35,6 +35,28 @@ body {
     background-color: #32d489;
 }
 
+.mat-form-field-underline {
+  background-color: transparent !important;
+}
+
+  .mat-form-field-underline .mat-form-field-ripple {
+    display: none;
+    background-color: transparent !important;
+  }
+
+.example-chip-list {
+  background-color: transparent !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  background-color: transparent !important;
+}
+
+.assigned-chip {
+  background-color: blue;
+}
+
+/*
 .fc {
     background-color: white;
 }
