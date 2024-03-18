@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatChipInputEvent } from '@angular/material/chips';
 
 @Component({
   selector: 'app-group-members-step',
@@ -11,35 +13,47 @@ export class GroupMembersStepComponent {
   @Input() groupMembers: GroupMembers | undefined;
   @Output() groupMembersValid = new EventEmitter<boolean>();
   @Output() groupMembersSubmit = new EventEmitter<GroupMembers>();
-  protected currentGroupMembers: GroupMembers | undefined;
+  protected currentGroupMembers: GroupMembers = { members: [] };
   protected groupMembersForm = this.formBuilder.group({
     members: ['', [Validators.required, Validators.email]]
   });
-
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  emails: string[] = [];
+  emailControl: FormControl = new FormControl('', [Validators.required, Validators.email]);
+  invalidEmailError = false;
   constructor(private formBuilder: FormBuilder) {
 
   }
 
   ngOnInit(): void {
-    if (this.groupMembers) {
-      this.currentGroupMembers = this.groupMembers;
-      this.groupMembersForm.get('members')?.setValue(this.groupMembers.members.join(', '));
-    }
+    this.groupMembersValid.emit(true);
+  }
 
-    this.groupMembersForm.valueChanges.forEach(() => {
-      this.groupMembersValid.emit(this.groupMembersForm.valid);
-      const groupMembersFieldValue = this.groupMembersFormField?.value;
-      if (groupMembersFieldValue) {
-        this.currentGroupMembers = {
-          members: groupMembersFieldValue.split(',').map(email => email.trim())
-        };
-        this.groupMembersSubmit.emit(this.currentGroupMembers);
-      }
-    })
+
+
+  removeEmail(email: string): void {
+    this.currentGroupMembers.members = this.currentGroupMembers.members.filter(item => item !== email);
   }
 
   save(event: any): void {
-    console.log("You entered: ", event.target.value);
+    const email = event.target.value.trim();
+    if (event.key === 'Enter' || event.key === 'Space') {
+      if (email && this.emailControl.valid && !this.emails.includes(email)) {
+        this.emails.push(email); 
+        event.target.value = ''; 
+        this.currentGroupMembers.members.push(email);
+        this.groupMembersSubmit.emit(this.currentGroupMembers);
+      }
+    }
+
+  }
+
+
+  remove(index: number): void {
+    if (index >= 0) {
+      this.emails.splice(index, 1);
+    }
   }
 
   get groupMembersFormField() {
