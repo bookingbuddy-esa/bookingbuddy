@@ -2,7 +2,7 @@
     <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
 </div>
 
-<div *ngIf="property_list.length === 0" class="d-flex p-3 w-100 justify-content-center">
+<div *ngIf="property_list.length === 0" class="d-flex p-3 justify-content-center">
     <h5 class="mt-5">Ainda não existem propriedades na plataforma!</h5>
 </div>
 

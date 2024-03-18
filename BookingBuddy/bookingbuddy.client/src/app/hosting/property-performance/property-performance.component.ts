@@ -81,7 +81,7 @@ export class PropertyPerformanceComponent implements OnInit {
   private loadUserProperties() {
     if (this.user) {
       this.submitting = true;
-      this.hostingService.getPropertiesByUserId(this.user?.userId).pipe(timeout(10000)).pipe(timeout(10000)).forEach(properties => {
+      this.hostingService.getPropertiesByUserId(this.user?.userId).pipe(timeout(10000)).forEach(properties => {
         this.property_list = properties;
         this.setCurrentProperty(this.property_list[0]);
       }).then(() => this.submitting = false)
