@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatChipInputEvent } from '@angular/material/chips';
+
 
 @Component({
   selector: 'app-group-members-step',
@@ -17,8 +16,7 @@ export class GroupMembersStepComponent {
   protected groupMembersForm = this.formBuilder.group({
     members: ['', [Validators.required, Validators.email]]
   });
-  addOnBlur = true;
-  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+
   emails: string[] = [];
   emailControl: FormControl = new FormControl('', [Validators.required, Validators.email]);
   invalidEmailError = false;

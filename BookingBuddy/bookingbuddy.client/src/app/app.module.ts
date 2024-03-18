@@ -71,8 +71,7 @@ import { MatChipsModule } from '@angular/material/chips';
     HostingModule, GoogleMap, MapMarker,
     MatIconModule, MatDatepickerModule,
     MatFormFieldModule, MatInputModule,
-    MatNativeDateModule, PaymentComponent,
-    MatChipsModule
+    MatNativeDateModule, PaymentComponent, MatChipsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

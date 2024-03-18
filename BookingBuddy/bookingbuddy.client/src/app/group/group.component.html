@@ -1,25 +1,47 @@
-<div class="row justify-content-center mt-5">
+<div class="row justify-content-center mt-5 w-100">
+    <!-- Modal -->
+    <div class="modal fade" id="deleteGroupModal" tabindex="-1" aria-labelledby="deleteGroupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteGroupModalLabel">Apagar Grupo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza de que deseja apagar este grupo?</p>
+                    <p>Esta ação é <strong>irreversível</strong> e resultará na exclusão do grupo para todos os membros. Todos os dados associados serão perdidos.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteGroup()">Apagar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-3 mb-5">
-        <div class="accordion" id="accordionExample">
+        <div class="accordion" id="accordionGroups">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
                     <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                         Lista de Grupos
                     </button>
                 </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionGroups">
                     <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
                         <div class="list-group list-group-flush overflow-auto">
-                            <div *ngIf="group_list.length == 0" class="mx-auto p-2">
-                                <span class="text-muted small">Não existem grupos de reserva.<button type="button" class="btn btn-outline-success btn-sm rounded-pill ms-2" routerLink="/group-booking"><i class="bi bi-person-fill-add"></i></button></span>
+                            <div class="mx-auto p-2">
+                                <span class="text-muted small">Criar um grupo de reserva<button type="button" class="btn btn-outline-success btn-sm rounded-pill ms-2" routerLink="/group-booking"><i class="bi bi-person-fill-add"></i></button></span>
                             </div>
+                            <hr class="m-0" />
+                            <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
                             <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="chooseGroup(group)" [ngClass]="{'bg-success text-white': group === currentGroup}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="fw-bold">{{group.name}}</div>
                                     <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>
-                                </div>
-                                <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
-                            </button>
+                        </div>
+                        <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
+                        </button>
                         </div>
                     </div>
                 </div>
@@ -35,50 +57,43 @@
             <span>{{error_message}}</span>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <h2 class="text-center mb-3">Grupos de Reserva</h2>
+        <h2 class="text-center mb-3">Grupo de Reserva</h2>
+        <div class="d-flex flex-row justify-content-end mt-2 mb-2" *ngIf="currentGroup">
+            <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()"><i class="bi bi-link"></i></button>
+            <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal" data-bs-target="#deleteGroupModal"><i class="bi bi-trash"></i></button>
+        </div>
         <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
-            <div *ngIf="!currentGroup">
+            <div *ngIf="!currentGroup" class="text-center">
                 <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
             </div>
             <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
                 <span class="text-muted small">Não existem propriedades para este grupo.</span>
             </div>
-            <div class="card mb-3 me-md-2 w-75 w-lg-25" *ngFor="let property of currentGroup?.properties" class="fade show">
-                <img [src]="property!.imagesUrl![0]" class="card-img-top object-fit-fill" alt="Imagem da Propriedade">
+            <div class="card mb-3 me-md-2 w-25 w-lg-25" *ngFor="let property of currentGroup?.properties">
+                <img [src]="property!.imagesUrl![0]" class="card-img-top" alt="Imagem da Propriedade">
                 <div class="card-body">
                     <h5 class="card-title text-truncate">{{property.name}}</h5>
-                    <p class="card-text text-truncate">Descrição da casa do rio. Esta é uma descrição placeholder!</p>
-                    <button class="btn btn-primary" (click)="vote()">Ver mais</button>
+                    <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€ por noite</p>
                 </div>
             </div>
-            <!--<div class="card mb-3 me-md-2 ">
-                <img src="https://bookingbuddyrepository.blob.core.windows.net/images/284c96f1-af95-4600-9e94-da5a6b84ad8e.jpg " class="card-img-top object-fit-fill " alt="Imagem do Card ">
-                <div class="card-body ">
-                    <h5 class="card-title ">Casa no Rio</h5>
-                    <p class="card-text ">Descrição da casa do rio. Esta é uma descrição placeholder!</p>
+        </div>
+        <div class="d-flex flex-row justify-content-center align-items-center mt-2 mb-2" *ngIf="currentGroup">
+            <div class="chat mx-auto mt-2 mb-3">
+                <h3>Chat com o grupo</h3>
+                <!--<div *ngFor="let m of messages" class="text-left">
+                    <p><strong>{{m.name}}:</strong> {{m.message}}</p>
+                </div>-->
+
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
+                    <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
                 </div>
             </div>
-            <div class="card mb-3 me-md-2 ">
-                <img src="https://bookingbuddyrepository.blob.core.windows.net/images/7654304c-58c6-4f92-b45f-1288625ae27f.jpeg " class="card-img-top " alt="Imagem do Card ">
-                <div class="card-body ">
-                    <h5 class="card-title ">Casa no Alentejo</h5>
-                    <p class="card-text ">Descrição da casa do alentejo. Esta é uma descrição placeholder!</p>
-                </div>
-            </div>
-            <div class="card mb-3 me-md-2 ">
-                <img src="https://bookingbuddyrepository.blob.core.windows.net/images/16438d2c-5ae9-49a7-b2fc-5c96232b620b.jpeg " class="card-img-top " alt="Imagem do Card ">
-                <div class="card-body ">
-                    <h5 class="card-title ">Vivenda Algarvia</h5>
-                    <p class="card-text ">Descrição da casa do algarvia. Esta é uma descrição placeholder!</p>
-                </div>
-            </div>
-            <div class="card mb-3 me-md-2 ">
-                <img src="https://bookingbuddyrepository.blob.core.windows.net/images/16438d2c-5ae9-49a7-b2fc-5c96232b620b.jpeg " class="card-img-top " alt="Imagem do Card ">
-                <div class="card-body ">
-                    <h5 class="card-title ">Vivenda Algarvia</h5>
-                    <p class="card-text ">Descrição da casa do algarvia. Esta é uma descrição placeholder!</p>
-                </div>
-            </div>-->
+        </div>
+        <div class="d-flex flex-row justify-content-around align-items-center mt-5" *ngIf="currentGroup">
+            <button type="button" class="btn btn-md btn-success" data-bs-toggle="modal" data-bs-target="#teste">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i></button>
+            <div class="flex-fill"></div>
+            <button class="btn btn-md btn-dark" (click)="testSendWS()">Reservar Selecionada<i class="bi bi-arrow-right ms-2"></i></button>
         </div>
         <div *ngIf="submitting" class="h-100">
             <app-loader></app-loader>

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace BookingBuddy.Server.Models
 {
@@ -93,7 +95,10 @@ namespace BookingBuddy.Server.Models
     [NotMapped]
     public class ReturnUser
     {
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+
+        [JsonPropertyName("id")]
         public string Id { get; set; }
     }
 }
