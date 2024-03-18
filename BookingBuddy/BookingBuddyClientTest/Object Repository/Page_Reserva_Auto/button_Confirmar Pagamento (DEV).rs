@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>button_Confirmar Pagamento (DEV)</name>
+   <tag></tag>
+   <elementGuidId>14585cbb-2d75-493b-b5fd-17f4cc339042</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>(//button[@type='button'])[3]</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>button.btn.btn-success.mt-4.ms-1</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;Confirmar Pagamento (DEV)&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>3a460c29-d9c3-42d3-8cad-67e58e8e1ced</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>type</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>09e6c17f-7850-4580-b23b-1b834719888a</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>btn btn-success mt-4 ms-1</value>
+      <webElementGuid>4dbf9b99-adf5-4ead-91f0-fc4ed31982cf</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Confirmar Pagamento (DEV)</value>
+      <webElementGuid>d5095cea-b8aa-4a2b-a949-836d0722f9c0</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[1]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-transaction-handler[@class=&quot;ng-star-inserted&quot;]/div[@class=&quot;d-flex justify-content-center align-items-center w-100 mt-2 mb-5&quot;]/div[@class=&quot;mb-1 ng-star-inserted&quot;]/app-payment[1]/div[@class=&quot;ng-star-inserted&quot;]/div[@class=&quot;container mt-4&quot;]/div[@class=&quot;card&quot;]/div[@class=&quot;card-body&quot;]/button[@class=&quot;btn btn-success mt-4 ms-1&quot;]</value>
+      <webElementGuid>3337ce3e-5e25-470a-b595-2781cfd87c53</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:attributes</name>
+      <type>Main</type>
+      <value>(//button[@type='button'])[3]</value>
+      <webElementGuid>afa4f468-5522-42c3-bd8e-6554f877aa0b</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Estado Pagamento:'])[1]/following::button[1]</value>
+      <webElementGuid>2597eed8-6198-47c1-af4f-bf1ce0f2813e</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Confirmar Pagamento (DEV)']/parent::*</value>
+      <webElementGuid>fd0811f7-50ee-4dd6-a2de-a313d97e8e1a</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div/div/div/button</value>
+      <webElementGuid>03377839-9bd0-4e94-a9cc-0a218c0241a2</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//button[@type = 'button' and (text() = 'Confirmar Pagamento (DEV)' or . = 'Confirmar Pagamento (DEV)')]</value>
+      <webElementGuid>63d7e2e5-eff0-4a68-a39c-7e0fd5d68473</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

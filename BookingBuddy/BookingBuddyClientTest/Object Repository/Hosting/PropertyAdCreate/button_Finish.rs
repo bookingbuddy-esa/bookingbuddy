@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>button_Finish</name>
+   <tag></tag>
+   <elementGuidId>7edc8524-9adc-4507-85a4-4e72431152f1</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>(.//*[normalize-space(text()) and normalize-space(.)='Anterior'])[1]/following::button[1]</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>button.btn.btn-dark.h-50.bottom-button</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;Finalizar&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>6efaa595-5859-4665-9486-f20d8f1488ec</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>btn btn-dark h-50 bottom-button</value>
+      <webElementGuid>1f848097-b0ea-4035-b53b-e81b1e39e190</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Finalizar</value>
+      <webElementGuid>65ee76c1-18b0-44eb-b36b-7ea92e93edec</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[1]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-property-ad-create[1]/div[@class=&quot;d-flex h-100 w-100 flex-column align-items-center&quot;]/div[@class=&quot;d-flex flex-column w-100 align-items-center&quot;]/div[@class=&quot;d-flex flex-row h-100 w-100 align-items-center justify-content-between px-5&quot;]/button[@class=&quot;btn btn-dark h-50 bottom-button&quot;]</value>
+      <webElementGuid>c75f2c50-3bef-4d09-b64d-2c6af162b44f</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Anterior'])[1]/following::button[1]</value>
+      <webElementGuid>64aafa26-2bfc-409e-949a-5afbbb120ca3</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='O preço por noite é obrigatório.'])[1]/following::button[2]</value>
+      <webElementGuid>568aad82-fcf9-431d-a863-e7606a4f6aca</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Finalizar']/parent::*</value>
+      <webElementGuid>00c5e6a2-c724-4f16-8b95-6d7c9d18fa65</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//button[2]</value>
+      <webElementGuid>06bf2a03-5ffe-4f84-b421-3499914d0eac</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//button[(text() = 'Finalizar' or . = 'Finalizar')]</value>
+      <webElementGuid>35d37681-5e83-4e6b-8cd2-617571cc0d66</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>
