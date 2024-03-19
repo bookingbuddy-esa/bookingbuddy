@@ -148,7 +148,7 @@ namespace BookingBuddy.Server.Controllers
                         messages.Add(message);
                     }
                 });
-
+                Console.WriteLine("Mensagens: " + messages);
                 group.Messages = messages;
                 return group;
             }
@@ -315,15 +315,91 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Grupo eliminado com sucesso.");
         }
 
+        [HttpPost("{groupId}/messages")]
+         [Authorize]
+         public async Task<IActionResult> CreateMessage(string groupId, [FromBody] NewGroupMessage message)
+        {
+            var user = await _userManager.GetUserAsync(User);
 
-        /// <summary>
-        /// Manipula a comunicação WebSocket para um grupo específico.
-        /// </summary>
-        /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
-        /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
-        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            var group = await _context.Groups.FindAsync(groupId);
 
-        [NonAction]
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (!group.MembersId.Contains(user.Id))
+            {
+                return Unauthorized();
+            }
+
+            var newMessage = new GroupMessage
+            {
+                MessageId = Guid.NewGuid().ToString(),
+                UserName = user.Name,
+                Message = message.message,
+                GroupId = groupId
+            };
+
+            _context.GroupMessage.Add(newMessage);
+
+            group.MessagesId.Add(newMessage.MessageId);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("{groupId}/messages")]
+        [Authorize]
+        public async Task<IActionResult> GetMessages(string groupId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            var messages = await _context.GroupMessage
+          .Where(m => m.GroupId == groupId)
+          .Select(m => new {
+              m.UserName,
+              m.Message,
+          }).ToListAsync();
+
+
+            return Ok(messages);
+        }
+
+
+
+
+            /// <summary>
+            /// Manipula a comunicação WebSocket para um grupo específico.
+            /// </summary>
+            /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
+            /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
+            /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
+
+            [NonAction]
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
             var group = await _context.Groups.FindAsync(groupId);
@@ -342,4 +418,6 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="propertyId">O ID da propriedade associada ao grupo (opcional).</param>
     /// <param name="memberEmails">Uma lista de endereços de e-mail dos membros a serem adicionados ao grupo (opcional).</param>
     public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
+
+    public record NewGroupMessage(string message);
 }

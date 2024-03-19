@@ -73,10 +73,17 @@ export class GroupComponent {
     };
 
     // TODO: enviar a mensagem para a base de dados com o service
+    this.groupService.sendGroupMessage(this.currentGroup!.groupId, message.message).forEach(response => { 
+      if (response) {
+      console.log(response);
+    }
+  })
 
     this.currentGroup!.messages.push(message);
     this.newMessage = '';
     this.testSendWS();
+    console.log("mensagem enviada");
+
   }
   
   public chooseGroup(group: Group): void {

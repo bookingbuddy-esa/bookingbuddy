@@ -60,5 +60,8 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("message")]
         public string Message { get; set; }
+
+        [JsonPropertyName("groupId")]
+        public string GroupId {  get; set; }
     }
 }
