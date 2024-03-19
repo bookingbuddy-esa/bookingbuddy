@@ -5,7 +5,7 @@ export interface Group {
   groupOwnerId: string,
   name: string,
   membersId: string[],
-  members: string[],
+  members: GroupMember[],
   propertiesId: string[],
   properties: Property[],
   choosenProperty: string,
@@ -22,4 +22,9 @@ export interface GroupMessage {
   messageId?: string,
   userName: string,
   message: string
+}
+
+export interface GroupMember {
+  name: string,
+  id: string
 }

@@ -78,15 +78,26 @@
             </div>
         </div>
         <div class="d-flex flex-row justify-content-center align-items-center mt-2 mb-2" *ngIf="currentGroup">
-            <div class="chat mx-auto mt-2 mb-3">
+            <div class="chat w-50 mx-auto mt-2 mb-3">
                 <h3>Chat com o grupo</h3>
-                <div *ngFor="let m of currentGroup.messages" class="text-left">
+                <div *ngFor="let m of currentGroup.messages" class="text-left text-break">
                     <p><strong>{{m.userName}}:</strong> {{m.message}}</p>
                 </div>
 
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
                     <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
+                </div>
+            </div>
+
+            <div class="w-25 ms-2 mx-auto mt-2 mb-3">
+                <h5>Membros do Grupo</h5>
+
+                <div *ngFor="let member of currentGroup?.members!" class="text-left">
+                    <p>
+                        <strong>{{ member.name }}</strong>
+                        <i class="ms-1 bi {{ member?.id === currentGroup.groupOwnerId ? 'bi-person-check-fill' : 'bi-person-fill' }}"></i>
+                    </p>
                 </div>
             </div>
         </div>

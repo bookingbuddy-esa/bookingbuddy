@@ -50,7 +50,7 @@ export class GroupComponent {
         this.success_alerts.push("Grupo removido com sucesso!");
         this.loadUserGroups();
         this.currentGroup = undefined;
-        this.router.navigateByUrl('/group');
+        this.router.navigateByUrl('/groups');
       }
     }).catch(error => {
       this.errors.push(error.error);
@@ -80,7 +80,7 @@ export class GroupComponent {
   }
   
   public chooseGroup(group: Group): void {
-    //console.log("Escolher este grupo: " + JSON.stringify(group));
+    console.log("Escolher este grupo: " + JSON.stringify(group));
     this.errors = [];
     this.success_alerts = [];
     this.router.navigate([], { queryParams: { groupId: group.groupId }});
@@ -112,7 +112,7 @@ export class GroupComponent {
 
   private loadUserGroups() {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
-      console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
+      //console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
       this.group_list = groups;
       this.submitting = false;
     }).catch(error => {

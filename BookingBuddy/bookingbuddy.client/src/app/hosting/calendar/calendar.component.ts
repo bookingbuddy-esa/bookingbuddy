@@ -203,7 +203,7 @@ export class CalendarComponent implements OnInit {
           }*/
         },
         error => {
-          console.error('Erro ao obter propriedades do usuário:', error);
+          console.error('Erro ao obter propriedades do utilizador:', error);
         }
       );
     }
