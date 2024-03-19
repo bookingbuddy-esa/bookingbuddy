@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>div_25</name>
+   <tag></tag>
+   <elementGuidId>82ced58f-46bb-4c9f-b85d-0cee678ce5a8</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>(.//*[normalize-space(text()) and normalize-space(.)='Sat'])[1]/following::div[4]</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>div.fc-daygrid-day-frame.fc-scrollgrid-sync-inner</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=gridcell[name=&quot;February 25, 2024&quot;s] >> div >> nth=0</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>div</value>
+      <webElementGuid>f406af3f-71c4-4243-921b-73b519d133a3</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>fc-daygrid-day-frame fc-scrollgrid-sync-inner</value>
+      <webElementGuid>ccd7630c-71ea-4ef6-8e5a-2383c908260f</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>25</value>
+      <webElementGuid>5cf52590-51ff-4c07-8df2-7f8dfccbf49a</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[1]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-calendar[1]/div[@class=&quot;container-fluid&quot;]/div[@class=&quot;row flex-nowrap&quot;]/div[@class=&quot;col py-3&quot;]/full-calendar[@class=&quot;fc-col-header-cell fc fc-media-screen fc-direction-ltr fc-theme-standard&quot;]/div[@class=&quot;fc-view-harness fc-view-harness-active&quot;]/div[@class=&quot;fc-dayGridMonth-view fc-view fc-daygrid&quot;]/table[@class=&quot;fc-scrollgrid  fc-scrollgrid-liquid&quot;]/tbody[1]/tr[@class=&quot;fc-scrollgrid-section fc-scrollgrid-section-body  fc-scrollgrid-section-liquid&quot;]/td[1]/div[@class=&quot;fc-scroller-harness fc-scroller-harness-liquid&quot;]/div[@class=&quot;fc-scroller fc-scroller-liquid-absolute&quot;]/div[@class=&quot;fc-daygrid-body fc-daygrid-body-unbalanced&quot;]/table[@class=&quot;fc-scrollgrid-sync-table&quot;]/tbody[1]/tr[1]/td[@class=&quot;fc-day fc-day-sun fc-day-past fc-day-other fc-daygrid-day&quot;]/div[@class=&quot;fc-daygrid-day-frame fc-scrollgrid-sync-inner&quot;]</value>
+      <webElementGuid>ee31f73d-31fd-4258-88b9-ca10e370cb58</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Sat'])[1]/following::div[4]</value>
+      <webElementGuid>9c949a8f-ee87-4cf2-943f-5cf71b09bc3a</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Fri'])[1]/following::div[5]</value>
+      <webElementGuid>c9f0b9b2-aa75-4c5b-8bc1-e8b55e11f0a5</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//div/div/div/table/tbody/tr/td/div</value>
+      <webElementGuid>bccf0a7c-1162-4199-873a-3328eedb36d3</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//div[(text() = '25' or . = '25')]</value>
+      <webElementGuid>6d4a2679-f240-4978-97c8-7a17d9415968</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

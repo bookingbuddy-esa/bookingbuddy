@@ -3,3 +3,9 @@
   height: inherit;
   width: 50%;
 }
+
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+}

@@ -58,4 +58,22 @@ export class GroupService {
       map((res: HttpResponse<string>) => res.ok)
     );
   }
+
+  public getGroupMessages(groupId: string) {
+    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}/messages`, { withCredentials: true });
+  }
+
+  public sendGroupMessage(groupId: string, message: string) {
+    console.log("Mensagem: " + message + " Grupo: " + groupId);
+    return this.http.post(`${environment.apiUrl}/api/groups/${groupId}/messages`, {
+      message
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
 }

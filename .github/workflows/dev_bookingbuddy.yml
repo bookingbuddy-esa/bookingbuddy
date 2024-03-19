@@ -23,8 +23,8 @@ jobs:
       - name: Build BookingBuddy.Server
         run: dotnet build BookingBuddy/BookingBuddy.Server
       
-      - name: Test BookingBuddyTest
-        run: dotnet test BookingBuddy/BookingBuddyTest
+      - name: Test BookingBuddyServerTest
+        run: dotnet test BookingBuddy/BookingBuddyServerTest
   
   bookingbuddy-client-Build:
     runs-on: ubuntu-latest
