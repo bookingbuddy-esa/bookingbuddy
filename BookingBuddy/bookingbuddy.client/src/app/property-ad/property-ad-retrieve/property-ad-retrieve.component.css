@@ -4,11 +4,13 @@
 }
 
 
-/*:host {
+:host {
     display: flex;
     height: inherit;
     width: inherit;
 }
+
+/*
 
 .img-shorter {
     max-width: 50%;
