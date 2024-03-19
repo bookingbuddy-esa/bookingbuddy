@@ -67,23 +67,23 @@ export class GroupComponent {
   }
 
   public sendMessage(): void {
-    let message = {
-      userName: this.user!.name,
-      message: this.newMessage.trim()
-    };
+    if (this.newMessage.trim() !== '') {
+      let message = {
+        userName: this.user!.name,
+        message: this.newMessage.trim()
+      };
 
-    // TODO: enviar a mensagem para a base de dados com o service
-    this.groupService.sendGroupMessage(this.currentGroup!.groupId, message.message).forEach(response => { 
-      if (response) {
-      console.log(response);
+      this.groupService.sendGroupMessage(this.currentGroup!.groupId, message.message).forEach(response => {
+        if (response) {
+          console.log(response);
+        }
+      })
+
+      this.currentGroup!.messages.push(message);
+      this.newMessage = '';
+      this.testSendWS();
+      console.log("mensagem enviada");
     }
-  })
-
-    this.currentGroup!.messages.push(message);
-    this.newMessage = '';
-    this.testSendWS();
-    console.log("mensagem enviada");
-
   }
   
   public chooseGroup(group: Group): void {
@@ -121,6 +121,23 @@ export class GroupComponent {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
       //console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
       this.group_list = groups;
+
+      for (let i = 0; i < 10; i++){
+        let p: Group = {
+          groupId: '123',
+          groupOwnerId: '123',
+          name: 'grupo ' + i,
+          membersId: [],
+          members: [],
+          propertiesId: [],
+          properties: [],
+          choosenProperty: 'ya',
+          messages: []
+        }
+
+        this.group_list.push(p);
+      }
+      
       this.submitting = false;
     }).catch(error => {
       this.errors.push(error.error);

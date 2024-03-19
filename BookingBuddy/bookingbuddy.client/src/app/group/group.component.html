@@ -20,33 +20,57 @@
     </div>
 
     <div class="col-md-3 mb-5">
-        <div class="accordion" id="accordionGroups">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        Lista de Grupos
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionGroups">
-                    <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
-                        <div class="list-group list-group-flush overflow-auto">
-                            <div class="mx-auto p-2">
-                                <span class="text-muted small">Criar um grupo de reserva<button type="button" class="btn btn-outline-success btn-sm rounded-pill ms-2" routerLink="/group-booking"><i class="bi bi-person-fill-add"></i></button></span>
-                            </div>
-                            <hr class="m-0" />
-                            <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
-                            <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="chooseGroup(group)" [ngClass]="{'bg-success text-white': group === currentGroup}">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="fw-bold">{{group.name}}</div>
-                                    <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>
-                        </div>
-                        <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
-                        </button>
-                        </div>
-                    </div>
+      <div class="accordion mb-3" id="accordionGroups">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+              Lista de Grupos
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionGroups">
+            <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
+              <div class="list-group list-group-flush overflow-auto">
+                <div class="mx-auto p-2">
+                  <span class="text-muted small">Criar um grupo de reserva<button type="button" class="btn btn-outline-success btn-sm rounded-pill ms-2" routerLink="/group-booking"><i class="bi bi-person-fill-add"></i></button></span>
                 </div>
+                <hr class="m-0" />
+                <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
+                <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="chooseGroup(group)" [ngClass]="{'bg-success text-white': group === currentGroup}">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">{{group.name}}</div>
+                    <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>
+                  </div>
+                  <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
+                </button>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+
+      <div class="accordion" id="accordionMembers" *ngIf="currentGroup">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneMembers" aria-expanded="false" aria-controls="collapseOneMembers">
+              Membros do Grupo
+            </button>
+          </h2>
+          <div id="collapseOneMembers" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMembers">
+            <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
+              <div class="list-group list-group-flush overflow-auto">
+                <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem membros neste grupo.</span>
+                <button *ngFor="let member of currentGroup?.members!" class="list-group-item list-group-item-action" >
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="fw-bold">{{member.name}}</div>
+                    <i class="ms-1 bi {{ member?.id === currentGroup.groupOwnerId ? 'bi-award-fill' : 'bi-person-fill' }}"></i>
+                  </div>
+                  <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-12 col-md-9 mb-5">
         <div #successAlerts class="alert alert-success alert-dismissible fade show" role="alert" *ngFor="let success_message of success_alerts">
@@ -81,28 +105,19 @@
             </div>
         </div>
         <div class="d-flex flex-row justify-content-center align-items-center mt-2 mb-2" *ngIf="currentGroup">
-            <div class="chat w-50 mx-auto mt-2 mb-3">
-                <h3>Chat com o grupo</h3>
-                <div *ngFor="let m of currentGroup.messages" class="text-left text-break">
-                    <p><strong>{{m.userName}}:</strong> {{m.message}}</p>
-                </div>
-
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
-                    <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
-                </div>
+          <div class="chat w-50 mx-auto mt-2 mb-3">
+            <h3>Chat com o grupo</h3>
+            <div class="w-100 mt-3 px-3 overflow-auto" style="max-height: 300px;">
+              <div *ngFor="let m of currentGroup.messages" class="text-left text-break">
+                <p><strong>{{m.userName}}:</strong> {{m.message}}</p>
+              </div>
             </div>
 
-            <div class="w-25 ms-2 mx-auto mt-2 mb-3">
-                <h5>Membros do Grupo</h5>
-
-                <div *ngFor="let member of currentGroup?.members!" class="text-left">
-                    <p>
-                        <strong>{{ member.name }}</strong>
-                        <i class="ms-1 bi {{ member?.id === currentGroup.groupOwnerId ? 'bi-person-check-fill' : 'bi-person-fill' }}"></i>
-                    </p>
-                </div>
+            <div class="input-group mt-3">
+              <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
+              <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()" [disabled]="newMessage === ''">Enviar</button>
             </div>
+          </div>
         </div>
         <div class="d-flex flex-row justify-content-around align-items-center mt-5" *ngIf="currentGroup">
             <button type="button" class="btn btn-md btn-success me-2" data-bs-toggle="modal" data-bs-target="#teste">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i></button>
