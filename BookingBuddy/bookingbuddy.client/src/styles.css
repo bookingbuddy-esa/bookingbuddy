@@ -56,6 +56,10 @@ body {
   background-color: blue;
 }
 
+.accordion-button:hover{
+    --bs-accordion-btn-bg: #9DAE9A;
+}
+
 /*
 .fc {
     background-color: white;
