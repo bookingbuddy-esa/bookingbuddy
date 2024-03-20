@@ -74,7 +74,8 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         return property;
     }
 
-    private async Task<Order?> CreateRandomOrder(
+    private async Task<OrderBase?> CreateRandomOrder(
+        Type orderType,
         string email = "bookingbuddy.user@bookingbuddy.com",
         string method = "Multibanco"
     )
@@ -106,19 +107,44 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
             ImagesUrl = []
         })).Entity;
 
-        var order = (await _context.DbContext.Order.AddAsync(new Order
+        OrderBase? order = null;
+
+        if (orderType == typeof(PromoteOrder))
         {
-            OrderId = Guid.NewGuid().ToString(),
-            PaymentId = payment.PaymentId,
-            ApplicationUserId = user!.Id,
-            PropertyId = property.PropertyId,
-            StartDate = DateTime.Now,
-            EndDate = DateTime.Now.AddDays(1),
-            State = true,
-            ApplicationUser = user,
-            Payment = payment,
-            Property = property
-        })).Entity;
+            order = _context.DbContext.PromoteOrder.Add(new PromoteOrder
+            {
+                OrderId = Guid.NewGuid().ToString(),
+                PaymentId = payment.PaymentId,
+                ApplicationUserId = user.Id,
+                PropertyId = property.PropertyId,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(1),
+                State = OrderState.Paid,
+                ApplicationUser = user,
+                Payment = payment,
+                Property = property
+            }).Entity;
+            _context.DbContext.Order.Add(new Order { OrderId = order.OrderId, Type = "Promote" });
+        }
+        else if (orderType == typeof(BookingOrder))
+        {
+            order = _context.DbContext.BookingOrder.Add(new BookingOrder
+            {
+                OrderId = Guid.NewGuid()
+                    .ToString(),
+                PaymentId = payment.PaymentId,
+                ApplicationUserId = user.Id,
+                PropertyId = property.PropertyId,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(1),
+                State = OrderState.Paid,
+                ApplicationUser = user,
+                Payment = payment,
+                Property = property,
+                NumberOfGuests = 5
+            }).Entity;
+            _context.DbContext.Order.Add(new Order { OrderId = order.OrderId, Type = "Booking" });
+        }
 
         try
         {
@@ -145,7 +171,7 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void GetOrder_Returns_Order_When_Order_Exist()
     {
-        var order = await CreateRandomOrder();
+        var order = await CreateRandomOrder(typeof(PromoteOrder));
         Assert.NotNull(order);
 
         var controller = CreateController();
@@ -161,16 +187,22 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var order = await CreateRandomOrder();
+        var order = await CreateRandomOrder(typeof(PromoteOrder));
         Assert.NotNull(order);
-
-        var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
-            order.PropertyId,
-            order.StartDate,
-            order.EndDate,
-            order.Payment!.Method
-        ));
-        Assert.IsType<UnauthorizedResult>(result);
+        if (order is PromoteOrder promoteOrder)
+        {
+            var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
+                promoteOrder!.PropertyId,
+                promoteOrder.StartDate,
+                promoteOrder.EndDate,
+                promoteOrder.Payment!.Method
+            ), false);
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+        else
+        {
+            Assert.True(false);
+        }
     }
 
     [Fact]
@@ -182,16 +214,23 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var order = await CreateRandomOrder();
+        var order = await CreateRandomOrder(typeof(PromoteOrder));
         Assert.NotNull(order);
 
-        var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
-            Guid.NewGuid().ToString(),
-            order.StartDate,
-            order.EndDate,
-            order.Payment!.Method
-        ));
-        Assert.IsType<NotFoundResult>(result);
+        if (order is PromoteOrder promoteOrder)
+        {
+            var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
+                Guid.NewGuid().ToString(),
+                promoteOrder!.StartDate,
+                promoteOrder.EndDate,
+                promoteOrder.Payment!.Method
+            ), false);
+            Assert.IsType<NotFoundResult>(result);
+        }
+        else
+        {
+            Assert.True(false);
+        }
     }
 
     [Fact]
@@ -212,6 +251,6 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
             DateTime.Now.AddDays(1),
             "Multibanco"
         ), false);
-        Assert.IsType<OkObjectResult>(result);
+        Assert.IsType<CreatedAtActionResult>(result);
     }
 }

@@ -74,8 +74,8 @@ namespace BookingBuddy.Server.Controllers
 
             //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
 
-            var promotedPropertyIds = await _context.Order
-                .Where(order => order.EndDate > DateTime.Now && order.State)
+            var promotedPropertyIds = await _context.PromoteOrder
+                .Where(order => order.EndDate > DateTime.Now && order.State == OrderState.Paid)
                 .Select(order => order.PropertyId)
                 .ToListAsync();
 
@@ -190,21 +190,19 @@ namespace BookingBuddy.Server.Controllers
                 .ToListAsync();
 
             var bookingOrders = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(bo => bo.Order!.Payment)
-                .Include(bo => bo.Order!.ApplicationUser)
-                .Where(bo => bo.Order!.PropertyId == property.PropertyId)
+                .Include(bo => bo.Payment)
+                .Include(bo => bo.ApplicationUser)
+                .Where(bo => bo.PropertyId == property.PropertyId)
                 .Select(bo => new
                 {
-                    bo.BookingOrderId,
                     applicationUser = new ReturnUser()
                     {
-                        Id = bo.Order!.ApplicationUserId,
-                        Name = bo.Order.ApplicationUser!.Name
+                        Id = bo.ApplicationUserId,
+                        Name = bo.ApplicationUser!.Name
                     },
-                    bo.Order!.StartDate,
-                    bo.Order!.EndDate,
-                    bo.Order.Payment!.Amount
+                    bo.StartDate,
+                    bo.EndDate,
+                    bo.Payment!.Amount
                 })
                 .ToListAsync();
 
@@ -554,25 +552,23 @@ namespace BookingBuddy.Server.Controllers
                 .ToListAsync();
 
             var associatedBookingOrders = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(bo => bo.Order!.Payment)
-                .Include(bo => bo.Order!.ApplicationUser)
-                .Where(bo => properties.Select(p => p.PropertyId).Contains(bo.Order!.PropertyId))
+                .Include(bo => bo.Payment)
+                .Include(bo => bo.ApplicationUser)
+                .Where(bo => properties.Select(p => p.PropertyId).Contains(bo.PropertyId))
                 .Select(bo => new
                 {
-                    bo.BookingOrderId,
                     bo.OrderId,
                     applicationUser = new ReturnUser()
                     {
-                        Id = bo.Order!.ApplicationUserId,
-                        Name = bo.Order.ApplicationUser!.Name
+                        Id = bo.ApplicationUserId,
+                        Name = bo.ApplicationUser!.Name
                     },
-                    bo.Order!.Property!.Name,
-                    guest = bo.Order!.ApplicationUser.Name,
-                    checkIn = bo.Order!.StartDate,
-                    checkOut = bo.Order!.EndDate,
-                    bo.Order!.State,
-                    bo.Order.Payment!.Amount,
+                    bo.Property!.Name,
+                    guest = bo.ApplicationUser.Name,
+                    checkIn = bo.StartDate,
+                    checkOut = bo.EndDate,
+                    bo.State,
+                    bo.Payment!.Amount,
                     bo.NumberOfGuests,
                 })
                 .ToListAsync();

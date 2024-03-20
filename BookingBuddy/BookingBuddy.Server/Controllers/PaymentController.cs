@@ -1,8 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Web;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -79,17 +77,11 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("webhook")]
         public async Task<IActionResult> Webhook([FromQuery] PaymentResponse paymentResponse)
         {
-            string key = paymentResponse.key;
-            string orderId = paymentResponse.orderId;
-            string amount = paymentResponse.amount;
-            string requestId = paymentResponse.requestId;
-            string paymentDatetime = paymentResponse.payment_datetime;
-
-            Console.WriteLine($"Key: {key}");
-            Console.WriteLine($"Order ID: {orderId}");
-            Console.WriteLine($"Amount: {amount}");
-            Console.WriteLine($"Request ID: {requestId}");
-            Console.WriteLine($"Payment Datetime: {paymentDatetime}");
+            var key = paymentResponse.key;
+            var orderId = paymentResponse.orderId;
+            var amount = paymentResponse.amount;
+            var requestId = paymentResponse.requestId;
+            var paymentDatetime = paymentResponse.payment_datetime;
 
             if (key != _configuration.GetSection("PhishingKey").Value!)
             {
@@ -108,49 +100,55 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            payment.Status = "Paid";
-
+            if (payment.Status == "Paid") return Ok();
             try
             {
-                await _context.SaveChangesAsync();
-                await WebSocketWrapper.NotifyAllAsync(payment);
-                var order = await _context.Order.FindAsync(orderId);
-                if (order != null)
+                payment.Status = "Paid";
+                OrderBase? order = (await _context.Order.FindAsync(orderId))?.Type.ToUpper() switch
                 {
-                    order.State = true;
-                    await _context.SaveChangesAsync();
+                    "PROMOTE" => await _context.PromoteOrder.FindAsync(orderId),
+                    "BOOKING" => await _context.BookingOrder.FindAsync(orderId),
+                    "GROUP-BOOKING" => await _context.GroupBookingOrder.FindAsync(orderId),
+                    _ => null
+                };
 
-                    if (orderId.StartsWith("PROMOTE-"))
-                    {
-                        var promoteOrder = new PromoteOrder
-                        {
-                            PromoteOrderId = Guid.NewGuid().ToString(),
-                            OrderId = orderId
-                        };
-                        _context.PromoteOrder.Add(promoteOrder);
-                        await _context.SaveChangesAsync();
-                    }
-                    else if (orderId.StartsWith("BOOKING-"))
-                    {
-                        // TODO: Diogo Rosa - BlockedDates passa a ter StartDate e EndDate (invex de Start e End) e com o tipo DateTime - fazer alterações necessários do frontend?
-                        var blockDates = new BlockedDate
-                        {
-                            PropertyId = order.PropertyId,
-                            Start = order.StartDate.ToString("yyyy-MM-dd"),
-                            End = order.EndDate.ToString("yyyy-MM-dd")
-                        };
+                if (order == null) return NotFound();
 
+                var blockDates = new BlockedDate
+                {
+                    PropertyId = order.PropertyId,
+                    Start = order.StartDate.ToString("yyyy-MM-dd"),
+                    End = order.EndDate.ToString("yyyy-MM-dd")
+                };
+
+                if (order is BookingOrder)
+                {
+                    _context.BlockedDate.Add(blockDates);
+                }
+
+                if (order is GroupBookingOrder groupBookingOrder)
+                {
+                    groupBookingOrder.PaidByIds.Add(requestId);
+                    var group = await _context.Groups.FindAsync(groupBookingOrder.GroupId);
+                    if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
+                    {
+                        order.State = OrderState.Paid;
                         _context.BlockedDate.Add(blockDates);
-                        await _context.SaveChangesAsync();
                     }
                 }
+                else
+                {
+                    order.State = OrderState.Paid;
+                }
+
+                await _context.SaveChangesAsync();
+                await WebSocketWrapper.NotifyAllAsync(payment);
+                return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Ocorreu um erro: {ex.Message}");
             }
-
-            return Ok();
         }
 
         /// <summary>
