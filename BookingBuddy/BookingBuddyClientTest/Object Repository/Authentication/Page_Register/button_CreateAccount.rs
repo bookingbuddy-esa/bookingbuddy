@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>button_CreateAccount</name>
+   <tag></tag>
+   <elementGuidId>de58b825-960c-478c-ba61-71fcf27d6eb6</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>//button[@type='submit']</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>button.btn.btn-register.mt-4.w-100.p-2</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;Criar conta&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>ca944b86-ad62-47fa-8bbc-7c9f1e2eb1b9</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>type</name>
+      <type>Main</type>
+      <value>submit</value>
+      <webElementGuid>1b4c90ff-e6da-40de-b944-5ee5987f0741</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>btn btn-register mt-4 w-100 p-2</value>
+      <webElementGuid>ed62e284-869d-4418-8732-756d5c199b5f</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Criar conta</value>
+      <webElementGuid>7c8f7f37-53c9-4803-af23-5019f848d49a</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[1]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-register-component[1]/div[@class=&quot;d-flex w-100 flex-column align-items-center justify-content-between&quot;]/div[@class=&quot;d-flex flex-column align-items-center justify-content-center&quot;]/form[@class=&quot;d-flex mb-3 w-100 flex-column align-items-center ng-dirty ng-touched ng-valid&quot;]/button[@class=&quot;btn btn-register mt-4 w-100 p-2&quot;]</value>
+      <webElementGuid>b2537257-a11a-4518-9935-b52eef9aa566</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:attributes</name>
+      <type>Main</type>
+      <value>//button[@type='submit']</value>
+      <webElementGuid>91478b66-d291-4a1e-8163-12a238c155bc</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='A palavra-passe é obrigatória!'])[1]/following::button[1]</value>
+      <webElementGuid>d0e7c189-724d-423d-8b78-e9cea2080ab5</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='O email é inválido!'])[1]/following::button[1]</value>
+      <webElementGuid>f2db690d-66cd-4b19-ac6c-858311ab7217</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Ou criar conta com'])[1]/preceding::button[1]</value>
+      <webElementGuid>6e673a5d-c658-42a4-b197-2f24490e6bf8</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Criar conta']/parent::*</value>
+      <webElementGuid>ab1eea6f-9850-435d-8111-47accb6cd5d0</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//form/button</value>
+      <webElementGuid>7bcd3847-1884-4dad-acf9-9f031dc258c7</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//button[@type = 'submit' and (text() = 'Criar conta' or . = 'Criar conta')]</value>
+      <webElementGuid>da7275b3-f5c3-480b-bdee-c1274f656765</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

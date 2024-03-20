@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {UserInfo} from "../../../auth/authorize.dto";
 
 @Component({
   selector: 'app-photos-step',
@@ -8,6 +9,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class PhotosStepComponent implements OnInit {
 
   @Input() photos: File[] = [];
+  @Input() user: UserInfo | undefined;
   @Output() photosValid = new EventEmitter<boolean>();
   @Output() photosSubmit = new EventEmitter<File[]>();
   protected errors: string[] = [];
@@ -25,6 +27,9 @@ export class PhotosStepComponent implements OnInit {
       reader.readAsDataURL(file);
     });
     this.photosValid.emit(this.selectedFiles.length > 0);
+    if (this.user?.roles.map(r => r.toLowerCase()).includes('admin')) {
+      this.photosValid.emit(true);
+    }
   }
 
   onImagesSelect(event: Event): void {

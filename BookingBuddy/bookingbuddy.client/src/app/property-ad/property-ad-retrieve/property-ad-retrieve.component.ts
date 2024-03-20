@@ -84,12 +84,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
         error => {
           // TODO return error message
         }
-    );
-    
+    ); 
   }
 
   loadBlockedDates() {
-
     if (this.property) {
       this.propertyService.getPropertyBlockedDates(this.property.propertyId)
         .forEach(
@@ -253,15 +251,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
-  //TODO: Adicionar os valores da taxa de limpeza
-  calcularTotal() {
-    if (this.property) {
-      return this.calcularDiferencaDias() * this.property.pricePerNight;
-    }
-    return 0;
-    
-  }
-
   calcularTotalDesconto() {
     const selectedDates: Date[] = [];
     this.pricesMap = new Map();
@@ -344,7 +333,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
     console.log("Check-out: " + checkOutDate);
 
     // TODO: verificar se datas sao validas antes de fazer a order
-
     this.router.navigate(['/transaction-handler'], { 
         queryParams: {
             propertyId: this.property?.propertyId,

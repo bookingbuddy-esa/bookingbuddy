@@ -8,7 +8,7 @@ import {UserInfo} from "../../auth/authorize.dto";
 import {Property, PropertyCreate} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
-import { AppComponent } from '../../app.component';
+import {AppComponent} from '../../app.component';
 
 @Component({
   selector: 'app-property-ad-create',
@@ -136,15 +136,13 @@ export class PropertyAdCreateComponent implements OnInit {
     this.submitting = true;
     this.errors = [];
 
-    this.propertyService.uploadImages(this.photos).pipe(
-      timeout(10000),
-    ).forEach(images => {
+    if (this.user?.roles.map(r => r.toLowerCase()).includes('admin') && this.photos.length === 0) {
       const newProperty: PropertyCreate = {
         name: this.adInfo?.name ?? '',
         location: this.location?.address ?? '',
         pricePerNight: this.adInfo?.pricePerNight ?? 0,
         description: this.adInfo?.description ?? '',
-        imagesUrl: images,
+        imagesUrl: ["https://bookingbuddyrepository.blob.core.windows.net/images/propriedade-teste.png"],
         amenities: this.selectedAmenities,
       };
       this.propertyService.createPropertyAd(newProperty).forEach(success => {
@@ -157,10 +155,33 @@ export class PropertyAdCreateComponent implements OnInit {
         this.submitting = false;
         return of(null);
       });
-    }).catch(() => {
-      this.errors.push('Erro ao fazer upload das imagens.');
-      this.submitting = false;
-      return of(null);
-    });
+    } else {
+      this.propertyService.uploadImages(this.photos).pipe(
+        timeout(10000),
+      ).forEach(images => {
+        const newProperty: PropertyCreate = {
+          name: this.adInfo?.name ?? '',
+          location: this.location?.address ?? '',
+          pricePerNight: this.adInfo?.pricePerNight ?? 0,
+          description: this.adInfo?.description ?? '',
+          imagesUrl: images,
+          amenities: this.selectedAmenities,
+        };
+        this.propertyService.createPropertyAd(newProperty).forEach(success => {
+            if (success) {
+              this.router.navigateByUrl('/');
+            }
+          }
+        ).catch(() => {
+          this.errors.push('Erro ao criar propriedade.');
+          this.submitting = false;
+          return of(null);
+        });
+      }).catch(() => {
+        this.errors.push('Erro ao fazer upload das imagens.');
+        this.submitting = false;
+        return of(null);
+      });
+    }
   }
 }

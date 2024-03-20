@@ -92,6 +92,8 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<Rating> Rating { get; set; } = default!;
 
+        public DbSet<GroupMessage> GroupMessage { get; set; } = default!;
+
         /// <summary>
         /// Dados de inicialização da base de dados.
         /// </summary>
