@@ -1,92 +1,141 @@
 <div class="row mx-auto p-5" *ngIf="property">
-    <div class="col-12 d-flex flex-column justify-content-center align-items-center">
-        <p class="h4">{{ property.name }}</p>
-        <div class="d-flex flex-row gap-2">
-            <p class="h5">★ 4.9</p>
-            <p class="h5">{{ property.location }}</p>
-        </div>
-        <div id="carouselExampleControls" class="carousel mycarousel img-shorter" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div *ngFor="let imagem of property.imagesUrl; let i = index" class="carousel-item" [class.active]="i === 0">
-                    <img [src]="imagem" class="d-block w-100 h-50" alt="Imagem {{ i + 1 }}">
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-        </div>
+  <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+    <p class="h4">{{ property.name }}</p>
+    <div class="d-flex flex-row gap-2">
+      <p class="h5">★ 4.9</p>
+      <p class="h5">{{ property.location }}</p>
     </div>
-    <div class="col-12 col-lg-9 mt-5">
-        <div class="d-flex mt-2 mb-2 align-items-center">
-            <h5 class="m-0 flex-fill">Hospedado por {{ property.applicationUser?.name }}</h5>
-            <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
-            <i class="bi bi-star text-warning"></i>
-          </button>
-            <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
-            <i class="bi bi-star-fill text-warning"></i>
-          </button>
+    <div id="carouselExampleControls" class="carousel mycarousel img-shorter" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div *ngFor="let imagem of property.imagesUrl; let i = index" class="carousel-item" [class.active]="i === 0">
+          <img [src]="imagem" class="d-block w-100 h-50" alt="Imagem {{ i + 1 }}">
         </div>
-        <hr class="m-1" />
-        <p>{{ property.description }}</p>
-        <div class="comodidades mt-5 mb-3 d-flex flex-column">
-            <h5>Comodidades</h5>
-            <div *ngFor="let amenity of property.amenities" class="d-inline-flex">
-                <span class="text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
-                <h6 class="my-auto">{{ amenity.displayName }}</h6>
-            </div>
-            <hr class="mb-2">
-        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
-    <div class="col-12 col-lg-3 p-4 mt-2 mt-lg-5 border border-secondary rounded text-center">
-        <form class="d-flex flex-column align-items-center mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
-            <div class="d-flex flex-column justify-content-around gap-2">
-                <button type="button" class="btn btn-outline-success rounded-pill" [routerLink]="['/group-booking']" [queryParams]="{propertyId: property.propertyId}">Criar Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
-                <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
+  </div>
+  <div class="col-12 col-lg-9 mt-5">
+    <div class="d-flex mt-2 mb-2 align-items-center">
+      <h5 class="m-0 flex-fill">Hospedado por {{ property.applicationUser?.name }}</h5>
+      <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
+        <i class="bi bi-star text-warning"></i>
+      </button>
+      <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
+        <i class="bi bi-star-fill text-warning"></i>
+      </button>
+    </div>
+    <hr class="m-1" />
+    <p>{{ property.description }}</p>
+    <div class="comodidades mt-5 mb-3 d-flex flex-column">
+      <h5>Comodidades</h5>
+      <div *ngFor="let amenity of property.amenities" class="d-inline-flex">
+        <span class="text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
+        <h6 class="my-auto">{{ amenity.displayName }}</h6>
+      </div>
+      <hr class="mb-2">
+    </div>
+  </div>
+  <div class="col-12 col-lg-3 p-4 mt-2 mt-lg-5 border border-secondary rounded text-center">
+    <form class="d-flex flex-column align-items-center mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
+      <div class="d-flex flex-column justify-content-around gap-2">
+        <button type="button" class="btn btn-outline-success rounded-pill" [routerLink]="['/group-booking']" [queryParams]="{propertyId: property.propertyId}">Criar Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
+        <button type="button" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#addToGroupModal">Adicionar a Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
+        <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
 
-                <mat-form-field (click)="picker.open()">
-                    <mat-label>Selecione as datas</mat-label>
-                    <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">
-                        <input matStartDate placeholder="Check-In" formControlName="checkIn" (dateChange)="onDateChange($event, 'start')">
-                        <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
-                    </mat-date-range-input>
-                    <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
-                        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
-                    </mat-datepicker-toggle>
-                    <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
-                </mat-form-field>
+        <mat-form-field (click)="picker.open()">
+          <mat-label>Selecione as datas</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">
+            <input matStartDate placeholder="Check-In" formControlName="checkIn" (dateChange)="onDateChange($event, 'start')">
+            <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
+          </mat-date-range-input>
+          <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
+            <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+          </mat-datepicker-toggle>
+          <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
+        </mat-form-field>
 
-                <div class="d-flex flex-row gap-3 mt-1 align-items-center">
-                    <label for="hospedes">Hóspedes</label>
-                    <!-- TODO: número de hóspedes com base no que está na base de dados sobre a propriedade -->
-                    <select name="hospedes" id="hospedes" class="form-select" formControlName="numberOfGuests">
-                    <option value="1">1 hóspede</option>
-                    <option value="2">2 hóspedes</option>
-                    <option value="3">3 hóspedes</option>
-                    <option value="4">4 hóspedes</option>
-                    <option value="5">5 hóspedes</option>
-                </select>
+        <div class="d-flex flex-row gap-3 mt-1 align-items-center">
+          <label for="hospedes">Hóspedes</label>
+          <!-- TODO: número de hóspedes com base no que está na base de dados sobre a propriedade -->
+          <select name="hospedes" id="hospedes" class="form-select" formControlName="numberOfGuests">
+            <option value="1">1 hóspede</option>
+            <option value="2">2 hóspedes</option>
+            <option value="3">3 hóspedes</option>
+            <option value="4">4 hóspedes</option>
+            <option value="5">5 hóspedes</option>
+          </select>
+        </div>
+        <button class="btn btn-success mt-1">Reservar</button>
+        <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
+        <div class="precos mt-2">
+          <div *ngFor="let formattedString of formatPricesMap()">
+            <h6 class="text-secondary"><u>{{ formattedString }}</u></h6>
+          </div>
+          <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
+          <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
+        </div>
+        <hr class="mt-2 mb-2">
+        <div class="total d-flex justify-content-between">
+          <span>Total</span>
+          <span>{{ calcularTotalDesconto() }}€</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addToGroupModal" tabindex="-1" aria-labelledby="addToGroupModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addToGroupModalLabel">Adicionar ao Grupo de Reserva</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+
+        <div>
+          <div class="accordion" id="accordionGroups">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed shadow-sm" type="button" aria-expanded="false" aria-controls="collapseOne">
+                  Lista de Grupos
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionGroups">
+                <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
+                  <div class="list-group list-group-flush overflow-auto">
+                    <hr class="m-0" />
+                    <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
+                    <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="selectGroup(group)" [ngClass]="{'bg-success text-white': selected_group_list.includes(group)}">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div class="fw-bold">{{group.name}}</div>
+                        <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>
+                      </div>
+                    </button>
+                  </div>
                 </div>
-                <button class="btn btn-success mt-1">Reservar</button>
-                <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
-                <div class="precos mt-2">
-                    <div *ngFor="let formattedString of formatPricesMap()">
-                        <h6 class="text-secondary"><u>{{ formattedString }}</u></h6>
-                    </div>
-                    <h6 class="text-secondary"><u>Taxa de Limpeza - 25€</u></h6>
-                    <h6 class="text-secondary"><u>Taxa de Serviço - 20€</u></h6>
-                </div>
-                <hr class="mt-2 mb-2">
-                <div class="total d-flex justify-content-between">
-                    <span>Total</span>
-                    <span>{{ calcularTotalDesconto() }}€</span>
-                </div>
+              </div>
             </div>
-        </form>
+          </div>
+        </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary">Adicionar</button>
+      </div>
     </div>
+  </div>
 </div>

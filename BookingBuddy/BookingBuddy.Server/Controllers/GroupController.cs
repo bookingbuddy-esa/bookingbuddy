@@ -308,10 +308,22 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            _context.Groups.Remove(group);
-            await _context.SaveChangesAsync();
+            var groupMessages = _context.GroupMessage.Where(m => m.GroupId == groupId);
 
-            return Ok("Grupo eliminado com sucesso.");
+            // Remover todas as mensagens associadas
+            _context.GroupMessage.RemoveRange(groupMessages);
+
+            _context.Groups.Remove(group);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok("Grupo eliminado com sucesso.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
         }
 
         [HttpPost("{groupId}/messages")]
