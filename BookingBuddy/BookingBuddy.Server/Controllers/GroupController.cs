@@ -202,11 +202,9 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
-            Console.WriteLine("-------------------------------------------------------------------------------------------------");
-            Console.WriteLine($"Grupo: {groupId} Propriedade: {propertyId}");
+
             var group = await _context.Groups.FindAsync(groupId);
-            Console.WriteLine("-------------------------------------------------------------------------------------------------");
-            Console.WriteLine($"Grupo: {groupId} Propriedade: {propertyId}");
+
             if(group == null)
             {
                 return NotFound();
@@ -234,6 +232,46 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest();
             }
         }
+
+
+        /// <summary>
+        /// Remove um propriedade a um grupo existente.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
+        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+        [HttpPut("removeProperty")]
+        [Authorize]
+        public async Task<IActionResult> RemoveProperty(string groupId, string propertyId)
+        {
+
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+
+            if (!group.PropertiesId.Contains(propertyId))
+            {
+                return BadRequest("A propriedade não existe no grupo!");
+            }
+
+            group.PropertiesId.Remove(propertyId);
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                return Ok("Propriedade removida com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
 
         /// <summary>
         /// Define uma propriedade como a propriedade escolhida para um grupo.

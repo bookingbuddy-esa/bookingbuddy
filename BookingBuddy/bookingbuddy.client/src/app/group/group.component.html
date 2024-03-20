@@ -99,8 +99,10 @@
             <div class="card mb-3 me-md-2 w-25 w-lg-25" *ngFor="let property of currentGroup?.properties">
                 <img [src]="property!.imagesUrl![0]" class="card-img-top" alt="Imagem da Propriedade">
                 <div class="card-body">
-                    <h5 class="card-title text-truncate">{{property.name}}</h5>
-                    <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€ por noite</p>
+                  <h5 class="card-title text-truncate">{{property.name}}</h5>
+                  
+                  <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€</p>
+                  <button class="btn btn-sm btn-danger" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
                 </div>
             </div>
         </div>
