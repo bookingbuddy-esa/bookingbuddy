@@ -623,57 +623,44 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         })).Entity;
         Assert.NotNull(payment1);
 
-        // var order1 = (await _context.DbContext.Order.AddAsync(new Order()
-        //     {
-        //         OrderId = Guid.NewGuid().ToString(),
-        //         ApplicationUserId = notOwnerUser.Id,
-        //         PropertyId = property.PropertyId,
-        //         PaymentId = payment1.PaymentId,
-        //         StartDate = DateTime.Now,
-        //         EndDate = DateTime.Now.AddDays(7),
-        //         State = true,
-        //     }
-        // )).Entity;
-        // Assert.NotNull(order1);
-        //
-        // var bookingOrderCreateResult1 = (await _context.DbContext.BookingOrder.AddAsync(new BookingOrder()
-        // {
-        //     BookingOrderId = Guid.NewGuid().ToString(),
-        //     OrderId = order1.OrderId,
-        //     NumberOfGuests = 2
-        // })).Entity;
-        // Assert.NotNull(bookingOrderCreateResult1);
-        //
-        // var payment2 = (await _context.DbContext.Payment.AddAsync(new Payment()
-        // {
-        //     PaymentId = Guid.NewGuid().ToString(),
-        //     Method = "Multibanco",
-        //     Amount = 150,
-        //     Status = "Pago",
-        //     CreatedAt = DateTime.Now,
-        // })).Entity;
-        // Assert.NotNull(payment2);
-        //
-        // var order2 = (await _context.DbContext.Order.AddAsync(new Order()
-        //     {
-        //         OrderId = Guid.NewGuid().ToString(),
-        //         ApplicationUserId = notOwnerUser.Id,
-        //         PropertyId = property.PropertyId,
-        //         PaymentId = payment2.PaymentId,
-        //         StartDate = DateTime.Now.AddDays(7),
-        //         EndDate = DateTime.Now.AddDays(14),
-        //         State = true,
-        //     }
-        // )).Entity;
-        // Assert.NotNull(order2);
-        //
-        // var bookingOrderCreateResult2 = (await _context.DbContext.BookingOrder.AddAsync(new BookingOrder()
-        // {
-        //     BookingOrderId = Guid.NewGuid().ToString(),
-        //     OrderId = order2.OrderId,
-        //     NumberOfGuests = 3
-        // })).Entity;
-        // Assert.NotNull(bookingOrderCreateResult2);
+        var order1 = (await _context.DbContext.BookingOrder.AddAsync(new BookingOrder
+            {
+                OrderId = Guid.NewGuid().ToString(),
+                ApplicationUserId = notOwnerUser.Id,
+                PropertyId = property.PropertyId,
+                PaymentId = payment1.PaymentId,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(7),
+                State = OrderState.Paid,
+                NumberOfGuests = 2,
+            }
+        )).Entity;
+        Assert.NotNull(order1);
+
+        var payment2 = (await _context.DbContext.Payment.AddAsync(new Payment()
+        {
+            PaymentId = Guid.NewGuid().ToString(),
+            Method = "Multibanco",
+            Amount = 150,
+            Status = "Pago",
+            CreatedAt = DateTime.Now,
+        })).Entity;
+        Assert.NotNull(payment2);
+
+        var order2 = (await _context.DbContext.BookingOrder.AddAsync(new BookingOrder
+            {
+                OrderId = Guid.NewGuid()
+                    .ToString(),
+                ApplicationUserId = notOwnerUser.Id,
+                PropertyId = property.PropertyId,
+                PaymentId = payment2.PaymentId,
+                StartDate = DateTime.Now.AddDays(7),
+                EndDate = DateTime.Now.AddDays(14),
+                State = OrderState.Paid,
+                NumberOfGuests = 4,
+            }
+        )).Entity;
+        Assert.NotNull(order2);
 
         try
         {
@@ -1046,23 +1033,23 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
 
         var property = await CreateRandomProperty();
         Assert.NotNull(property);
-        
+
         var property2 = await CreateRandomProperty();
         Assert.NotNull(property2);
-        
+
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
-        
+
         var addToFavoriteResult = await controller.AddToFavorite(property!.PropertyId);
         Assert.IsType<OkObjectResult>(addToFavoriteResult);
-        
+
         addToFavoriteResult = await controller.AddToFavorite(property2!.PropertyId);
         Assert.IsType<OkObjectResult>(addToFavoriteResult);
-        
+
         var result = await controller.GetUserFavorites(user.Id);
         Assert.IsType<OkObjectResult>(result);
         var favorites = (result as OkObjectResult)?.Value as IEnumerable<dynamic>;
         Assert.NotNull(favorites);
-        Assert.Equal(2,favorites.Count());
+        Assert.Equal(2, favorites.Count());
     }
 }

@@ -74,63 +74,88 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         return property;
     }
 
-    private async Task<Order?> CreateRandomOrder(
+    private async Task<OrderBase?> CreateRandomOrder(
+        Type orderType,
         string email = "bookingbuddy.user@bookingbuddy.com",
         string method = "Multibanco"
     )
     {
-        // var user = await _userManager.UserManager.FindByEmailAsync(email);
-        //
-        // var rnd = new Random();
-        //
-        // var payment = (await _context.DbContext.Payment.AddAsync(new Payment
-        // {
-        //     PaymentId = Guid.NewGuid().ToString(),
-        //     Method = method,
-        //     Entity = method == "Multibanco" ? $"{rnd.Next(10000, 99999)}" : null,
-        //     Reference = method == "Multibanco" ? $"{rnd.Next(10000000, 99999999)}" : null,
-        //     Amount = rnd.Next(),
-        //     Status = "Paid",
-        //     CreatedAt = DateTime.Now,
-        //     ExpiryDate = DateTime.Now.AddDays(1).ToLongDateString(),
-        // })).Entity;
-        //
-        // var property = (await _context.DbContext.Property.AddAsync(new Property
-        // {
-        //     PropertyId = Guid.NewGuid().ToString(),
-        //     ApplicationUserId = user!.Id,
-        //     Name = $"Property {Guid.NewGuid().ToString()}",
-        //     Description = "Test property",
-        //     Location = "123 Test St",
-        //     PricePerNight = 105,
-        //     ImagesUrl = []
-        // })).Entity;
-        //
-        // var order = (await _context.DbContext.Order.AddAsync(new Order
-        // {
-        //     OrderId = Guid.NewGuid().ToString(),
-        //     PaymentId = payment.PaymentId,
-        //     ApplicationUserId = user!.Id,
-        //     PropertyId = property.PropertyId,
-        //     StartDate = DateTime.Now,
-        //     EndDate = DateTime.Now.AddDays(1),
-        //     State = true,
-        //     ApplicationUser = user,
-        //     Payment = payment,
-        //     Property = property
-        // })).Entity;
-        //
-        // try
-        // {
-        //     await _context.DbContext.SaveChangesAsync();
-        // }
-        // catch
-        // {
-        //     return null;
-        // }
-        //
-        // return order;
-        return null;
+        var user = await _userManager.UserManager.FindByEmailAsync(email);
+
+        var rnd = new Random();
+
+        var payment = (await _context.DbContext.Payment.AddAsync(new Payment
+        {
+            PaymentId = Guid.NewGuid().ToString(),
+            Method = method,
+            Entity = method == "Multibanco" ? $"{rnd.Next(10000, 99999)}" : null,
+            Reference = method == "Multibanco" ? $"{rnd.Next(10000000, 99999999)}" : null,
+            Amount = rnd.Next(),
+            Status = "Paid",
+            CreatedAt = DateTime.Now,
+            ExpiryDate = DateTime.Now.AddDays(1).ToLongDateString(),
+        })).Entity;
+
+        var property = (await _context.DbContext.Property.AddAsync(new Property
+        {
+            PropertyId = Guid.NewGuid().ToString(),
+            ApplicationUserId = user!.Id,
+            Name = $"Property {Guid.NewGuid().ToString()}",
+            Description = "Test property",
+            Location = "123 Test St",
+            PricePerNight = 105,
+            ImagesUrl = []
+        })).Entity;
+
+        OrderBase? order = null;
+
+        if (orderType == typeof(PromoteOrder))
+        {
+            order = _context.DbContext.PromoteOrder.Add(new PromoteOrder
+            {
+                OrderId = Guid.NewGuid().ToString(),
+                PaymentId = payment.PaymentId,
+                ApplicationUserId = user.Id,
+                PropertyId = property.PropertyId,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(1),
+                State = OrderState.Paid,
+                ApplicationUser = user,
+                Payment = payment,
+                Property = property
+            }).Entity;
+            _context.DbContext.Order.Add(new Order { OrderId = order.OrderId, Type = "Promote" });
+        }
+        else if (orderType == typeof(BookingOrder))
+        {
+            order = _context.DbContext.BookingOrder.Add(new BookingOrder
+            {
+                OrderId = Guid.NewGuid()
+                    .ToString(),
+                PaymentId = payment.PaymentId,
+                ApplicationUserId = user.Id,
+                PropertyId = property.PropertyId,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(1),
+                State = OrderState.Paid,
+                ApplicationUser = user,
+                Payment = payment,
+                Property = property,
+                NumberOfGuests = 5
+            }).Entity;
+            _context.DbContext.Order.Add(new Order { OrderId = order.OrderId, Type = "Booking" });
+        }
+
+        try
+        {
+            await _context.DbContext.SaveChangesAsync();
+        }
+        catch
+        {
+            return null;
+        }
+
+        return order;
     }
 
     [Fact]
@@ -146,7 +171,7 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void GetOrder_Returns_Order_When_Order_Exist()
     {
-        var order = await CreateRandomOrder();
+        var order = await CreateRandomOrder(typeof(PromoteOrder));
         Assert.NotNull(order);
 
         var controller = CreateController();
@@ -159,40 +184,53 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void CreateOrderPromote_Returns_Unauthorized_When_User_NotAuthenticated()
     {
-        // var controller = CreateController();
-        // Assert.NotNull(controller);
-        //
-        // var order = await CreateRandomOrder();
-        // Assert.NotNull(order);
-        //
-        // var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
-        //     order.PropertyId,
-        //     order.StartDate,
-        //     order.EndDate,
-        //     order.Payment!.Method
-        // ));
-        // Assert.IsType<UnauthorizedResult>(result);
+        var controller = CreateController();
+        Assert.NotNull(controller);
+
+        var order = await CreateRandomOrder(typeof(PromoteOrder));
+        Assert.NotNull(order);
+        if (order is PromoteOrder promoteOrder)
+        {
+            var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
+                promoteOrder!.PropertyId,
+                promoteOrder.StartDate,
+                promoteOrder.EndDate,
+                promoteOrder.Payment!.Method
+            ), false);
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+        else
+        {
+            Assert.True(false);
+        }
     }
 
     [Fact]
     public async void CreateOrderPromote_Returns_NotFound_When_Property_NotExist()
     {
-        // var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
-        // Assert.NotNull(user);
-        //
-        // var controller = CreateController(user.Id);
-        // Assert.NotNull(controller);
-        //
-        // var order = await CreateRandomOrder();
-        // Assert.NotNull(order);
-        //
-        // var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
-        //     Guid.NewGuid().ToString(),
-        //     order.StartDate,
-        //     order.EndDate,
-        //     order.Payment!.Method
-        // ));
-        // Assert.IsType<NotFoundResult>(result);
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
+        Assert.NotNull(user);
+
+        var controller = CreateController(user.Id);
+        Assert.NotNull(controller);
+
+        var order = await CreateRandomOrder(typeof(PromoteOrder));
+        Assert.NotNull(order);
+
+        if (order is PromoteOrder promoteOrder)
+        {
+            var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
+                Guid.NewGuid().ToString(),
+                promoteOrder!.StartDate,
+                promoteOrder.EndDate,
+                promoteOrder.Payment!.Method
+            ), false);
+            Assert.IsType<NotFoundResult>(result);
+        }
+        else
+        {
+            Assert.True(false);
+        }
     }
 
     [Fact]
@@ -213,6 +251,6 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
             DateTime.Now.AddDays(1),
             "Multibanco"
         ), false);
-        Assert.IsType<OkObjectResult>(result);
+        Assert.IsType<CreatedAtActionResult>(result);
     }
 }
