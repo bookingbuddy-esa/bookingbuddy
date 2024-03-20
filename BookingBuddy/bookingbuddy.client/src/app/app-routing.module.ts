@@ -20,6 +20,7 @@ import { HostingBookingComponent } from './hosting/hosting-booking/hosting-booki
 import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
 import { GroupComponent } from './group/group.component';
 import { GroupCreateComponent } from './group/group-create/group-create.component';
+import { FaqPageComponent } from './faq-page/faq-page.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -35,7 +36,8 @@ const routes: Routes = [
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
-  {path: 'unauthorized', component: UnauthorizedComponent},
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: 'faq-page', component: FaqPageComponent },
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', component: NotfoundComponent}
