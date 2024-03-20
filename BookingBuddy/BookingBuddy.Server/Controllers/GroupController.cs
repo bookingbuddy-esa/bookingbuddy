@@ -202,16 +202,24 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
+            Console.WriteLine("-------------------------------------------------------------------------------------------------");
+            Console.WriteLine($"Grupo: {groupId} Propriedade: {propertyId}");
             var group = await _context.Groups.FindAsync(groupId);
-
+            Console.WriteLine("-------------------------------------------------------------------------------------------------");
+            Console.WriteLine($"Grupo: {groupId} Propriedade: {propertyId}");
             if(group == null)
             {
                 return NotFound();
             }
 
-            if (group.Properties.Count >= 5)
+            if (group.PropertiesId.Count >= 6 )
             {
+                return BadRequest("O Grupo ja tem 6 propriedades na votação!");
+            }
 
+            if (group.PropertiesId.Contains(propertyId))
+            {
+                return BadRequest("A propriedade ja existe no grupo!");
             }
 
             group.PropertiesId.Add(propertyId);

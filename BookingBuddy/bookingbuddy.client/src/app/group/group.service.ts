@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/htt
 import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
 import { environment } from "../../environments/environment";
 import { Group, GroupCreate } from "../models/group";
+import { group } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,16 @@ export class GroupService {
     }));
   }
 
+  public addPropertyToGroup(groupId: string, propertyId: string): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/api/groups/addProperty?groupId=${groupId}&propertyId=${propertyId}`, {},
+      {
+        withCredentials: true,
+        observe: 'response',
+      }).pipe(map((res: HttpResponse<any>) => {
+        return res.body;
+      }));
+  }
+
   public deleteGroup(groupId: string): Observable<any> {
     return this.http.delete(`${environment.apiUrl}/api/groups/delete/${groupId}`, {
       withCredentials: true,
@@ -64,7 +75,6 @@ export class GroupService {
   }
 
   public sendGroupMessage(groupId: string, message: string) {
-    console.log("Mensagem: " + message + " Grupo: " + groupId);
     return this.http.post(`${environment.apiUrl}/api/groups/${groupId}/messages`, {
       message
     }, {

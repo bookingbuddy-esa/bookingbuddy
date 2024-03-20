@@ -281,6 +281,27 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
+  public addPropertyToGroup() {
+    if (this.property && this.selected_group_list.length > 0) {
+      const propertyId = this.property.propertyId;
+
+      this.selected_group_list.forEach(group => {
+
+        this.groupService.addPropertyToGroup(group.groupId, propertyId).forEach(response => {
+          if (response) {
+            //console.log(response);
+          }
+        })
+      });
+
+
+      this.selected_group_list = [];
+
+     // this.modalService.dismissAll();
+
+    }
+  }
+
   calcularTotalDesconto() {
     const selectedDates: Date[] = [];
     this.pricesMap = new Map();
