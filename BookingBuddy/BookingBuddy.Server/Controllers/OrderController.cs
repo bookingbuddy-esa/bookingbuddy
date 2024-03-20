@@ -12,36 +12,72 @@ namespace BookingBuddy.Server.Controllers
     /// </summary>
     [Route("api/orders")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class OrderController(
+        BookingBuddyServerContext context,
+        UserManager<ApplicationUser> userManager,
+        PaymentController paymentController)
+        : ControllerBase
     {
-        private readonly BookingBuddyServerContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly PaymentController _paymentController;
-
-        public OrderController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
-            PaymentController paymentController)
-        {
-            _context = context;
-            _userManager = userManager;
-            _paymentController = paymentController;
-        }
-
         /// <summary>
         /// Método que representa o endpoint de obtenção de uma order através do seu ID.
         /// </summary>
-        /// <param name="orderId"></param>
+        /// <param name="orderId">Identificador da order</param>
+        /// <param name="type">Tipo de order</param>
         /// <returns></returns>
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrder(string orderId)
         {
-            var order = await _context.Order.FindAsync(orderId);
+            var order = await context.Order.FindAsync(orderId);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            return Ok(order);
+            return order.Type.ToUpper() switch
+            {
+                "PROMOTION" => Ok(await context.PromotionOrder.FindAsync(orderId)),
+                "PROMOTE" => Ok(await context.PromoteOrder.Include(po => po.Payment)
+                    .Where(po => po.OrderId == orderId)
+                    .Select(po => new
+                    {
+                        po.OrderId,
+                        ApplicationUser = new
+                        {
+                            po.ApplicationUser!.Id,
+                            po.ApplicationUser.Name,
+                            po.ApplicationUser.Email
+                        },
+                        po.PropertyId,
+                        po.PaymentId,
+                        po.StartDate,
+                        po.EndDate,
+                        State = po.State.GetDescription()
+                    })
+                    .FirstOrDefaultAsync()),
+                "BOOKING" => Ok(await context.BookingOrder
+                    .Where(bo => bo.OrderId == orderId)
+                    .Include(bo => bo.Payment)
+                    .Include(bo => bo.ApplicationUser)
+                    .Select(bo => new
+                    {
+                        BookingOrderId = bo.OrderId,
+                        ApplicationUser = new
+                        {
+                            bo.ApplicationUser!.Id,
+                            bo.ApplicationUser.Name,
+                            bo.ApplicationUser.Email
+                        },
+                        bo.PaymentId,
+                        bo.StartDate,
+                        bo.EndDate,
+                        bo.NumberOfGuests,
+                        State = bo.State.GetDescription()
+                    })
+                    .FirstOrDefaultAsync()),
+                "GROUP-BOOKING" => Ok(await context.GroupBookingOrder.FindAsync(orderId)),
+                _ => BadRequest()
+            };
         }
 
         /// <summary>
@@ -57,19 +93,24 @@ namespace BookingBuddy.Server.Controllers
         {
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                var user = await userManager.GetUserAsync(User);
                 if (user == null)
                 {
                     return Unauthorized();
                 }
 
-                var property = await _context.Property.FindAsync(model.PropertyId);
+                var property = await context.Property.FindAsync(model.PropertyId);
                 if (property == null)
                 {
                     return NotFound();
                 }
 
-                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod,
+                if (model.StartDate > model.EndDate)
+                {
+                    return BadRequest("Invalid dates");
+                }
+
+                var newPaymentResult = await paymentController.CreatePayment(user, model.PaymentMethod,
                     Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber);
                 if (!createPayment)
                 {
@@ -86,37 +127,59 @@ namespace BookingBuddy.Server.Controllers
                         CreatedAt = DateTime.Now,
                         ExpiryDate = DateTime.Now.AddDays(1).ToLongDateString(),
                     };
-                    _context.Payment.Add(payment);
+                    context.Payment.Add(payment);
                     newPaymentResult = new ActionResult<Payment>(payment);
                 }
 
 
                 if (newPaymentResult is { Value: Payment newPayment })
                 {
-                    var order = new Order
+                    var order = new PromoteOrder
                     {
-                        OrderId = "PROMOTE-" + Guid.NewGuid(),
+                        OrderId = Guid.NewGuid().ToString(),
                         PaymentId = newPayment!.PaymentId,
                         ApplicationUserId = user.Id,
                         PropertyId = model.PropertyId,
                         StartDate = model.StartDate,
                         EndDate = model.EndDate,
-                        State = false
+                        State = OrderState.Pending
                     };
-                    _context.Order.Add(order);
-
+                    context.PromoteOrder.Add(order);
+                    context.Order.Add(new Order { OrderId = order.OrderId, Type = "Promote" });
                     try
                     {
-                        await _context.SaveChangesAsync();
+                        await context.SaveChangesAsync();
                     }
                     catch (Exception ex)
                     {
                         return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
                     }
 
-                    order.ApplicationUser = null;
-                    order.Property = null;
-                    return Ok(order);
+                    return CreatedAtAction("GetOrder", new { orderId = order.OrderId }, new
+                    {
+                        order.OrderId,
+                        ApplicationUser = new
+                        {
+                            order.ApplicationUser!.Id,
+                            order.ApplicationUser.Name,
+                            order.ApplicationUser.Email
+                        },
+                        Payment = new
+                        {
+                            order.Payment!.PaymentId,
+                            order.Payment.Method,
+                            order.Payment.Entity,
+                            order.Payment.Reference,
+                            order.Payment.Amount,
+                            order.Payment.Status,
+                            order.Payment.CreatedAt,
+                            order.Payment.ExpiryDate
+                        },
+                        order.PropertyId,
+                        order.StartDate,
+                        order.EndDate,
+                        State = order.State.GetDescription()
+                    });
                 }
             }
             catch (Exception ex)
@@ -134,13 +197,13 @@ namespace BookingBuddy.Server.Controllers
         {
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                var user = await userManager.GetUserAsync(User);
                 if (user == null)
                 {
                     return Unauthorized();
                 }
 
-                var property = await _context.Property.FindAsync(model.PropertyId);
+                var property = await context.Property.FindAsync(model.PropertyId);
                 if (property == null)
                 {
                     return NotFound();
@@ -151,38 +214,38 @@ namespace BookingBuddy.Server.Controllers
                     return BadRequest("Invalid dates");
                 }
 
-                List<DateTime> selectedDates = new List<DateTime>();
-                Dictionary<decimal, int> pricesMap = new Dictionary<decimal, int>();
+                var selectedDates = new List<DateTime>();
+                var pricesMap = new Dictionary<decimal, int>();
 
-                for (DateTime date = model.StartDate; date < model.EndDate; date = date.AddDays(1))
+                for (var date = model.StartDate; date < model.EndDate; date = date.AddDays(1))
                 {
                     selectedDates.Add(date);
                 }
 
-                foreach (DateTime selectedDate in selectedDates)
+                foreach (var selectedDate in selectedDates)
                 {
-                    var matchingDiscount = await _context.Discount.Where(d => d.PropertyId == model.PropertyId)
+                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == model.PropertyId)
                         .Where(d => d.StartDate <= selectedDate && d.EndDate >= selectedDate)
                         .FirstOrDefaultAsync();
 
                     if (matchingDiscount != null)
                     {
-                        decimal discountMultiplier = 1 - (decimal)matchingDiscount.DiscountAmount / 100;
-                        decimal newPrice = Math.Round(property.PricePerNight * discountMultiplier, 2);
-                        int currentCount = pricesMap.ContainsKey(newPrice) ? pricesMap[newPrice] : 0;
+                        var discountMultiplier = 1 - (decimal)matchingDiscount.DiscountAmount / 100;
+                        var newPrice = Math.Round(property.PricePerNight * discountMultiplier, 2);
+                        var currentCount = pricesMap.TryGetValue(newPrice, out var value) ? value : 0;
                         pricesMap[newPrice] = currentCount + 1;
                     }
                     else
                     {
-                        decimal currentPrice = property.PricePerNight;
-                        int currentCount = pricesMap.ContainsKey(currentPrice) ? pricesMap[currentPrice] : 0;
+                        var currentPrice = property.PricePerNight;
+                        var currentCount = pricesMap.TryGetValue(currentPrice, out var value) ? value : 0;
                         pricesMap[currentPrice] = currentCount + 1;
                     }
                 }
 
-                decimal reservationAmount = pricesMap.Sum(entry => entry.Key * entry.Value);
-                var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod,
-                    reservationAmount, model.PhoneNumber);
+                var reservationAmount = pricesMap.Sum(entry => entry.Key * entry.Value);
+                var newPaymentResult = await paymentController.CreatePayment(user, model.PaymentMethod,
+                    reservationAmount, model.PhoneNumber!);
 
                 if (!createPayment)
                 {
@@ -199,45 +262,58 @@ namespace BookingBuddy.Server.Controllers
                         CreatedAt = DateTime.Now,
                         ExpiryDate = DateTime.Now.AddDays(1).ToLongDateString(),
                     };
-                    _context.Payment.Add(payment);
+                    context.Payment.Add(payment);
                     newPaymentResult = new ActionResult<Payment>(payment);
                 }
 
 
                 if (newPaymentResult is { Value: Payment newPayment })
                 {
-                    var order = new Order
-                    {
-                        OrderId = "BOOKING-" + Guid.NewGuid(),
-                        PaymentId = newPayment!.PaymentId,
-                        ApplicationUserId = user.Id,
-                        PropertyId = model.PropertyId,
-                        StartDate = model.StartDate,
-                        EndDate = model.EndDate,
-                        State = false
-                    };
-                    _context.Order.Add(order);
-
                     try
                     {
-                        var bookingOrder = new BookingOrder
+                        var order = new BookingOrder
                         {
-                            BookingOrderId = Guid.NewGuid().ToString(),
-                            OrderId = order.OrderId,
-                            NumberOfGuests = model.NumberOfGuests
+                            OrderId = Guid.NewGuid().ToString(),
+                            NumberOfGuests = model.NumberOfGuests,
+                            PaymentId = newPayment!.PaymentId,
+                            ApplicationUserId = user.Id,
+                            PropertyId = model.PropertyId,
+                            StartDate = model.StartDate,
+                            EndDate = model.EndDate,
                         };
-
-                        _context.BookingOrder.Add(bookingOrder);
-                        await _context.SaveChangesAsync();
+                        context.BookingOrder.Add(order);
+                        context.Order.Add(new Order { OrderId = order.OrderId, Type = "Booking" });
+                        await context.SaveChangesAsync();
+                        return CreatedAtAction("GetOrder", new { orderId = order.OrderId }, new
+                        {
+                            order.OrderId,
+                            ApplicationUser = new
+                            {
+                                order.ApplicationUser!.Id,
+                                order.ApplicationUser.Name,
+                                order.ApplicationUser.Email
+                            },
+                            order.StartDate,
+                            order.EndDate,
+                            order.NumberOfGuests,
+                            Payment = new
+                            {
+                                order.Payment!.PaymentId,
+                                order.Payment.Method,
+                                order.Payment.Entity,
+                                order.Payment.Reference,
+                                order.Payment.Amount,
+                                order.Payment.Status,
+                                order.Payment.CreatedAt,
+                                order.Payment.ExpiryDate
+                            },
+                            State = order.State.GetDescription()
+                        });
                     }
                     catch (Exception ex)
                     {
                         return StatusCode(500, $"An error occurred while saving order to database: {ex.Message}");
                     }
-
-                    order.ApplicationUser = null;
-                    order.Property = null;
-                    return Ok(order);
                 }
             }
             catch (Exception ex)
@@ -255,13 +331,13 @@ namespace BookingBuddy.Server.Controllers
         {
             try
             {
-                var user = await _userManager.GetUserAsync(User);
+                var user = await userManager.GetUserAsync(User);
                 if (user == null)
                 {
                     return Unauthorized();
                 }
 
-                var property = await _context.Property.FindAsync(model.PropertyId);
+                var property = await context.Property.FindAsync(model.PropertyId);
                 if (property == null)
                 {
                     return NotFound();
@@ -282,7 +358,7 @@ namespace BookingBuddy.Server.Controllers
 
                 foreach (var selectedDate in selectedDates)
                 {
-                    var matchingDiscount = await _context.Discount.Where(d => d.PropertyId == model.PropertyId)
+                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == model.PropertyId)
                         .Where(d => d.StartDate <= selectedDate && d.EndDate >= selectedDate)
                         .FirstOrDefaultAsync();
 
@@ -307,39 +383,18 @@ namespace BookingBuddy.Server.Controllers
                 {
                     var groupBookingOrder = new GroupBookingOrder
                     {
-                        GroupBookingOrderId = Guid.NewGuid().ToString(),
+                        OrderId = Guid.NewGuid().ToString(),
                         ApplicationUserId = user.Id,
-                        MembersId = model.MembersId,
+                        GroupId = model.GroupId,
                         PropertyId = model.PropertyId,
                         StartDate = model.StartDate,
                         EndDate = model.EndDate,
-                        TotalPrice = reservationAmount,
-                        PaymentsId = [],
-                        PaidById = [],
-                        State = false
+                        TotalAmount = reservationAmount,
                     };
-
-                    _context.GroupBookingOrder.Add(groupBookingOrder);
-                    await _context.SaveChangesAsync();
-                    var members = _context.Users.Where(u => model.MembersId.Contains(u.Id)).ToList();
-                    var result = await _context.GroupBookingOrder.Where(gbo =>
-                            gbo.GroupBookingOrderId == groupBookingOrder.GroupBookingOrderId)
-                        .Include(gbo => gbo.Payments)
-                        .Include(gbo => gbo.ApplicationUser)
-                        .Select(gbo => new
-                        {
-                            gbo.GroupBookingOrderId,
-                            ApplicationUser = new
-                                { gbo.ApplicationUser!.Id, gbo.ApplicationUser.Name, gbo.ApplicationUser.Email },
-                            Members = members.Select(m => new { m.Id, m.Name, m.Email }).ToList(),
-                            gbo.PropertyId,
-                            gbo.StartDate,
-                            gbo.EndDate,
-                            gbo.TotalPrice,
-                            State = gbo.State ? "Paid" : "Pending"
-                        })
-                        .FirstOrDefaultAsync();
-                    return Ok(result);
+                    context.GroupBookingOrder.Add(groupBookingOrder);
+                    context.Order.Add(new Order { OrderId = groupBookingOrder.OrderId, Type = "GroupBooking" });
+                    await context.SaveChangesAsync();
+                    return CreatedAtAction("GetOrder", new { orderId = groupBookingOrder.OrderId }, groupBookingOrder);
                 }
                 catch
                 {
@@ -357,44 +412,48 @@ namespace BookingBuddy.Server.Controllers
         [Route("group-booking/pay")]
         public async Task<IActionResult> PayGroupBooking([FromBody] PayGroupBookingModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await userManager.GetUserAsync(User);
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var groupBooking = await _context.GroupBookingOrder.FindAsync(model.GroupBookingId);
+            var groupBooking = await context.GroupBookingOrder.Include(gbo => gbo.Group)
+                .FirstOrDefaultAsync(gbo => gbo.OrderId == model.GroupBookingId);
             if (groupBooking == null)
             {
                 return NotFound();
             }
-            
-            if(!groupBooking.MembersId.Contains(user.Id))
+
+            if (groupBooking.Group == null)
+            {
+                BadRequest();
+            }
+
+            if (!groupBooking.Group!.MembersId.Contains(user.Id))
             {
                 return Forbid();
             }
-            
-            if(groupBooking.PaidById.Contains(user.Id))
+
+            if (groupBooking.PaidByIds.Contains(user.Id))
             {
                 return BadRequest("Já pagou a sua parte.");
             }
-            
-            if(groupBooking.State)
+
+            if (groupBooking.State == OrderState.Paid)
             {
                 return BadRequest("Reserva já se encontra paga.");
             }
-            
-            var reservationAmount = Math.Round(groupBooking.TotalPrice / groupBooking.MembersId.Count, 2);
-            var newPaymentResult = await _paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber);
 
-            if (newPaymentResult is { Value: Payment newPayment })
-            {
-                groupBooking.PaymentsId.Add(newPayment.PaymentId);
-                await _context.SaveChangesAsync();
-                return Ok(newPayment);
-            }
+            var reservationAmount = Math.Round(groupBooking.TotalAmount / groupBooking.Group.MembersId.Count, 2);
+            var newPaymentResult =
+                await paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber);
 
-            return BadRequest();
+            if (newPaymentResult is not { Value: Payment newPayment }) return BadRequest();
+            groupBooking.PaymentIds.Add(newPayment.PaymentId);
+            await context.SaveChangesAsync();
+            return Ok(newPayment);
+
         }
 
         private decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
@@ -460,9 +519,9 @@ namespace BookingBuddy.Server.Controllers
 
     public record GroupBookingModel(
         string PropertyId,
+        string GroupId,
         DateTime StartDate,
-        DateTime EndDate,
-        List<string> MembersId
+        DateTime EndDate
     );
 
     public record PayGroupBookingModel(

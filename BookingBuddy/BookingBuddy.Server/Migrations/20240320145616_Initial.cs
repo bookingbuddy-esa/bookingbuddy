@@ -57,6 +57,19 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Order",
+                columns: table => new
+                {
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Order", x => x.OrderId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -218,8 +231,7 @@ namespace BookingBuddy.Server.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProviderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    GroupBookingOrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    GroupBookingOrderId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    GroupBookingOrderOrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -317,25 +329,31 @@ namespace BookingBuddy.Server.Migrations
                 name: "GroupBookingOrder",
                 columns: table => new
                 {
-                    GroupBookingOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PaymentIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaidByIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MembersId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentsId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PaidById = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    State = table.Column<bool>(type: "bit", nullable: false)
+                    State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupBookingOrder", x => x.GroupBookingOrderId);
+                    table.PrimaryKey("PK_GroupBookingOrder", x => x.OrderId);
                     table.ForeignKey(
                         name: "FK_GroupBookingOrder_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupBookingOrder_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GroupBookingOrder_Property_PropertyId",
@@ -377,20 +395,56 @@ namespace BookingBuddy.Server.Migrations
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GroupBookingOrderId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    GroupBookingOrderOrderId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Payment", x => x.PaymentId);
                     table.ForeignKey(
-                        name: "FK_Payment_GroupBookingOrder_GroupBookingOrderId",
-                        column: x => x.GroupBookingOrderId,
+                        name: "FK_Payment_GroupBookingOrder_GroupBookingOrderOrderId",
+                        column: x => x.GroupBookingOrderOrderId,
                         principalTable: "GroupBookingOrder",
-                        principalColumn: "GroupBookingOrderId");
+                        principalColumn: "OrderId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
+                name: "BookingOrder",
+                columns: table => new
+                {
+                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NumberOfGuests = table.Column<int>(type: "int", nullable: false),
+                    PaymentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BookingOrder", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_BookingOrder_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookingOrder_Payment_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payment",
+                        principalColumn: "PaymentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BookingOrder_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "PropertyId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PromoteOrder",
                 columns: table => new
                 {
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -399,25 +453,25 @@ namespace BookingBuddy.Server.Migrations
                     PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    State = table.Column<bool>(type: "bit", nullable: false)
+                    State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.OrderId);
+                    table.PrimaryKey("PK_PromoteOrder", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_Order_AspNetUsers_ApplicationUserId",
+                        name: "FK_PromoteOrder_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Order_Payment_PaymentId",
+                        name: "FK_PromoteOrder_Payment_PaymentId",
                         column: x => x.PaymentId,
                         principalTable: "Payment",
                         principalColumn: "PaymentId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Order_Property_PropertyId",
+                        name: "FK_PromoteOrder_Property_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Property",
                         principalColumn: "PropertyId",
@@ -425,58 +479,38 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookingOrder",
-                columns: table => new
-                {
-                    BookingOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    NumberOfGuests = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookingOrder", x => x.BookingOrderId);
-                    table.ForeignKey(
-                        name: "FK_BookingOrder_Order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Order",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PromoteOrder",
-                columns: table => new
-                {
-                    PromoteOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PromoteOrder", x => x.PromoteOrderId);
-                    table.ForeignKey(
-                        name: "FK_PromoteOrder_Order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Order",
-                        principalColumn: "OrderId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "PromotionOrder",
                 columns: table => new
                 {
-                    PromotionOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    Discount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaymentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PromotionOrder", x => x.PromotionOrderId);
+                    table.PrimaryKey("PK_PromotionOrder", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_PromotionOrder_Order_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Order",
-                        principalColumn: "OrderId",
+                        name: "FK_PromotionOrder_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PromotionOrder_Payment_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payment",
+                        principalColumn: "PaymentId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PromotionOrder_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "PropertyId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -485,19 +519,19 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AmenityId", "DisplayName", "Name", "PropertyId" },
                 values: new object[,]
                 {
-                    { "03182802-65aa-414c-91b2-ec48e0d7838a", "Estacionamento", "Estacionamento", null },
-                    { "23617a7d-b8a9-4b2c-a6e2-e685cb4f4bfc", "TV", "Tv", null },
-                    { "2934f8b5-6072-453d-a11c-0f30b8bc51d0", "Quintal", "Quintal", null },
-                    { "2affb54c-6f8c-4b5a-ba5d-dff983624985", "Máquina de Lavar", "MaquinaLavar", null },
-                    { "313bb902-326f-4b87-9521-722964416468", "Varanda", "Varanda", null },
-                    { "4463ab06-6d69-40ac-8138-87395210a97d", "Animais", "Animais", null },
-                    { "4c062e21-e953-4f67-9bf8-b871fcac769e", "Câmaras", "Camaras", null },
-                    { "6f9720cb-3663-469e-a594-d99b4426e8ff", "Microondas", "Microondas", null },
-                    { "81dba559-e285-4c67-9710-d9645eb60109", "Piscina Individual", "PiscinaIndividual", null },
-                    { "8e93e81a-d193-47a4-bd8c-95ab8e6d0c4c", "Frigorífico", "Frigorifico", null },
-                    { "9191d310-1ec1-47a4-bf07-f02e163a760d", "Cozinha", "Cozinha", null },
-                    { "b1d01c8e-3b45-49cf-86c1-083a558d2738", "Piscina Partilhada", "PiscinaPartilhada", null },
-                    { "d654146a-d0d2-451f-a044-62cf1a7cf6cb", "Wifi", "Wifi", null }
+                    { "081f872b-411b-4fae-b2d1-03d49a5ec21f", "Estacionamento", "Estacionamento", null },
+                    { "14d1c062-9110-4f59-a77e-84440f55da53", "Máquina de Lavar", "MaquinaLavar", null },
+                    { "17da5518-24cb-4c60-b7b8-cd1e8d71d2d3", "Quintal", "Quintal", null },
+                    { "2af93b7f-7674-421c-b5b1-39b5aaacb707", "Cozinha", "Cozinha", null },
+                    { "2f0bcc35-df58-4b62-b977-5b87cbaab383", "Microondas", "Microondas", null },
+                    { "33ee1614-3d0d-4e96-b681-cdb87145e7d9", "Câmaras", "Camaras", null },
+                    { "65007fdf-f76a-4e21-9e45-83b763fe99fc", "Animais", "Animais", null },
+                    { "7698fd00-b4d5-4b76-900b-ed54d2077192", "Piscina Partilhada", "PiscinaPartilhada", null },
+                    { "963b20b5-c079-4507-a3fd-b7058f853884", "Frigorífico", "Frigorifico", null },
+                    { "c00ebcc6-23f8-4f44-a829-d71fd3e88ac5", "Wifi", "Wifi", null },
+                    { "c993f795-0943-4f5d-9bc8-bfaced2bcd11", "Varanda", "Varanda", null },
+                    { "cde60a80-38fb-46e8-acea-a26e9b9262af", "TV", "Tv", null },
+                    { "dbb1c7a1-66f1-4b31-ac4d-b58521c25d72", "Piscina Individual", "PiscinaIndividual", null }
                 });
 
             migrationBuilder.InsertData(
@@ -505,9 +539,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AspNetProviderId", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "66ff9854-eac0-48c0-b20f-0611fd4e559f", "google", "GOOGLE" },
-                    { "73106ea2-ae64-4c30-ac9a-53bdd676062b", "microsoft", "MICROSOFT" },
-                    { "bc68a128-0959-4e65-81be-22538bdb9f79", "local", "LOCAL" }
+                    { "052a790d-f13d-4073-8183-b8977715af69", "microsoft", "MICROSOFT" },
+                    { "962b2527-c50c-48be-b242-608afd031d57", "google", "GOOGLE" },
+                    { "dfae76a8-87a4-432a-8659-ec8b9a61ff2e", "local", "LOCAL" }
                 });
 
             migrationBuilder.InsertData(
@@ -515,19 +549,19 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1a97c5de-3907-44c8-88bd-f0e0bb960f0e", "2e03a9f6-b944-4f1a-aeba-3902e81033ab", "user", "USER" },
-                    { "327a0d5e-04b9-4cc8-86ea-daba006aa8c7", "e425992f-93b3-4dca-ba20-4f63e00481fd", "admin", "ADMIN" },
-                    { "971a6345-91de-48cc-95c7-6b8e87de020f", "81eab037-1d7e-4a39-9428-445a84a2ad6b", "landlord", "LANDLORD" }
+                    { "590630ab-1069-4b73-8958-f5d8ac3a6dfe", "8c9aac9f-daed-4e14-bea9-37e3fb139ee7", "landlord", "LANDLORD" },
+                    { "5cdc26ee-cdc5-43d1-b84c-2e0bb76d6b9e", "7346eabf-cfde-421e-be16-8ebb4a404e82", "user", "USER" },
+                    { "8eae2df2-e736-4d17-ba9d-6ec9ae0252c4", "8cbb5fe1-723a-48bc-b98b-e9a3fd94bdfc", "admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "GroupBookingOrderId", "GroupBookingOrderId1", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PictureUrl", "ProviderId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "GroupBookingOrderOrderId", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PictureUrl", "ProviderId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "2145d6e9-a3ec-4fa4-8864-fddc44f78c06", 0, "3339979f-302d-4513-9bca-54c259456336", "bookingbuddy.landlord@bookingbuddy.com", true, null, null, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEBDhmKAFRnJj49tGJX0diOEtdDT14aFgGvSf8l/GA5jaiDDPT/zN+gzLNCEsktXQSA==", null, false, null, "bc68a128-0959-4e65-81be-22538bdb9f79", "6fd9574e-edca-4bdb-84e5-2c9a8745aac5", false, "bookingbuddy.landlord@bookingbuddy.com" },
-                    { "2bcafd37-333c-4e98-b460-a24783b75fd3", 0, "ecabd6c8-a3f2-4ec1-88cb-769bdaf1dc77", "bookingbuddy.admin@bookingbuddy.com", true, null, null, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAECZ8v8hoYNCd3Rfl7TuCqgSWm3ikIca1pda/Ul1QlqlXKf++I9bBHcoEzasWDOn/pg==", null, false, null, "bc68a128-0959-4e65-81be-22538bdb9f79", "97efa909-15ed-41a8-a4e8-6fb4931fb4f3", false, "bookingbuddy.admin@bookingbuddy.com" },
-                    { "4ccbde27-ec96-441e-a24e-7f16c58d9829", 0, "7906c228-7cf3-4f50-86b7-4ace2faf21a4", "bookingbuddy.user@bookingbuddy.com", true, null, null, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEM6d+JcJQscGUjyG4AqGlJNccgIPFVX5EyRvEpm9y/ruzmaCbIDEOcxAjaTxfk7CqA==", null, false, null, "bc68a128-0959-4e65-81be-22538bdb9f79", "68145326-a6d3-4795-b457-25a794a8f738", false, "bookingbuddy.user@bookingbuddy.com" }
+                    { "04d180b7-3ae7-49db-9a97-698731cc5f1d", 0, "187b3866-b7ad-4704-a535-e121c2e65591", "bookingbuddy.admin@bookingbuddy.com", true, null, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEClESUazU54lsmslNrmIo7QTXtQeglVoRb1lb1b5Wx28Xw+lXsuc2RPJ+TytZcCzZw==", null, false, null, "dfae76a8-87a4-432a-8659-ec8b9a61ff2e", "f36e78e2-d206-49f8-aeb4-3c8c0c132866", false, "bookingbuddy.admin@bookingbuddy.com" },
+                    { "683ea3fa-1d6e-4e19-9202-2a28ce3f4ade", 0, "a18769fa-94a3-4be3-9f5a-767d96259a83", "bookingbuddy.user@bookingbuddy.com", true, null, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEJQABJd4IGzF9CR56yRACQS2kyd4u7jvTAV9MMn421y1CwTMRZBcokBf6duWoZlmAw==", null, false, null, "dfae76a8-87a4-432a-8659-ec8b9a61ff2e", "0ae8d49d-a0cc-4ce8-8f11-afcbdd0f0dee", false, "bookingbuddy.user@bookingbuddy.com" },
+                    { "e21be698-1995-4fb1-bdd7-d512fdedb88a", 0, "4556ee6c-86be-4a80-b4ea-184bbe93813f", "bookingbuddy.landlord@bookingbuddy.com", true, null, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEBA6PE07+mu1ZRuyuxWMQOMsHVwNnR0yrgyEq/8xU1NtsSmErdlP+zZGuoJUM6AJgQ==", null, false, null, "dfae76a8-87a4-432a-8659-ec8b9a61ff2e", "07163ca7-fe34-493f-bcb6-070fcfbbcd43", false, "bookingbuddy.landlord@bookingbuddy.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -535,9 +569,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "971a6345-91de-48cc-95c7-6b8e87de020f", "2145d6e9-a3ec-4fa4-8864-fddc44f78c06" },
-                    { "327a0d5e-04b9-4cc8-86ea-daba006aa8c7", "2bcafd37-333c-4e98-b460-a24783b75fd3" },
-                    { "1a97c5de-3907-44c8-88bd-f0e0bb960f0e", "4ccbde27-ec96-441e-a24e-7f16c58d9829" }
+                    { "8eae2df2-e736-4d17-ba9d-6ec9ae0252c4", "04d180b7-3ae7-49db-9a97-698731cc5f1d" },
+                    { "5cdc26ee-cdc5-43d1-b84c-2e0bb76d6b9e", "683ea3fa-1d6e-4e19-9202-2a28ce3f4ade" },
+                    { "590630ab-1069-4b73-8958-f5d8ac3a6dfe", "e21be698-1995-4fb1-bdd7-d512fdedb88a" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -578,14 +612,9 @@ namespace BookingBuddy.Server.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_GroupBookingOrderId",
+                name: "IX_AspNetUsers_GroupBookingOrderOrderId",
                 table: "AspNetUsers",
-                column: "GroupBookingOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_GroupBookingOrderId1",
-                table: "AspNetUsers",
-                column: "GroupBookingOrderId1");
+                column: "GroupBookingOrderOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_ProviderId",
@@ -610,9 +639,19 @@ namespace BookingBuddy.Server.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingOrder_OrderId",
+                name: "IX_BookingOrder_ApplicationUserId",
                 table: "BookingOrder",
-                column: "OrderId");
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingOrder_PaymentId",
+                table: "BookingOrder",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BookingOrder_PropertyId",
+                table: "BookingOrder",
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Discount_PropertyId",
@@ -635,39 +674,49 @@ namespace BookingBuddy.Server.Migrations
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GroupBookingOrder_GroupId",
+                table: "GroupBookingOrder",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GroupBookingOrder_PropertyId",
                 table: "GroupBookingOrder",
                 column: "PropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_ApplicationUserId",
-                table: "Order",
+                name: "IX_Payment_GroupBookingOrderOrderId",
+                table: "Payment",
+                column: "GroupBookingOrderOrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromoteOrder_ApplicationUserId",
+                table: "PromoteOrder",
                 column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_PaymentId",
-                table: "Order",
+                name: "IX_PromoteOrder_PaymentId",
+                table: "PromoteOrder",
                 column: "PaymentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_PropertyId",
-                table: "Order",
+                name: "IX_PromoteOrder_PropertyId",
+                table: "PromoteOrder",
                 column: "PropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payment_GroupBookingOrderId",
-                table: "Payment",
-                column: "GroupBookingOrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PromoteOrder_OrderId",
-                table: "PromoteOrder",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PromotionOrder_OrderId",
+                name: "IX_PromotionOrder_ApplicationUserId",
                 table: "PromotionOrder",
-                column: "OrderId");
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromotionOrder_PaymentId",
+                table: "PromotionOrder",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromotionOrder_PropertyId",
+                table: "PromotionOrder",
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Property_GroupId",
@@ -704,18 +753,11 @@ namespace BookingBuddy.Server.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_GroupBookingOrder_GroupBookingOrderId",
+                name: "FK_AspNetUsers_GroupBookingOrder_GroupBookingOrderOrderId",
                 table: "AspNetUsers",
-                column: "GroupBookingOrderId",
+                column: "GroupBookingOrderOrderId",
                 principalTable: "GroupBookingOrder",
-                principalColumn: "GroupBookingOrderId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_GroupBookingOrder_GroupBookingOrderId1",
-                table: "AspNetUsers",
-                column: "GroupBookingOrderId1",
-                principalTable: "GroupBookingOrder",
-                principalColumn: "GroupBookingOrderId");
+                principalColumn: "OrderId");
         }
 
         /// <inheritdoc />
@@ -763,6 +805,9 @@ namespace BookingBuddy.Server.Migrations
                 name: "Favorites");
 
             migrationBuilder.DropTable(
+                name: "Order");
+
+            migrationBuilder.DropTable(
                 name: "PromoteOrder");
 
             migrationBuilder.DropTable(
@@ -775,16 +820,10 @@ namespace BookingBuddy.Server.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Order");
-
-            migrationBuilder.DropTable(
                 name: "Payment");
 
             migrationBuilder.DropTable(
                 name: "Property");
-
-            migrationBuilder.DropTable(
-                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
@@ -794,6 +833,9 @@ namespace BookingBuddy.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "GroupBookingOrder");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
         }
     }
 }

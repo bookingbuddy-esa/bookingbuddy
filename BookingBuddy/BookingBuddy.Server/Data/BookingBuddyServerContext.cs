@@ -40,23 +40,56 @@ namespace BookingBuddy.Server.Data
         /// <summary>
         /// Propriedade que diz respeito a lista de favoritos de um utilizador.
         /// </summary>
-        public DbSet<Favorite> Favorites{ get; set; } = default!;
+        public DbSet<Favorite> Favorites { get; set; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito aos grupos de viagem.
         /// </summary>
         public DbSet<Group> Groups { get; set; } = default!;
 
+        /// <summary>
+        /// Propriedade que diz respeito às orders.
+        /// </summary>
         public DbSet<Order> Order { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito às orders de promoção.
+        /// </summary>
         public DbSet<PromotionOrder> PromotionOrder { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito às orders de promover uma propriedade.
+        /// </summary>
         public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;
+
+        /// <summary>
+        ///  Propriedade que diz respeito às reservas.
+        /// </summary>
         public DbSet<BookingOrder> BookingOrder { get; set; } = default!;
-        
+
+        /// <summary>
+        /// Propriedade que diz respeito às reservas de grupo.
+        /// </summary>
         public DbSet<GroupBookingOrder> GroupBookingOrder { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito às mensagens de reserva.
+        /// </summary>
         public DbSet<BookingMessage> BookingMessage { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito aos pagamentos.
+        /// </summary>
         public DbSet<Payment> Payment { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito às comodidades.
+        /// </summary>
         public DbSet<Amenity> Amenity { get; set; } = default!;
-        
+
+        /// <summary>
+        /// Propriedade que diz respeito às avaliações.
+        /// </summary>
         public DbSet<Rating> Rating { get; set; } = default!;
 
         /// <summary>

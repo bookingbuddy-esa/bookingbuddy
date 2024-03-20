@@ -79,11 +79,11 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("webhook")]
         public async Task<IActionResult> Webhook([FromQuery] PaymentResponse paymentResponse)
         {
-            string key = paymentResponse.key;
-            string orderId = paymentResponse.orderId;
-            string amount = paymentResponse.amount;
-            string requestId = paymentResponse.requestId;
-            string paymentDatetime = paymentResponse.payment_datetime;
+            var key = paymentResponse.key;
+            var orderId = paymentResponse.orderId;
+            var amount = paymentResponse.amount;
+            var requestId = paymentResponse.requestId;
+            var paymentDatetime = paymentResponse.payment_datetime;
 
             Console.WriteLine($"Key: {key}");
             Console.WriteLine($"Order ID: {orderId}");
@@ -112,45 +112,37 @@ namespace BookingBuddy.Server.Controllers
 
             try
             {
+                OrderBase? order = (await _context.Order.FindAsync(orderId))?.Type.ToUpper() switch
+                {
+                    "PROMOTE" => await _context.PromoteOrder.FindAsync(orderId),
+                    "BOOKING" => await _context.BookingOrder.FindAsync(orderId),
+                    "GROUP-BOOKING" => await _context.GroupBookingOrder.FindAsync(orderId),
+                    _ => null
+                };
+
+                if (order == null) return NotFound();
+                order.State = OrderState.Paid;
+                
+                var blockDates = new BlockedDate
+                {
+                    PropertyId = order.PropertyId,
+                    Start = order.StartDate.ToString("yyyy-MM-dd"),
+                    End = order.EndDate.ToString("yyyy-MM-dd")
+                };
+
+                if (order is BookingOrder or GroupBookingOrder)
+                {
+                    _context.BlockedDate.Add(blockDates);
+                }
+                
                 await _context.SaveChangesAsync();
                 await WebSocketWrapper.NotifyAllAsync(payment);
-                var order = await _context.Order.FindAsync(orderId);
-                if (order != null)
-                {
-                    order.State = true;
-                    await _context.SaveChangesAsync();
-
-                    if (orderId.StartsWith("PROMOTE-"))
-                    {
-                        var promoteOrder = new PromoteOrder
-                        {
-                            PromoteOrderId = Guid.NewGuid().ToString(),
-                            OrderId = orderId
-                        };
-                        _context.PromoteOrder.Add(promoteOrder);
-                        await _context.SaveChangesAsync();
-                    }
-                    else if (orderId.StartsWith("BOOKING-"))
-                    {
-                        // TODO: Diogo Rosa - BlockedDates passa a ter StartDate e EndDate (invex de Start e End) e com o tipo DateTime - fazer alterações necessários do frontend?
-                        var blockDates = new BlockedDate
-                        {
-                            PropertyId = order.PropertyId,
-                            Start = order.StartDate.ToString("yyyy-MM-dd"),
-                            End = order.EndDate.ToString("yyyy-MM-dd")
-                        };
-
-                        _context.BlockedDate.Add(blockDates);
-                        await _context.SaveChangesAsync();
-                    }
-                }
+                return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Ocorreu um erro: {ex.Message}");
             }
-
-            return Ok();
         }
 
         /// <summary>
