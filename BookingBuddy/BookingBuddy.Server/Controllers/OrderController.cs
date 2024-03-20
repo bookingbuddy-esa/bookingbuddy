@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -22,7 +23,6 @@ namespace BookingBuddy.Server.Controllers
         /// Método que representa o endpoint de obtenção de uma order através do seu ID.
         /// </summary>
         /// <param name="orderId">Identificador da order</param>
-        /// <param name="type">Tipo de order</param>
         /// <returns></returns>
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrder(string orderId)
@@ -52,7 +52,7 @@ namespace BookingBuddy.Server.Controllers
                         po.PaymentId,
                         po.StartDate,
                         po.EndDate,
-                        State = po.State.GetDescription()
+                        State = po.State.AsString()
                     })
                     .FirstOrDefaultAsync()),
                 "BOOKING" => Ok(await context.BookingOrder
@@ -72,12 +72,74 @@ namespace BookingBuddy.Server.Controllers
                         bo.StartDate,
                         bo.EndDate,
                         bo.NumberOfGuests,
-                        State = bo.State.GetDescription()
+                        State = bo.State.AsString()
                     })
                     .FirstOrDefaultAsync()),
-                "GROUP-BOOKING" => Ok(await context.GroupBookingOrder.FindAsync(orderId)),
-                _ => BadRequest()
+                "GROUP-BOOKING" => await GetBookingOrder(),
+                _ => NotFound()
             };
+
+            async Task<IActionResult> GetBookingOrder()
+            {
+                var groupBookingOrder = await context.GroupBookingOrder
+                    .Where(gbo => gbo.OrderId == orderId)
+                    .Include(gbo => gbo.ApplicationUser)
+                    .Include(gbo => gbo.Group)
+                    .FirstOrDefaultAsync();
+                var group = groupBookingOrder!.Group;
+                var members = new List<ApplicationUser>();
+                foreach (var memberId in group!.MembersId)
+                {
+                    var member = await context.Users.FindAsync(memberId);
+                    members.Add(member!);
+                }
+
+                var paidBy = new List<ApplicationUser>();
+                foreach (var paymentId in groupBookingOrder.PaidByIds)
+                {
+                    var user = await context.Users.FindAsync(paymentId);
+                    paidBy.Add(user!);
+                }
+
+                return Ok(new
+                {
+                    groupBookingOrder.OrderId,
+                    ApplicationUser = new
+                    {
+                        groupBookingOrder.ApplicationUser!.Id,
+                        groupBookingOrder.ApplicationUser.Name,
+                        groupBookingOrder.ApplicationUser.Email
+                    },
+                    Group = new
+                    {
+                        group.GroupId,
+                        group.Name,
+                        Owner = new
+                        {
+                            group.GroupOwnerId,
+                            members.First(m => m.Id == group.GroupOwnerId).Name,
+                            members.First(m => m.Id == group.GroupOwnerId).Email
+                        },
+                        Members = members.Select(m => new
+                        {
+                            m.Id,
+                            m.Name,
+                            m.Email
+                        })
+                    },
+                    groupBookingOrder.PropertyId,
+                    groupBookingOrder.StartDate,
+                    groupBookingOrder.EndDate,
+                    groupBookingOrder.TotalAmount,
+                    PaidBy = paidBy.Select(u => new
+                    {
+                        u.Id,
+                        u.Name,
+                        u.Email
+                    }).ToList(),
+                    State = groupBookingOrder.State.AsString()
+                });
+            }
         }
 
         /// <summary>
@@ -111,7 +173,7 @@ namespace BookingBuddy.Server.Controllers
                 }
 
                 var newPaymentResult = await paymentController.CreatePayment(user, model.PaymentMethod,
-                    Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber);
+                    Math.Round(GetPromoteAmount(model.StartDate, model.EndDate)), model.PhoneNumber!);
                 if (!createPayment)
                 {
                     var payment = new Payment
@@ -132,7 +194,7 @@ namespace BookingBuddy.Server.Controllers
                 }
 
 
-                if (newPaymentResult is { Value: Payment newPayment })
+                if (newPaymentResult is { Value: { } newPayment })
                 {
                     var order = new PromoteOrder
                     {
@@ -178,7 +240,7 @@ namespace BookingBuddy.Server.Controllers
                         order.PropertyId,
                         order.StartDate,
                         order.EndDate,
-                        State = order.State.GetDescription()
+                        State = order.State.AsString()
                     });
                 }
             }
@@ -190,6 +252,19 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Cria uma reserva individual.
+        /// </summary>
+        /// <param name="model">Modelo de reserva individual</param>
+        /// <param name="createPayment">Especifica se deve ser criado um pagamento</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 201 Created: Se a reserva foi criada com sucesso
+        /// - 400 Bad Request: Se as datas são inválidas
+        /// - 401 Unauthorized: Se o utilizador não está autenticado
+        /// - 404 Not Found: Se a propriedade não foi encontrada
+        /// - 500 Internal Server Error: Se ocorreu um erro ao criar a reserva
+        /// </returns>
         [HttpPost("booking")]
         [Authorize]
         public async Task<IActionResult> CreateOrderBooking([FromBody] PropertyBookingModel model,
@@ -267,7 +342,7 @@ namespace BookingBuddy.Server.Controllers
                 }
 
 
-                if (newPaymentResult is { Value: Payment newPayment })
+                if (newPaymentResult is { Value: { } newPayment })
                 {
                     try
                     {
@@ -307,7 +382,7 @@ namespace BookingBuddy.Server.Controllers
                                 order.Payment.CreatedAt,
                                 order.Payment.ExpiryDate
                             },
-                            State = order.State.GetDescription()
+                            State = order.State.AsString()
                         });
                     }
                     catch (Exception ex)
@@ -324,8 +399,26 @@ namespace BookingBuddy.Server.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Cria uma reserva de grupo.
+        /// </summary>
+        /// <param name="model">Modelo de reserva de grupo</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 201 Created: Se a reserva foi criada com sucesso
+        /// - 400 Bad Request: Se as datas são inválidas
+        /// - 401 Unauthorized: Se o utilizador não está autenticado
+        /// - 404 Not Found: Se a propriedade não foi encontrada
+        /// - 500 Internal Server Error: Se ocorreu um erro ao criar a reserva
+        /// </returns>
         [HttpPost]
         [Authorize]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [Route("group-booking")]
         public async Task<IActionResult> CreateGroupBooking([FromBody] GroupBookingModel model)
         {
@@ -337,10 +430,21 @@ namespace BookingBuddy.Server.Controllers
                     return Unauthorized();
                 }
 
-                var property = await context.Property.FindAsync(model.PropertyId);
+                var group = await context.Groups.FindAsync(model.GroupId);
+                if (group == null)
+                {
+                    return NotFound("Grupo não encontrado");
+                }
+
+                if (group.ChoosenProperty.IsNullOrEmpty())
+                {
+                    return BadRequest("Propriedade não escolhida");
+                }
+
+                var property = await context.Property.FindAsync(group.ChoosenProperty);
                 if (property == null)
                 {
-                    return NotFound();
+                    return NotFound("Propriedade não encontrada");
                 }
 
                 if (model.StartDate > model.EndDate)
@@ -358,7 +462,7 @@ namespace BookingBuddy.Server.Controllers
 
                 foreach (var selectedDate in selectedDates)
                 {
-                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == model.PropertyId)
+                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == group.ChoosenProperty)
                         .Where(d => d.StartDate <= selectedDate && d.EndDate >= selectedDate)
                         .FirstOrDefaultAsync();
 
@@ -386,19 +490,58 @@ namespace BookingBuddy.Server.Controllers
                         OrderId = Guid.NewGuid().ToString(),
                         ApplicationUserId = user.Id,
                         GroupId = model.GroupId,
-                        PropertyId = model.PropertyId,
+                        PropertyId = group.ChoosenProperty!,
                         StartDate = model.StartDate,
                         EndDate = model.EndDate,
                         TotalAmount = reservationAmount,
                     };
                     context.GroupBookingOrder.Add(groupBookingOrder);
-                    context.Order.Add(new Order { OrderId = groupBookingOrder.OrderId, Type = "GroupBooking" });
+                    context.Order.Add(new Order { OrderId = groupBookingOrder.OrderId, Type = "Group-Booking" });
                     await context.SaveChangesAsync();
-                    return CreatedAtAction("GetOrder", new { orderId = groupBookingOrder.OrderId }, groupBookingOrder);
+
+                    List<ApplicationUser> members = [];
+                    foreach (var memberId in group.MembersId)
+                    {
+                        var member = await context.Users.FindAsync(memberId);
+                        members.Add(member!);
+                    }
+
+                    return CreatedAtAction("GetOrder", new { orderId = groupBookingOrder.OrderId }, new
+                    {
+                        groupBookingOrder.OrderId,
+                        ApplicationUser = new
+                        {
+                            groupBookingOrder.ApplicationUser!.Id,
+                            groupBookingOrder.ApplicationUser.Name,
+                            groupBookingOrder.ApplicationUser.Email
+                        },
+                        Group = new
+                        {
+                            group.GroupId,
+                            group.Name,
+                            Owner = new
+                            {
+                                group.GroupOwnerId,
+                                members.First(m => m.Id == group.GroupOwnerId).Name,
+                                members.First(m => m.Id == group.GroupOwnerId).Email
+                            },
+                            Members = members.Select(m => new
+                            {
+                                m.Id,
+                                m.Name,
+                                m.Email
+                            })
+                        },
+                        groupBookingOrder.PropertyId,
+                        groupBookingOrder.StartDate,
+                        groupBookingOrder.EndDate,
+                        groupBookingOrder.TotalAmount,
+                        State = groupBookingOrder.State.AsString()
+                    });
                 }
                 catch
                 {
-                    return StatusCode(500, $"Ocorreu um erro ao criar a reserva.");
+                    return StatusCode(500, "Ocorreu um erro ao criar a reserva.");
                 }
             }
             catch
@@ -407,6 +550,19 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que permite pagar uma parte de uma reserva de grupo.
+        /// </summary>
+        /// <param name="model">Modelo de pagamento de reserva de grupo</param>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 200 OK: Se o pagamento foi efetuado com sucesso
+        /// - 400 Bad Request: Se o utilizador já pagou a sua parte ou a reserva já se encontra paga
+        /// - 401 Unauthorized: Se o utilizador não está autenticado
+        /// - 403 Forbidden: Se o utilizador não faz parte do grupo
+        /// - 404 Not Found: Se a reserva de grupo não foi encontrada
+        /// - 500 Internal Server Error: Se ocorreu um erro ao efetuar o pagamento
+        /// </returns>
         [HttpPost]
         [Authorize]
         [Route("group-booking/pay")]
@@ -447,16 +603,15 @@ namespace BookingBuddy.Server.Controllers
 
             var reservationAmount = Math.Round(groupBooking.TotalAmount / groupBooking.Group.MembersId.Count, 2);
             var newPaymentResult =
-                await paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber);
+                await paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber!);
 
-            if (newPaymentResult is not { Value: Payment newPayment }) return BadRequest();
+            if (newPaymentResult is not { Value: { } newPayment }) return BadRequest();
             groupBooking.PaymentIds.Add(newPayment.PaymentId);
             await context.SaveChangesAsync();
             return Ok(newPayment);
-
         }
 
-        private decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
+        private static decimal GetPromoteAmount(DateTime startingDate, DateTime endingDate)
         {
             if (startingDate > endingDate)
             {
@@ -469,18 +624,13 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Convert.ToDecimal(5 * duration);
             }
-            else if (duration >= 30)
+
+            if (duration >= 30)
             {
                 return Convert.ToDecimal(4.5 * duration);
             }
-            else if (duration >= 365)
-            {
-                return Convert.ToDecimal(3.5 * duration);
-            }
-            else
-            {
-                return Convert.ToDecimal(5 * duration);
-            }
+
+            return duration >= 365 ? Convert.ToDecimal(3.5 * duration) : Convert.ToDecimal(5 * duration);
         }
     }
 
@@ -517,13 +667,24 @@ namespace BookingBuddy.Server.Controllers
         int NumberOfGuests,
         string? PhoneNumber = null);
 
+    /// <summary>
+    /// Modelo de reserva de grupo.
+    /// </summary>
+    /// <param name="GroupId">Identificador do grupo</param>
+    /// <param name="StartDate">Data de início da reserva</param>
+    /// <param name="EndDate">Data de fim da reserva</param>
     public record GroupBookingModel(
-        string PropertyId,
         string GroupId,
         DateTime StartDate,
         DateTime EndDate
     );
 
+    /// <summary>
+    /// Modelo de pagamento de reserva de grupo.
+    /// </summary>
+    /// <param name="GroupBookingId">Identificador da reserva de grupo</param>
+    /// <param name="PaymentMethod">Método de pagamento</param>
+    /// <param name="PhoneNumber">Número de telefone</param>
     public record PayGroupBookingModel(
         string GroupBookingId,
         string PaymentMethod,

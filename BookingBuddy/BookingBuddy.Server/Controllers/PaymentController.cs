@@ -1,8 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Web;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -85,12 +83,6 @@ namespace BookingBuddy.Server.Controllers
             var requestId = paymentResponse.requestId;
             var paymentDatetime = paymentResponse.payment_datetime;
 
-            Console.WriteLine($"Key: {key}");
-            Console.WriteLine($"Order ID: {orderId}");
-            Console.WriteLine($"Amount: {amount}");
-            Console.WriteLine($"Request ID: {requestId}");
-            Console.WriteLine($"Payment Datetime: {paymentDatetime}");
-
             if (key != _configuration.GetSection("PhishingKey").Value!)
             {
                 return Unauthorized();
@@ -108,10 +100,10 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            payment.Status = "Paid";
-
+            if (payment.Status == "Paid") return Ok();
             try
             {
+                payment.Status = "Paid";
                 OrderBase? order = (await _context.Order.FindAsync(orderId))?.Type.ToUpper() switch
                 {
                     "PROMOTE" => await _context.PromoteOrder.FindAsync(orderId),
@@ -121,8 +113,7 @@ namespace BookingBuddy.Server.Controllers
                 };
 
                 if (order == null) return NotFound();
-                order.State = OrderState.Paid;
-                
+
                 var blockDates = new BlockedDate
                 {
                     PropertyId = order.PropertyId,
@@ -130,11 +121,26 @@ namespace BookingBuddy.Server.Controllers
                     End = order.EndDate.ToString("yyyy-MM-dd")
                 };
 
-                if (order is BookingOrder or GroupBookingOrder)
+                if (order is BookingOrder)
                 {
                     _context.BlockedDate.Add(blockDates);
                 }
-                
+
+                if (order is GroupBookingOrder groupBookingOrder)
+                {
+                    groupBookingOrder.PaidByIds.Add(requestId);
+                    var group = await _context.Groups.FindAsync(groupBookingOrder.GroupId);
+                    if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
+                    {
+                        order.State = OrderState.Paid;
+                        _context.BlockedDate.Add(blockDates);
+                    }
+                }
+                else
+                {
+                    order.State = OrderState.Paid;
+                }
+
                 await _context.SaveChangesAsync();
                 await WebSocketWrapper.NotifyAllAsync(payment);
                 return Ok();

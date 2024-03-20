@@ -97,6 +97,7 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
         if (trackedObject == null) return;
         var socketTracking =
             _trackingObject.FirstOrDefault(sp => sp.Key.GetPrimaryKey() == trackedObject.GetPrimaryKey());
+        if(socketTracking.Value == null) return;
         foreach (var socket in socketTracking.Value)
         {
             var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;

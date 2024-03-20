@@ -193,7 +193,7 @@ public enum OrderState
     /// <summary>
     /// Order à espera do check-in, no caso de uma reserva.
     /// </summary>
-    AwaitingCheckIn,
+    AwaitingCheckIn
 }
 
 /// <summary>
@@ -201,6 +201,20 @@ public enum OrderState
 /// </summary>
 public static class OrderStateExtension
 {
+    /// <summary>
+    /// Obtém a string do estado da order.
+    /// </summary>
+    /// <param name="state">Estado da order.</param>
+    /// <returns>String do estado da order.</returns>
+    public static string AsString(this OrderState state) => state switch
+    {
+        OrderState.Canceled => "Canceled",
+        OrderState.Pending => "Pending",
+        OrderState.Paid => "Paid",
+        OrderState.AwaitingCheckIn => "AwaitingCheckIn",
+        _ => "Unknown"
+    };
+    
     /// <summary>
     /// Obtém a descrição do estado da order.
     /// </summary>
