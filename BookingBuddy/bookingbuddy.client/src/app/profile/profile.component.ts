@@ -11,8 +11,11 @@ import { AuthorizeService } from '../auth/authorize.service';
 export class ProfileComponent {
   user: UserInfo | undefined;
   signedIn: boolean = false;
-  constructor(private appComponent: AppComponent, private authService: AuthorizeService){
-    this.appComponent.showChat = false;
+  isEditing: boolean = false;
+  errors: string[] = [];
+  success: string[] = [];
+
+  constructor(private authService: AuthorizeService){
   }
 
   ngOnInit(): void {
@@ -25,5 +28,37 @@ export class ProfileComponent {
       });
   }
 
+  get name(): string {
+    return this.user?.name || '';
+  }
 
+  get role(): string {
+    switch(this.user?.roles[0]){
+      case "admin":
+        return "Administrador";
+      case "landlord":
+        return "Proprietário";
+      case "user":
+        return "Utilizador";
+      default:
+        return "N/A";
+    }
+  }
+
+  get email(): string {
+    return this.user?.email || '';
+  }
+
+  saveProfile(): void {
+    this.isEditing = false;
+    this.success = ["Perfil atualizado com sucesso!"];
+  }
+
+  editProfile(): void {
+    this.isEditing = true;
+  }
+
+  uploadPhoto(): void {
+    console.log("upload photo");
+  }
 }

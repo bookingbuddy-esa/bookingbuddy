@@ -57,12 +57,10 @@ export class GroupComponent {
     });
   }
 
-  public testSendWS(): void {
+  public sendMessageWS(): void {
     if(this.ws){
-      //this.currentGroup!.name = "Teste Novo";
-      //this.currentGroup!.membersId.push("5f3e3e3e3e3e3e3e3e3e3e3e");
       this.ws.send(JSON.stringify(this.currentGroup));
-      console.log("Sending to ws: " + JSON.stringify(this.currentGroup));
+      console.log("Sending to WS: " + JSON.stringify(this.currentGroup));
     }
   }
 
@@ -76,13 +74,12 @@ export class GroupComponent {
       this.groupService.sendGroupMessage(this.currentGroup!.groupId, message.message).forEach(response => {
         if (response) {
           console.log(response);
+          this.currentGroup!.messages.push(message);
+          this.sendMessageWS();
         }
       })
 
-      this.currentGroup!.messages.push(message);
       this.newMessage = '';
-      this.testSendWS();
-      console.log("mensagem enviada");
     }
   }
   
@@ -117,12 +114,18 @@ export class GroupComponent {
     };
   }
 
+  public getPropertyImage(property: Property) {
+    if (property && property.imagesUrl && property.imagesUrl.length > 0) {
+      return property.imagesUrl[0];
+    }
+
+    return 'N/A'; // TODO: foto default caso nao tenha?
+  }
+
   private loadUserGroups() {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
       //console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
-      this.group_list = groups;
-
-      for (let i = 0; i < 10; i++){
+      /*for (let i = 0; i < 10; i++){
         let p: Group = {
           groupId: '123',
           groupOwnerId: '123',
@@ -136,8 +139,9 @@ export class GroupComponent {
         }
 
         this.group_list.push(p);
-      }
+      }*/
       
+      this.group_list = groups;
       this.submitting = false;
     }).catch(error => {
       this.errors.push(error.error);

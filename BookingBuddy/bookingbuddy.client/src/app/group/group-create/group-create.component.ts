@@ -135,10 +135,9 @@ export class GroupCreateComponent implements OnInit {
       propertyId: this.propertyId,
       members: this.groupMembers?.members ?? []
     };
-    console.log("MEMBROS: " + this.groupMembers?.members);
       this.groupService.createGroup(newGroup).forEach(response => {
         if (response) {
-          this.router.navigate(['group'], { queryParams: { groupId: response.groupId } });
+          this.router.navigate(['groups'], { queryParams: { groupId: response.groupId } });
         }
       }
       ).catch(() => {
