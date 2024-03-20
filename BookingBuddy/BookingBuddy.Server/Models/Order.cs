@@ -44,4 +44,38 @@ namespace BookingBuddy.Server.Models
         public Order? Order { get; set; }
         public int NumberOfGuests { get; set; }
     }
+    
+    // Reserva de grupo
+    public class GroupBookingOrder
+    {
+        [Key] public string GroupBookingOrderId { get; set; }
+
+        public string ApplicationUserId { get; set; }
+        
+        public List<string> MembersId { get; set; }
+        
+        public string PropertyId { get; set; }
+        
+        public DateTime StartDate { get; set; }
+        
+        public DateTime EndDate { get; set; }
+        
+        public decimal TotalPrice { get; set; }
+        
+        public List<string> PaymentsId { get; set; }
+        
+        public List<string> PaidById { get; set; }
+        
+        public ApplicationUser? ApplicationUser { get; set; }
+        
+        public List<ApplicationUser>? Members { get; set; }
+        
+        public Property? Property { get; set; }
+        
+        public List<Payment>? Payments { get; set; }
+        
+        public List<ApplicationUser>? PaidBy { get; set; }
+        
+        public bool State { get; set; }
+    }
 }
