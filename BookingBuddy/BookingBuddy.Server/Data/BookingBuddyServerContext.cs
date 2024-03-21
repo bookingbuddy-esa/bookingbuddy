@@ -15,84 +15,97 @@ namespace BookingBuddy.Server.Data
         /// <summary>
         /// Propriedade que diz respeito ao fornecedor de login.
         /// </summary>
-        public DbSet<AspNetProvider> AspNetProviders { get; set; } = default!;
+        public DbSet<AspNetProvider> AspNetProviders { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito à comodidade da propriedade física.
         /// </summary>
-        public DbSet<Amenity> PropertyAmenity { get; set; } = default!;
+        public DbSet<Amenity> PropertyAmenity { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito à propriedade física.
         /// </summary>
-        public DbSet<Property> Property { get; set; } = default!;
+        public DbSet<Property> Property { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às datas bloqueadas de uma propriedade.
         /// </summary>
-        public DbSet<BlockedDate> BlockedDate { get; set; } = default!;
+        public DbSet<BlockedDate> BlockedDate { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito aos descontos de uma propriedade.
         /// </summary>
-        public DbSet<Discount> Discount { get; set; } = default!;
+        public DbSet<Discount> Discount { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito a lista de favoritos de um utilizador.
         /// </summary>
-        public DbSet<Favorite> Favorites { get; set; } = default!;
+        public DbSet<Favorite> Favorites { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito aos grupos de viagem.
         /// </summary>
-        public DbSet<Group> Groups { get; set; } = default!;
+        public DbSet<Group> Groups { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às orders.
         /// </summary>
-        public DbSet<Order> Order { get; set; } = default!;
+        public DbSet<Order> Order { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às orders de promoção.
         /// </summary>
-        public DbSet<PromotionOrder> PromotionOrder { get; set; } = default!;
+        public DbSet<PromotionOrder> PromotionOrder { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às orders de promover uma propriedade.
         /// </summary>
-        public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;
+        public DbSet<PromoteOrder> PromoteOrder { get; init; } = default!;
 
         /// <summary>
         ///  Propriedade que diz respeito às reservas.
         /// </summary>
-        public DbSet<BookingOrder> BookingOrder { get; set; } = default!;
+        public DbSet<BookingOrder> BookingOrder { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às reservas de grupo.
         /// </summary>
-        public DbSet<GroupBookingOrder> GroupBookingOrder { get; set; } = default!;
+        public DbSet<GroupBookingOrder> GroupBookingOrder { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às mensagens de reserva.
         /// </summary>
-        public DbSet<BookingMessage> BookingMessage { get; set; } = default!;
+        public DbSet<BookingMessage> BookingMessage { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito aos pagamentos.
         /// </summary>
-        public DbSet<Payment> Payment { get; set; } = default!;
+        public DbSet<Payment> Payment { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às comodidades.
         /// </summary>
-        public DbSet<Amenity> Amenity { get; set; } = default!;
+        public DbSet<Amenity> Amenity { get; init; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às avaliações.
         /// </summary>
-        public DbSet<Rating> Rating { get; set; } = default!;
+        public DbSet<Rating> Rating { get; init; } = default!;
 
-        public DbSet<GroupMessage> GroupMessage { get; set; } = default!;
+        /// <summary>
+        /// Propriedade que diz respeito ao chat.
+        /// </summary>
+        public DbSet<Chat> Chat { get; set; } = default!;
+
+        /// <summary>
+        ///  Propriedade que diz respeito às mensagens do chat.
+        /// </summary>
+        public DbSet<ChatMessage> ChatMessage { get; set; } = default!;
+
+        /// <summary>
+        ///  Propriedade que diz respeito às mensagens de grupo.
+        /// </summary>
+        public DbSet<GroupMessage> GroupMessage { get; init; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.

@@ -15,12 +15,25 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
     private readonly Dictionary<T, List<WebSocket>> _trackingObject = new();
 
     /// <summary>
-    /// Método que lida com a conexão de um WebSocket.
+    /// Método que retorna todos os WebSockets que se encontram a rastrear um objeto, dado o seu identificador.
+    /// </summary>
+    /// <param name="trackingObjectId">Identificador do objeto que está a ser rastreado.</param>
+    /// <returns>Lista de WebSockets que se encontram a rastrear o objeto.</returns>
+    public List<WebSocket> GetSocketsTrackingById(string trackingObjectId)
+    {
+        var trackingObject = _trackingObject.FirstOrDefault(to => to.Key.GetPrimaryKey() == trackingObjectId);
+        return trackingObject.Value;
+    }
+
+    /// <summary>
+    /// Método que lida com a conexão de um WebSocket com tipo específico no recebimento de mensagens.
     /// </summary>
     /// <param name="objectToTrack">Objeto que será rastreado.</param>
     /// <param name="socket">WebSocket que se conectou.</param>
     /// <param name="onReceive">Função que será executada quando o WebSocket receber uma mensagem.</param>
-    public async Task HandleAsync(T? objectToTrack, WebSocket socket, Func<T, Task>? onReceive = null)
+    /// <param name="checkType">Indica se a mensagem recebida deve ser verificada se é do tipo do objeto rastreado.</param>
+    public async Task HandleAsync(T? objectToTrack, WebSocket socket, Func<dynamic, Task>? onReceive = null,
+        bool checkType = true)
     {
         if (objectToTrack == null)
         {
@@ -44,8 +57,8 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
             }
 
             Console.WriteLine(
-                $"{objectToTrack.GetType().Name} WebSocket connected ({_sockets.Count - 1} -> {_sockets.Count}): {socketId}");
-            Console.WriteLine($"Tracking {objectToTrack.GetType().Name}: {objectToTrack.GetPrimaryKey()}");
+                $"{typeof(T).Name} WebSocket connected ({_sockets.Count - 1} -> {_sockets.Count}): {socketId}");
+            Console.WriteLine($"Tracking {typeof(T).Name}: {objectToTrack.GetPrimaryKey()}");
 
             var buffer = new byte[1024 * 4];
 
@@ -57,17 +70,25 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
                     try
                     {
                         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        var receivedObject = JsonSerializer.Deserialize<T>(message);
-                        if (receivedObject != null)
+                        if (checkType)
                         {
-                            await onReceive(receivedObject);
+                            var receivedObject = JsonSerializer.Deserialize<T>(message);
+                            if (receivedObject != null)
+                            {
+                                await onReceive(receivedObject);
+                            }
+                        }
+                        else
+                        {
+                            await onReceive(message);
                         }
 
                         continue;
                     }
                     catch
                     {
-                        Console.WriteLine($"{objectToTrack.GetType().Name} WebSocket ({socketId}) received an invalid message.");
+                        Console.WriteLine(
+                            $"{typeof(T).Name} WebSocket ({socketId}) received an invalid message.");
                     }
                 }
 
@@ -80,7 +101,7 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
             _trackingObject.Where(to => to.Value.Contains(socket)).ToList().ForEach(to => to.Value.Remove(socket));
 
             Console.WriteLine(
-                $"{objectToTrack.GetType().Name} WebSocket disconnected ({_sockets.Count + 1} -> {_sockets.Count}): {socketId}");
+                $"{typeof(T).Name} WebSocket disconnected ({_sockets.Count + 1} -> {_sockets.Count}): {socketId}");
         }
         catch
         {
@@ -97,15 +118,28 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
         if (trackedObject == null) return;
         var socketTracking =
             _trackingObject.FirstOrDefault(sp => sp.Key.GetPrimaryKey() == trackedObject.GetPrimaryKey());
-        if(socketTracking.Value == null) return;
+        if (socketTracking.Value == null) return;
         foreach (var socket in socketTracking.Value)
         {
             var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;
             Console.WriteLine(
-                $"Notifying {trackedObject.GetType().Name} socket ({socketId}) with {trackedObject.GetType().Name}: {trackedObject.GetPrimaryKey()}");
+                $"Notifying {typeof(T).Name} socket ({socketId}) with {typeof(T).Name}: {trackedObject.GetPrimaryKey()}");
             await socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(trackedObject)),
                 WebSocketMessageType.Text, true, CancellationToken.None);
         }
+    }
+
+    /// <summary>
+    /// Método que envia uma mensagem para um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket que irá receber a mensagem.</param>
+    /// <param name="message">Mensagem que será enviada.</param>
+    public async Task SendAsync(WebSocket socket, dynamic message)
+    {
+        var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;
+        Console.WriteLine($"Sending message to {typeof(T).Name} WebSocket ({socketId})");
+        await socket.SendAsync(message is string ? Encoding.UTF8.GetBytes(message) : Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)), WebSocketMessageType.Text,
+            true, CancellationToken.None);
     }
 
     private Task RemoveSocketAsync(WebSocket socket)
@@ -123,7 +157,7 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
         }
 
         Console.WriteLine(
-            $"{socketObject.Key.GetType().Name} WebSocket forced disconnect ({_sockets.Count + 1} -> {_sockets.Count}): {socketId}");
+            $"{typeof(T).Name} WebSocket forced disconnect ({_sockets.Count + 1} -> {_sockets.Count}): {socketId}");
         return Task.CompletedTask;
     }
 }
