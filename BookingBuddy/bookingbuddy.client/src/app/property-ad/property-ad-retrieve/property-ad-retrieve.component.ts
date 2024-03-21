@@ -13,7 +13,10 @@ import { UserInfo } from "../../auth/authorize.dto";
 import { Router } from '@angular/router';
 import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { PaymentService } from '../../payment/payment.service';
-
+import { Group } from '../../models/group';
+import { GroupService } from '../../group/group.service';
+import { timeout } from 'rxjs';
+import { ViewChild } from '@angular/core';
 
 
 @Component({
@@ -43,10 +46,13 @@ export class PropertyAdRetrieveComponent implements OnInit {
   pricesMap: Map<number, number> = new Map<number, number>();
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
-
+  group_list: Group[] = [];
   protected user: UserInfo | undefined;
-
-  constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
+  submitting: boolean = false;
+  errors: string[] = [];
+  selected_group_list: Group[] = [];
+  @ViewChild('myModalClose') modalClose: any;
+  constructor(private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
     this.appComponent.showChat = true;
     this.reservarPropriedadeFailed = false;
     
@@ -66,6 +72,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
             if (user.roles.includes('landlord') || user.roles.includes('admin')) {
               this.isLandlord = true;
             }
+            this.loadUserGroups();
           });
         }
       });
@@ -85,6 +92,18 @@ export class PropertyAdRetrieveComponent implements OnInit {
           // TODO return error message
         }
     ); 
+  }
+
+  private loadUserGroups() {
+    this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
+      //console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
+      this.group_list = groups;
+      this.submitting = false;
+    }).catch(error => {
+      this.errors.push(error.error);
+      this.submitting = false;
+      //console.log("Erro ao receber grupos: " + JSON.stringify(error));
+    });
   }
 
   loadBlockedDates() {
@@ -195,6 +214,17 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
+  public selectGroup(group: Group) {
+    const index = this.selected_group_list.indexOf(group);
+    if (!this.selected_group_list.includes(group)) {
+      this.selected_group_list.push(group);
+    } else {
+      this.selected_group_list.splice(index, 1);
+    }
+    
+  }
+
+
   clearDates() {
     this.reservarPropriedadeForm.patchValue({
       checkIn: null,
@@ -248,6 +278,27 @@ export class PropertyAdRetrieveComponent implements OnInit {
             console.error('Erro ao adicionar ao favoritos:', error);
           }
         );
+    }
+  }
+
+  public addPropertyToGroup() {
+    if (this.property && this.selected_group_list.length > 0) {
+      const propertyId = this.property.propertyId;
+
+      this.selected_group_list.forEach(group => {
+
+        this.groupService.addPropertyToGroup(group.groupId, propertyId).forEach(response => {
+          if (response) {
+            //console.log(response);
+          }
+        })
+      });
+
+
+      this.modalClose.nativeElement.click();
+
+   //   this.router.navigateByUrl('/groups?groupId=' + this.selected_group_list[0].groupId);
+      this.selected_group_list = [];
     }
   }
 
