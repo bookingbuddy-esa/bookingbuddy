@@ -16,7 +16,7 @@ import { PaymentService } from '../../payment/payment.service';
 import { Group } from '../../models/group';
 import { GroupService } from '../../group/group.service';
 import { timeout } from 'rxjs';
-
+import { ViewChild } from '@angular/core';
 
 
 @Component({
@@ -51,7 +51,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   submitting: boolean = false;
   errors: string[] = [];
   selected_group_list: Group[] = [];
-
+  @ViewChild('myModalClose') modalClose: any;
   constructor(private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
     this.appComponent.showChat = true;
     this.reservarPropriedadeFailed = false;
@@ -295,10 +295,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
       });
 
 
+      this.modalClose.nativeElement.click();
+
+   //   this.router.navigateByUrl('/groups?groupId=' + this.selected_group_list[0].groupId);
       this.selected_group_list = [];
-
-     // this.modalService.dismissAll();
-
     }
   }
 

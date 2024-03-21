@@ -169,7 +169,7 @@ namespace BookingBuddy.Server.Controllers
         {
             try {
                 var groups = await _context.Groups.Where(g => g.MembersId.Contains(userId)).ToListAsync();
-                if (groups == null)
+                if (groups == null || groups.Count == 0)
                 {
                     return NotFound();
                 }
@@ -352,6 +352,12 @@ namespace BookingBuddy.Server.Controllers
             if (group == null)
             {
                 return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || group.GroupOwnerId != user.Id)
+            {
+                return Unauthorized();
             }
 
             var groupMessages = _context.GroupMessage.Where(m => m.GroupId == groupId);
