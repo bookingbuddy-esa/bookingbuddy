@@ -1,11 +1,9 @@
 ﻿using System.Security.Claims;
 using BookingBuddy.Server.Controllers;
-using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddyServerTest.Fixtures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 
@@ -21,8 +19,8 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         _context = context;
         _userManager = new UserManagerFixture(_context);
     }
-    
-    public GroupController CreateController(string? userId = null)
+
+    private GroupController CreateController(string? userId = null)
     {
         return new GroupController(
             _context.DbContext,
@@ -82,7 +80,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.GetGroup(group!.GroupId);
+        var result = await controller.GetGroup(group.GroupId);
         Assert.NotNull(result);
     }
 
@@ -141,7 +139,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.DeleteGroup(group!.GroupId);
+        var result = await controller.DeleteGroup(group.GroupId);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
@@ -156,7 +154,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
 
         var controller = CreateController(user.Id);
 
-        var result = await controller.DeleteGroup(group!.GroupId);
+        var result = await controller.DeleteGroup(group.GroupId);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
@@ -171,7 +169,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
 
         var controller = CreateController(user.Id);
 
-        var result = await controller.DeleteGroup(group!.GroupId);
+        var result = await controller.DeleteGroup(group.GroupId);
         Assert.IsType<OkObjectResult>(result);
     }
 
@@ -214,7 +212,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         
         var group = await CreateRandomGroup();
         var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
-        var controller = CreateController(user.Id);
+        var controller = CreateController(user!.Id);
 
        
         var result = await controller.AddMember(group!.GroupId);
@@ -260,8 +258,8 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user!.Id);
         var msg = new NewGroupMessage("Nova Mensagem");
 
-        await controller.CreateMessage(group.GroupId, msg);
-        var result = await controller.GetMessages(group!.GroupId) as OkObjectResult;
+        await controller.CreateMessage(group!.GroupId, msg);
+        var result = await controller.GetMessages(group.GroupId) as OkObjectResult;
 
         Assert.NotNull(result);
         var messages = Assert.IsAssignableFrom<IEnumerable<object>>(result.Value);

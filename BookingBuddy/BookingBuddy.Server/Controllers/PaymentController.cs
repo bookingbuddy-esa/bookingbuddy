@@ -18,7 +18,6 @@ namespace BookingBuddy.Server.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private static readonly WebSocketWrapper<Payment> WebSocketWrapper = new();
 
@@ -32,7 +31,6 @@ namespace BookingBuddy.Server.Controllers
             IConfiguration configuration)
         {
             _context = context;
-            _userManager = userManager;
             _configuration = configuration;
         }
 
@@ -128,8 +126,9 @@ namespace BookingBuddy.Server.Controllers
 
                 if (order is GroupBookingOrder groupBookingOrder)
                 {
-                    groupBookingOrder.PaidByIds.Add(requestId);
                     var group = await _context.Groups.FindAsync(groupBookingOrder.GroupId);
+                    var groupPayment = _context.GroupOrderPayment.FirstOrDefault(p => p.PaymentId == requestId);
+                    groupBookingOrder.PaidByIds.Add(groupPayment?.ApplicationUserId ?? "Unknown User");
                     if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
                     {
                         order.State = OrderState.Paid;

@@ -17,7 +17,7 @@ import { Group } from '../../models/group';
 import { GroupService } from '../../group/group.service';
 import { timeout } from 'rxjs';
 import { ViewChild } from '@angular/core';
-
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -52,7 +52,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   errors: string[] = [];
   selected_group_list: Group[] = [];
   @ViewChild('myModalClose') modalClose: any;
-  constructor(private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
+  constructor(private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
     this.reservarPropriedadeFailed = false;
     
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -85,6 +85,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
           this.property = response as Property;
           this.loadDiscounts();
           this.loadBlockedDates();
+
         }
       }).catch(
         error => {
@@ -199,6 +200,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     } else if (event.value){        
       this.checkOutDate = event.value;
     }
+    this.cdref.detectChanges();
   }
 
   updateMaxDate(): void {
@@ -232,6 +234,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
     this.checkInDate = this.checkOutDate = undefined;
     this.maxDate = this.calendarMaxDate;
+    this.cdref.detectChanges();
   }
 
   /*calcularDiferencaDias(): number {

@@ -3,8 +3,6 @@ using BookingBuddy.Server.Controllers;
 using BookingBuddyServerTest.Fixtures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Moq;
 
 namespace BookingBuddyServerTest;
 
@@ -18,13 +16,12 @@ public class BookingControllerTest : IClassFixture<ApplicationDbContextFixture>
         _context = context;
         _userManager = new UserManagerFixture(_context);
     }
-    
-    public BookingController CreateController(string? userId = null)
+
+    private BookingController CreateController(string? userId = null)
     {
         return new BookingController(
             _context.DbContext,
-            _userManager.UserManager,
-            new Mock<IConfiguration>().Object
+            _userManager.UserManager
         )
         {
             ControllerContext = new ControllerContext

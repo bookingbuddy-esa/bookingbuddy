@@ -4,6 +4,7 @@ using BookingBuddy.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingBuddy.Server.Migrations
 {
     [DbContext(typeof(BookingBuddyServerContext))]
-    partial class BookingBuddyServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240321191109_UpdateGroupPayment")]
+    partial class UpdateGroupPayment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -461,10 +464,6 @@ namespace BookingBuddy.Server.Migrations
                     b.Property<string>("ChoosenProperty")
                         .HasColumnType("nvarchar(max)")
                         .HasAnnotation("Relational:JsonPropertyName", "choosenProperty");
-
-                    b.Property<int>("GroupAction")
-                        .HasColumnType("int")
-                        .HasAnnotation("Relational:JsonPropertyName", "groupAction");
 
                     b.Property<string>("GroupOwnerId")
                         .IsRequired()

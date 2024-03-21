@@ -63,7 +63,7 @@ namespace BookingBuddy.Server.Data
         public DbSet<PromoteOrder> PromoteOrder { get; set; } = default!;
 
         /// <summary>
-        ///  Propriedade que diz respeito às reservas.
+        /// Propriedade que diz respeito às reservas.
         /// </summary>
         public DbSet<BookingOrder> BookingOrder { get; set; } = default!;
 
@@ -71,6 +71,11 @@ namespace BookingBuddy.Server.Data
         /// Propriedade que diz respeito às reservas de grupo.
         /// </summary>
         public DbSet<GroupBookingOrder> GroupBookingOrder { get; set; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito às mensagens de reserva.
+        /// </summary>
+        public DbSet<GroupOrderPayment> GroupOrderPayment { get; set; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às mensagens de reserva.
@@ -93,7 +98,7 @@ namespace BookingBuddy.Server.Data
         public DbSet<Rating> Rating { get; set; } = default!;
 
         /// <summary>
-        /// Propriedade que diz respeito às mensagens de chat de um grupo.
+        /// Propriedade que diz respeito às mensagens de grupo.
         /// </summary>
         public DbSet<GroupMessage> GroupMessage { get; set; } = default!;
 
