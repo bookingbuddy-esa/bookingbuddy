@@ -3,18 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Configuration;
 using BookingBuddy.Server.Services;
-using Microsoft.DotNet.Scaffolding.Shared;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using NuGet.Common;
-using System.Web;
-using System;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -35,6 +25,7 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
+        /// <param name="configuration">Configuração da aplicação</param>
         public PropertyController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
             IConfiguration configuration)
         {
@@ -49,7 +40,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>Lista de propriedades</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Models.Property>>> GetProperties()
+        public async Task<IActionResult> GetProperties()
         {
             var properties = await _context.Property.ToListAsync();
             foreach (var property in properties)
@@ -65,14 +56,12 @@ namespace BookingBuddy.Server.Controllers
                 });
                 property.Amenities = amenities;
                 var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
-                property.ApplicationUser = new ReturnUser()
+                property.ApplicationUser = new ReturnUser
                 {
                     Id = user!.Id,
                     Name = user.Name
                 };
             }
-
-            //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
 
             var promotedPropertyIds = await _context.PromoteOrder
                 .Where(order => order.EndDate > DateTime.Now && order.State == OrderState.Paid)
@@ -91,7 +80,7 @@ namespace BookingBuddy.Server.Controllers
 
             var orderedProperties = promotedProperties.Concat(otherProperties).ToList();
 
-            return orderedProperties;
+            return Ok(orderedProperties);
         }
 
         /// <summary>
@@ -101,7 +90,7 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="propertyId">Identificador da propriedade</param>
         /// <returns>A propriedade, caso exista, não encontrada, caso contrário</returns>
         [HttpGet("{propertyId}")]
-        public async Task<ActionResult<Models.Property>> GetProperty(string propertyId)
+        public async Task<IActionResult> GetProperty(string propertyId)
         {
             try
             {
@@ -135,7 +124,7 @@ namespace BookingBuddy.Server.Controllers
                     Name = user.Name
                 };
 
-                return property;
+                return Ok(property);
             }
             catch (Exception ex)
             {
@@ -320,7 +309,7 @@ namespace BookingBuddy.Server.Controllers
                 }
             });
 
-            var property = new Models.Property
+            var property = new Property
             {
                 PropertyId = Guid.NewGuid().ToString(),
                 ApplicationUserId = user.Id,
@@ -408,7 +397,7 @@ namespace BookingBuddy.Server.Controllers
                 .Where(p => p.ApplicationUserId == userId)
                 .ToListAsync();
 
-            if (properties == null || properties.Count == 0)
+            if (properties.Count == 0)
             {
                 return NotFound("Nenhuma propriedade encontrada para o utilizador fornecido.");
             }
@@ -521,7 +510,7 @@ namespace BookingBuddy.Server.Controllers
 
             var property = await _context.Property.FindAsync(blockedDate.PropertyId);
 
-            if (user.Id != property.ApplicationUserId)
+            if (user.Id != property!.ApplicationUserId)
             {
                 return Forbid();
             }
@@ -888,7 +877,6 @@ namespace BookingBuddy.Server.Controllers
     /// <summary>
     /// Modelo de criação de propriedade
     /// </summary>
-    /// <param name="AmenityIds">Identificadores da lista de comodidades</param>
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>

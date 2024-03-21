@@ -14,6 +14,9 @@ using Property = BookingBuddy.Server.Models.Property;
 namespace BookingBuddy.Server.Controllers
 {
     
+    /// <summary>
+    /// Controlador para os grupos.
+    /// </summary>
     [Route("api/groups")]
     [ApiController]
     public class GroupController : Controller

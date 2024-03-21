@@ -1,5 +1,4 @@
-﻿using System.Text;
-using BookingBuddy.Server.Data;
+﻿using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,26 +7,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingBuddy.Server.Controllers
 {
+    /// <summary>
+    /// Controlador para as reservas.
+    /// </summary>
     [Route("api/bookings")]
     [ApiController]
     public class BookingController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Construtor da classe BookingController.
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        /// <param name="configuration">Configuração da aplicação</param>
-        public BookingController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
-            IConfiguration configuration)
+        public BookingController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _configuration = configuration;
         }
 
 
@@ -71,7 +69,7 @@ namespace BookingBuddy.Server.Controllers
                     PaymentId = payment.PaymentId,
                     ApplicationUserId = user.Id,
                     NumberOfGuests = i + 1,
-                    PropertyId = randomPropertyId,
+                    PropertyId = randomPropertyId!,
                     StartDate = DateTime.Now,
                     EndDate = DateTime.Now.AddDays(i + 3),
                     State = OrderState.Paid
@@ -162,7 +160,7 @@ namespace BookingBuddy.Server.Controllers
                 .OrderBy(m => m.SentAt)
                 .Select(m => new
                 {
-                    m.ApplicationUser.Name,
+                    m.ApplicationUser!.Name,
                     m.Message,
                     m.SentAt
                 }).ToListAsync();
