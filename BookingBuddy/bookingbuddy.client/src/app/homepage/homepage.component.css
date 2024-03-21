@@ -1,6 +1,6 @@
-:host{
-  display: flex;
-  width: inherit;
-  height: inherit;
+:host {
+    display: flex;
+    height: inherit;
+    width: inherit;
+    justify-content: center;
 }
-

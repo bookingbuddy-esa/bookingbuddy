@@ -74,8 +74,8 @@ namespace BookingBuddy.Server.Controllers
 
             //return await _context.Property.OrderByDescending(p => p.Clicks).ToListAsync();
 
-            var promotedPropertyIds = await _context.Order
-                .Where(order => order.EndDate > DateTime.Now && order.State)
+            var promotedPropertyIds = await _context.PromoteOrder
+                .Where(order => order.EndDate > DateTime.Now && order.State == OrderState.Paid)
                 .Select(order => order.PropertyId)
                 .ToListAsync();
 
@@ -190,21 +190,19 @@ namespace BookingBuddy.Server.Controllers
                 .ToListAsync();
 
             var bookingOrders = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(bo => bo.Order!.Payment)
-                .Include(bo => bo.Order!.ApplicationUser)
-                .Where(bo => bo.Order!.PropertyId == property.PropertyId)
+                .Include(bo => bo.Payment)
+                .Include(bo => bo.ApplicationUser)
+                .Where(bo => bo.PropertyId == property.PropertyId)
                 .Select(bo => new
                 {
-                    bo.BookingOrderId,
                     applicationUser = new ReturnUser()
                     {
-                        Id = bo.Order!.ApplicationUserId,
-                        Name = bo.Order.ApplicationUser!.Name
+                        Id = bo.ApplicationUserId,
+                        Name = bo.ApplicationUser!.Name
                     },
-                    bo.Order!.StartDate,
-                    bo.Order!.EndDate,
-                    bo.Order.Payment!.Amount
+                    bo.StartDate,
+                    bo.EndDate,
+                    bo.Payment!.Amount
                 })
                 .ToListAsync();
 
@@ -534,6 +532,10 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Dates unblocked successfully");
         }
 
+        /// <summary>
+        /// Obtém as reservas associadas do utilizador com login efetuado.
+        /// </summary>
+        /// <returns>Ação HTTP que representa o resultado da operação.</returns>
         [HttpGet("bookings")]
         [Authorize]
         public async Task<IActionResult> GetAssociatedBookings()
@@ -550,25 +552,23 @@ namespace BookingBuddy.Server.Controllers
                 .ToListAsync();
 
             var associatedBookingOrders = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(bo => bo.Order!.Payment)
-                .Include(bo => bo.Order!.ApplicationUser)
-                .Where(bo => properties.Select(p => p.PropertyId).Contains(bo.Order!.PropertyId))
+                .Include(bo => bo.Payment)
+                .Include(bo => bo.ApplicationUser)
+                .Where(bo => properties.Select(p => p.PropertyId).Contains(bo.PropertyId))
                 .Select(bo => new
                 {
-                    bo.BookingOrderId,
                     bo.OrderId,
                     applicationUser = new ReturnUser()
                     {
-                        Id = bo.Order!.ApplicationUserId,
-                        Name = bo.Order.ApplicationUser!.Name
+                        Id = bo.ApplicationUserId,
+                        Name = bo.ApplicationUser!.Name
                     },
-                    bo.Order!.Property!.Name,
-                    guest = bo.Order!.ApplicationUser.Name,
-                    checkIn = bo.Order!.StartDate,
-                    checkOut = bo.Order!.EndDate,
-                    bo.Order!.State,
-                    bo.Order.Payment!.Amount,
+                    bo.Property!.Name,
+                    guest = bo.ApplicationUser.Name,
+                    checkIn = bo.StartDate,
+                    checkOut = bo.EndDate,
+                    bo.State,
+                    bo.Payment!.Amount,
                     bo.NumberOfGuests,
                 })
                 .ToListAsync();
@@ -747,6 +747,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Discount removed successfully");
         }
 
+        /// <summary>
+        /// Adiciona um propriedade aos favoritos
+        /// </summary>
+        /// <param name="propertyId"> Parametro que contém o id da propriedade a ser adicionada aos favoritos</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [Authorize]
         [HttpPost("favorites/add/{propertyId}")]
         public async Task<IActionResult> AddToFavorite(string propertyId)
@@ -779,6 +784,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Propriedade adicionada aos favoritos com sucesso.");
         }
 
+        /// <summary>
+        /// Remove uma propriedade dos favoritos
+        /// </summary>
+        /// <param name="propertyId">Parametro que contém o id da propriedade a ser removida dos favoritos</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpDelete]
         [Route("favorites/remove/{propertyId}")]
         [Authorize]
@@ -816,6 +826,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Propriedade removida dos favoritos com sucesso.");
         }
 
+        /// <summary>
+        /// Método que obtem as propriedades que o utilizador marcou como favoritas
+        /// </summary>
+        /// <param name="userId"> Parametro que fornece o id do utilizador</param>
+        /// <returns>Ação HTTP que representa o resultado da operação, neste caso, os favoritos</returns>
         [HttpGet("favorites/user/{userId}")]
         public async Task<IActionResult> GetUserFavorites(string userId)
         {
@@ -835,6 +850,11 @@ namespace BookingBuddy.Server.Controllers
             return Ok(favorites);
         }
 
+        /// <summary>
+        /// Método que verifica se a propriedade escolhida está nos favoritos do utilizador
+        /// </summary>
+        /// <param name="propertyId">Parametro que contém o id da propriedade a ser analisada</param>
+        /// <returns>ação HTTP que representa o resultado da operação.</returns>
         [HttpGet("favorites/check/{propertyId}")]
         public async Task<IActionResult> IsPropertyInFavorites(string propertyId)
         {

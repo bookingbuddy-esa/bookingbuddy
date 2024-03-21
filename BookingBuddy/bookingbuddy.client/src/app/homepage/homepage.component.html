@@ -2,8 +2,9 @@
     <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
 </div>
 
-<div *ngIf="property_list.length === 0" class="d-flex p-3 w-100 justify-content-center">
-    <h5 class="mt-5">Ainda não existem propriedades na plataforma!</h5>
+<div *ngIf="property_list.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
+    <h5>Ainda não existem propriedades na plataforma!</h5>
+    <h6>Seja o primeiro a <a href="/hosting/create">criar um novo anúncio</a> da sua propriedade.</h6>
 </div>
 
 <div *ngIf="submitting" class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">

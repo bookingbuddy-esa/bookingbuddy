@@ -22,7 +22,8 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
         /// <param name="configuration">Configuração da aplicação</param>
-        public BookingController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public BookingController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -31,6 +32,10 @@ namespace BookingBuddy.Server.Controllers
 
 
         // create "dev" endpoint to create 5 bookings
+        /// <summary>
+        /// Criação de reservas
+        /// </summary>
+        /// <returns>Retorna o resultado da criação das reservas.</returns>
         [HttpGet("dev")]
         [Authorize]
         public async Task<ActionResult> CreateBookings()
@@ -44,14 +49,15 @@ namespace BookingBuddy.Server.Controllers
             for (int i = 0; i < 5; i++)
             {
                 // get random property id
-                var randomPropertyId = _context.Property.Select(p => p.PropertyId).OrderBy(p => Guid.NewGuid()).FirstOrDefault();
+                var randomPropertyId = _context.Property.Select(p => p.PropertyId).OrderBy(p => Guid.NewGuid())
+                    .FirstOrDefault();
 
                 // create dev payment
                 var payment = new Payment
                 {
-                    PaymentId = "dev-"+Guid.NewGuid().ToString(),
+                    PaymentId = "dev-" + Guid.NewGuid().ToString(),
                     Method = "mbway",
-                    Amount = 100 + i*10,
+                    Amount = 100 + i * 10,
                     Status = "Paid",
                     CreatedAt = DateTime.Now
                 };
@@ -59,32 +65,28 @@ namespace BookingBuddy.Server.Controllers
                 await _context.SaveChangesAsync();
 
                 // create dev order
-                var order = new Order
+                var order = new BookingOrder
                 {
-                    OrderId = "BOOKING-" + Guid.NewGuid().ToString(),
+                    OrderId = Guid.NewGuid().ToString(),
                     PaymentId = payment.PaymentId,
                     ApplicationUserId = user.Id,
+                    NumberOfGuests = i + 1,
                     PropertyId = randomPropertyId,
                     StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(i+3),
-                    State = true
+                    EndDate = DateTime.Now.AddDays(i + 3),
+                    State = OrderState.Paid
                 };
-                _context.Order.Add(order);
-                await _context.SaveChangesAsync();
-
-                // create dev booking order
-                var bookingOrder = new BookingOrder
-                {
-                    BookingOrderId = Guid.NewGuid().ToString(),
-                    OrderId = order.OrderId,
-                    NumberOfGuests = i+1
-                };
-                _context.BookingOrder.Add(bookingOrder);
+                _context.BookingOrder.Add(order);
                 await _context.SaveChangesAsync();
             }
 
             return Ok();
         }
+
+        /// <summary>
+        /// Obtém as reservas do utilizador.
+        /// </summary>
+        /// <returns>Retorna as reservas do utilizador.</returns>
 
         [HttpGet]
         [Authorize]
@@ -98,30 +100,35 @@ namespace BookingBuddy.Server.Controllers
             }
 
             var bookingOrders = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(o => o.Order!.Payment)
-                .Include(o => o.Order!.ApplicationUser)
-                .Include(o => o.Order!.Property)
-                .Where(bo => bo.Order!.ApplicationUserId == user.Id)
-                .Select(bo => new {
-                    bo.BookingOrderId,
+                .Include(o => o.Payment)
+                .Include(o => o.ApplicationUser)
+                .Include(o => o.Property)
+                .Where(bo => bo.ApplicationUserId == user.Id)
+                .Select(bo => new
+                {
                     bo.OrderId,
-                    applicationUser = new ReturnUser(){
-                        Id = bo.Order!.ApplicationUser.Id,
-                        Name = bo.Order!.ApplicationUser.Name,
+                    applicationUser = new ReturnUser()
+                    {
+                        Id = bo.ApplicationUser!.Id,
+                        Name = bo.ApplicationUser.Name,
                     },
-                    bo.Order!.Property!.Name,
-                    host = bo.Order!.Property!.ApplicationUserId,
-                    checkIn = bo.Order!.StartDate,
-                    checkOut = bo.Order!.EndDate,
-                    bo.Order!.State,
-                    bo.Order.Payment!.Amount,
+                    bo.Property!.Name,
+                    host = bo.Property!.ApplicationUserId,
+                    checkIn = bo.StartDate,
+                    checkOut = bo.EndDate,
+                    bo.State,
+                    bo.Payment!.Amount,
                     bo.NumberOfGuests,
                 }).ToListAsync();
 
             return Ok(bookingOrders);
         }
 
+        /// <summary>
+        /// Obtém as mensagens relacionadas a uma reserva específica.
+        /// </summary>
+        /// <param name="bookingId">O ID da reserva para a qual as mensagens serão obtidas.</param>
+        /// <returns>Retorna as mensagens relacionadas à reserva.</returns>
         [HttpGet("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string bookingId)
@@ -134,10 +141,9 @@ namespace BookingBuddy.Server.Controllers
             }
 
             var bookingOrder = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(o => o.Order!.ApplicationUser)
+                .Include(o => o.ApplicationUser)
                 //.Include(o => o.Order!.Property)
-                .Where(bo => bo.BookingOrderId == bookingId)
+                .Where(bo => bo.OrderId == bookingId)
                 .FirstOrDefaultAsync();
 
             if (bookingOrder == null)
@@ -152,9 +158,10 @@ namespace BookingBuddy.Server.Controllers
             }*/
 
             var messages = await _context.BookingMessage
-                .Where(m => m.BookingOrderId == bookingOrder.BookingOrderId)
-                .OrderBy(m => m.SentAt) 
-                .Select(m => new {
+                .Where(m => m.BookingOrderId == bookingOrder.OrderId)
+                .OrderBy(m => m.SentAt)
+                .Select(m => new
+                {
                     m.ApplicationUser.Name,
                     m.Message,
                     m.SentAt
@@ -162,6 +169,13 @@ namespace BookingBuddy.Server.Controllers
 
             return Ok(messages);
         }
+
+        /// <summary>
+        /// Cria uma nova mensagem relacionada a uma reserva específica.
+        /// </summary>
+        /// <param name="bookingId">O ID da reserva à qual a mensagem será adicionada.</param>
+        /// <param name="message">Os dados da nova mensagem a ser criada.</param>
+        /// <returns>Retorna o resultado da criação da mensagem.</returns>
 
         [HttpPost("{bookingId}/messages")]
         [Authorize]
@@ -175,10 +189,9 @@ namespace BookingBuddy.Server.Controllers
             }
 
             var bookingOrder = await _context.BookingOrder
-                .Include(bo => bo.Order)
-                .Include(o => o.Order!.ApplicationUser)
+                .Include(o => o.ApplicationUser)
                 //.Include(o => o.Order!.Property)
-                .Where(bo => bo.BookingOrderId == bookingId)
+                .Where(bo => bo.OrderId == bookingId)
                 .FirstOrDefaultAsync();
 
             if (bookingOrder == null)
@@ -194,7 +207,6 @@ namespace BookingBuddy.Server.Controllers
             var newMessage = new BookingMessage
             {
                 BookingMessageId = Guid.NewGuid().ToString(),
-                BookingOrderId = bookingOrder.BookingOrderId,
                 ApplicationUserId = user.Id,
                 Message = message.Message,
                 SentAt = DateTime.Now
@@ -202,15 +214,22 @@ namespace BookingBuddy.Server.Controllers
 
             _context.BookingMessage.Add(newMessage);
 
-            try {
+            try
+            {
                 await _context.SaveChangesAsync();
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
                 return BadRequest(e.Message);
             }
 
             return Ok();
-        } 
+        }
     }
 
+    /// <summary>
+    /// Representa os dados de uma nova mensagem relacionada a uma reserva.
+    /// </summary>
+    /// <param name="Message">O conteúdo da mensagem.</param>
     public record NewBookingMessage(string Message);
 }

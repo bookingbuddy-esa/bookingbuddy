@@ -86,10 +86,9 @@ export class PaymentComponent {
 
   // TODO: remover -> apenas de teste para simular a confirmação do pagamento
   public confirmarPagamento(): void {
-    this.paymentService.confirmOrder(this.paymentResponse.orderId, this.paymentResponse.paymentId).forEach((response) => {
+    this.paymentService.confirmOrder(this.paymentResponse.orderId, this.payment?.paymentId ?? "").forEach((response) => {
       if (response) {
         console.log(response);
-        alert('Esta mensagem é de teste - O pagamento foi confirmado com sucesso!')
       }
       this.currentPhase = 3;
     }).catch((err) => {

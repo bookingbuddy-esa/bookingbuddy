@@ -1,0 +1,23 @@
+<div *ngIf="!submitting" class="d-flex h-100 w-100 flex-column align-items-center" [ngSwitch]="currentStep">
+  <app-first-step *ngSwitchCase="0" (nextStep)="nextStep()" [currentPercentage]="currentCompletePercentage">
+  </app-first-step>
+  <app-group-name-step *ngSwitchCase="1" [groupName]="groupName" (groupNameValid)="groupNameValid($event)" (groupNameSubmit)="setGroupName($event)"></app-group-name-step>
+  <app-group-members-step *ngSwitchCase="2" [groupMembers]="groupMembers" (groupMembersValid)="groupMembersValid($event)" (groupMembersSubmit)="setGroupMembers($event)"></app-group-members-step>
+  <div class="d-flex flex-column w-100 align-items-center">
+    <div class="progress w-100 rounded-0" role="progressbar" aria-label="Progress Bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="progress-bar bg-dark" [style.width.%]="currentCompletePercentage"></div>
+    </div>
+    <div class="d-flex flex-row h-100 w-100 align-items-center justify-content-between px-5 py-3">
+      <button *ngIf="currentStep === 0" class="btn btn-danger" [routerLink]="['/']">Cancelar</button>
+      <button *ngIf="currentStep !== 0" class="btn btn-link link-dark fw-bolder" (click)="previousStep()">
+        Anterior
+      </button>
+      <button *ngIf="currentStep !== numberOfSteps" class="btn btn-dark" [disabled]="!isValid()" (click)="nextStep()">Próximo</button>
+      <button *ngIf="currentStep === numberOfSteps" class="btn btn-dark" [disabled]="!isValid()" (click)="create($event)">Finalizar</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="submitting" class="d-flex w-100 h-100 flex-column align-items-center justify-content-center">
+  <app-loader></app-loader>
+</div>

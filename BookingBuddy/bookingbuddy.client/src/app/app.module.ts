@@ -37,6 +37,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { PaymentComponent } from './payment/payment.component';
 import { TransactionHandlerComponent } from './payment/transaction-handler/transaction-handler.component';
+import { GroupComponent } from './group/group.component';
+import { GroupCreateComponent } from './group/group-create/group-create.component';
+import { GroupNameStepComponent } from './group/group-create/group-name-step/group-name-step.component';
+import { GroupMembersStepComponent } from './group/group-create/group-members-step/group-members-step.component';
+import { FirstStepComponent } from './group/group-create/first-step/first-step.component';
+
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FaqPageComponent } from './faq-page/faq-page.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +64,7 @@ import { TransactionHandlerComponent } from './payment/transaction-handler/trans
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupMembersStepComponent, FirstStepComponent, FaqPageComponent, FooterComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -65,7 +74,7 @@ import { TransactionHandlerComponent } from './payment/transaction-handler/trans
     HostingModule, GoogleMap, MapMarker,
     MatIconModule, MatDatepickerModule,
     MatFormFieldModule, MatInputModule,
-    MatNativeDateModule, PaymentComponent
+    MatNativeDateModule, PaymentComponent, MatTooltipModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

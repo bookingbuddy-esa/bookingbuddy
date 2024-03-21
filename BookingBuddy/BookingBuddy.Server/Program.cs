@@ -55,6 +55,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<PaymentController, PaymentController>();
+builder.Services.AddScoped<GroupController, GroupController>();
 
 var app = builder.Build();
 
@@ -76,27 +77,32 @@ app.UseWebSockets(new WebSocketOptions
     KeepAliveInterval = TimeSpan.FromSeconds(30)
 });
 
-app.Map("/api/payments/ws",
-    async (HttpContext httpContext, BookingBuddyServerContext context, PaymentController paymentController,
-        string paymentId) =>
+app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string paymentId) =>
+{
+    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
     {
-        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
-        {
-            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-            try
-            {
-                await paymentController.HandleWebSocketAsync(paymentId, webSocket);
-            }
-            catch
-            {
-                PaymentController.RemoveWebSocket(webSocket);
-            }
-        }
-        else
-        {
-            httpContext.Response.StatusCode = 400;
-        }
-    });
+        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+        await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+    }
+    else
+    {
+        httpContext.Response.StatusCode = 400;
+    }
+});
+
+app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupController, string groupId) =>
+{
+    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
+    {
+        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+        await groupController.HandleWebSocketAsync(groupId, webSocket);
+    }
+    else
+    {
+        httpContext.Response.StatusCode = 400;
+    }
+});
+
 
 app.UseCors("CorsPolicy");
 

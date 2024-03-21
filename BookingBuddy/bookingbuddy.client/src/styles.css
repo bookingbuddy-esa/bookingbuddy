@@ -1,74 +1,130 @@
 /* You can add global styles to this file, and also import other style files */
+
 body {
-  --bs-body-font-family: 'Montserrat';
+    --bs-body-font-family: 'Montserrat';
+    font-family: "Montserrat", "Helvetica Neue", sans-serif;
 }
 
 :root {
-  --fc-border-color: black;
-  --fc-daygrid-event-dot-width: 5px;
+    --fc-border-color: black;
+    --fc-daygrid-event-dot-width: 5px;
 }
 
+html,
+body {
+    height: 100%;
+}
+
+.light-green {
+    background-color: #9DAE9A;
+}
+
+.medium-green {
+    background-color: #4E6D4A;
+}
+
+.dark-green {
+    background-color: #3B5D36;
+}
+
+.bg-success-medium {
+    background-color: #21ae6c;
+}
+
+.bg-success-light {
+    background-color: #32d489;
+}
+
+.mat-form-field-underline {
+  background-color: transparent !important;
+}
+
+  .mat-form-field-underline .mat-form-field-ripple {
+    display: none;
+    background-color: transparent !important;
+  }
+
+.example-chip-list {
+  background-color: transparent !important;
+}
+
+.mat-mdc-text-field-wrapper {
+  background-color: transparent !important;
+}
+
+.assigned-chip {
+  background-color: blue;
+}
+
+.accordion-button:hover{
+    --bs-accordion-btn-bg: #9DAE9A;
+}
+
+/*
 .fc {
-  background-color: white;
+    background-color: white;
 }
 
 .fc .fc-daygrid-day-number {
-  color:black;
+    color: black;
 }
 
 .fc .fc-col-header-cell-cushion {
-  color: black;
-   
+    color: black;
 }
 
 .fc .fc-highlight {
-  background: green;
-  opacity:25%;
+    background: green;
+    opacity: 25%;
 }
 
 .fc .fc-scroller-harness {
-  background: #9DC78A;
+    background: #9DC78A;
 }
 
-.fc .fc-scrollgrid-section-body table, .fc .fc-scrollgrid-section-footer table {
-  background-color: #e4fee4;
+.fc .fc-scrollgrid-section-body table,
+.fc .fc-scrollgrid-section-footer table {
+    background-color: #e4fee4;
 }
 
 .fc .fc-toolbar.fc-header-toolbar {
-  margin-top: 0%;
+    margin-top: 0%;
 }
 
-.btn-outline-success{
-    background-color:black;
+.btn-outline-success {
+    background-color: black;
 }
 
-/*Cor botão today*/
 .fc .fc-button-primary:disabled {
-  background: #176b17;
+    background: #176b17;
 }
+
 .fc .fc-button:not(:disabled) {
-  background: #176b17;
+    background: #176b17;
 }
 
-
-.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
-  background-color: #176b17;
+.fc-direction-ltr .fc-button-group>.fc-button:not(:last-child) {
+    background-color: #176b17;
 }
 
-.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
-  background-color: #176b17;
+.fc-direction-ltr .fc-button-group>.fc-button:not(:first-child) {
+    background-color: #176b17;
 }
 
 button.discount-date-class {
-  background: #9DAE9A;
-  border-radius: 100%;
-  width: 80%; 
-  height: 80%;
+    background: #9DAE9A;
+    border-radius: 100%;
+    width: 80%;
+    height: 80%;
 }
 
 .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-  background-color: #fff !important; 
+    background-color: #fff !important;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/*
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}*/

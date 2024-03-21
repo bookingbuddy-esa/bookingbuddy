@@ -198,9 +198,12 @@ export class CalendarComponent implements OnInit {
           this.property_list = properties;
           this.currentProperty = this.property_list[0];
           this.fullcalendar.getApi().refetchEvents();
+          /*for(let i = 0; i < 90; i++){
+            this.property_list.push(i);
+          }*/
         },
         error => {
-          console.error('Erro ao obter propriedades do usuário:', error);
+          console.error('Erro ao obter propriedades do utilizador:', error);
         }
       );
     }

@@ -7,6 +7,13 @@ namespace BookingBuddy.Server.Controllers
     public class ChatHubController : Hub
     {
         private static Dictionary<string, List<UserInfo>> _groupUsers = new Dictionary<string, List<UserInfo>>();
+
+        /// <summary>
+        /// Permite que um utilizador entre num grupo.
+        /// </summary>
+        /// <param name="groupName">O nome do grupo.</param>
+        /// <param name="userName">O nome de utilizador que está a entrar no grupo.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         public async Task JoinGroup(string groupName, string userName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
@@ -24,6 +31,12 @@ namespace BookingBuddy.Server.Controllers
             await Clients.Group(groupName).SendAsync("NewUser", $"{userName} entrou no canal");
         }
 
+        /// <summary>
+        /// Permite que um utilizador saia de um grupo.
+        /// </summary>
+        /// <param name="groupName">O nome do grupo.</param>
+        /// <param name="userName">O nome de utilizador que está a sair do grupo.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         public async Task LeaveGroup(string groupName, string userName)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
@@ -41,11 +54,21 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Envia uma nova mensagem para um grupo específico.
+        /// </summary>
+        /// <param name="message">Os dados da nova mensagem a ser enviada.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         public async Task SendMessage(NewMessage message)
         {
             await Clients.Group(message.GroupName).SendAsync("NewMessage", message);
         }
 
+        /// <summary>
+        /// Obtém a lista de utilizadores de um grupo específico.
+        /// </summary>
+        /// <param name="groupName">O nome do grupo.</param>
+        /// <returns>Uma lista que contém os nomes dos utilizadores do grupo.</returns>
         public static List<string> GetUsers(string groupName)
         {
             if (_groupUsers.ContainsKey(groupName))
@@ -56,6 +79,11 @@ namespace BookingBuddy.Server.Controllers
             return new List<string>();
         }
 
+        /// <summary>
+        /// Executa quando um utilizador se desconecta.
+        /// </summary>
+        /// <param name="exception">A exceção (se houver) que causou a desconexão.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var groupName = _groupUsers.FirstOrDefault(x => x.Value.Any(y => y.ConnectionId == Context.ConnectionId)).Key;
@@ -75,5 +103,11 @@ namespace BookingBuddy.Server.Controllers
         public string ConnectionId { get; set; }
     }
 
+    /// <summary>
+    /// Representa os dados de uma nova mensagem para um grupo.
+    /// </summary>
+    /// <param name="UserName">O nome do utilizador que enviou a mensagem.</param>
+    /// <param name="Message">O conteúdo da mensagem.</param>
+    /// <param name="GroupName">O nome do grupo para o qual a mensagem será enviada.</param>
     public record NewMessage(string UserName, string Message, string GroupName);
 }

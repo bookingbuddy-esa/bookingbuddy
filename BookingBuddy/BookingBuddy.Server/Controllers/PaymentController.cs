@@ -1,10 +1,9 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Web;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
+using BookingBuddy.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +20,7 @@ namespace BookingBuddy.Server.Controllers
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
-        private static readonly Dictionary<string, WebSocket> Sockets = new();
-        private static readonly Dictionary<string, List<WebSocket>> SocketsPaymentId = new();
+        private static readonly WebSocketWrapper<Payment> WebSocketWrapper = new();
 
         /// <summary>
         /// Construtor da classe PaymentController.
@@ -79,17 +77,11 @@ namespace BookingBuddy.Server.Controllers
         [HttpGet("webhook")]
         public async Task<IActionResult> Webhook([FromQuery] PaymentResponse paymentResponse)
         {
-            string key = paymentResponse.key;
-            string orderId = paymentResponse.orderId;
-            string amount = paymentResponse.amount;
-            string requestId = paymentResponse.requestId;
-            string paymentDatetime = paymentResponse.payment_datetime;
-
-            Console.WriteLine($"Key: {key}");
-            Console.WriteLine($"Order ID: {orderId}");
-            Console.WriteLine($"Amount: {amount}");
-            Console.WriteLine($"Request ID: {requestId}");
-            Console.WriteLine($"Payment Datetime: {paymentDatetime}");
+            var key = paymentResponse.key;
+            var orderId = paymentResponse.orderId;
+            var amount = paymentResponse.amount;
+            var requestId = paymentResponse.requestId;
+            var paymentDatetime = paymentResponse.payment_datetime;
 
             if (key != _configuration.GetSection("PhishingKey").Value!)
             {
@@ -108,49 +100,55 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            payment.Status = "Paid";
-
+            if (payment.Status == "Paid") return Ok();
             try
             {
-                await _context.SaveChangesAsync();
-                await NotifyAll(payment);
-                var order = await _context.Order.FindAsync(orderId);
-                if (order != null)
+                payment.Status = "Paid";
+                OrderBase? order = (await _context.Order.FindAsync(orderId))?.Type.ToUpper() switch
                 {
-                    order.State = true;
-                    await _context.SaveChangesAsync();
+                    "PROMOTE" => await _context.PromoteOrder.FindAsync(orderId),
+                    "BOOKING" => await _context.BookingOrder.FindAsync(orderId),
+                    "GROUP-BOOKING" => await _context.GroupBookingOrder.FindAsync(orderId),
+                    _ => null
+                };
 
-                    if (orderId.StartsWith("PROMOTE-"))
-                    {
-                        var promoteOrder = new PromoteOrder
-                        {
-                            PromoteOrderId = Guid.NewGuid().ToString(),
-                            OrderId = orderId
-                        };
-                        _context.PromoteOrder.Add(promoteOrder);
-                        await _context.SaveChangesAsync();
-                    }
-                    else if (orderId.StartsWith("BOOKING-"))
-                    {
-                        // TODO: Diogo Rosa - BlockedDates passa a ter StartDate e EndDate (invex de Start e End) e com o tipo DateTime - fazer alterações necessários do frontend?
-                        var blockDates = new BlockedDate
-                        {
-                            PropertyId = order.PropertyId,
-                            Start = order.StartDate.ToString("yyyy-MM-dd"),
-                            End = order.EndDate.ToString("yyyy-MM-dd")
-                        };
+                if (order == null) return NotFound();
 
+                var blockDates = new BlockedDate
+                {
+                    PropertyId = order.PropertyId,
+                    Start = order.StartDate.ToString("yyyy-MM-dd"),
+                    End = order.EndDate.ToString("yyyy-MM-dd")
+                };
+
+                if (order is BookingOrder)
+                {
+                    _context.BlockedDate.Add(blockDates);
+                }
+
+                if (order is GroupBookingOrder groupBookingOrder)
+                {
+                    groupBookingOrder.PaidByIds.Add(requestId);
+                    var group = await _context.Groups.FindAsync(groupBookingOrder.GroupId);
+                    if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
+                    {
+                        order.State = OrderState.Paid;
                         _context.BlockedDate.Add(blockDates);
-                        await _context.SaveChangesAsync();
                     }
                 }
+                else
+                {
+                    order.State = OrderState.Paid;
+                }
+
+                await _context.SaveChangesAsync();
+                await WebSocketWrapper.NotifyAllAsync(payment);
+                return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Ocorreu um erro: {ex.Message}");
             }
-
-            return Ok();
         }
 
         /// <summary>
@@ -289,103 +287,38 @@ namespace BookingBuddy.Server.Controllers
         public async Task HandleWebSocketAsync(string paymentId, WebSocket webSocket)
         {
             var payment = await _context.Payment.FindAsync(paymentId);
-            if (payment == null)
-            {
-                await webSocket.CloseAsync(WebSocketCloseStatus.InvalidPayloadData, "Payment not found", default);
-                return;
-            }
-
-            var socketId = Guid.NewGuid().ToString();
-            Sockets.Add(socketId, webSocket);
-            if (SocketsPaymentId.TryGetValue(paymentId, out var value))
-            {
-                value.Add(webSocket);
-            }
-            else
-            {
-                SocketsPaymentId.Add(paymentId, [webSocket]);
-            }
-
-            Console.WriteLine($"WebSocket connected ({Sockets.Count - 1} -> {Sockets.Count}): {socketId}");
-            Console.WriteLine($"Tracking payment: {paymentId}");
-
-            var buffer = new byte[1024 * 4];
-            while (webSocket.State == WebSocketState.Open)
-            {
-                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), default);
-                if (result.MessageType != WebSocketMessageType.Close) continue;
-                await webSocket.CloseAsync(result.CloseStatus!.Value, result.CloseStatusDescription, default);
-                break;
-            }
-
-            Sockets.Remove(socketId);
-            SocketsPaymentId[paymentId].Remove(webSocket);
-
-            Console.WriteLine($"WebSocket disconnected ({Sockets.Count + 1} -> {Sockets.Count}): {socketId}");
+            await WebSocketWrapper.HandleAsync(payment, webSocket);
         }
 
-        [NonAction]
-        public static async Task NotifyAll(Payment? payment)
+        /// <summary>
+        /// Classe interna para representar uma resposta de um pagamento.
+        /// </summary>
+        public class PaymentResponse
         {
-            if (payment == null) return;
-            var socketPayment = SocketsPaymentId.FirstOrDefault(sp => sp.Key == payment.PaymentId);
-            foreach (var socket in socketPayment.Value)
-            {
-                var socketId = Sockets.FirstOrDefault(s => s.Value == socket).Key;
-                Console.WriteLine($"Notifying socket ({socketId}) with payment ({payment.PaymentId})");
-                await socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payment)),
-                    WebSocketMessageType.Text, true, CancellationToken.None);
-            }
+            /// <summary>
+            /// Representa a chave.
+            /// </summary>
+            public string key { get; set; }
+
+            /// <summary>
+            /// Representa o identificador da reserva.
+            /// </summary>
+            public string orderId { get; set; }
+
+            /// <summary>
+            /// Representa a quantia monetária.
+            /// </summary>
+            public string amount { get; set; }
+
+            /// <summary>
+            /// Representa o identificador do pedido.
+            /// </summary>
+            public string requestId { get; set; }
+
+            /// <summary>
+            /// Representa a data e a hora do pagamento.
+            /// </summary>
+            public string payment_datetime { get; set; }
         }
-
-
-        [NonAction]
-        public static void RemoveWebSocket(WebSocket webSocket)
-        {
-            var socketId = Sockets.FirstOrDefault(s => s.Value == webSocket).Key;
-            Sockets.Remove(socketId);
-            var socketPayment = SocketsPaymentId.FirstOrDefault(sp => sp.Value.Contains(webSocket));
-            if (socketPayment.Value.Count == 1)
-            {
-                SocketsPaymentId.Remove(socketPayment.Key);
-            }
-            else
-            {
-                socketPayment.Value.Remove(webSocket);
-            }
-
-            Console.WriteLine($"WebSocket forced disconnect ({Sockets.Count + 1} -> {Sockets.Count}): {socketId}");
-        }
-    }
-
-    /// <summary>
-    /// Classe interna para representar uma resposta de um pagamento.
-    /// </summary>
-    public class PaymentResponse
-    {
-        /// <summary>
-        /// Representa a chave.
-        /// </summary>
-        public string key { get; set; }
-
-        /// <summary>
-        /// Representa o identificador da reserva.
-        /// </summary>
-        public string orderId { get; set; }
-
-        /// <summary>
-        /// Representa a quantia monetária.
-        /// </summary>
-        public string amount { get; set; }
-
-        /// <summary>
-        /// Representa o identificador do pedido.
-        /// </summary>
-        public string requestId { get; set; }
-
-        /// <summary>
-        /// Representa a data e a hora do pagamento.
-        /// </summary>
-        public string payment_datetime { get; set; }
     }
 }

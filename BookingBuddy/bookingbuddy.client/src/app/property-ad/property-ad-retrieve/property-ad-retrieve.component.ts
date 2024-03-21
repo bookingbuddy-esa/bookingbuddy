@@ -31,7 +31,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
   property: Property | undefined;
   reservarPropriedadeForm!: FormGroup;
   reservarPropriedadeFailed: boolean;
-  errors: string[];
   signedIn: boolean = false;
   isPropertyInFavorites: boolean = false;
   blockedDates: Date[] = [];
@@ -49,8 +48,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
     this.appComponent.showChat = true;
-    this.errors = [];
-
     this.reservarPropriedadeFailed = false;
     
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -75,7 +72,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log("oiiiii eddy");
     this.propertyService.getProperty(this.route.snapshot.params['id']).forEach(
       response => {
         if (response) {
@@ -88,12 +84,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
         error => {
           // TODO return error message
         }
-    );
-    
+    ); 
   }
 
   loadBlockedDates() {
-
     if (this.property) {
       this.propertyService.getPropertyBlockedDates(this.property.propertyId)
         .forEach(
@@ -257,15 +251,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
-  //TODO: Adicionar os valores da taxa de limpeza
-  calcularTotal() {
-    if (this.property) {
-      return this.calcularDiferencaDias() * this.property.pricePerNight;
-    }
-    return 0;
-    
-  }
-
   calcularTotalDesconto() {
     const selectedDates: Date[] = [];
     this.pricesMap = new Map();
@@ -348,7 +333,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
     console.log("Check-out: " + checkOutDate);
 
     // TODO: verificar se datas sao validas antes de fazer a order
-
     this.router.navigate(['/transaction-handler'], { 
         queryParams: {
             propertyId: this.property?.propertyId,
