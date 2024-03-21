@@ -179,7 +179,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void GetGroupsByUserId_Returns_NotFound_When_NoGroupsFound()
     {
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.user@bookingbuddy.com");
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.admin@bookingbuddy.com");
         Assert.NotNull(user);
 
         var controller = CreateController(user.Id);
