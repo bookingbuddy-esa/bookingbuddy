@@ -4,6 +4,9 @@ namespace BookingBuddy.Server.Controllers
 {
     // TODO: isto tem de ser refeito/melhorado quando for altura de comunicação entre membros de grupo
     // passar a usar o username do Identity em vez de uma string passada por parâmetro
+    /// <summary>
+    /// Controlador para o chat.
+    /// </summary>
     public class ChatHubController : Hub
     {
         private static Dictionary<string, List<UserInfo>> _groupUsers = new Dictionary<string, List<UserInfo>>();
@@ -97,9 +100,18 @@ namespace BookingBuddy.Server.Controllers
         }
     }
 
+    /// <summary>
+    /// Representa os dados de um utilizador.
+    /// </summary>
     public class UserInfo
     {
+        /// <summary>
+        /// Nome do utilizador.
+        /// </summary>
         public string UserName { get; set; }
+        /// <summary>
+        /// Identificador da conexão.
+        /// </summary>
         public string ConnectionId { get; set; }
     }
 

@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -12,16 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", builder =>
-        builder.WithOrigins("https://localhost:4200", "https://localhost:7048")
+    options.AddPolicy("CorsPolicy", policy =>
+        policy.WithOrigins("https://localhost:4200", "https://localhost:7048")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
 });
 
-string azureSignalrConnectionString = builder.Configuration.GetConnectionString("AzureSignalR") ??
-                                      throw new InvalidOperationException(
-                                          "Connection string 'AzureSignalR' not found.");
+var azureSignalrConnectionString = builder.Configuration.GetConnectionString("AzureSignalR") ??
+                                   throw new InvalidOperationException(
+                                       "Connection string 'AzureSignalR' not found.");
 builder.Services.AddSignalR().AddAzureSignalR(options => { options.ConnectionString = azureSignalrConnectionString; });
 
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>

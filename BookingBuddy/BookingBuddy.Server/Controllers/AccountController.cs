@@ -315,7 +315,7 @@ namespace BookingBuddy.Server.Controllers
         ///         select_by=btn&amp;
         ///         g_csrf_token=b228...ab5
         /// </example>
-        /// <param name="model">Modelo de login com a Google</param>
+        /// <param name="credential">Credencial de login com a Google</param>
         /// <returns>Redireciona para o link fornecido, se o pedido for concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
@@ -323,12 +323,11 @@ namespace BookingBuddy.Server.Controllers
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("google")]
-        public IActionResult GoogleLogin([FromForm] GoogleSignInModel model)
+        public IActionResult GoogleLogin([FromForm] string credential)
         {
-            var token = model.Credential;
             var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "GOOGLE");
             return Redirect(
-                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={token}");
+                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={credential}");
         }
 
         /// <summary>
@@ -345,7 +344,7 @@ namespace BookingBuddy.Server.Controllers
         ///         session_state=5d4...6ac
         ///       
         /// </example>
-        /// <param name="model">Modelo de login com a Microsoft</param>
+        /// <param name="id_token">Token de login com a Microsoft</param>
         /// <returns>Redireciona para o link fornecido, se o pedido for concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
@@ -353,12 +352,12 @@ namespace BookingBuddy.Server.Controllers
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("microsoft")]
-        public IActionResult MicrosoftLogin([FromForm] MicrosoftSignInModel model)
+        // ReSharper disable once InconsistentNaming
+        public IActionResult MicrosoftLogin([FromForm] string id_token)
         {
-            var token = model.Id_token;
             var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "MICROSOFT");
             return Redirect(
-                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={token}");
+                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={id_token}");
         }
 
         /// <summary>
@@ -734,33 +733,11 @@ namespace BookingBuddy.Server.Controllers
     public record PasswordChangeModel(string NewPassword, string OldPassword);
 
     /// <summary>
-    /// Modelo de login com a Google.
-    /// </summary>
-    /// <param name="ClientId">Id do cliente</param>
-    /// <param name="Client_id">Id do cliente</param>
-    /// <param name="Credential">Credencial</param>
-    /// <param name="Select_by">Selecionado por</param>
-    /// <param name="G_csrf_token">Token CSRF</param>
-    public record GoogleSignInModel(
-        string ClientId,
-        string Client_id,
-        string Credential,
-        string Select_by,
-        string G_csrf_token);
-
-    /// <summary>
-    /// Modelo de login com a Microsoft.
-    /// </summary>
-    /// <param name="Id_token">Token de login</param>
-    /// <param name="Session_state">Estado da sessão</param>
-    public record MicrosoftSignInModel(string Id_token, string Session_state);
-
-    /// <summary>
     /// Modelo de informação do utilizador
     /// </summary>
     /// <param name="UserId">Id do utilizador</param>
     /// <param name="Provider">Nome do fornecedor</param>
-    /// <param name="Role">Tipo de utilizador</param>
+    /// <param name="Roles">Tipo de utilizador</param>
     /// <param name="Name">Nome do utilizador</param>
     /// <param name="UserName">Nome da conta do utilizador</param>
     /// <param name="Email">E-mail do utilizador</param>

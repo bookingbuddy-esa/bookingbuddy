@@ -192,7 +192,7 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         if (order is PromoteOrder promoteOrder)
         {
             var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
-                promoteOrder!.PropertyId,
+                promoteOrder.PropertyId,
                 promoteOrder.StartDate,
                 promoteOrder.EndDate,
                 promoteOrder.Payment!.Method
@@ -221,7 +221,7 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         {
             var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
                 Guid.NewGuid().ToString(),
-                promoteOrder!.StartDate,
+                promoteOrder.StartDate,
                 promoteOrder.EndDate,
                 promoteOrder.Payment!.Method
             ), false);

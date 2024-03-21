@@ -14,6 +14,9 @@ using Property = BookingBuddy.Server.Models.Property;
 namespace BookingBuddy.Server.Controllers
 {
     
+    /// <summary>
+    /// Controlador para os grupos.
+    /// </summary>
     [Route("api/groups")]
     [ApiController]
     public class GroupController : Controller
@@ -169,7 +172,7 @@ namespace BookingBuddy.Server.Controllers
         {
             try {
                 var groups = await _context.Groups.Where(g => g.MembersId.Contains(userId)).ToListAsync();
-                if (groups == null)
+                if (groups == null || groups.Count == 0)
                 {
                     return NotFound();
                 }
@@ -202,6 +205,7 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
+
             var group = await _context.Groups.FindAsync(groupId);
 
             if(group == null)
@@ -209,9 +213,14 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            if (group.Properties.Count >= 5)
+            if (group.PropertiesId.Count >= 6 )
             {
+                return BadRequest("O Grupo ja tem 6 propriedades na votação!");
+            }
 
+            if (group.PropertiesId.Contains(propertyId))
+            {
+                return BadRequest("A propriedade ja existe no grupo!");
             }
 
             group.PropertiesId.Add(propertyId);
@@ -226,6 +235,46 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest();
             }
         }
+
+
+        /// <summary>
+        /// Remove um propriedade a um grupo existente.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
+        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
+        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+        [HttpPut("removeProperty")]
+        [Authorize]
+        public async Task<IActionResult> RemoveProperty(string groupId, string propertyId)
+        {
+
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+
+            if (!group.PropertiesId.Contains(propertyId))
+            {
+                return BadRequest("A propriedade não existe no grupo!");
+            }
+
+            group.PropertiesId.Remove(propertyId);
+            try
+            {
+                await _context.SaveChangesAsync();
+
+                return Ok("Propriedade removida com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
 
         /// <summary>
         /// Define uma propriedade como a propriedade escolhida para um grupo.
@@ -308,10 +357,28 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            _context.Groups.Remove(group);
-            await _context.SaveChangesAsync();
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null || group.GroupOwnerId != user.Id)
+            {
+                return Unauthorized();
+            }
 
-            return Ok("Grupo eliminado com sucesso.");
+            var groupMessages = _context.GroupMessage.Where(m => m.GroupId == groupId);
+
+            // Remover todas as mensagens associadas
+            _context.GroupMessage.RemoveRange(groupMessages);
+
+            _context.Groups.Remove(group);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok("Grupo eliminado com sucesso.");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
         }
 
         [HttpPost("{groupId}/messages")]

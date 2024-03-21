@@ -147,7 +147,14 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <param name="createPayment">Especifica se deve ser criado um pagamento</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 201 Created: Se o pedido foi criado com sucesso
+        /// - 400 Bad Request: Se as datas são inválidas
+        /// - 401 Unauthorized: Se o utilizador não está autenticado
+        /// - 404 Not Found: Se a propriedade não foi encontrada
+        /// - 500 Internal Server Error: Se ocorreu um erro ao criar o pedido
+        /// </returns>
         [HttpPost("promote")]
         [Authorize]
         public async Task<IActionResult> CreateOrderPromote([FromBody] PropertyPromoteModel model,
@@ -606,7 +613,14 @@ namespace BookingBuddy.Server.Controllers
                 await paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber!);
 
             if (newPaymentResult is not { Value: { } newPayment }) return BadRequest();
-            groupBooking.PaymentIds.Add(newPayment.PaymentId);
+            var groupPayment = new GroupOrderPayment
+            {
+                GroupPaymentId = Guid.NewGuid().ToString(),
+                PaymentId = newPayment.PaymentId,
+                ApplicationUserId = user.Id,
+            };
+            context.GroupOrderPayment.Add(groupPayment);
+            groupBooking.GroupPaymentIds.Add(groupPayment.GroupPaymentId);
             await context.SaveChangesAsync();
             return Ok(newPayment);
         }
