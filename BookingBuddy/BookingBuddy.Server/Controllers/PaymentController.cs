@@ -128,8 +128,9 @@ namespace BookingBuddy.Server.Controllers
 
                 if (order is GroupBookingOrder groupBookingOrder)
                 {
-                    groupBookingOrder.PaidByIds.Add(requestId);
                     var group = await _context.Groups.FindAsync(groupBookingOrder.GroupId);
+                    var groupPayment = _context.GroupOrderPayment.FirstOrDefault(p => p.PaymentId == requestId);
+                    groupBookingOrder.PaidByIds.Add(groupPayment?.ApplicationUserId ?? "Unknown User");
                     if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
                     {
                         order.State = OrderState.Paid;
