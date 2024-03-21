@@ -32,7 +32,10 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
     /// <param name="socket">WebSocket que se conectou.</param>
     /// <param name="onReceive">Função que será executada quando o WebSocket receber uma mensagem.</param>
     /// <param name="checkType">Indica se a mensagem recebida deve ser verificada se é do tipo do objeto rastreado.</param>
-    public async Task HandleAsync(T? objectToTrack, WebSocket socket, Func<dynamic, Task>? onReceive = null,
+    public async Task HandleAsync(T? objectToTrack, WebSocket socket,
+        Func<dynamic, Task>? onConnect = null,
+        Func<dynamic, Task>? onReceive = null,
+        Func<dynamic, Task>? onDisconnect = null,
         bool checkType = true)
     {
         if (objectToTrack == null)
@@ -138,7 +141,10 @@ public class WebSocketWrapper<T> where T : IPrimaryKey
     {
         var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;
         Console.WriteLine($"Sending message to {typeof(T).Name} WebSocket ({socketId})");
-        await socket.SendAsync(message is string ? Encoding.UTF8.GetBytes(message) : Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)), WebSocketMessageType.Text,
+        await socket.SendAsync(
+            message is string
+                ? Encoding.UTF8.GetBytes(message)
+                : Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message)), WebSocketMessageType.Text,
             true, CancellationToken.None);
     }
 

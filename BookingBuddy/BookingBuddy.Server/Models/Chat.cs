@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using BookingBuddy.Server.Services;
 
 namespace BookingBuddy.Server.Models;
@@ -46,21 +47,26 @@ public class ChatMessage
     /// <summary>
     /// Identificador da mensagem.
     /// </summary>
-    [Key] public required string MessageId { get; set; }
+    [Key] 
+    [JsonPropertyName("messageId")]
+    public required string MessageId { get; set; }
     
     /// <summary>
     /// Identificador do utilizador que enviou a mensagem.
     /// </summary>
+    [JsonPropertyName("applicationUserId")]
     public required string ApplicationUserId { get; set; }
     
     /// <summary>
     /// Conteúdo da mensagem.
     /// </summary>
+    [JsonPropertyName("content")]
     public required string Content { get; set; }
     
     /// <summary>
     /// Data de envio da mensagem.
     /// </summary>
+    [JsonPropertyName("sentAt")]
     public required DateTime SentAt { get; set; } = DateTime.Now;
     
     /// <summary>

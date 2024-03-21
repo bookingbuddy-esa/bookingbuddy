@@ -1,4 +1,5 @@
 ﻿using System.Net.WebSockets;
+using System.Text.Json;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -50,10 +51,20 @@ public class ChatController(BookingBuddyServerContext context) : ControllerBase
             return;
         }
 
-        await WebSocketWrapper.HandleAsync(chat, webSocket, async message =>
+        await WebSocketWrapper.HandleAsync(chat, webSocket, onReceive: async message =>
         {
             Console.WriteLine(message);
-            await WebSocketWrapper.SendAsync(webSocket, message);
-        }, false);
+            var chatMessage = JsonSerializer.Deserialize<ChatMessage>(message);
+            if (chatMessage == null)
+            {
+                return;
+            }
+
+            var sockets = WebSocketWrapper.GetSocketsTrackingById(chatId).Where(w => w != webSocket);
+            foreach (var socket in sockets)
+            {
+                await WebSocketWrapper.SendAsync(socket, chatMessage);
+            }
+        }, checkType: false);
     }
 }
