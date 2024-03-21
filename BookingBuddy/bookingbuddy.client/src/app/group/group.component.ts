@@ -82,6 +82,18 @@ export class GroupComponent {
       this.newMessage = '';
     }
   }
+
+  public removeProperty(property: Property) {
+    this.groupService.removePropertyFromGroup(this.currentGroup?.groupId!, property.propertyId).forEach(response => {
+      if (response) {
+        //console.log(response);
+      }
+    });
+    const idIndex = this.currentGroup?.propertiesId.indexOf(property.propertyId);
+    const propertyIndex = this.currentGroup?.properties.indexOf(property);
+    this.currentGroup?.propertiesId.splice(idIndex!, 1);
+    this.currentGroup?.properties.splice(propertyIndex!, 1);
+  }
   
   public chooseGroup(group: Group): void {
     console.log("Escolher este grupo: " + JSON.stringify(group));
