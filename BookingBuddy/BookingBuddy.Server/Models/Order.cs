@@ -118,9 +118,9 @@ public class GroupBookingOrder : OrderBase
     public required string GroupId { get; set; }
 
     /// <summary>
-    ///  Identificador dos pagamentos associados à reserva.
+    /// Identificador dos pagamentos associados à reserva.
     /// </summary>
-    public List<string> PaymentIds { get; set; } = [];
+    public List<string> GroupPaymentIds { get; set; } = [];
 
     /// <summary>
     ///  Identificador dos utilizadores que pagaram a reserva.
@@ -140,7 +140,7 @@ public class GroupBookingOrder : OrderBase
     /// <summary>
     ///  Pagamentos associados à reserva.
     /// </summary>
-    public List<Payment>? Payments { get; set; }
+    public List<GroupOrderPayment>? GroupPayments { get; set; } = [];
 
     /// <summary>
     ///  Utilizadores que pagaram a reserva.
@@ -168,6 +168,16 @@ public class Order
     /// Data de criação da order.
     /// </summary>
     public DateTime CreatedAt { get; init; } = DateTime.Now;
+}
+
+public class GroupOrderPayment
+{
+    [Key]
+    public string GroupPaymentId { get; set; }
+    public string PaymentId { get; set; }
+    public string ApplicationUserId { get; set; }
+    public Payment? Payment { get; set; }
+    public ApplicationUser? ApplicationUser { get; set; }
 }
 
 /// <summary>
