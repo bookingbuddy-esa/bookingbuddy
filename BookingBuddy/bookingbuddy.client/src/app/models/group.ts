@@ -9,7 +9,8 @@ export interface Group {
   propertiesId: string[],
   properties: Property[],
   choosenProperty: string,
-  messages: GroupMessage[]
+  messages: GroupMessage[],
+  groupAction: GroupAction
 }
 
 export interface GroupCreate {
@@ -27,4 +28,10 @@ export interface GroupMessage {
 export interface GroupMember {
   name: string,
   id: string
+}
+
+export enum GroupAction {
+  none,
+  voting,
+  paying
 }

@@ -53,7 +53,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
   selected_group_list: Group[] = [];
   @ViewChild('myModalClose') modalClose: any;
   constructor(private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
-    this.appComponent.showChat = true;
     this.reservarPropriedadeFailed = false;
     
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -235,7 +234,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.maxDate = this.calendarMaxDate;
   }
 
-  calcularDiferencaDias(): number {
+  /*calcularDiferencaDias(): number {
     const checkInDateString: string = this.reservarPropriedadeForm.get('checkIn')?.value;
     const checkOutDateString: string = this.reservarPropriedadeForm.get('checkOut')?.value;
     const checkInDate: Date = new Date(checkInDateString);
@@ -249,7 +248,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const diferencaDias: number = diferencaMilissegundos / (1000 * 60 * 60 * 24);
 
     return diferencaDias;
-  }
+  }*/
 
   addToFavorites() {
     if (this.property) {
@@ -335,7 +334,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         const aux = count * price;
         totalPrice += aux;
       });
-      return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
+      return Math.round(((totalPrice) + Number.EPSILON) * 100) / 100;
     }
 
     return 0;

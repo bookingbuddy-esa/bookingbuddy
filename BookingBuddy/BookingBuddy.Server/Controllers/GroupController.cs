@@ -57,9 +57,10 @@ namespace BookingBuddy.Server.Controllers
                 GroupId = Guid.NewGuid().ToString().Substring(0, 16),
                 GroupOwnerId = user.Id,
                 Name = model.name,
-                MembersId = new List<string> { user.Id },
-                PropertiesId = new List<string>(),
-                MessagesId = new List<string>()
+                MembersId = [user.Id],
+                PropertiesId = [],
+                MessagesId = [],
+                GroupAction = GroupAction.None
             };
 
             if (model.propertyId != null)
@@ -114,18 +115,25 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound("Não foi encontrado nenhum grupo com este ID. Certifique-se que o URL está correto.");
                 }
 
-                List<Property> properties = new List<Property>();
+                List<Property> properties = [];
                 group.PropertiesId?.ForEach(propertyId => {
-                    var property = _context.Property.FirstOrDefault(p => p.PropertyId == propertyId);
+                    var property = _context.Property.Where(p => p.PropertyId == propertyId).FirstOrDefault();
                     if (property != null)
                     {
-                        properties.Add(property); // TODO: não acho que seja necessário adicionar tudo o que retorna da property
+                        properties.Add(new Property
+                        {
+                            PropertyId = property.PropertyId,
+                            Name = property.Name,
+                            PricePerNight = property.PricePerNight,
+                            ImagesUrl = property.ImagesUrl,
+                            Location = property.Location
+                        });
                     }
                 });
 
                 group.Properties = properties;
 
-                List<ReturnUser> users = new List<ReturnUser>();
+                List<ReturnUser> users = [];
 
                 group.MembersId?.ForEach(memberId => {
                     var user = _context.Users.FirstOrDefault(u => u.Id == memberId);
@@ -139,7 +147,7 @@ namespace BookingBuddy.Server.Controllers
 
                 group.Members = users;
 
-                List<GroupMessage> messages = new List<GroupMessage>();
+                List<GroupMessage> messages = [];
                 group.MessagesId?.ForEach(messageId => {
                     var message = _context.GroupMessage.FirstOrDefault(m => m.MessageId == messageId);
                     if (message != null)
@@ -147,7 +155,7 @@ namespace BookingBuddy.Server.Controllers
                         messages.Add(message);
                     }
                 });
-                Console.WriteLine("Mensagens: " + messages);
+
                 group.Messages = messages;
                 return group;
             }
@@ -171,10 +179,10 @@ namespace BookingBuddy.Server.Controllers
                 var groups = await _context.Groups.Where(g => g.MembersId.Contains(userId)).ToListAsync();
                 if (groups == null || groups.Count == 0)
                 {
-                    return NotFound();
+                    return Ok(new List<Group>());
                 }
 
-                List<Group> groupsList = new List<Group>();
+                List<Group> groupsList = [];
                 foreach (var group in groups)
                 {
                     var groupResult = await GetGroup(group.GroupId);

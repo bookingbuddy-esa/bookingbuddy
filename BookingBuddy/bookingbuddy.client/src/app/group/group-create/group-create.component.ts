@@ -8,7 +8,7 @@ import { UserInfo } from "../../auth/authorize.dto";
 import { Group, GroupCreate } from "../../models/group";
 import { GroupName } from "./group-name-step/group-name-step.component";
 import { GroupMembers } from "./group-members-step/group-members-step.component";
-import { AppComponent } from '../../app.component';
+
 import { PropertyAdService } from '../../property-ad/property-ad.service';
 
 @Component({
@@ -39,14 +39,12 @@ export class GroupCreateComponent implements OnInit {
   // Property
   protected propertyId: string = '';
 
-  constructor(private appComponent: AppComponent,
-    private propertyService: PropertyAdService,
+  constructor(private propertyService: PropertyAdService,
     private authService: AuthorizeService,
     private route: ActivatedRoute,
     private router: Router,
     private groupService: GroupService) {
     this.errors = [];
-    this.appComponent.showChat = false;
   }
 
   ngOnInit(): void {

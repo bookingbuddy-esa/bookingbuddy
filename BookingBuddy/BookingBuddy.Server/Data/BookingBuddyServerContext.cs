@@ -92,6 +92,9 @@ namespace BookingBuddy.Server.Data
         /// </summary>
         public DbSet<Rating> Rating { get; set; } = default!;
 
+        /// <summary>
+        /// Propriedade que diz respeito às mensagens de chat de um grupo.
+        /// </summary>
         public DbSet<GroupMessage> GroupMessage { get; set; } = default!;
 
         /// <summary>

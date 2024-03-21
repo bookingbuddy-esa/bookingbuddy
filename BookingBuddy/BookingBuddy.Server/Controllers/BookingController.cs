@@ -30,59 +30,6 @@ namespace BookingBuddy.Server.Controllers
             _configuration = configuration;
         }
 
-
-        // create "dev" endpoint to create 5 bookings
-        /// <summary>
-        /// Criação de reservas
-        /// </summary>
-        /// <returns>Retorna o resultado da criação das reservas.</returns>
-        [HttpGet("dev")]
-        [Authorize]
-        public async Task<ActionResult> CreateBookings()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                // get random property id
-                var randomPropertyId = _context.Property.Select(p => p.PropertyId).OrderBy(p => Guid.NewGuid())
-                    .FirstOrDefault();
-
-                // create dev payment
-                var payment = new Payment
-                {
-                    PaymentId = "dev-" + Guid.NewGuid().ToString(),
-                    Method = "mbway",
-                    Amount = 100 + i * 10,
-                    Status = "Paid",
-                    CreatedAt = DateTime.Now
-                };
-                _context.Payment.Add(payment);
-                await _context.SaveChangesAsync();
-
-                // create dev order
-                var order = new BookingOrder
-                {
-                    OrderId = Guid.NewGuid().ToString(),
-                    PaymentId = payment.PaymentId,
-                    ApplicationUserId = user.Id,
-                    NumberOfGuests = i + 1,
-                    PropertyId = randomPropertyId,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(i + 3),
-                    State = OrderState.Paid
-                };
-                _context.BookingOrder.Add(order);
-                await _context.SaveChangesAsync();
-            }
-
-            return Ok();
-        }
-
         /// <summary>
         /// Obtém as reservas do utilizador.
         /// </summary>
