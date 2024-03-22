@@ -202,6 +202,81 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        // create method to set group action
+        [HttpPut("setGroupAction")]
+        [Authorize]
+        public async Task<IActionResult> SetGroupAction(string groupId, string groupAction)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (groupAction != "none" && groupAction != "voting" && groupAction != "paying")
+            {
+                return BadRequest("Ação inválida.");
+            }
+
+            switch(groupAction.ToLower())
+            {
+                case "none":
+                    group.GroupAction = GroupAction.None;
+                    break;
+                case "voting":
+                    group.GroupAction = GroupAction.Voting;
+                    break;
+                case "paying":
+                    group.GroupAction = GroupAction.Paying;
+                    break;
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok("Ação do grupo atualizada com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPut("setChoosenProperty")]
+        [Authorize]
+        public async Task<IActionResult> SetChoosenProperty(string groupId, string propertyId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (group.ChoosenProperty != null)
+            {
+                return BadRequest("Já existe uma propriedade escolhida para este grupo.");
+            }
+
+            if (!group.PropertiesId.Contains(propertyId))
+            {
+                return BadRequest("A propriedade não existe no grupo.");
+            }
+
+            group.ChoosenProperty = propertyId;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok("Propriedade escolhida com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
 
         /// <summary>
         /// Adiciona uma propriedade a um grupo existente.
@@ -221,7 +296,7 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            if (group.PropertiesId.Count >= 6 )
+            if (group.PropertiesId.Count >= 6)
             {
                 return BadRequest("O Grupo ja tem 6 propriedades na votação!");
             }
@@ -282,43 +357,6 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
-
-
-        /// <summary>
-        /// Define uma propriedade como a propriedade escolhida para um grupo.
-        /// </summary>
-        /// <param name="groupId">O ID do grupo para o qual a propriedade será definida como escolhida.</param>
-        /// <param name="propertyId">O ID da propriedade que será definida como escolhida.</param>
-        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
-        [HttpPut("setChoosenProperty")]
-        [Authorize]
-        public async Task<IActionResult> SetChoosenProperty(string groupId, string propertyId)
-        {
-            var group = await _context.Groups.FindAsync(groupId);
-
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            if (group.ChoosenProperty != null)
-            {
-
-            }
-
-            group.ChoosenProperty = propertyId;
-            try
-            {
-                await _context.SaveChangesAsync();
-
-                return Ok("Propriedade escolhida com sucesso.");
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-        }
-
         /// <summary>
         /// Adiciona um utilizador como membro de um grupo existente.
         /// </summary>
@@ -343,6 +381,40 @@ namespace BookingBuddy.Server.Controllers
             }
 
             group.MembersId.Add(user.Id);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetGroup", new { groupId = group.GroupId }, group);
+                //return Ok("Membro adicionado ao grupo com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Remove um utilizador do grupo de reserva.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo ao qual o utilizador será removido.</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPut("leaveGroup")]
+        public async Task<IActionResult> LeaveGroup(string groupId)
+        {
+            var group = await _context.Groups.FindAsync(groupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            group.MembersId.Remove(user.Id);
             try
             {
                 await _context.SaveChangesAsync();

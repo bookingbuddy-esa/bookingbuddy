@@ -36,7 +36,21 @@ export class PaymentService {
       withCredentials: true,
       observe: 'response',
       responseType: 'json'
-    }).pipe<boolean>(map((res: HttpResponse<any>) => {
+    }).pipe(map((res: any) => {
+      return res.body;
+    }));
+  }
+
+  public teste(groupBookingId: string, paymentMethod: string, phoneNumber?: string){
+    return this.http.post(`${environment.apiUrl}/api/orders/group-booking/pay`, {
+      groupBookingId: groupBookingId,
+      paymentMethod: paymentMethod,
+      phoneNumber: phoneNumber
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'json'
+    }).pipe(map((res: any) => {
       return res.body;
     }));
   }

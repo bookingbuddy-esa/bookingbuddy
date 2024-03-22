@@ -1,4 +1,4 @@
-import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
 import {environment} from "../../environments/environment";
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupService } from './group.service';
@@ -44,10 +44,13 @@ export class GroupComponent {
   reservarPropriedadeFailed: boolean;
   pricesMap: Map<number, number> = new Map<number, number>();
 
+  bookingData: any;
+
   constructor(private authService: AuthorizeService,
               private formBuilder: FormBuilder, 
               private route: ActivatedRoute, 
-              private router: Router, 
+              private router: Router,
+              private cdref: ChangeDetectorRef,
               private groupService: GroupService, 
               private propertyService: PropertyAdService,
               private paymentService: PaymentService) {
@@ -91,16 +94,29 @@ export class GroupComponent {
   public setGroupAction(action: string): void {
     // update group action to voting (in the db) and send to WS
 
-    switch (action) {
-      case 'voting':
-        this.currentGroup!.groupAction = GroupAction.voting;
-        break;
-      case 'paying':
-        this.currentGroup!.groupAction = GroupAction.paying;
-        break;
+    if(!this.currentGroup || action != 'voting' && action != 'paying'){
+      return;
     }
 
-    this.sendMessageWS();
+    this.groupService.setGroupAction(this.currentGroup!.groupId, action).forEach(response => {
+      if (response) {
+        //this.success_alerts.push("Ação do grupo atualizada com sucesso!");
+
+        switch (action) {
+          case 'voting':
+            this.currentGroup!.groupAction = GroupAction.voting;
+            break;
+          case 'paying':
+            this.currentGroup!.groupAction = GroupAction.paying;
+            break;
+        }
+    
+        this.sendMessageWS();
+      }
+    }).catch(error => {
+      //this.errors.push(error.error);
+      console.log("ERROR: " + JSON.stringify(error));
+    });
   }
 
   public deleteGroup(): void {
@@ -140,6 +156,33 @@ export class GroupComponent {
 
       this.newMessage = '';
     }
+  }
+
+  public setChoosenProperty(property: Property){
+    /*this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
+      if (response) {
+        console.log(response);
+        this.currentGroup!.choosenProperty = property.propertyId;
+        this.sendMessageWS();
+      }
+    });*/
+    if(property){
+      this.currentGroup!.choosenProperty = property.propertyId;
+      this.sendMessageWS();
+    }
+  }
+
+  public setChoosenPropertyDEV(property: Property){
+    this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
+      if (response) {
+        console.log(response);
+        this.currentGroup!.choosenProperty = property.propertyId;
+        this.sendMessageWS();
+      }
+    }).catch(error => {
+      console.log("Erro ao setChoosenProperty: " + JSON.stringify(error));
+      //this.errors.push(error.error);
+    });
   }
 
   public removeProperty(property: Property) {
@@ -283,6 +326,7 @@ export class GroupComponent {
     } else if (event.value){        
       this.checkOutDate = event.value;
     }
+    this.cdref.detectChanges();
   }
 
   clearDates() {
@@ -293,6 +337,7 @@ export class GroupComponent {
 
     this.checkInDate = this.checkOutDate = undefined;
     this.maxDate = this.calendarMaxDate;
+    this.cdref.detectChanges();
   }
 
   discountClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
@@ -339,9 +384,13 @@ export class GroupComponent {
 
       this.paymentService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
         if (response) {
-          //this.currentGroup!.groupAction = "Payment";
-          
-          this.sendMessageWS();
+          console.log(response);
+          this.bookingData = { 
+            groupBookingId: response.orderId,
+            orderType: 'group-booking'
+          };
+          console.log(this.bookingData);
+          //this.sendMessageWS();
         }
       }).catch(error => {
         this.reservarPropriedadeFailed = true;

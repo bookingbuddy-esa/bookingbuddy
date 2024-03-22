@@ -50,6 +50,28 @@ export class GroupService {
     }));
   }
 
+  public setGroupAction(groupId: string, groupAction: string) {
+    return this.http.put(`${environment.apiUrl}/api/groups/setGroupAction?groupId=${groupId}&groupAction=${groupAction}`, {}, 
+    {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(map((res: any) => { 
+      return res.body;
+    }));
+  }
+
+  public setChoosenProperty(groupId: string, propertyId: string) {
+    return this.http.put(`${environment.apiUrl}/api/groups/setChoosenProperty?groupId=${groupId}&propertyId=${propertyId}`, {}, 
+    {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(map((res: any) => { 
+      return res.body;
+    }));
+  }
+
   public addPropertyToGroup(groupId: string, propertyId: string): Observable<any> {
     return this.http.put(`${environment.apiUrl}/api/groups/addProperty?groupId=${groupId}&propertyId=${propertyId}`, {},
       {

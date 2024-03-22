@@ -108,7 +108,7 @@
         <h2 class="text-center mb-3">Grupo de Reserva</h2>
         <div *ngIf="currentGroup" class="d-flex flex-row justify-content-end mt-2 mb-2">
             <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite"><i class="bi bi-link"></i></button>
-            <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (click)="setGroupAction('voting')" matTooltip="Iniciar Votação"><i class="bi bi-chat-square-heart-fill"></i></button>
+            <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (disabled)="!currentGroup?.choosenProperty" (click)="setGroupAction('voting')" matTooltip="Iniciar Votação"><i class="bi bi-chat-square-heart-fill"></i></button>
             <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('paying')" matTooltip="Iniciar Pagamento"><i class="bi bi-credit-card-fill"></i></button>
             <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal" data-bs-target="#deleteGroupModal" matTooltip="Apagar Grupo"><i class="bi bi-trash"></i></button>
         </div>
@@ -120,7 +120,7 @@
             <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
                 <span class="text-muted small">Não existem propriedades para este grupo.</span>
             </div>
-            <div *ngIf="currentGroup && groupAction === 'None'">
+            <div *ngIf="currentGroup && groupAction === 'None' || groupAction === 'Voting'">
                 <div class="d-flex flex-row justify-content-around">
                     <div class="card mb-3 me-md-2 w-25 w-lg-25" *ngFor="let property of currentGroup?.properties">
                         <img [src]="getPropertyImage(property)" class="card-img-top" alt="Imagem da Propriedade">
@@ -128,19 +128,17 @@
                             <h5 class="card-title text-truncate">{{property.name}}</h5>
 
                             <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€</p>
-                            <button class="btn btn-sm btn-danger" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
+                            <button class="btn btn-sm btn-danger me-2" *ngIf="groupAction !== 'Voting'" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
+                            <button class="btn btn-sm btn-info" *ngIf="groupAction === 'Voting'" matTooltip="Selecionar Propriedade" (click)="setChoosenProperty(property)"><i class="bi bi-check2-circle"></i></button>
+                            <button class="btn btn-sm btn-success ms-2" *ngIf="groupAction === 'Voting' && isGroupOwner" matTooltip="Selecionar Propriedade DEV" (click)="setChoosenPropertyDEV(property)"><i class="bi bi-check2-circle"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div *ngIf="currentGroup && groupAction === 'Voting'">
-                <h3>Grupo em votação</h3>
-            </div>
-
-            <!--<div *ngIf="currentGroup?.choosenProperty && groupAction === 'Paying'">-->
-            <div *ngIf="groupAction === 'Paying'" class="w-100">
+            <div *ngIf="currentGroup && currentGroup?.choosenProperty && groupAction === 'Paying'" class="w-100">
                 <!--<h3>Property Escolhida: {{ currentGroup?.choosenProperty }}</h3>-->
+                <!--<app-payment [data]="bookingData"></app-payment>-->
                 <div class="text-center text-wrap text-muted mt-2 mb-4" *ngIf="!isGroupOwner">
                     <h5>Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</h5>
                     <h5>Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como membro.</h5>
