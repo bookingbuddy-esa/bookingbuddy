@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
+using EllipticCurve.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,7 @@ namespace BookingBuddy.Server.Controllers
                 MembersId = [user.Id],
                 PropertiesId = [],
                 MessagesId = [],
+                VotesId = [],
                 GroupAction = GroupAction.None
             };
 
@@ -160,6 +162,17 @@ namespace BookingBuddy.Server.Controllers
                 });
 
                 group.Messages = messages;
+
+                List<GroupVote> votes = [];
+                group.VotesId?.ForEach(votesId => {
+                    var vote = _context.GroupVote.FirstOrDefault(v => v.VoteId == votesId);
+                    if (vote != null)
+                    {
+                        votes.Add(vote);
+                    }
+                });
+
+                group.Votes = votes;
                 return group;
             }
             catch (Exception ex)
@@ -244,6 +257,7 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest();
             }
         }
+
 
 
         [HttpPut("setChoosenProperty")]
@@ -447,8 +461,10 @@ namespace BookingBuddy.Server.Controllers
 
             var groupMessages = _context.GroupMessage.Where(m => m.GroupId == groupId);
 
-            // Remover todas as mensagens associadas
+            var groupVotes = _context.GroupVote.Where(v => v.GroupId == groupId);
+
             _context.GroupMessage.RemoveRange(groupMessages);
+            _context.GroupVote.RemoveRange(groupVotes);
 
             _context.Groups.Remove(group);
             try
@@ -537,17 +553,103 @@ namespace BookingBuddy.Server.Controllers
             return Ok(messages);
         }
 
+        [HttpPost("{groupId}/votes")]
+        [Authorize]
+        public async Task<IActionResult> CreateVote(string groupId, [FromBody] NewGroupVote vote)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null || user.Id != vote.userId)
+            {
+                return Unauthorized();
+            }
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (!group.MembersId.Contains(user.Id))
+            {
+                return Unauthorized();
+            }
+
+            if (!group.PropertiesId.Contains(vote.propertyId))
+            {
+                return BadRequest();
+            }
+
+            var alreadyVoted = await _context.GroupVote
+                .Where(v => v.GroupId == groupId && v.UserId == vote.userId)
+                .FirstOrDefaultAsync();
 
 
 
-            /// <summary>
-            /// Manipula a comunicação WebSocket para um grupo específico.
-            /// </summary>
-            /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
-            /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
-            /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
+            var newVote = new GroupVote
+            {
+                VoteId = Guid.NewGuid().ToString(),
+                UserId = vote.userId,
+                PropertyId =vote.propertyId,
+                GroupId = groupId
+            };
+            if (alreadyVoted != null)
+            {
+                _context.GroupVote.Remove(alreadyVoted);
+                group.VotesId.Remove(alreadyVoted.VoteId);
 
-            [NonAction]
+            }
+            
+            _context.GroupVote.Add(newVote);
+
+            group.VotesId.Add(newVote.VoteId);
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{groupId}/votes")]
+        [Authorize]
+        public async Task<IActionResult> GetVotes(string groupId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(groupId);
+
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            var votes = await _context.GroupVote
+          .Where(v => v.GroupId == groupId).ToListAsync();
+
+
+            return Ok(votes);
+        }
+
+
+
+
+        /// <summary>
+        /// Manipula a comunicação WebSocket para um grupo específico.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
+        /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
+
+        [NonAction]
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
             var group = await _context.Groups.FindAsync(groupId);
@@ -568,4 +670,5 @@ namespace BookingBuddy.Server.Controllers
     public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
 
     public record NewGroupMessage(string message);
+    public record NewGroupVote(string propertyId, string userId);
 }

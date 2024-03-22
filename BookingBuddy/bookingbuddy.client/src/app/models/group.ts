@@ -10,6 +10,7 @@ export interface Group {
   properties: Property[],
   choosenProperty: string,
   messages: GroupMessage[],
+  votes: GroupVotes[],
   groupAction: GroupAction,
   groupBookingId?: string
 }
@@ -24,6 +25,12 @@ export interface GroupMessage {
   messageId?: string,
   userName: string,
   message: string
+}
+
+export interface GroupVotes {
+  propertyId: string,
+  userId: string,
+  groupId: string
 }
 
 export interface GroupMember {

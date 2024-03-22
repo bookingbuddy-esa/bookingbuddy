@@ -103,6 +103,11 @@ namespace BookingBuddy.Server.Data
         public DbSet<GroupMessage> GroupMessage { get; set; } = default!;
 
         /// <summary>
+        /// Propriedade que diz respeito às mensagens de grupo.
+        /// </summary>
+        public DbSet<GroupVote> GroupVote { get; set; } = default!;
+
+        /// <summary>
         /// Dados de inicialização da base de dados.
         /// </summary>
         /// <param name="builder">Construtor do modelo</param>

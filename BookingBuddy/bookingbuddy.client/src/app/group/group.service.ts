@@ -118,4 +118,22 @@ export class GroupService {
     }));
   }
 
+  public getGroupVotes(groupId: string) {
+    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}/votes`, { withCredentials: true });
+  }
+
+  public sendVote(groupId: string, propertyId: string, userId: string) {
+
+    return this.http.post(`${environment.apiUrl}/api/groups/${groupId}/votes`, {
+      propertyId,
+      userId
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
+      return res.ok;
+    }));
+  }
+
 }

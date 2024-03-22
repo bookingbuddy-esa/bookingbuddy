@@ -27,6 +27,7 @@ export class GroupComponent {
   group_list: Group[] = [];
   currentGroup: Group | undefined;
   ws: WebSocket | undefined;
+  votedProperty: Property | undefined;
  
   newMessage: string = '';
   modalOpen: boolean = false;
@@ -182,6 +183,21 @@ export class GroupComponent {
     }
   }
 
+  public voteProperty(property: Property) {
+    
+    if (property) {
+      
+      this.groupService.sendVote(this.currentGroup!.groupId, property.propertyId, this.user!.userId).forEach(response => {
+        if (response) {
+          
+          this.votedProperty = property;
+         // this.currentGroup!.messages.push(message);
+         // this.sendMessageWS();
+        }
+      })
+    }
+  }
+
   public setChoosenPropertyDEV(property: Property){
     this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
       if (response) {
@@ -218,6 +234,16 @@ export class GroupComponent {
 
     this.loadDiscounts();
     this.loadBlockedDates();
+
+    
+    let vote = this.currentGroup.votes.find(v => v.userId == this.user?.userId);
+
+
+    if (vote) {
+      let property = this.currentGroup.properties.find(p => p.propertyId == vote?.propertyId);
+
+      if (property) this.votedProperty = property;
+    }
 
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
