@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {PaymentService} from './payment.service';
 import {Payment} from "../models/payment";
 import {environment} from "../../environments/environment";
+import {WebSocketMessage} from "../models/WebSocketMessage";
 
 @Component({
   standalone: true,
@@ -59,21 +60,11 @@ export class PaymentComponent {
           url = url.replace('https', 'wss');
           let ws = new WebSocket(`${url}/api/payments/ws?paymentId=${this.payment.paymentId}`);
           ws.onmessage = (event) => {
-            let data = JSON.parse(event.data);
-            if (data) {
-              this.payment = {
-                paymentId: data["PaymentId"],
-                amount: data["Amount"],
-                method: data["Method"],
-                status: data["Status"],
-                expiryDate: new Date(data["ExpiryDate"]),
-                createdAt: new Date(data["CreatedAt"]),
-                entity: data["Entity"],
-                reference: data["Reference"],
-              }
-              console.log(this.payment);
-              if (this.payment.status.toUpperCase() === 'PAID') {
-                ws.close();
+            let message = JSON.parse(event.data) as WebSocketMessage;
+            if (message && message.code === "PaymentPaid") {
+              let messageContent = message.content as { paymentId: string, orderId: string };
+              if (messageContent.paymentId === this.payment?.paymentId) {
+                this.currentPhase = 3;
               }
             }
           }
@@ -90,7 +81,6 @@ export class PaymentComponent {
       if (response) {
         console.log(response);
       }
-      this.currentPhase = 3;
     }).catch((err) => {
       console.error("Erro no servidor: " + JSON.stringify(err));
     });
