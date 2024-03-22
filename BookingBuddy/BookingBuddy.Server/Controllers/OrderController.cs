@@ -23,7 +23,8 @@ namespace BookingBuddy.Server.Controllers
         /// Método que representa o endpoint de obtenção de uma order através do seu ID.
         /// </summary>
         /// <param name="orderId">Identificador da order</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação</returns>
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetOrder(string orderId)
         {

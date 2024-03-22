@@ -95,12 +95,22 @@ namespace BookingBuddy.Server.Data
         /// <summary>
         /// Propriedade que diz respeito às avaliações.
         /// </summary>
-        public DbSet<Rating> Rating { get; set; } = default!;
+        public DbSet<Rating> Rating { get; init; } = default!;
+
+        /// <summary>
+        /// Propriedade que diz respeito ao chat.
+        /// </summary>
+        public DbSet<Chat> Chat { get; set; } = default!;
+
+        /// <summary>
+        ///  Propriedade que diz respeito às mensagens do chat.
+        /// </summary>
+        public DbSet<ChatMessage> ChatMessage { get; set; } = default!;
 
         /// <summary>
         /// Propriedade que diz respeito às mensagens de grupo.
         /// </summary>
-        public DbSet<GroupMessage> GroupMessage { get; set; } = default!;
+        public DbSet<GroupMessage> GroupMessage { get; init; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.

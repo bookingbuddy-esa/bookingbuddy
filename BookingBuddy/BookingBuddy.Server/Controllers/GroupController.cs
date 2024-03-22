@@ -25,7 +25,7 @@ namespace BookingBuddy.Server.Controllers
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
-        private static readonly WebSocketWrapper<Group> WebSocketWrapper = new();
+        // private static readonly WebSocketWrapper<Group> WebSocketWrapper = new();
 
         /// <summary>
         /// Construtor da classe PropertyController.
@@ -551,10 +551,10 @@ namespace BookingBuddy.Server.Controllers
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
             var group = await _context.Groups.FindAsync(groupId);
-            await WebSocketWrapper.HandleAsync(group, webSocket, async groupReceived => {
-                Console.WriteLine("Group received: " + JsonSerializer.Serialize(groupReceived));
-                await WebSocketWrapper.NotifyAllAsync(groupReceived);
-            });
+            // await WebSocketWrapper.HandleAsync(group, webSocket, async groupReceived => {
+            //     Console.WriteLine("Group received: " + JsonSerializer.Serialize(groupReceived));
+            //     await WebSocketWrapper.NotifyAllAsync(groupReceived);
+            // });
         }
 
     }

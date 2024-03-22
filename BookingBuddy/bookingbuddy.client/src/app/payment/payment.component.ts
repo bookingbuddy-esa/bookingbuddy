@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {OrderService} from './order.service';
 import {Payment} from "../models/payment";
 import {environment} from "../../environments/environment";
+import {WebSocketMessage} from "../models/WebSocketMessage";
 
 @Component({
   standalone: true,
