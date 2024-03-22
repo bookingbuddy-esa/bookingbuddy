@@ -1,7 +1,7 @@
 import {NgIf} from '@angular/common';
 import {Component, Input} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {PaymentService} from './payment.service';
+import {OrderService} from './order.service';
 import {Payment} from "../models/payment";
 import {environment} from "../../environments/environment";
 import {WebSocketMessage} from "../models/WebSocketMessage";
@@ -23,7 +23,7 @@ export class PaymentComponent {
   paymentResponse: any;
   payment: Payment | undefined = undefined;
 
-  constructor(private paymentService: PaymentService) {
+  constructor(private orderService: OrderService) {
   }
 
   public addPaymentMethod(newPaymentMethod: string): void {
@@ -39,9 +39,9 @@ export class PaymentComponent {
     };
     //console.log(JSON.stringify(this.data));
 
-    if (this.data.orderType == 'group-booking') {
-      this.paymentService.teste(this.data.groupBookingId, this.paymentMethod, this.data.phoneNumber).forEach((response) => {
-        if (response) {
+    if(this.data.orderType == 'group-booking'){
+      this.orderService.payGroupBooking(this.data.groupBookingId, this.paymentMethod, this.data.phoneNumber).forEach((response) => {
+        if(response){
           console.log("PAGAMENTO GROUP: " + JSON.stringify(response));
           this.currentPhase = 2;
           this.paymentResponse = response;
@@ -61,7 +61,7 @@ export class PaymentComponent {
         console.error(err);
       });
     } else {
-      this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.data.numberOfGuests, this.data.phoneNumber).forEach((response) => {
+      this.orderService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.data.numberOfGuests, this.data.phoneNumber).forEach((response) => {
         if (response) {
           this.currentPhase = 2;
           this.paymentResponse = response;
@@ -82,11 +82,21 @@ export class PaymentComponent {
             url = url.replace('https', 'wss');
             let ws = new WebSocket(`${url}/api/payments/ws?paymentId=${this.payment.paymentId}`);
             ws.onmessage = (event) => {
-              let message = JSON.parse(event.data) as WebSocketMessage;
-              if (message && message.code === "PaymentPaid") {
-                let messageContent = message.content as { paymentId: string, orderId: string };
-                if (messageContent.paymentId === this.payment?.paymentId) {
-                  this.currentPhase = 3;
+              let data = JSON.parse(event.data);
+              if (data) {
+                this.payment = {
+                  paymentId: data["PaymentId"],
+                  amount: data["Amount"],
+                  method: data["Method"],
+                  status: data["Status"],
+                  expiryDate: new Date(data["ExpiryDate"]),
+                  createdAt: new Date(data["CreatedAt"]),
+                  entity: data["Entity"],
+                  reference: data["Reference"],
+                }
+                console.log(this.payment);
+                if (this.payment.status.toUpperCase() === 'PAID') {
+                  ws.close();
                 }
               }
             }
@@ -100,9 +110,9 @@ export class PaymentComponent {
 
   // TODO: remover -> apenas de teste para simular a confirmação do pagamento
   public confirmarPagamento(): void {
-    if (this.data.orderType == 'group-booking') {
-      this.paymentService.confirmOrder(this.data.groupBookingId, this.payment?.paymentId ?? "").forEach((response) => {
-        if (response) {
+    if(this.data.orderType == 'group-booking'){
+      this.orderService.confirmOrder(this.data.groupBookingId, this.payment?.paymentId ?? "").forEach((response) => {
+        if(response){
           console.log(response);
         }
         this.currentPhase = 3;
@@ -110,7 +120,7 @@ export class PaymentComponent {
         console.error("Erro no servidor: " + JSON.stringify(err));
       });
     } else {
-      this.paymentService.confirmOrder(this.paymentResponse.orderId, this.payment?.paymentId ?? "").forEach((response) => {
+      this.orderService.confirmOrder(this.paymentResponse.orderId, this.payment?.paymentId ?? "").forEach((response) => {
         if (response) {
           console.log(response);
         }

@@ -44,29 +44,50 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
-            var bookingOrders = await _context.BookingOrder
-                .Include(o => o.Payment)
-                .Include(o => o.ApplicationUser)
-                .Include(o => o.Property)
-                .Where(bo => bo.ApplicationUserId == user.Id)
-                .Select(bo => new
+            var individualBookings = _context.BookingOrder
+                .Include(booking => booking.Property)
+                .Include(booking => booking.Payment)
+                .Where(booking => booking.ApplicationUserId == user.Id)
+                .Select(booking => new
                 {
-                    bo.OrderId,
-                    applicationUser = new ReturnUser()
-                    {
-                        Id = bo.ApplicationUser!.Id,
-                        Name = bo.ApplicationUser.Name,
+                    orderId = booking.OrderId,
+                    propertyName = booking.Property!.Name,
+                    host =  new ReturnUser{
+                        Id = booking.Property.ApplicationUserId,
+                        Name = booking.Property.ApplicationUser.Name,
                     },
-                    bo.Property!.Name,
-                    host = bo.Property!.ApplicationUserId,
-                    checkIn = bo.StartDate,
-                    checkOut = bo.EndDate,
-                    bo.State,
-                    bo.Payment!.Amount,
-                    bo.NumberOfGuests,
-                }).ToListAsync();
+                    checkIn = booking.StartDate,
+                    checkOut = booking.EndDate,
+                    state = booking.State,
+                    totalAmount = booking.Payment!.Amount,
+                    numberOfGuests = booking.NumberOfGuests
+                })
+                .ToList();
 
-            return Ok(bookingOrders);
+            // Obter todas as reservas em grupo
+            var groupBookings = _context.GroupBookingOrder
+                .Include(groupBooking => groupBooking.Property)
+                .Include(groupBooking => groupBooking.Group)
+                .Where(groupBooking => groupBooking.Group.MembersId.Contains(user.Id))
+                .Select(groupBooking => new
+                {
+                    orderId = groupBooking.OrderId,
+                    propertyName = groupBooking.Property.Name,
+                    host = new ReturnUser{
+                        Id = groupBooking.Property.ApplicationUserId,
+                        Name = groupBooking.Property.ApplicationUser.Name,
+                    },
+                    checkIn = groupBooking.StartDate,
+                    checkOut = groupBooking.EndDate,
+                    state = groupBooking.State,
+                    totalAmount = groupBooking.TotalAmount,
+                    numberOfGuests = groupBooking.Group.MembersId.Count
+                })
+                .ToList();
+
+           
+            var allBookings = individualBookings.Cast<object>().Concat(groupBookings.Cast<object>());
+            return Ok(allBookings);
         }
 
         /// <summary>

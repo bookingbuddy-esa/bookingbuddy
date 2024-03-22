@@ -11,7 +11,7 @@ import { Discount } from '../models/discount';
 import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PropertyAdService } from '../property-ad/property-ad.service';
-import { PaymentService } from '../payment/payment.service';
+import { OrderService } from '../payment/order.service';
 
 @Component({
   selector: 'app-group',
@@ -53,7 +53,7 @@ export class GroupComponent {
               private cdref: ChangeDetectorRef,
               private groupService: GroupService, 
               private propertyService: PropertyAdService,
-              private paymentService: PaymentService) {
+              private orderService: OrderService) {
     this.reservarPropriedadeFailed = false;
 
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -71,6 +71,13 @@ export class GroupComponent {
       });
   }
 
+  setBookingData(): any {
+    return this.bookingData = { 
+      groupBookingId: this.currentGroup?.groupBookingId,
+      orderType: 'group-booking'
+    }; 
+  }
+
   get groupAction(): string {
     if (this.currentGroup) {
       switch (this.currentGroup.groupAction) {
@@ -78,6 +85,8 @@ export class GroupComponent {
           return 'None';
         case GroupAction.voting:
           return 'Voting';
+        case GroupAction.booking:
+          return 'Booking';
         case GroupAction.paying:
           return 'Paying';
       }
@@ -92,19 +101,20 @@ export class GroupComponent {
   }
 
   public setGroupAction(action: string): void {
-    // update group action to voting (in the db) and send to WS
-
-    if(!this.currentGroup || action != 'voting' && action != 'paying'){
+    if(!this.currentGroup || action != 'voting' && action != 'booking' && action != 'paying'){
       return;
     }
 
     this.groupService.setGroupAction(this.currentGroup!.groupId, action).forEach(response => {
       if (response) {
         //this.success_alerts.push("Ação do grupo atualizada com sucesso!");
-
         switch (action) {
           case 'voting':
             this.currentGroup!.groupAction = GroupAction.voting;
+            // TODO: enviar alert do tipo "info" (fazer um alerta genérico em vez de success e error)
+            break;
+          case 'booking':
+            this.currentGroup!.groupAction = GroupAction.booking;
             break;
           case 'paying':
             this.currentGroup!.groupAction = GroupAction.paying;
@@ -218,9 +228,20 @@ export class GroupComponent {
 
     this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
     this.ws.onmessage = (event) => {
+      // TODO: rework
       console.log("Mensagem recebida: " + event.data);
       let newGroupState = JSON.parse(event.data);
 
+      // compare this.currentGroup with newGroupState and check if there are any changes
+      if(JSON.stringify(this.currentGroup) == JSON.stringify(newGroupState)){
+        console.log("No changes");
+      } else {
+        console.log("New state");
+      }
+
+
+      // procura o grupo que contenha o groupId do newGroupState
+      // e atualiza o estado do grupo
       let index = this.group_list.findIndex(g => g.groupId == newGroupState.groupId);
       if(index >= 0){
         this.group_list[index] = newGroupState;
@@ -382,14 +403,16 @@ export class GroupComponent {
           }
       });*/
 
-      this.paymentService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
+      this.orderService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
         if (response) {
-          console.log(response);
-          this.bookingData = { 
+          //console.log(response);
+          /*this.bookingData = { 
             groupBookingId: response.orderId,
             orderType: 'group-booking'
-          };
-          console.log(this.bookingData);
+          };*/
+
+          this.currentGroup!.groupBookingId = response.orderId;
+          this.setGroupAction('paying');
           //this.sendMessageWS();
         }
       }).catch(error => {

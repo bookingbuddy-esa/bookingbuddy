@@ -46,6 +46,9 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("groupAction")]
         public GroupAction GroupAction { get; set; }
+
+        [JsonPropertyName("groupBookingId")]
+        public string? GroupBookingId { get; set; }
     }
 
 
@@ -76,6 +79,8 @@ namespace BookingBuddy.Server.Models
         None,
         [JsonPropertyName("voting")]
         Voting,
+        [JsonPropertyName("booking")]
+        Booking,
         [JsonPropertyName("paying")]
         Paying
     }
@@ -86,6 +91,7 @@ namespace BookingBuddy.Server.Models
         {
             GroupAction.None => "Nenhuma",
             GroupAction.Voting => "Votação",
+            GroupAction.Booking => "Reserva",
             GroupAction.Paying => "Pagamento",
             _ => "Nenhuma"
         };

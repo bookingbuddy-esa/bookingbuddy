@@ -6,7 +6,7 @@ import { map } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class PaymentService {
+export class OrderService {
 
   constructor(private http: HttpClient) { }
 
@@ -41,7 +41,7 @@ export class PaymentService {
     }));
   }
 
-  public teste(groupBookingId: string, paymentMethod: string, phoneNumber?: string){
+  public payGroupBooking(groupBookingId: string, paymentMethod: string, phoneNumber?: string){
     return this.http.post(`${environment.apiUrl}/api/orders/group-booking/pay`, {
       groupBookingId: groupBookingId,
       paymentMethod: paymentMethod,

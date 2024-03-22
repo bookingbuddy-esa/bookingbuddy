@@ -12,7 +12,7 @@ import { AppComponent } from '../../app.component';
 import { UserInfo } from "../../auth/authorize.dto";
 import { Router } from '@angular/router';
 import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { PaymentService } from '../../payment/payment.service';
+import { OrderService } from '../../payment/order.service';
 import { Group } from '../../models/group';
 import { GroupService } from '../../group/group.service';
 import { timeout } from 'rxjs';
@@ -52,7 +52,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   errors: string[] = [];
   selected_group_list: Group[] = [];
   @ViewChild('myModalClose') modalClose: any;
-  constructor(private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
+  constructor(private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
     this.reservarPropriedadeFailed = false;
     
     this.reservarPropriedadeForm = this.formBuilder.group({
