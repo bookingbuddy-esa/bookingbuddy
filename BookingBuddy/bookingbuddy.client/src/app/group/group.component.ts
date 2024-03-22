@@ -78,6 +78,8 @@ export class GroupComponent {
           return 'None';
         case GroupAction.voting:
           return 'Voting';
+        case GroupAction.booking:
+          return 'Booking';
         case GroupAction.paying:
           return 'Paying';
       }
@@ -92,19 +94,20 @@ export class GroupComponent {
   }
 
   public setGroupAction(action: string): void {
-    // update group action to voting (in the db) and send to WS
-
-    if(!this.currentGroup || action != 'voting' && action != 'paying'){
+    if(!this.currentGroup || action != 'voting' && action != 'booking' && action != 'paying'){
       return;
     }
 
     this.groupService.setGroupAction(this.currentGroup!.groupId, action).forEach(response => {
       if (response) {
         //this.success_alerts.push("Ação do grupo atualizada com sucesso!");
-
         switch (action) {
           case 'voting':
             this.currentGroup!.groupAction = GroupAction.voting;
+            // TODO: enviar alert do tipo "info" (fazer um alerta genérico em vez de success e error)
+            break;
+          case 'booking':
+            this.currentGroup!.groupAction = GroupAction.booking;
             break;
           case 'paying':
             this.currentGroup!.groupAction = GroupAction.paying;
@@ -218,9 +221,20 @@ export class GroupComponent {
 
     this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
     this.ws.onmessage = (event) => {
+      // TODO: rework
       console.log("Mensagem recebida: " + event.data);
       let newGroupState = JSON.parse(event.data);
 
+      // compare this.currentGroup with newGroupState and check if there are any changes
+      if(JSON.stringify(this.currentGroup) == JSON.stringify(newGroupState)){
+        console.log("No changes");
+      } else {
+        console.log("New state");
+      }
+
+
+      // procura o grupo que contenha o groupId do newGroupState
+      // e atualiza o estado do grupo
       let index = this.group_list.findIndex(g => g.groupId == newGroupState.groupId);
       if(index >= 0){
         this.group_list[index] = newGroupState;
@@ -389,8 +403,9 @@ export class GroupComponent {
             groupBookingId: response.orderId,
             orderType: 'group-booking'
           };
-          console.log(this.bookingData);
-          //this.sendMessageWS();
+
+          this.currentGroup!.groupBookingId = response.orderId;
+          this.sendMessageWS();
         }
       }).catch(error => {
         this.reservarPropriedadeFailed = true;

@@ -214,7 +214,7 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            if (groupAction != "none" && groupAction != "voting" && groupAction != "paying")
+            if (groupAction != "none" && groupAction != "voting" && groupAction != "booking" && groupAction != "paying")
             {
                 return BadRequest("Ação inválida.");
             }
@@ -226,6 +226,9 @@ namespace BookingBuddy.Server.Controllers
                     break;
                 case "voting":
                     group.GroupAction = GroupAction.Voting;
+                    break;
+                case "booking":
+                    group.GroupAction = GroupAction.Booking;
                     break;
                 case "paying":
                     group.GroupAction = GroupAction.Paying;

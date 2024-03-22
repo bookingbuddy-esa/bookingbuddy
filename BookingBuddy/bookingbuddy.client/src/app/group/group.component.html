@@ -109,7 +109,7 @@
         <div *ngIf="currentGroup" class="d-flex flex-row justify-content-end mt-2 mb-2">
             <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite"><i class="bi bi-link"></i></button>
             <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (disabled)="!currentGroup?.choosenProperty" (click)="setGroupAction('voting')" matTooltip="Iniciar Votação"><i class="bi bi-chat-square-heart-fill"></i></button>
-            <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('paying')" matTooltip="Iniciar Pagamento"><i class="bi bi-credit-card-fill"></i></button>
+            <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('booking')" matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i></button>
             <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal" data-bs-target="#deleteGroupModal" matTooltip="Apagar Grupo"><i class="bi bi-trash"></i></button>
         </div>
 
@@ -136,7 +136,7 @@
                 </div>
             </div>
 
-            <div *ngIf="currentGroup && currentGroup?.choosenProperty && groupAction === 'Paying'" class="w-100">
+            <div *ngIf="currentGroup && currentGroup?.choosenProperty && groupAction === 'Booking'" class="w-100">
                 <!--<h3>Property Escolhida: {{ currentGroup?.choosenProperty }}</h3>-->
                 <!--<app-payment [data]="bookingData"></app-payment>-->
                 <div class="text-center text-wrap text-muted mt-2 mb-4" *ngIf="!isGroupOwner">
@@ -175,6 +175,10 @@
                         </div>
                     </form>
                 </div>
+            </div>
+
+            <div *ngIf="currentGroup && groupAction === 'Paying'">
+                <app-payment [data]="bookingData"></app-payment>
             </div>
         </div>
 
