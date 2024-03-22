@@ -504,6 +504,8 @@ namespace BookingBuddy.Server.Controllers
                     };
                     context.GroupBookingOrder.Add(groupBookingOrder);
                     context.Order.Add(new Order { OrderId = groupBookingOrder.OrderId, Type = "Group-Booking" });
+
+                    context.Groups.Find(model.GroupId)!.GroupBookingId = groupBookingOrder.OrderId;
                     await context.SaveChangesAsync();
 
                     List<ApplicationUser> members = [];

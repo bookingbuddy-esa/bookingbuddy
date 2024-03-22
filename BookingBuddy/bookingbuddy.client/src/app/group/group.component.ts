@@ -11,7 +11,7 @@ import { Discount } from '../models/discount';
 import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PropertyAdService } from '../property-ad/property-ad.service';
-import { PaymentService } from '../payment/payment.service';
+import { OrderService } from '../payment/order.service';
 
 @Component({
   selector: 'app-group',
@@ -53,7 +53,7 @@ export class GroupComponent {
               private cdref: ChangeDetectorRef,
               private groupService: GroupService, 
               private propertyService: PropertyAdService,
-              private paymentService: PaymentService) {
+              private orderService: OrderService) {
     this.reservarPropriedadeFailed = false;
 
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -69,6 +69,13 @@ export class GroupComponent {
           this.loadUserGroups();
         });
       });
+  }
+
+  setBookingData(): any {
+    return this.bookingData = { 
+      groupBookingId: this.currentGroup?.groupBookingId,
+      orderType: 'group-booking'
+    }; 
   }
 
   get groupAction(): string {
@@ -396,16 +403,17 @@ export class GroupComponent {
           }
       });*/
 
-      this.paymentService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
+      this.orderService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
         if (response) {
-          console.log(response);
-          this.bookingData = { 
+          //console.log(response);
+          /*this.bookingData = { 
             groupBookingId: response.orderId,
             orderType: 'group-booking'
-          };
+          };*/
 
           this.currentGroup!.groupBookingId = response.orderId;
-          this.sendMessageWS();
+          this.setGroupAction('paying');
+          //this.sendMessageWS();
         }
       }).catch(error => {
         this.reservarPropriedadeFailed = true;

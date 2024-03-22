@@ -202,7 +202,6 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
-        // create method to set group action
         [HttpPut("setGroupAction")]
         [Authorize]
         public async Task<IActionResult> SetGroupAction(string groupId, string groupAction)
