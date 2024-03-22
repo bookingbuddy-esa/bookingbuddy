@@ -178,7 +178,7 @@
             </div>
 
             <div *ngIf="currentGroup && groupAction === 'Paying'">
-                <app-payment [data]="bookingData"></app-payment>
+                <app-payment [data]="setBookingData()"></app-payment>
             </div>
         </div>
 
