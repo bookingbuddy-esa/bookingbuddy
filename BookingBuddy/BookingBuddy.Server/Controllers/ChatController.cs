@@ -1,5 +1,4 @@
 ﻿using System.Net.WebSockets;
-using System.Text.Json;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -13,13 +12,14 @@ namespace BookingBuddy.Server.Controllers;
 /// Classe que representa o controlador de chat.
 /// </summary>
 [ApiController]
-[Route("api/chat")]
+[Route("api/chat/{chatId}")]
 public class ChatController : ControllerBase
 {
     private static readonly WebSocketWrapper WebSocketWrapper = new();
     private readonly BookingBuddyServerContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
     private static readonly Dictionary<string, List<WebSocket>> ChatSockets = new();
+    private static readonly Dictionary<WebSocket, ApplicationUser> UserSockets = new();
 
     /// <summary>
     /// Classe que representa o controlador de chat.
@@ -37,7 +37,6 @@ public class ChatController : ControllerBase
     /// <returns>
     /// Retorna um IActionResult indicando o resultado da operação</returns>
     [HttpGet]
-    [Route("{chatId}")]
     public async Task<IActionResult> GetChat(string chatId)
     {
         var chat = await _context.Chat.FindAsync(chatId);
@@ -52,7 +51,7 @@ public class ChatController : ControllerBase
     /// <returns>
     /// Retorna um IActionResult indicando o resultado da operação</returns>
     [HttpGet]
-    [Route("{chatId}/messages")]
+    [Route("messages")]
     public async Task<IActionResult> GetChatMessages(string chatId, [FromQuery] int numberOfMessages = 10)
     {
         var chat = await _context.Chat.FindAsync(chatId);
@@ -79,43 +78,82 @@ public class ChatController : ControllerBase
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null) return;
-        WebSocketWrapper.OnConnect = async (_, _) =>
+        WebSocketWrapper.AddOnConnectListener(webSocket, async (_, _) =>
         {
-            Console.WriteLine($"User \"{user.Name}\" connected.");
+            UserSockets.Add(webSocket, user);
             if (ChatSockets.TryGetValue(chatId, out var value))
             {
-                value.Add(webSocket);
-                foreach (var socket in value.Where(s => s != webSocket))
+                foreach (var socket in value)
                 {
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "UserConnected",
-                        Content = $"User \"{user.Name}\" connected."
+                        Content = new
+                        {
+                            user.Id,
+                            user.Name,
+                        }
                     });
                 }
+
+                value.Add(webSocket);
             }
             else
             {
                 ChatSockets.Add(chatId, [webSocket]);
             }
-        };
-        WebSocketWrapper.OnReceive = (sender, message) =>
+        });
+        WebSocketWrapper.AddOnReceiveListener(webSocket, async (_, message) =>
         {
-            Console.WriteLine($"{sender?.GetType().Name} received: {JsonSerializer.Serialize(message)}");
-            return Task.CompletedTask;
-        };
-        WebSocketWrapper.OnDisconnect = (_, _) =>
-        {
-            Console.WriteLine($"User \"{user.Name}\" disconnected.");
-            return Task.CompletedTask;
-        };
-        WebSocketWrapper.OnClose = (_, _) =>
-        {
-            Console.WriteLine($"User \"{user.Name}\" closed the connection.");
+            if (message.Message == null) return;
             if (ChatSockets.TryGetValue(chatId, out var value))
+            {
+                foreach (var socket in value.Where(socket => socket != message.Socket))
+                {
+                    UserSockets.TryGetValue(socket, out var applicationUser);
+                    if (applicationUser == null) return;
+                    var userMessage = new SocketMessage
+                    {
+                        Code = "Message",
+                        Content = new
+                        {
+                            MessageId = Guid.NewGuid().ToString(),
+                            message.Message.Content,
+                            SentAt = DateTime.Now,
+                            ApplicationUser = new
+                            {
+                                applicationUser.Id,
+                                applicationUser.Name,
+                            }
+                        }
+                    };
+                    await WebSocketWrapper.SendAsync(socket, userMessage);
+                }
+            }
+        });
+        WebSocketWrapper.AddOnCloseListener(webSocket, async (_, _) =>
+        {
+            if (ChatSockets.TryGetValue(chatId, out var value))
+            {
                 value.Remove(webSocket);
-            return Task.CompletedTask;
-        };
+                UserSockets.TryGetValue(webSocket, out var applicationUser);
+                UserSockets.Remove(webSocket);
+                if (applicationUser == null) return;
+                foreach (var socket in value)
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "UserDisconnected",
+                        Content = new
+                        {
+                            applicationUser.Id,
+                            applicationUser.Name,
+                        }
+                    });
+                }
+            }
+            
+        });
         await WebSocketWrapper.HandleAsync(this, webSocket);
     }
 }
