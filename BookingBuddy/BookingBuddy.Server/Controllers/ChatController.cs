@@ -2,6 +2,7 @@
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace BookingBuddy.Server.Controllers;
 /// Classe que representa o controlador de chat.
 /// </summary>
 [ApiController]
-[Route("api/chat/{chatId}")]
+[Route("api/chat")]
 public class ChatController : ControllerBase
 {
     private static readonly WebSocketWrapper WebSocketWrapper = new();
@@ -31,16 +32,76 @@ public class ChatController : ControllerBase
     }
 
     /// <summary>
+    /// Método que cria um chat.
+    /// </summary>
+    /// <param name="name">Nome do chat.</param>
+    /// <returns>Retorna um IActionResult indicando o resultado da operação</returns>
+    [HttpPost]
+    [Authorize]
+    [Route("create")]
+    public async Task<IActionResult> CreateChat([FromBody] string name)
+    {
+        var chat = new Chat
+        {
+            ChatId = Guid.NewGuid().ToString(),
+            Name = name,
+        };
+        _context.Chat.Add(chat);
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            return BadRequest();
+        }
+
+        return Ok(new
+        {
+            chat.ChatId,
+            chat.Name
+        });
+    }
+
+    /// <summary>
     /// Método que obtém um chat.
     /// </summary>
     /// <param name="chatId">Identificador do chat.</param>
-    /// <returns>
-    /// Retorna um IActionResult indicando o resultado da operação</returns>
+    /// <returns>Retorna um IActionResult indicando o resultado da operação</returns>
     [HttpGet]
+    [Route("{chatId}")]
     public async Task<IActionResult> GetChat(string chatId)
     {
-        var chat = await _context.Chat.FindAsync(chatId);
-        return Ok(chat);
+        var chat = await _context.Chat.FirstOrDefaultAsync(c => c.ChatId == chatId);
+        if (chat == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(new
+        {
+            chat.ChatId,
+            chat.Name,
+            LastMessages = await _context.ChatMessage
+                .Include(m => m.ApplicationUser)
+                .Where(m => chat.MessageIds.Contains(m.MessageId))
+                .Select(m => new
+                {
+                    m.MessageId,
+                    ApplicationUser = m.ApplicationUser != null
+                        ? new
+                        {
+                            m.ApplicationUser.Id,
+                            m.ApplicationUser.Name,
+                        }
+                        : null,
+                    m.Content,
+                    m.SentAt
+                })
+                .OrderByDescending(m => m.SentAt)
+                .Take(10)
+                .ToListAsync()
+        });
     }
 
     /// <summary>
@@ -48,11 +109,12 @@ public class ChatController : ControllerBase
     /// </summary>
     /// <param name="chatId">Identificador do chat.</param>
     /// <param name="numberOfMessages">Número de mensagens a obter.</param>
-    /// <returns>
-    /// Retorna um IActionResult indicando o resultado da operação</returns>
+    /// <param name="startIndex">Índice de início.</param>
+    /// <returns>Retorna um IActionResult indicando o resultado da operação</returns>
     [HttpGet]
-    [Route("messages")]
-    public async Task<IActionResult> GetChatMessages(string chatId, [FromQuery] int numberOfMessages = 10)
+    [Route("messages/{chatId}")]
+    public async Task<IActionResult> GetChatMessages(string chatId, [FromQuery] int numberOfMessages = 10,
+        [FromQuery] int startIndex = 0)
     {
         var chat = await _context.Chat.FindAsync(chatId);
         if (chat == null)
@@ -61,9 +123,24 @@ public class ChatController : ControllerBase
         }
 
         return Ok(await _context.ChatMessage
+            .Include(m => m.ApplicationUser)
             .Where(m => chat.MessageIds.Contains(m.MessageId))
+            .Select(m => new
+            {
+                m.MessageId,
+                ApplicationUser = m.ApplicationUser != null
+                    ? new
+                    {
+                        m.ApplicationUser.Id,
+                        m.ApplicationUser.Name,
+                    }
+                    : null,
+                m.Content,
+                m.SentAt
+            })
             .OrderByDescending(m => m.SentAt)
-            .Take(numberOfMessages)
+            .Skip(startIndex)
+            .Take(10)
             .ToListAsync());
     }
 
@@ -106,6 +183,25 @@ public class ChatController : ControllerBase
         WebSocketWrapper.AddOnReceiveListener(webSocket, async (_, message) =>
         {
             if (message.Message == null) return;
+            var msg = _context.ChatMessage.Add(new ChatMessage
+            {
+                MessageId = Guid.NewGuid().ToString(),
+                ApplicationUserId = user.Id,
+                Content = message.Message.Content,
+                SentAt = DateTime.Now
+            }).Entity;
+            var chat = await _context.Chat.FindAsync(chatId);
+            if (chat == null) return;
+            chat.MessageIds.Add(msg.MessageId);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return;
+            }
+
             if (ChatSockets.TryGetValue(chatId, out var value))
             {
                 foreach (var socket in value.Where(socket => socket != message.Socket))
@@ -118,13 +214,13 @@ public class ChatController : ControllerBase
                         Content = new
                         {
                             MessageId = Guid.NewGuid().ToString(),
-                            message.Message.Content,
-                            SentAt = DateTime.Now,
                             ApplicationUser = new
                             {
                                 applicationUser.Id,
                                 applicationUser.Name,
-                            }
+                            },
+                            message.Message.Content,
+                            SentAt = DateTime.Now,
                         }
                     };
                     await WebSocketWrapper.SendAsync(socket, userMessage);
@@ -152,7 +248,6 @@ public class ChatController : ControllerBase
                     });
                 }
             }
-            
         });
         await WebSocketWrapper.HandleAsync(this, webSocket);
     }
