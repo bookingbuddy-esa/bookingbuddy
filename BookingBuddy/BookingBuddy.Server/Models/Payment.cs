@@ -7,7 +7,7 @@ namespace BookingBuddy.Server.Models
     /// <summary>
     /// Classe que representa um pagamento.
     /// </summary>
-    public class Payment : IPrimaryKey
+    public class Payment
     {
         [Key] public string PaymentId { get; set; }
         public string Method { get; set; }
@@ -17,9 +17,5 @@ namespace BookingBuddy.Server.Models
         public decimal Amount { get; set; }
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string GetPrimaryKey()
-        {
-            return PaymentId;
-        }
     }
 }

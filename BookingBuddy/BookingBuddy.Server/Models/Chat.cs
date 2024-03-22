@@ -7,7 +7,7 @@ namespace BookingBuddy.Server.Models;
 /// <summary>
 /// Classe que representa um chat.
 /// </summary>
-public class Chat : IPrimaryKey
+public class Chat
 {
     /// <summary>
     /// Identificador do chat.
@@ -28,15 +28,6 @@ public class Chat : IPrimaryKey
     /// Lista de mensagens.
     /// </summary>
     public List<ChatMessage>? ChatMessages { get; set; } = [];
-    
-    /// <summary>
-    /// Obtém a chave primária da entidade.
-    /// </summary>
-    /// <returns>A chave primária da entidade.</returns>
-    public string GetPrimaryKey()
-    {
-        return ChatId;
-    }
 }
 
 /// <summary>

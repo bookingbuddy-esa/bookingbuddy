@@ -19,7 +19,7 @@ namespace BookingBuddy.Server.Controllers
     {
         private readonly BookingBuddyServerContext _context;
         private readonly IConfiguration _configuration;
-        private static readonly WebSocketWrapper<Payment> WebSocketWrapper = new();
+        // private static readonly WebSocketWrapper<Payment> WebSocketWrapper = new();
 
         /// <summary>
         /// Construtor da classe PaymentController.
@@ -141,7 +141,7 @@ namespace BookingBuddy.Server.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                await WebSocketWrapper.NotifyAllAsync(payment);
+                // await WebSocketWrapper.NotifyAllAsync(payment);
                 return Ok();
             }
             catch (Exception ex)
@@ -286,7 +286,7 @@ namespace BookingBuddy.Server.Controllers
         public async Task HandleWebSocketAsync(string paymentId, WebSocket webSocket)
         {
             var payment = await _context.Payment.FindAsync(paymentId);
-            await WebSocketWrapper.HandleAsync(payment, webSocket);
+            // await WebSocketWrapper.HandleAsync(payment, webSocket);
         }
 
         /// <summary>

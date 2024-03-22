@@ -101,12 +101,12 @@ app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupC
     }
 });
 
-app.Map("/api/chat/ws", async (HttpContext httpContext, ChatController chatController, string chatId) =>
+app.Map("/api/chat/ws", async (HttpContext httpContext, ChatController chatController, string chatId, string userId) =>
 {
     if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId))
     {
         var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        await chatController.HandleWebSocketAsync(chatId, webSocket);
+        await chatController.HandleWebSocketAsync(chatId, userId, webSocket);
     }
     else
     {

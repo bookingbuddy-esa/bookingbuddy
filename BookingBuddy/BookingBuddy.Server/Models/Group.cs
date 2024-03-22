@@ -9,7 +9,7 @@ namespace BookingBuddy.Server.Models
     /// <summary>
     /// Classe que representa os Grupos de Viagem
     /// </summary>
-    public class Group : IPrimaryKey
+    public class Group
     {
         [Key]
         [JsonPropertyName("groupId")]
@@ -43,11 +43,6 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("messages")]
         public List<GroupMessage>? Messages { get; set; }
-
-        public string GetPrimaryKey()
-        {
-            return GroupId;
-        }
     }
 
     public class GroupMessage {
