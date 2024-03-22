@@ -1,4 +1,4 @@
-<main class="min-vh-100 d-flex flex-column">
+<main class="flex-grow-1 d-flex flex-column">
     <app-favorite-sidebar></app-favorite-sidebar>
     <app-menu class="sticky-top"></app-menu>
     <div class="container-fluid d-flex flex-grow-1">
@@ -9,4 +9,4 @@
         <app-chat *ngIf="showChat"></app-chat>
     </div>-->
 </main>
-<app-footer></app-footer>
+<app-footer *ngIf="showFooter"></app-footer>
