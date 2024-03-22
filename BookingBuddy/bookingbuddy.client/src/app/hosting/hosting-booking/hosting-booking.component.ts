@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AppComponent } from '../../app.component';
 import { HostingService } from '../hosting.service';
 import { BookingService } from '../../booking/booking.service';
 
@@ -15,8 +14,7 @@ export class HostingBookingComponent {
   selectedBooking: any;
   newMessage: string = "";
 
-  constructor(private appComponent: AppComponent, private hostingService: HostingService, private bookingService: BookingService) {
-    this.appComponent.showChat = false;
+  constructor(private hostingService: HostingService, private bookingService: BookingService) {
   }
 
   ngOnInit() {

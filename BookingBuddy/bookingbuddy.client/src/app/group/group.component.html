@@ -17,7 +17,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade" id="addPropertyModal" tabindex="-1" aria-labelledby="addPropertyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -28,13 +27,6 @@
                 <div class="modal-body">
                     <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
                     <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
-                    <!--<ol class="list-group list-group-numbered list-group-flush mb-2">
-                        <li class="list-group-item">Entrar na página inicial da plataforma (não se preocupe — assim que clicar no botão "Aceitar" irá ser redirecionado).</li>
-                        <li class="list-group-item">(Opcional): Efetuar a pesquisa e aplicar filtros de modo a encontrar uma propriedade que vá de encontro com os seus requisitos.</li>
-                        <li class="list-group-item">Selecionar propriedade e clicar no botão "Adicionar Propriedade ao Grupo de Reserva" que se encontra no lado direito.</li>
-                        <li class="list-group-item">Irá ser pedido qual o grupo de reserva em que quer adicionar essa propriedade.</li>
-                        <li class="list-group-item">Após isso, voltará automaticamente a esta página com a propriedade adicionada ao seu grupo!</li>
-                    </ol>-->
                     <ol class="list-group list-group-numbered list-group-flush mb-2">
                         <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a explorar.</li>
                         <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se adeque às suas necessidades.</li>
@@ -51,7 +43,6 @@
             </div>
         </div>
     </div>
-
     <div class="col-md-3 mb-5">
         <div class="accordion mb-3" id="accordionGroups">
             <div class="accordion-item">
@@ -115,51 +106,100 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         <h2 class="text-center mb-3">Grupo de Reserva</h2>
-        <div class="d-flex flex-row justify-content-end mt-2 mb-2" *ngIf="currentGroup">
-
-            <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite">
-            <i class="bi bi-link"></i>
-          </button>
+        <div *ngIf="currentGroup" class="d-flex flex-row justify-content-end mt-2 mb-2">
+            <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite"><i class="bi bi-link"></i></button>
+            <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (disabled)="!currentGroup?.choosenProperty" (click)="setGroupAction('voting')" matTooltip="Iniciar Votação"><i class="bi bi-chat-square-heart-fill"></i></button>
+            <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('paying')" matTooltip="Iniciar Pagamento"><i class="bi bi-credit-card-fill"></i></button>
             <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal" data-bs-target="#deleteGroupModal" matTooltip="Apagar Grupo"><i class="bi bi-trash"></i></button>
         </div>
-        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
+
+        <div class="d-flex flex-column justify-content-center align-items-center">
             <div *ngIf="!currentGroup" class="text-center">
                 <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
             </div>
             <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
                 <span class="text-muted small">Não existem propriedades para este grupo.</span>
             </div>
-            <div class="card mb-3 me-md-2 w-25 w-lg-25" *ngFor="let property of currentGroup?.properties">
-                <img [src]="getPropertyImage(property)" class="card-img-top" alt="Imagem da Propriedade">
-                <div class="card-body">
-                  <h5 class="card-title text-truncate">{{property.name}}</h5>
-                  
-                  <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€</p>
-                  <button class="btn btn-sm btn-danger" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
+            <div *ngIf="currentGroup && groupAction === 'None' || groupAction === 'Voting'">
+                <div class="d-flex flex-row justify-content-around">
+                    <div class="card mb-3 me-md-2 w-25 w-lg-25" *ngFor="let property of currentGroup?.properties">
+                        <img [src]="getPropertyImage(property)" class="card-img-top" alt="Imagem da Propriedade">
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">{{property.name}}</h5>
+
+                            <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€</p>
+                            <button class="btn btn-sm btn-danger me-2" *ngIf="groupAction !== 'Voting'" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
+                            <button class="btn btn-sm btn-info" *ngIf="groupAction === 'Voting'" matTooltip="Selecionar Propriedade" (click)="setChoosenProperty(property)"><i class="bi bi-check2-circle"></i></button>
+                            <button class="btn btn-sm btn-success ms-2" *ngIf="groupAction === 'Voting' && isGroupOwner" matTooltip="Selecionar Propriedade DEV" (click)="setChoosenPropertyDEV(property)"><i class="bi bi-check2-circle"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="currentGroup && currentGroup?.choosenProperty && groupAction === 'Paying'" class="w-100">
+                <!--<h3>Property Escolhida: {{ currentGroup?.choosenProperty }}</h3>-->
+                <!--<app-payment [data]="bookingData"></app-payment>-->
+                <div class="text-center text-wrap text-muted mt-2 mb-4" *ngIf="!isGroupOwner">
+                    <h5>Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</h5>
+                    <h5>Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como membro.</h5>
+                </div>
+                <div class="w-75 text-center mx-auto mb-4" *ngIf="isGroupOwner">
+                    <form [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
+                        <mat-form-field (click)="picker.open()">
+                            <mat-label>Selecione as datas</mat-label>
+                            <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">
+                                <input matStartDate placeholder="Check-In" formControlName="checkIn" (dateChange)="onDateChange($event, 'start')">
+                                <input matEndDate placeholder="Check-Out" formControlName="checkOut" (dateChange)="onDateChange($event, 'end')">
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
+                                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                            </mat-datepicker-toggle>
+                            <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
+                        </mat-form-field>
+
+                        <div class="mb-1">
+                            <label for="hospedes">Hóspedes: {{getGroupMembers()}}</label>
+                        </div>
+                        <button class="btn btn-success mt-1 mb-3">Reservar</button>
+                        <h6 class="text-secondary mb-3">Ainda não vai ser cobrado</h6>
+                        <div class="precos mb-2">
+                            <div *ngFor="let formattedString of formatPricesMap()">
+                                <h6 class="text-secondary mb-2"><u>{{ formattedString }}</u></h6>
+                            </div>
+                        </div>
+                        <hr class="mt-4 mb-2">
+                        <div class="mb-4">
+                            <span>Total: </span>
+                            <span>{{ calcularTotalDesconto() }}€</span>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-row justify-content-center align-items-center mt-2 mb-2" *ngIf="currentGroup">
+
+        <div *ngIf="currentGroup">
             <div class="chat w-50 mx-auto mt-2 mb-3">
                 <h3>Chat com o grupo</h3>
-                <div class="w-100 mt-3 px-3 overflow-auto" style="max-height: 300px;">
-                    <div *ngFor="let m of currentGroup.messages" class="text-left text-break">
+                <div class="w-100 mt-3 px-3 overflow-auto " style="max-height: 300px;">
+                    <div *ngFor="let m of currentGroup?.messages " class="text-left text-break ">
                         <p><strong>{{m.userName}}:</strong> {{m.message}}</p>
                     </div>
                 </div>
 
                 <div class="input-group mt-3">
-                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
-                    <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()" [disabled]="newMessage === ''">Enviar</button>
+                    <input type="text " class="form-control " placeholder="Escreva a sua mensagem " [(ngModel)]="newMessage">
+                    <button class="btn btn-outline-secondary " type="button " (click)="sendMessage() " [disabled]="newMessage===''">Enviar</button>
                 </div>
             </div>
+
+            <div class="d-flex flex-row justify-content-around align-items-center mt-5">
+                <button type="button " class="btn btn-md btn-success me-2" data-bs-toggle="modal " data-bs-target="#addPropertyModal ">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2 "></i></button>
+                <div class="flex-fill "></div>
+                <button class="btn btn-md btn-dark " (click)="sendMessageWS() ">Reservar Selecionada<i class="bi bi-arrow-right ms-2 "></i></button>
+            </div>
         </div>
-        <div class="d-flex flex-row justify-content-around align-items-center mt-5" *ngIf="currentGroup">
-            <button type="button" class="btn btn-md btn-success me-2" data-bs-toggle="modal" data-bs-target="#addPropertyModal">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i></button>
-            <div class="flex-fill"></div>
-            <button class="btn btn-md btn-dark" (click)="sendMessageWS()">Reservar Selecionada<i class="bi bi-arrow-right ms-2"></i></button>
-        </div>
-        <div *ngIf="submitting" class="h-100">
+        <div *ngIf="submitting " class="h-100">
             <app-loader></app-loader>
         </div>
     </div>

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BookingBuddy.Server.Models
 {
     /// <summary>
-    /// Classe que representa os Grupos de Viagem
+    /// Classe que representa os Grupos de Reserva.
     /// </summary>
     public class Group
     {
@@ -43,8 +43,15 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("messages")]
         public List<GroupMessage>? Messages { get; set; }
+
+        [JsonPropertyName("groupAction")]
+        public GroupAction GroupAction { get; set; }
     }
 
+
+    /// <summary>
+    /// Classe que representa as mensagens de chat de um grupo.
+    /// </summary>
     public class GroupMessage {
         [Key]
         [JsonPropertyName("messageId")]
@@ -58,5 +65,29 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("groupId")]
         public string GroupId {  get; set; }
+    }
+
+    /// <summary>
+    /// Enum que representa as ações (estados) de um grupo.
+    /// </summary>
+    public enum GroupAction
+    {
+        [JsonPropertyName("none")]
+        None,
+        [JsonPropertyName("voting")]
+        Voting,
+        [JsonPropertyName("paying")]
+        Paying
+    }
+
+    public static class GroupActionExtension
+    {
+        public static string AsString(this GroupAction groupAction) => groupAction switch
+        {
+            GroupAction.None => "Nenhuma",
+            GroupAction.Voting => "Votação",
+            GroupAction.Paying => "Pagamento",
+            _ => "Nenhuma"
+        };
     }
 }

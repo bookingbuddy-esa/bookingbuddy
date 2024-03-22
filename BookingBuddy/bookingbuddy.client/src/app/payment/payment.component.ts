@@ -37,53 +37,88 @@ export class PaymentComponent {
       phoneNumber: this.phoneNumber || null,
       nif: this.nif || null
     };
-    console.log(JSON.stringify(this.data));
+    //console.log(JSON.stringify(this.data));
 
-    this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.data.numberOfGuests, this.data.phoneNumber).forEach((response) => {
-      if (response) {
-        this.currentPhase = 2;
-        this.paymentResponse = response;
-        this.payment = {
-          paymentId: this.paymentResponse.payment.paymentId,
-          method: this.paymentResponse.payment.method,
-          amount: this.paymentResponse.payment.amount,
-          createdAt: new Date(this.paymentResponse.payment.createdAt),
-          status: this.paymentResponse.payment.status,
-          expiryDate: new Date(this.paymentResponse.payment.expiryDate),
-          entity: this.paymentResponse.payment.entity,
-          reference: this.paymentResponse.payment.reference
+    if (this.data.orderType == 'group-booking') {
+      this.paymentService.teste(this.data.groupBookingId, this.paymentMethod, this.data.phoneNumber).forEach((response) => {
+        if (response) {
+          console.log("PAGAMENTO GROUP: " + JSON.stringify(response));
+          this.currentPhase = 2;
+          this.paymentResponse = response;
+
+          this.payment = {
+            paymentId: this.paymentResponse.paymentId,
+            method: this.paymentResponse.method,
+            amount: this.paymentResponse.amount,
+            createdAt: new Date(this.paymentResponse.createdAt),
+            status: this.paymentResponse.status,
+            expiryDate: new Date(this.paymentResponse.expiryDate),
+            entity: this.paymentResponse.entity,
+            reference: this.paymentResponse.reference
+          }
         }
-        console.log(response);
+      }).catch((err) => {
+        console.error(err);
+      });
+    } else {
+      this.paymentService.createOrder(this.data.propertyId, this.data.startDate, this.data.endDate, this.paymentMethod, this.data.orderType, this.data.numberOfGuests, this.data.phoneNumber).forEach((response) => {
+        if (response) {
+          this.currentPhase = 2;
+          this.paymentResponse = response;
+          this.payment = {
+            paymentId: this.paymentResponse.payment.paymentId,
+            method: this.paymentResponse.payment.method,
+            amount: this.paymentResponse.payment.amount,
+            createdAt: new Date(this.paymentResponse.payment.createdAt),
+            status: this.paymentResponse.payment.status,
+            expiryDate: new Date(this.paymentResponse.payment.expiryDate),
+            entity: this.paymentResponse.payment.entity,
+            reference: this.paymentResponse.payment.reference
+          }
+          console.log(response);
 
-        if (this.payment) {
-          let url = environment.apiUrl;
-          url = url.replace('https', 'wss');
-          let ws = new WebSocket(`${url}/api/payments/ws?paymentId=${this.payment.paymentId}`);
-          ws.onmessage = (event) => {
-            let message = JSON.parse(event.data) as WebSocketMessage;
-            if (message && message.code === "PaymentPaid") {
-              let messageContent = message.content as { paymentId: string, orderId: string };
-              if (messageContent.paymentId === this.payment?.paymentId) {
-                this.currentPhase = 3;
+          if (this.payment) {
+            let url = environment.apiUrl;
+            url = url.replace('https', 'wss');
+            let ws = new WebSocket(`${url}/api/payments/ws?paymentId=${this.payment.paymentId}`);
+            ws.onmessage = (event) => {
+              let message = JSON.parse(event.data) as WebSocketMessage;
+              if (message && message.code === "PaymentPaid") {
+                let messageContent = message.content as { paymentId: string, orderId: string };
+                if (messageContent.paymentId === this.payment?.paymentId) {
+                  this.currentPhase = 3;
+                }
               }
             }
           }
         }
-      }
-    }).catch((err) => {
-      console.error("Erro no servidor: " + JSON.stringify(err));
-    });
+      }).catch((err) => {
+        console.error("Erro no servidor: " + JSON.stringify(err));
+      });
+    }
   }
 
   // TODO: remover -> apenas de teste para simular a confirmação do pagamento
   public confirmarPagamento(): void {
-    this.paymentService.confirmOrder(this.paymentResponse.orderId, this.payment?.paymentId ?? "").forEach((response) => {
-      if (response) {
-        console.log(response);
-      }
-    }).catch((err) => {
-      console.error("Erro no servidor: " + JSON.stringify(err));
-    });
+    if (this.data.orderType == 'group-booking') {
+      this.paymentService.confirmOrder(this.data.groupBookingId, this.payment?.paymentId ?? "").forEach((response) => {
+        if (response) {
+          console.log(response);
+        }
+        this.currentPhase = 3;
+      }).catch((err) => {
+        console.error("Erro no servidor: " + JSON.stringify(err));
+      });
+    } else {
+      this.paymentService.confirmOrder(this.paymentResponse.orderId, this.payment?.paymentId ?? "").forEach((response) => {
+        if (response) {
+          console.log(response);
+        }
+        this.currentPhase = 3;
+      }).catch((err) => {
+        console.error("Erro no servidor: " + JSON.stringify(err));
+      });
+    }
   }
 }
 

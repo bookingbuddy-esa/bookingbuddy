@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -17,10 +17,9 @@ export class TransactionHandlerComponent implements OnInit {
   numberOfGuests: number | null = null;
   data: any;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   // TODO: verificar se os dados estão completos e corretos consoante a orderType (booking precisa de numHospedes, promote nao precisa)
-
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.propertyId = params.get('propertyId');
@@ -31,6 +30,7 @@ export class TransactionHandlerComponent implements OnInit {
 
       if (!this.propertyId || !this.startDate || !this.endDate || !this.orderType) {
         console.error('Dados da ordem incompletos na rota.');
+        this.router.navigate(['/error']);
       } else {
         console.log('Property ID:', this.propertyId);
         console.log('Start Date:', this.startDate);

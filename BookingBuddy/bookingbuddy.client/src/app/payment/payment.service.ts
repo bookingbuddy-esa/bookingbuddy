@@ -27,6 +27,34 @@ export class PaymentService {
     }));
   }
 
+  public createBookingOrder(groupId: string, startDate: Date, endDate: Date){
+    return this.http.post(`${environment.apiUrl}/api/orders/group-booking`, {
+      groupId: groupId,
+      startDate: startDate,
+      endDate: endDate
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'json'
+    }).pipe(map((res: any) => {
+      return res.body;
+    }));
+  }
+
+  public teste(groupBookingId: string, paymentMethod: string, phoneNumber?: string){
+    return this.http.post(`${environment.apiUrl}/api/orders/group-booking/pay`, {
+      groupBookingId: groupBookingId,
+      paymentMethod: paymentMethod,
+      phoneNumber: phoneNumber
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'json'
+    }).pipe(map((res: any) => {
+      return res.body;
+    }));
+  }
+
   // TODO: remover -> apenas de teste para simular a confirmação do pagamento
   public confirmOrder(orderId: string, paymentId: string){
     var amount = 1.0

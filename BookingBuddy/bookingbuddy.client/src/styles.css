@@ -1,8 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 
-body {
+* {
     --bs-body-font-family: 'Montserrat';
     font-family: "Montserrat", "Helvetica Neue", sans-serif;
+    --bs-accordion-active-color: #000;
+    --bs-accordion-active-bg: #fff;
 }
 
 :root {
@@ -36,31 +38,26 @@ body {
 }
 
 .mat-form-field-underline {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
-  .mat-form-field-underline .mat-form-field-ripple {
+.mat-form-field-underline .mat-form-field-ripple {
     display: none;
     background-color: transparent !important;
-  }
+}
 
 .example-chip-list {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .mat-mdc-text-field-wrapper {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .assigned-chip {
-  background-color: blue;
+    background-color: blue;
 }
 
-.accordion-button:hover{
-    --bs-accordion-btn-bg: #9DAE9A;
-}
-
-/*
 .fc {
     background-color: white;
 }

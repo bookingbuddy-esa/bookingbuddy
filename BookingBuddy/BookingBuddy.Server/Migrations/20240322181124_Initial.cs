@@ -63,7 +63,8 @@ namespace BookingBuddy.Server.Migrations
                     MembersId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PropertiesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ChoosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MessagesId = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MessagesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GroupAction = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -604,19 +605,19 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AmenityId", "DisplayName", "Name", "PropertyId" },
                 values: new object[,]
                 {
-                    { "403f543c-10f3-4cbe-9ac1-14d7a3f75c9c", "TV", "Tv", null },
-                    { "4b612fa5-3c07-4cd9-bbf1-a78f835f35cd", "Quintal", "Quintal", null },
-                    { "4ed34276-c479-4e32-9a0e-d1cf54aa6134", "Microondas", "Microondas", null },
-                    { "5756757c-f1cd-4aa8-afb2-56e9b9cdebad", "Varanda", "Varanda", null },
-                    { "5b7c1a5a-c45d-4583-bd9a-802a42885190", "Estacionamento", "Estacionamento", null },
-                    { "626d33a3-0e08-4fa4-9aaa-76af25c2522c", "Piscina Individual", "PiscinaIndividual", null },
-                    { "628e69e5-e375-4e0e-aaa1-60ea09e142e8", "Piscina Partilhada", "PiscinaPartilhada", null },
-                    { "835ab157-2561-4261-b574-dd1b35da6f22", "Máquina de Lavar", "MaquinaLavar", null },
-                    { "8bb6c04c-0bee-4e1c-aa35-03f290aac842", "Frigorífico", "Frigorifico", null },
-                    { "b63741fd-574e-4770-b445-8cd4891208c1", "Wifi", "Wifi", null },
-                    { "c00b5832-b0e4-4255-9115-2e9949cadf30", "Câmaras", "Camaras", null },
-                    { "d95be77d-e9c8-4a28-ae9b-d9050fd8a0f5", "Animais", "Animais", null },
-                    { "fe694c21-87b9-4798-a947-fb91f6651403", "Cozinha", "Cozinha", null }
+                    { "0e5ba793-f5b1-4533-8dec-6970786443fd", "Cozinha", "Cozinha", null },
+                    { "28f2879f-16f4-4c47-bf88-e6b8a0030a2e", "Wifi", "Wifi", null },
+                    { "2ab70aaa-6d1c-4731-8b8e-402d103ec79d", "Piscina Individual", "PiscinaIndividual", null },
+                    { "2e3d8da0-1d03-461c-b891-8344bba1c657", "Frigorífico", "Frigorifico", null },
+                    { "58380b9f-f2fa-4ef1-9a28-c0071d7091b1", "TV", "Tv", null },
+                    { "59ad1a6f-f997-487f-b81f-0b8c8edebfc2", "Quintal", "Quintal", null },
+                    { "67fccf1e-3727-4685-972e-5d06af09dd94", "Câmaras", "Camaras", null },
+                    { "695efe69-2bdb-4d7a-90d6-4e9f0399a64f", "Estacionamento", "Estacionamento", null },
+                    { "7c5c447d-51ec-4cdd-8cfd-88f0be2b6d4c", "Máquina de Lavar", "MaquinaLavar", null },
+                    { "81dca9e7-6230-47aa-9218-da5b4d7fa4e5", "Animais", "Animais", null },
+                    { "8557127f-26fe-4f2d-9243-e945c20b7561", "Microondas", "Microondas", null },
+                    { "aa620488-f6ae-4996-a489-421ed0da42ba", "Varanda", "Varanda", null },
+                    { "ca5e885c-e1f1-49aa-8b72-e76ac2e9c1e9", "Piscina Partilhada", "PiscinaPartilhada", null }
                 });
 
             migrationBuilder.InsertData(
@@ -624,9 +625,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AspNetProviderId", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "126b6d45-cefa-4440-92f3-752e2bf353d1", "microsoft", "MICROSOFT" },
-                    { "58a1a68b-cb48-41e8-a9b0-b76baf1d7b18", "google", "GOOGLE" },
-                    { "bcd86d17-cf63-49b2-8fc6-534e5c720934", "local", "LOCAL" }
+                    { "08f69155-571a-4e19-a311-41a37f84f95a", "local", "LOCAL" },
+                    { "c7d86abb-d476-41c6-856e-da4e3ea37d75", "microsoft", "MICROSOFT" },
+                    { "df094b76-9510-4451-9ab9-165990ebdb07", "google", "GOOGLE" }
                 });
 
             migrationBuilder.InsertData(
@@ -634,9 +635,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "11d938d5-32ec-4290-b9b6-5543a040c29f", "720bf7f3-9f21-4750-81eb-a607d63cf8e8", "admin", "ADMIN" },
-                    { "7d8495b5-1ce5-4eb2-8ad2-be93a11c60c2", "605751fb-6dab-47b4-8913-510b911ea5e9", "user", "USER" },
-                    { "7f9ec4ce-721f-4521-9398-55ef5d8c64ce", "f6819ff0-a1c0-4f4f-b6ce-0f0726422bd0", "landlord", "LANDLORD" }
+                    { "0d7db8b9-2c27-4208-827b-a6f140cbe17b", "079e2acb-9dfa-4708-86df-c9b53d5fa536", "user", "USER" },
+                    { "563ce438-e075-4268-82e5-0d8697795a68", "4eae333a-a5b8-4519-aa2e-d677b01927eb", "landlord", "LANDLORD" },
+                    { "c7abd600-4341-4076-9118-1f97fbf50b72", "89c55c2a-8c5a-41ec-aa7b-458444b99c17", "admin", "ADMIN" }
                 });
 
             migrationBuilder.InsertData(
@@ -644,9 +645,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "GroupBookingOrderOrderId", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PictureUrl", "ProviderId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "19e359cf-6548-451f-b040-e7f06200783a", 0, "1c04ba2f-4c6c-457e-939d-1d7d888c7599", "bookingbuddy.landlord@bookingbuddy.com", true, null, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEAz6WgwRtk3CHBqGYZUHR7zhUNXomAk81WrpY7tpmXwYksxYYVbLnB2VVZV+wPTkpA==", null, false, null, "bcd86d17-cf63-49b2-8fc6-534e5c720934", "e35086da-a1e8-4d75-bad8-9c58ed114a6c", false, "bookingbuddy.landlord@bookingbuddy.com" },
-                    { "29577dc5-566d-438c-bdad-02683c7f3956", 0, "275d281f-83cf-4244-87c2-45a7c2cfd4ff", "bookingbuddy.admin@bookingbuddy.com", true, null, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEGr43eBOqOviYJVq61vTlsRwBoalEhymB2viPHOF8r/BBxuaw03ztwe8uDHTZjChhA==", null, false, null, "bcd86d17-cf63-49b2-8fc6-534e5c720934", "a0eac8ea-62d7-4ba5-bf84-769fe96a0344", false, "bookingbuddy.admin@bookingbuddy.com" },
-                    { "2b723569-6335-4403-8a2d-fa50d3784882", 0, "c9074ea5-4f6d-4f81-8536-840437bba39d", "bookingbuddy.user@bookingbuddy.com", true, null, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEHCzLf9KWYd4pjSWa3paXMhZk5RNom8/IGZ6g4AMx2R3VeRCKpFq/6oMomuVqn3Fvw==", null, false, null, "bcd86d17-cf63-49b2-8fc6-534e5c720934", "c28924ae-4335-4ac5-a1d4-0910a0226590", false, "bookingbuddy.user@bookingbuddy.com" }
+                    { "277a5e37-8383-45eb-b34c-03a6843c5948", 0, "10b9c72b-9445-4789-ac0e-e27f6dd3308c", "bookingbuddy.admin@bookingbuddy.com", true, null, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEKgHDyIztZhfdluWmERXLbu6FqlJuxY1zKLjt/0+IdlwppsftqOPklRwvSDsHLkTTA==", null, false, null, "08f69155-571a-4e19-a311-41a37f84f95a", "251e9d7a-0739-48c9-aec4-ba74f574cf58", false, "bookingbuddy.admin@bookingbuddy.com" },
+                    { "6449d78d-f2d2-4e29-860e-374cf7e69a72", 0, "270fb5dd-0f7b-49d6-99da-497f333e4e76", "bookingbuddy.landlord@bookingbuddy.com", true, null, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAENDT9FpLcQL+R27A835WZ1C5UV6xhrJ8UJa4OlZzJwOL0aTn5QvFvkmpk9PsYTrDCg==", null, false, null, "08f69155-571a-4e19-a311-41a37f84f95a", "215b6a60-3164-4a61-a333-e67b4fd87864", false, "bookingbuddy.landlord@bookingbuddy.com" },
+                    { "d024e48b-3f89-44d6-9613-cec06b055dfb", 0, "a0522bbe-326c-4146-b2cd-7a02dea7a10e", "bookingbuddy.user@bookingbuddy.com", true, null, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEF4wbtBnQIzKQNNjhJejlAV9mBQCcpeK0TLqbtR4Y02R22UriSpKbEsePSpu1kEK9A==", null, false, null, "08f69155-571a-4e19-a311-41a37f84f95a", "eb3377f0-42de-44e6-bb28-f096f94b0e61", false, "bookingbuddy.user@bookingbuddy.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -654,9 +655,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "7f9ec4ce-721f-4521-9398-55ef5d8c64ce", "19e359cf-6548-451f-b040-e7f06200783a" },
-                    { "11d938d5-32ec-4290-b9b6-5543a040c29f", "29577dc5-566d-438c-bdad-02683c7f3956" },
-                    { "7d8495b5-1ce5-4eb2-8ad2-be93a11c60c2", "2b723569-6335-4403-8a2d-fa50d3784882" }
+                    { "c7abd600-4341-4076-9118-1f97fbf50b72", "277a5e37-8383-45eb-b34c-03a6843c5948" },
+                    { "563ce438-e075-4268-82e5-0d8697795a68", "6449d78d-f2d2-4e29-860e-374cf7e69a72" },
+                    { "0d7db8b9-2c27-4208-827b-a6f140cbe17b", "d024e48b-3f89-44d6-9613-cec06b055dfb" }
                 });
 
             migrationBuilder.CreateIndex(
