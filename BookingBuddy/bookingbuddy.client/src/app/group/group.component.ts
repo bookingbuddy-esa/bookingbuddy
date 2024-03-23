@@ -116,6 +116,15 @@ export class GroupComponent {
             break;
           case 'booking':
             this.currentGroup!.groupAction = GroupAction.booking;
+            var mostVotedId = this.getMostVotedProperty();
+            console.log("Most Voted: " + mostVotedId);
+            this.groupService.setChoosenProperty(this.currentGroup!.groupId, mostVotedId).forEach(response => {
+              if (response) {
+                console.log(response);
+              }
+            });
+
+            this.setChoosenPropertyById(mostVotedId);
             break;
           case 'paying':
             this.currentGroup!.groupAction = GroupAction.paying;
@@ -128,6 +137,23 @@ export class GroupComponent {
       //this.errors.push(error.error);
       console.log("ERROR: " + JSON.stringify(error));
     });
+  }
+
+  public getMostVotedProperty() {
+    let maxVotes = 0;
+    var votesMap = new Map<string, number>();
+    let mostVotedPropertyId = '';
+
+    for (var i = 0; i < this.currentGroup!.properties.length; i++) {
+      var votes = this.getPropertyVotes(this.currentGroup!.properties[i]);
+      votesMap.set(this.currentGroup!.properties[i].propertyId, votes);
+      if (votes > maxVotes) {
+        maxVotes = votes;
+        mostVotedPropertyId = this.currentGroup!.properties[i].propertyId;
+      }
+    }
+
+    return mostVotedPropertyId;
   }
 
   public deleteGroup(): void {
@@ -169,6 +195,14 @@ export class GroupComponent {
     }
   }
 
+  public setChoosenPropertyById(propertyId: string) {
+    var property = this.currentGroup?.properties.find(p => p.propertyId == propertyId);
+    if (property) {
+      this.currentGroup!.choosenProperty = property.propertyId;
+      this.sendMessageWS();
+    }
+  }
+
   public setChoosenProperty(property: Property){
     /*this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
       if (response) {
@@ -189,13 +223,33 @@ export class GroupComponent {
       
       this.groupService.sendVote(this.currentGroup!.groupId, property.propertyId, this.user!.userId).forEach(response => {
         if (response) {
-          
+          let vote = {
+            userId: this.user!.userId,
+            propertyId: property!.propertyId,
+            groupId: this.currentGroup!.groupId
+          }
+          var index = this.currentGroup!.votes.findIndex(v => v.propertyId == this.votedProperty?.propertyId && v.userId == this.user?.userId);
+          if (index>=0) {
+            this.currentGroup!.votes.splice(index, 1);
+          }
           this.votedProperty = property;
-         // this.currentGroup!.messages.push(message);
-         // this.sendMessageWS();
+          this.currentGroup!.votes.push(vote);
+          this.sendMessageWS();
         }
       })
     }
+  }
+
+  public getPropertyVotes(property: Property) {
+    let count = 0;
+
+    this.currentGroup?.votes.forEach(vote => {
+      if (vote.propertyId === property.propertyId) {
+        count++;
+      }
+    });
+
+    return count;
   }
 
   public setChoosenPropertyDEV(property: Property){
@@ -241,7 +295,7 @@ export class GroupComponent {
 
     if (vote) {
       let property = this.currentGroup.properties.find(p => p.propertyId == vote?.propertyId);
-
+      console.log("TESTEEEE");
       if (property) this.votedProperty = property;
     }
 
@@ -275,6 +329,14 @@ export class GroupComponent {
 
       if(this.currentGroup?.groupId == newGroupState.groupId){
         this.currentGroup = newGroupState;
+
+        let vote = this.currentGroup!.votes.find(v => v.userId == this.user?.userId);
+
+
+        if (vote) {
+          let property = this.currentGroup!.properties.find(p => p.propertyId == vote?.propertyId);
+          if (property) this.votedProperty = property;
+        }
       }
     };
   }

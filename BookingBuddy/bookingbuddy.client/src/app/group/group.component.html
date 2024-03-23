@@ -125,13 +125,14 @@
                     <div class="card mb-3 me-md-2 w-25 w-lg-25" *ngFor="let property of currentGroup?.properties">
                         <img [src]="getPropertyImage(property)" class="card-img-top" alt="Imagem da Propriedade">
                         <div class="card-body">
-                            <h5 class="card-title text-truncate">{{property.name}}</h5>
+                          <h5 class="card-title text-truncate">{{property.name}}</h5>
 
-                            <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€</p>
-                            <button class="btn btn-sm btn-danger me-2" *ngIf="groupAction !== 'Voting'" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
-                            <button class="btn btn-sm btn-primary" *ngIf="groupAction === 'Voting' && votedProperty == property" matTooltip="Propriedade Votada" ><i class="bi bi-check-square"></i></button>
-                            <button class="btn btn-sm btn-primary" *ngIf="groupAction === 'Voting' && votedProperty != property" matTooltip="Votar na Propriedade" (click)="voteProperty(property)"><i class="bi bi-square"></i></button>
-                            <button class="btn btn-sm btn-success ms-2" *ngIf="groupAction === 'Voting' && isGroupOwner" matTooltip="Selecionar Propriedade DEV" (click)="setChoosenPropertyDEV(property)"><i class="bi bi-check2-circle"></i></button>
+                          <p class="card-text text-truncate fw-bold">{{property.pricePerNight}}€</p>
+                          <button class="btn btn-sm btn-danger me-2" *ngIf="groupAction !== 'Voting'" matTooltip="Remover Propriedade" (click)="removeProperty(property)"><i class="bi bi-x-square"></i></button>
+                          <span>{{getPropertyVotes(property)}}</span>
+                          <button class="btn btn-sm btn-primary" *ngIf="groupAction === 'Voting' && votedProperty == property" matTooltip="Propriedade Votada"><i class="bi bi-check-square"></i></button>
+                          <button class="btn btn-sm btn-primary" *ngIf="groupAction === 'Voting' && votedProperty != property" matTooltip="Votar na Propriedade" (click)="voteProperty(property)"><i class="bi bi-square"></i></button>
+                          <!-- <button class="btn btn-sm btn-success ms-2" *ngIf="groupAction === 'Voting' && isGroupOwner" matTooltip="Selecionar Propriedade DEV" (click)="setChoosenPropertyDEV(property)"><i class="bi bi-check2-circle"></i></button>-->
                         </div>
                     </div>
                 </div>
