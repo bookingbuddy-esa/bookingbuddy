@@ -41,7 +41,8 @@ public class AccountControllerTest : IClassFixture<ApplicationDbContextFixture>
             Email = email,
             Name = $"User {Guid.NewGuid().ToString()}",
             EmailConfirmed = true,
-            ProviderId = provider!.AspNetProviderId
+            ProviderId = provider!.AspNetProviderId,
+            Description = "Test User",
         }, "Test123!");
 
         if (!createResult.Succeeded)

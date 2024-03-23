@@ -9,7 +9,6 @@ import {FeedbackService} from "./auxiliary/feedback.service";
 })
 export class AppComponent {
   title = 'Booking Buddy';
-  showChat: boolean = true;
   showFooter: boolean = true;
 
   constructor(private footerService: FooterService) {

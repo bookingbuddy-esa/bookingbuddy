@@ -185,6 +185,7 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de administrador do BookingBuddy."
             };
             adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser, "adminBB123!");
 
@@ -201,6 +202,7 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de utilizador (padrão) do BookingBuddy."
             };
             userUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(userUser, "userBB123!");
 
@@ -217,6 +219,7 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é a descrição da conta de proprietário do BookingBuddy."
             };
             landlordUser.PasswordHash =
                 new PasswordHasher<ApplicationUser>().HashPassword(landlordUser, "landlordBB123!");

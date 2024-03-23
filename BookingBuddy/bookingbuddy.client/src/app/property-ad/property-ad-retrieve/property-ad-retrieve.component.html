@@ -23,7 +23,7 @@
     </div>
     <div class="col-12 col-lg-9 mt-5">
         <div class="d-flex mt-2 mb-2 align-items-center">
-            <h5 class="m-0 flex-fill">Hospedado por {{ property.applicationUser?.name }}</h5>
+            <h5 class="m-0 flex-fill">Hospedado por <a [routerLink]="['/profile', property.applicationUserId]">{{ property.applicationUser?.name }}</a></h5>
             <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
         <i class="bi bi-star text-warning"></i>
       </button>

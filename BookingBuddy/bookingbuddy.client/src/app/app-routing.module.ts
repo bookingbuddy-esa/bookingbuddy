@@ -35,6 +35,7 @@ const routes: Routes = [
   {path: 'group-booking', component: GroupCreateComponent, canActivate: [AuthGuard]},
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
+  {path: 'profile/:id', component: ProfileComponent},
   //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
   {path: 'faq', component: FaqPageComponent},
   {path: 'unauthorized', component: UnauthorizedComponent},
