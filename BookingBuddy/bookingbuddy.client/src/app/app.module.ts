@@ -46,6 +46,7 @@ import { FirstStepComponent } from './group/group-create/first-step/first-step.c
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FaqPageComponent } from './faq-page/faq-page.component';
 import { FooterComponent } from './footer/footer.component';
+import { ChatNewComponent } from './chat-new/chat-new.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,7 @@ import { FooterComponent } from './footer/footer.component';
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupMembersStepComponent, FirstStepComponent, FaqPageComponent, FooterComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupMembersStepComponent, FirstStepComponent, FaqPageComponent, FooterComponent, ChatNewComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

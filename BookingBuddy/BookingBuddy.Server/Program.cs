@@ -88,6 +88,7 @@ app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController pa
     }
 });
 
+// TODO: Deixar de usar o userId como parâmetro e passar a usar um token JWT
 app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupController, string groupId) =>
 {
     if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))

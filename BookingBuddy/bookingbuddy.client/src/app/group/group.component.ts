@@ -27,7 +27,7 @@ export class GroupComponent {
   group_list: Group[] = [];
   currentGroup: Group | undefined;
   ws: WebSocket | undefined;
- 
+
   newMessage: string = '';
   modalOpen: boolean = false;
   isGroupOwner: boolean = false;
@@ -47,11 +47,11 @@ export class GroupComponent {
   bookingData: any;
 
   constructor(private authService: AuthorizeService,
-              private formBuilder: FormBuilder, 
-              private route: ActivatedRoute, 
+              private formBuilder: FormBuilder,
+              private route: ActivatedRoute,
               private router: Router,
               private cdref: ChangeDetectorRef,
-              private groupService: GroupService, 
+              private groupService: GroupService,
               private propertyService: PropertyAdService,
               private orderService: OrderService) {
     this.reservarPropriedadeFailed = false;
@@ -72,10 +72,10 @@ export class GroupComponent {
   }
 
   setBookingData(): any {
-    return this.bookingData = { 
+    return this.bookingData = {
       groupBookingId: this.currentGroup?.groupBookingId,
       orderType: 'group-booking'
-    }; 
+    };
   }
 
   get groupAction(): string {
@@ -120,7 +120,7 @@ export class GroupComponent {
             this.currentGroup!.groupAction = GroupAction.paying;
             break;
         }
-    
+
         this.sendMessageWS();
       }
     }).catch(error => {
@@ -206,7 +206,7 @@ export class GroupComponent {
     this.currentGroup?.propertiesId.splice(idIndex!, 1);
     this.currentGroup?.properties.splice(propertyIndex!, 1);
   }
-  
+
   public chooseGroup(group: Group): void {
     console.log("Escolher este grupo: " + JSON.stringify(group));
     this.errors = [];
@@ -287,7 +287,7 @@ export class GroupComponent {
 
         this.group_list.push(p);
       }*/
-      
+
       this.group_list = groups;
       this.submitting = false;
     }).catch(error => {
@@ -344,7 +344,7 @@ export class GroupComponent {
     if (type === 'start' && event.value) {
       this.checkInDate = event.value;
       this.updateMaxDate();
-    } else if (event.value){        
+    } else if (event.value){
       this.checkOutDate = event.value;
     }
     this.cdref.detectChanges();
@@ -381,7 +381,7 @@ export class GroupComponent {
 
       if (nextBlockedDate) {
         this.maxDate = nextBlockedDate;
-      } else {  
+      } else {
         this.maxDate =this.calendarMaxDate;
       }
     }
@@ -394,7 +394,7 @@ export class GroupComponent {
       const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
 
       // TODO: verificar se datas sao validas antes de fazer a order
-      /*this.router.navigate(['/transaction-handler'], { 
+      /*this.router.navigate(['/transaction-handler'], {
           queryParams: {
               groupId: this.currentGroup?.groupId,
               startDate: checkInDate.toISOString().split('T')[0],
@@ -406,7 +406,7 @@ export class GroupComponent {
       this.orderService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
         if (response) {
           //console.log(response);
-          /*this.bookingData = { 
+          /*this.bookingData = {
             groupBookingId: response.orderId,
             orderType: 'group-booking'
           };*/
@@ -531,5 +531,9 @@ export class GroupComponent {
       return Math.round(((pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
     }
     return 0;
+  }
+
+  redirectToProperty(propertyId: string) {
+    this.router.navigate(['/property', propertyId]);
   }
 }
