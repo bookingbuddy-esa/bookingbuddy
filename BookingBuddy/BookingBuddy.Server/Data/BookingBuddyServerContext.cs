@@ -111,6 +111,8 @@ namespace BookingBuddy.Server.Data
         /// Propriedade que diz respeito às mensagens de grupo.
         /// </summary>
         public DbSet<GroupMessage> GroupMessage { get; init; } = default!;
+        
+        public DbSet<UserAddedProperty> UserAddedProperty { get; set; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.

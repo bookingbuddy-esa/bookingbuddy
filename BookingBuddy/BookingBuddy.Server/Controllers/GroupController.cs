@@ -1,6 +1,4 @@
 ﻿using System.Net.WebSockets;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -8,12 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Property = BookingBuddy.Server.Models.Property;
 
 namespace BookingBuddy.Server.Controllers
 {
-    
     /// <summary>
     /// Controlador para os grupos.
     /// </summary>
@@ -21,7 +17,6 @@ namespace BookingBuddy.Server.Controllers
     [ApiController]
     public class GroupController : Controller
     {
-        
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
@@ -32,7 +27,9 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        public GroupController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        /// <param name="configuration">Configuração da aplicação</param>
+        public GroupController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
@@ -55,43 +52,71 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
-            var group = new Models.Group
+            var addedProperty = model.propertyId != null
+                ? new UserAddedProperty
+                {
+                    UserAddedPropertyId = Guid.NewGuid().ToString(),
+                    ApplicationUserId = user.Id,
+                    PropertyId = model.propertyId
+                }
+                : null;
+
+            var group = new Group
             {
-                GroupId = Guid.NewGuid().ToString().Substring(0, 16),
+                GroupId = Guid.NewGuid().ToString()[..16],
                 GroupOwnerId = user.Id,
                 Name = model.name,
                 MembersId = [user.Id],
-                PropertiesId = [],
-                MessagesId = [],
+                AddedPropertyIds = addedProperty != null ? [addedProperty.UserAddedPropertyId] : [],
                 GroupAction = GroupAction.None
             };
 
-            if (model.propertyId != null)
+            if (model.memberEmails != null)
             {
-                group.PropertiesId.Add(model.propertyId);
-            }
-
-            if(model.memberEmails != null)
-            {
+                group.Members = new List<ReturnUser>
+                {
+                    new()
+                    {
+                        Id = user.Id,
+                        Name = user.Name
+                    }
+                };
                 foreach (var email in model.memberEmails)
                 {
                     var member = await _userManager.FindByEmailAsync(email);
-                    if (member != null)
+                    if (member == null) continue;
+                    group.MembersId.Add(member.Id);
+                    group.Members.Add(new ReturnUser
                     {
-                        var groupReservationLink = $"{_configuration.GetSection("Front-End-Url").Value!}/groups?groupId={group.GroupId}";
-                        await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
-                            "d-d42dbf24249347e98a2e869043c21b26", email, member.Name,
-                            new { groupReservationLink });
-                    }
+                        Id = member.Id,
+                        Name = member.Name
+                    });
+                    var groupReservationLink =
+                        $"{_configuration.GetSection("Front-End-Url").Value!}/groups?groupId={group.GroupId}";
+                    await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                        "d-d42dbf24249347e98a2e869043c21b26", email, member.Name,
+                        new { groupReservationLink });
                 }
             }
 
             try
             {
+                var chat = _context.Chat.Add(new Chat
+                {
+                    ChatId = Guid.NewGuid().ToString(),
+                    Name = group.Name
+                }).Entity;
+                group.ChatId = chat.ChatId;
                 _context.Groups.Add(group);
+                if (addedProperty != null)
+                {
+                    _context.UserAddedProperty.Add(addedProperty);
+                }
+
                 await _context.SaveChangesAsync();
-                //return Ok("Grupo criado com sucesso.");
-                return CreatedAtAction(nameof(GetGroup), new { groupId = group.GroupId }, group);
+                return CreatedAtAction(nameof(GetGroup),
+                    new { groupId = group.GroupId },
+                    (await GetGroup(group.GroupId) as OkObjectResult)?.Value);
             }
             catch (Exception)
             {
@@ -108,59 +133,81 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>O grupo, caso exista ou não encontrado, caso contrário</returns>
         [HttpGet("{groupId}")]
         [Authorize]
-        public async Task<ActionResult<Models.Group>> GetGroup(string groupId)
+        public async Task<IActionResult> GetGroup(string groupId)
         {
             try
             {
+                var user = await _userManager.GetUserAsync(User);
+
                 var group = await _context.Groups.FindAsync(groupId);
                 if (group == null)
                 {
-                    return NotFound("Não foi encontrado nenhum grupo com este ID. Certifique-se que o URL está correto.");
+                    return NotFound(
+                        "Não foi encontrado nenhum grupo com este ID. Certifique-se que o URL está correto.");
                 }
 
-                List<Property> properties = [];
-                group.PropertiesId?.ForEach(propertyId => {
-                    var property = _context.Property.Where(p => p.PropertyId == propertyId).FirstOrDefault();
-                    if (property != null)
-                    {
-                        properties.Add(new Property
-                        {
-                            PropertyId = property.PropertyId,
-                            Name = property.Name,
-                            PricePerNight = property.PricePerNight,
-                            ImagesUrl = property.ImagesUrl,
-                            Location = property.Location
-                        });
-                    }
+                List<UserAddedProperty> addedProperties = [];
+                group.AddedPropertyIds.ForEach(userAddedPropertyId =>
+                {
+                    var userAddedProperty = _context.UserAddedProperty
+                        .Include(uap => uap.Property)
+                        .Include(uap => uap.ApplicationUser)
+                        .FirstOrDefault(uap =>
+                            uap.UserAddedPropertyId == userAddedPropertyId);
+                    if (userAddedProperty == null) return;
+
+                    addedProperties.Add(userAddedProperty);
                 });
 
-                group.Properties = properties;
+                group.AddedProperties = addedProperties;
 
                 List<ReturnUser> users = [];
 
-                group.MembersId?.ForEach(memberId => {
-                    var user = _context.Users.FirstOrDefault(u => u.Id == memberId);
-                    if(user != null){
-                        users.Add(new ReturnUser(){
-                            Id = user.Id,
-                            Name = user.Name
+                group.MembersId.ForEach(memberId =>
+                {
+                    var member = _context.Users.FirstOrDefault(u => u.Id == memberId);
+                    if (member != null)
+                    {
+                        users.Add(new ReturnUser
+                        {
+                            Id = member.Id,
+                            Name = member.Name
                         });
                     }
                 });
 
                 group.Members = users;
+                var owner = _context.Users.FirstOrDefault(u => u.Id == group.GroupOwnerId);
 
-                List<GroupMessage> messages = [];
-                group.MessagesId?.ForEach(messageId => {
-                    var message = _context.GroupMessage.FirstOrDefault(m => m.MessageId == messageId);
-                    if (message != null)
+                return Ok(new ReturnGroup
+                {
+                    GroupId = group.GroupId,
+                    GroupBookingId = group.GroupBookingId,
+                    GroupOwner = new ReturnUser
                     {
-                        messages.Add(message);
-                    }
+                        Id = owner?.Id ?? "Unknown",
+                        Name = owner?.Name ?? "Unknown"
+                    },
+                    Name = group.Name,
+                    Members = group.Members,
+                    Properties = addedProperties.Select(
+                        uap => new ReturnProperty()
+                        {
+                            PropertyId = uap.PropertyId,
+                            Name = uap.Property?.Name ?? "Unknown",
+                            PricePerNight = uap.Property?.PricePerNight ?? 0,
+                            ImagesUrl = uap.Property?.ImagesUrl ?? [],
+                            Location = uap.Property?.Location ?? "Unknown",
+                            AddedBy = new ReturnUser
+                            {
+                                Id = uap.ApplicationUser?.Id ?? "Unknown",
+                                Name = uap.ApplicationUser?.Name ?? "Unknown"
+                            }
+                        }).ToList(),
+                    ChosenProperty = group.ChosenProperty,
+                    ChatId = group.ChatId,
+                    GroupAction = group.GroupAction.AsString()
                 });
-
-                group.Messages = messages;
-                return group;
             }
             catch (Exception ex)
             {
@@ -178,25 +225,28 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> GetGroupsByUserId(string userId)
         {
-            try {
+            try
+            {
                 var groups = await _context.Groups.Where(g => g.MembersId.Contains(userId)).ToListAsync();
-                if (groups == null || groups.Count == 0)
+                if (groups.Count == 0)
                 {
-                    return Ok(new List<Group>());
+                    return Ok(new List<ReturnGroup>());
                 }
 
-                List<Group> groupsList = [];
+                List<ReturnGroup> groupsList = [];
                 foreach (var group in groups)
                 {
                     var groupResult = await GetGroup(group.GroupId);
-                    if (groupResult != null)
+                    if (groupResult is OkObjectResult { Value: ReturnGroup groupResultOk })
                     {
-                        groupsList.Add((Group)groupResult.Value);
+                        groupsList.Add(groupResultOk);
                     }
                 }
 
                 return Ok(groupsList);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.Message);
                 return NotFound();
             }
@@ -218,7 +268,7 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest("Ação inválida.");
             }
 
-            switch(groupAction.ToLower())
+            switch (groupAction.ToLower())
             {
                 case "none":
                     group.GroupAction = GroupAction.None;
@@ -257,17 +307,21 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            if (group.ChoosenProperty != null)
+            if (group.ChosenProperty != null)
             {
                 return BadRequest("Já existe uma propriedade escolhida para este grupo.");
             }
 
-            if (!group.PropertiesId.Contains(propertyId))
+            var addedProperty =
+                await _context.UserAddedProperty.FirstOrDefaultAsync(uap =>
+                    group.AddedPropertyIds.Contains(uap.UserAddedPropertyId));
+
+            if (!addedProperty?.PropertyId.Contains(propertyId) ?? false)
             {
                 return BadRequest("A propriedade não existe no grupo.");
             }
 
-            group.ChoosenProperty = propertyId;
+            group.ChosenProperty = propertyId;
             try
             {
                 await _context.SaveChangesAsync();
@@ -290,25 +344,27 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
-
             var group = await _context.Groups.FindAsync(groupId);
 
-            if(group == null)
+            if (group == null)
             {
                 return NotFound();
             }
 
-            if (group.PropertiesId.Count >= 6)
+            var addedProperties =
+                await _context.UserAddedProperty.Where(uap =>
+                    group.AddedPropertyIds.Contains(uap.UserAddedPropertyId)).ToListAsync();
+            if (addedProperties.Count >= 6)
             {
                 return BadRequest("O Grupo ja tem 6 propriedades na votação!");
             }
 
-            if (group.PropertiesId.Contains(propertyId))
+            if (addedProperties.Any(uap => uap.PropertyId == propertyId))
             {
                 return BadRequest("A propriedade ja existe no grupo!");
             }
 
-            group.PropertiesId.Add(propertyId);
+            group.AddedPropertyIds.Add(propertyId);
             try
             {
                 await _context.SaveChangesAsync();
@@ -332,7 +388,6 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> RemoveProperty(string groupId, string propertyId)
         {
-
             var group = await _context.Groups.FindAsync(groupId);
 
             if (group == null)
@@ -341,12 +396,12 @@ namespace BookingBuddy.Server.Controllers
             }
 
 
-            if (!group.PropertiesId.Contains(propertyId))
+            if (!group.AddedPropertyIds.Contains(propertyId))
             {
                 return BadRequest("A propriedade não existe no grupo!");
             }
 
-            group.PropertiesId.Remove(propertyId);
+            group.AddedPropertyIds.Remove(propertyId);
             try
             {
                 await _context.SaveChangesAsync();
@@ -365,7 +420,6 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="groupId">O ID do grupo ao qual o utilizador será adicionado como membro.</param>
         /// <param name="userId">O ID do utilizador a ser adicionado como membro.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
-
         [Authorize]
         [HttpPut("addMember")]
         public async Task<IActionResult> AddMember(string groupId)
@@ -460,94 +514,16 @@ namespace BookingBuddy.Server.Controllers
             {
                 return BadRequest(e.Message);
             }
-
-        }
-
-        [HttpPost("{groupId}/messages")]
-         [Authorize]
-         public async Task<IActionResult> CreateMessage(string groupId, [FromBody] NewGroupMessage message)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-            var group = await _context.Groups.FindAsync(groupId);
-
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            if (!group.MembersId.Contains(user.Id))
-            {
-                return Unauthorized();
-            }
-
-            var newMessage = new GroupMessage
-            {
-                MessageId = Guid.NewGuid().ToString(),
-                UserName = user.Name,
-                Message = message.message,
-                GroupId = groupId
-            };
-
-            _context.GroupMessage.Add(newMessage);
-
-            group.MessagesId.Add(newMessage.MessageId);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("{groupId}/messages")]
-        [Authorize]
-        public async Task<IActionResult> GetMessages(string groupId)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var group = await _context.Groups.FindAsync(groupId);
-
-            if (group == null)
-            {
-                return NotFound();
-            }
-
-            var messages = await _context.GroupMessage
-          .Where(m => m.GroupId == groupId)
-          .Select(m => new {
-              m.UserName,
-              m.Message,
-          }).ToListAsync();
-
-
-            return Ok(messages);
         }
 
 
-
-
-            /// <summary>
-            /// Manipula a comunicação WebSocket para um grupo específico.
-            /// </summary>
-            /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
-            /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
-            /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
-
-            [NonAction]
+        /// <summary>
+        /// Manipula a comunicação WebSocket para um grupo específico.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
+        /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
+        /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
+        [NonAction]
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
             var group = await _context.Groups.FindAsync(groupId);
@@ -556,7 +532,6 @@ namespace BookingBuddy.Server.Controllers
             //     await WebSocketWrapper.NotifyAllAsync(groupReceived);
             // });
         }
-
     }
 
     /// <summary>
@@ -568,4 +543,28 @@ namespace BookingBuddy.Server.Controllers
     public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
 
     public record NewGroupMessage(string message);
+
+    public record ReturnGroup
+    {
+        public string GroupId { get; set; }
+        public string? GroupBookingId { get; set; }
+        public ReturnUser GroupOwner { get; set; }
+        public string Name { get; set; }
+        public List<ReturnUser> Members { get; set; }
+        public List<ReturnProperty> Properties { get; set; }
+        public string? ChosenProperty { get; set; }
+        public string? ChatId { get; set; }
+        public string GroupAction { get; set; }
+    }
+
+    public record ReturnProperty
+    {
+        public string PropertyId { get; set; }
+        public string Name { get; set; }
+        public decimal PricePerNight { get; set; }
+        public List<string> ImagesUrl { get; set; }
+        public string Location { get; set; }
+
+        public ReturnUser AddedBy { get; set; }
+    }
 }

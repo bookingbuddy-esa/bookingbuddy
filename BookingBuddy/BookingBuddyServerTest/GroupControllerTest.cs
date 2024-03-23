@@ -52,9 +52,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
             GroupOwnerId = user!.Id,
             Name = "Casa Teste",
             MembersId = [user.Id],
-            PropertiesId = [],
-            MessagesId = [],
-            ChoosenProperty = null
+            ChosenProperty = null
         };
 
         try
@@ -206,50 +204,4 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         
         Assert.IsType<CreatedAtActionResult>(result);
     }
-
-    [Fact]
-    public async void CreateMessage_Returns_Unauthorized_When_User_IsntAuthenticated()
-    {
-        
-        var group = await CreateRandomGroup();
-        var controller = CreateController();
-
-       
-        var result = await controller.CreateMessage(group!.GroupId, new NewGroupMessage("Test message"));
-
-        
-        Assert.IsType<UnauthorizedResult>(result);
-    }
-
-    [Fact]
-    public async void CreateMessage_Returns_Ok_When_User_IsAuthenticated()
-    {
-
-        var group = await CreateRandomGroup();
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
-        var controller = CreateController(user!.Id);
-
-
-        var result = await controller.CreateMessage(group!.GroupId, new NewGroupMessage("Test message"));
-
-
-        Assert.IsType<OkResult>(result);
-    }
-
-    [Fact]
-    public async Task GetMessages_Returns_Ok_When_User_IsAuthenticated()
-    {
-        var group = await CreateRandomGroup();
-        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
-        var controller = CreateController(user!.Id);
-        var msg = new NewGroupMessage("Nova Mensagem");
-
-        await controller.CreateMessage(group!.GroupId, msg);
-        var result = await controller.GetMessages(group.GroupId) as OkObjectResult;
-
-        Assert.NotNull(result);
-        var messages = Assert.IsAssignableFrom<IEnumerable<object>>(result.Value);
-        Assert.NotEmpty(messages);
-    }
-
 }

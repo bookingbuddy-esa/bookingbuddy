@@ -1,27 +1,28 @@
-import { ChangeDetectorRef, Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {environment} from "../../environments/environment";
-import { ActivatedRoute, Router } from '@angular/router';
-import { GroupService } from './group.service';
-import { timeout } from 'rxjs';
-import { AuthorizeService } from '../auth/authorize.service';
-import { UserInfo } from '../auth/authorize.dto';
-import { Group, GroupAction } from '../models/group';
-import { Property } from '../models/property';
-import { Discount } from '../models/discount';
-import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PropertyAdService } from '../property-ad/property-ad.service';
-import { OrderService } from '../payment/order.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {GroupService} from './group.service';
+import {timeout} from 'rxjs';
+import {AuthorizeService} from '../auth/authorize.service';
+import {UserInfo} from '../auth/authorize.dto';
+import {Group, GroupAction} from '../models/group';
+import {Property} from '../models/property';
+import {Discount} from '../models/discount';
+import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {PropertyAdService} from '../property-ad/property-ad.service';
+import {OrderService} from '../payment/order.service';
 
 @Component({
   selector: 'app-group',
   templateUrl: './group.component.html',
   styleUrl: './group.component.css'
 })
-export class GroupComponent {
+export class GroupComponent implements OnInit {
   @ViewChildren('successAlerts, errorAlerts') alertContainers!: QueryList<ElementRef>;
   success_alerts: string[] = [];
   errors: string[] = [];
+  global_loading: boolean = false;
   submitting: boolean = false;
   user: UserInfo | undefined;
   group_list: Group[] = [];
@@ -63,12 +64,31 @@ export class GroupComponent {
   }
 
   ngOnInit(): void {
-      this.authService.user().forEach(async user => {
-        this.user = user;
-        this.setupGroupById().then(() => {
-          this.loadUserGroups();
+    this.global_loading = true;
+    this.authService.user().forEach(async user => {
+      this.user = user;
+    }).then(() => {
+      if (this.user) {
+        this.groupService.getGroupsByUserId(this.user.userId).forEach(groups => {
+          this.group_list = groups;
+        }).then(() => {
+          let queryGroupId = this.route.snapshot.queryParams['groupId'];
+          if (queryGroupId) {
+            let group = this.group_list.find(g => g.groupId == queryGroupId);
+            if (group) {
+              this.chooseGroup(group);
+            }
+          }
+          this.global_loading = false;
+        }).catch(error => {
+          console.error('Erro ao carregar grupos:', error);
+          this.global_loading = false;
         });
-      });
+      }
+    }).catch(error => {
+      console.error('Erro ao carregar utilizador:', error);
+      this.global_loading = false;
+    });
   }
 
   setBookingData(): any {
@@ -78,22 +98,22 @@ export class GroupComponent {
     };
   }
 
-  get groupAction(): string {
-    if (this.currentGroup) {
-      switch (this.currentGroup.groupAction) {
-        case GroupAction.none:
-          return 'None';
-        case GroupAction.voting:
-          return 'Voting';
-        case GroupAction.booking:
-          return 'Booking';
-        case GroupAction.paying:
-          return 'Paying';
-      }
-    }
-
-    return 'None';
-  }
+  // get groupAction(): string {
+  //   if (this.currentGroup) {
+  //     switch (this.currentGroup.groupAction) {
+  //       case GroupAction.none:
+  //         return 'None';
+  //       case GroupAction.voting:
+  //         return 'Voting';
+  //       case GroupAction.booking:
+  //         return 'Booking';
+  //       case GroupAction.paying:
+  //         return 'Paying';
+  //     }
+  //   }
+  //
+  //   return 'None';
+  // }
 
   public copyGroupLink(): void {
     let url = window.location.href;
@@ -101,25 +121,25 @@ export class GroupComponent {
   }
 
   public setGroupAction(action: string): void {
-    if(!this.currentGroup || action != 'voting' && action != 'booking' && action != 'paying'){
+    if (!this.currentGroup || action != 'voting' && action != 'booking' && action != 'paying') {
       return;
     }
 
     this.groupService.setGroupAction(this.currentGroup!.groupId, action).forEach(response => {
       if (response) {
         //this.success_alerts.push("Ação do grupo atualizada com sucesso!");
-        switch (action) {
-          case 'voting':
-            this.currentGroup!.groupAction = GroupAction.voting;
-            // TODO: enviar alert do tipo "info" (fazer um alerta genérico em vez de success e error)
-            break;
-          case 'booking':
-            this.currentGroup!.groupAction = GroupAction.booking;
-            break;
-          case 'paying':
-            this.currentGroup!.groupAction = GroupAction.paying;
-            break;
-        }
+        // switch (action) {
+        //   case 'voting':
+        //     this.currentGroup!.groupAction = GroupAction.voting;
+        //     // TODO: enviar alert do tipo "info" (fazer um alerta genérico em vez de success e error)
+        //     break;
+        //   case 'booking':
+        //     this.currentGroup!.groupAction = GroupAction.booking;
+        //     break;
+        //   case 'paying':
+        //     this.currentGroup!.groupAction = GroupAction.paying;
+        //     break;
+        // }
 
         this.sendMessageWS();
       }
@@ -143,32 +163,14 @@ export class GroupComponent {
   }
 
   public sendMessageWS(): void {
-    if(this.ws){
+    if (this.ws) {
       this.ws.send(JSON.stringify(this.currentGroup));
       console.log("Sending to WS: " + JSON.stringify(this.currentGroup));
     }
   }
 
-  public sendMessage(): void {
-    if (this.newMessage.trim() !== '') {
-      let message = {
-        userName: this.user!.name,
-        message: this.newMessage.trim()
-      };
 
-      this.groupService.sendGroupMessage(this.currentGroup!.groupId, message.message).forEach(response => {
-        if (response) {
-          console.log(response);
-          this.currentGroup!.messages.push(message);
-          this.sendMessageWS();
-        }
-      })
-
-      this.newMessage = '';
-    }
-  }
-
-  public setChoosenProperty(property: Property){
+  public setChoosenProperty(property: Property) {
     /*this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
       if (response) {
         console.log(response);
@@ -176,17 +178,17 @@ export class GroupComponent {
         this.sendMessageWS();
       }
     });*/
-    if(property){
-      this.currentGroup!.choosenProperty = property.propertyId;
+    if (property) {
+      this.currentGroup!.chosenProperty = property.propertyId;
       this.sendMessageWS();
     }
   }
 
-  public setChoosenPropertyDEV(property: Property){
+  public setChoosenPropertyDEV(property: Property) {
     this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
       if (response) {
         console.log(response);
-        this.currentGroup!.choosenProperty = property.propertyId;
+        this.currentGroup!.chosenProperty = property.propertyId;
         this.sendMessageWS();
       }
     }).catch(error => {
@@ -201,56 +203,27 @@ export class GroupComponent {
         //console.log(response);
       }
     });
-    const idIndex = this.currentGroup?.propertiesId.indexOf(property.propertyId);
-    const propertyIndex = this.currentGroup?.properties.indexOf(property);
-    this.currentGroup?.propertiesId.splice(idIndex!, 1);
-    this.currentGroup?.properties.splice(propertyIndex!, 1);
+    // const idIndex = this.currentGroup?.propertiesId.indexOf(property.propertyId);
+    // const propertyIndex = this.currentGroup?.properties.indexOf(property);
+    // this.currentGroup?.propertiesId.splice(idIndex!, 1);
+    // this.currentGroup?.properties.splice(propertyIndex!, 1);
   }
 
   public chooseGroup(group: Group): void {
-    console.log("Escolher este grupo: " + JSON.stringify(group));
     this.errors = [];
     this.success_alerts = [];
-    this.router.navigate([], { queryParams: { groupId: group.groupId }});
+    this.router.navigate([], {queryParams: {groupId: group.groupId}});
 
     this.currentGroup = group;
-    this.isGroupOwner = this.currentGroup.groupOwnerId == this.user?.userId;
+    console.log(group);
+    this.isGroupOwner = group.groupOwner.id === this.user?.userId;
 
     this.loadDiscounts();
     this.loadBlockedDates();
 
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
-
-    if (this.ws) {
-      this.ws.close();
-    }
-
-    this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
-    this.ws.onmessage = (event) => {
-      // TODO: rework
-      console.log("Mensagem recebida: " + event.data);
-      let newGroupState = JSON.parse(event.data);
-
-      // compare this.currentGroup with newGroupState and check if there are any changes
-      if(JSON.stringify(this.currentGroup) == JSON.stringify(newGroupState)){
-        console.log("No changes");
-      } else {
-        console.log("New state");
-      }
-
-
-      // procura o grupo que contenha o groupId do newGroupState
-      // e atualiza o estado do grupo
-      let index = this.group_list.findIndex(g => g.groupId == newGroupState.groupId);
-      if(index >= 0){
-        this.group_list[index] = newGroupState;
-      }
-
-      if(this.currentGroup?.groupId == newGroupState.groupId){
-        this.currentGroup = newGroupState;
-      }
-    };
+    // TODO: Estabelecer conexão com WebSocket
   }
 
   public getPropertyImage(property: Property) {
@@ -262,7 +235,7 @@ export class GroupComponent {
   }
 
   public getGroupMembers(): number {
-    if(this.currentGroup && this.currentGroup?.members.length > 0){
+    if (this.currentGroup && this.currentGroup?.members.length > 0) {
       return this.currentGroup.members.length;
     }
 
@@ -271,62 +244,44 @@ export class GroupComponent {
 
   private loadUserGroups() {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
-      //console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
-      /*for (let i = 0; i < 10; i++){
-        let p: Group = {
-          groupId: '123',
-          groupOwnerId: '123',
-          name: 'grupo ' + i,
-          membersId: [],
-          members: [],
-          propertiesId: [],
-          properties: [],
-          choosenProperty: 'ya',
-          messages: []
-        }
-
-        this.group_list.push(p);
-      }*/
-
       this.group_list = groups;
-      this.submitting = false;
+      console.log(groups);
     }).catch(error => {
       console.log(error.error);
-      //this.errors.push(error.error);
+    }).then(() => {
       this.submitting = false;
-      //console.log("Erro ao receber grupos: " + JSON.stringify(error));
     });
   }
 
   private async setupGroupById() {
-    if(this.user){
+    if (this.user) {
       this.submitting = true;
-      this.route.queryParams.forEach(params => {
-        if (params['groupId']) {
-          this.groupService.getGroup(params['groupId']).forEach(getGroupResponse => {
-            if (getGroupResponse) {
-              const group: Group = getGroupResponse as Group;
-              let isMemberOfGroup = group.membersId.includes(this.user!.userId);
-              if (!isMemberOfGroup) {
-                this.groupService.addMemberToGroup(params['groupId']).forEach(addMemberResponse => {
-                  if (addMemberResponse) {
-                    this.loadUserGroups();
-                    this.success_alerts.push("Membro adicionado ao grupo com sucesso!");
-                  }
-                }).catch(error => {
-                  this.errors.push("Erro ao adicionar membro ao grupo!");
-                  //console.log("Erro ao adicionar membro ao grupo: " + JSON.stringify(error));
-                });
-              }
-            }
-
-            return Promise.resolve();
-          }).catch(error => {
-            this.errors.push(error.error);
-            //console.log("Erro ao receber grupo: " + JSON.stringify(error));
-          });
-        }
-      });
+      // this.route.queryParams.forEach(params => {
+      //   if (params['groupId']) {
+      //     this.groupService.getGroup(params['groupId']).forEach(getGroupResponse => {
+      //       if (getGroupResponse) {
+      //         const group: Group = getGroupResponse as Group;
+      //         let isMemberOfGroup = group.membersId.includes(this.user!.userId);
+      //         if (!isMemberOfGroup) {
+      //           this.groupService.addMemberToGroup(params['groupId']).forEach(addMemberResponse => {
+      //             if (addMemberResponse) {
+      //               this.loadUserGroups();
+      //               this.success_alerts.push("Membro adicionado ao grupo com sucesso!");
+      //             }
+      //           }).catch(error => {
+      //             this.errors.push("Erro ao adicionar membro ao grupo!");
+      //             //console.log("Erro ao adicionar membro ao grupo: " + JSON.stringify(error));
+      //           });
+      //         }
+      //       }
+      //
+      //       return Promise.resolve();
+      //     }).catch(error => {
+      //       this.errors.push(error.error);
+      //       //console.log("Erro ao receber grupo: " + JSON.stringify(error));
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -344,7 +299,7 @@ export class GroupComponent {
     if (type === 'start' && event.value) {
       this.checkInDate = event.value;
       this.updateMaxDate();
-    } else if (event.value){
+    } else if (event.value) {
       this.checkOutDate = event.value;
     }
     this.cdref.detectChanges();
@@ -382,13 +337,13 @@ export class GroupComponent {
       if (nextBlockedDate) {
         this.maxDate = nextBlockedDate;
       } else {
-        this.maxDate =this.calendarMaxDate;
+        this.maxDate = this.calendarMaxDate;
       }
     }
   }
 
   public reservar(_: any) {
-    if(this.currentGroup){
+    if (this.currentGroup) {
       this.reservarPropriedadeFailed = false;
       const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
       const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
@@ -422,8 +377,8 @@ export class GroupComponent {
   }
 
   loadBlockedDates() {
-    if (this.currentGroup?.choosenProperty) {
-      this.propertyService.getPropertyBlockedDates(this.currentGroup?.choosenProperty).forEach((dateRanges: any[]) => {
+    if (this.currentGroup?.chosenProperty) {
+      this.propertyService.getPropertyBlockedDates(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
         this.blockedDates = [];
 
         dateRanges.forEach(dateRange => {
@@ -443,8 +398,8 @@ export class GroupComponent {
   }
 
   loadDiscounts() {
-    if (this.currentGroup?.choosenProperty) {
-      this.propertyService.getPropertyDiscounts(this.currentGroup?.choosenProperty).forEach((dateRanges: any[]) => {
+    if (this.currentGroup?.chosenProperty) {
+      this.propertyService.getPropertyDiscounts(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
         this.discounts = [];
 
         dateRanges.forEach(dateRange => {
@@ -469,8 +424,8 @@ export class GroupComponent {
           this.discounts.push(discount);
         });
       }).catch(error => {
-        console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-      }
+          console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+        }
       );
     }
   }
@@ -479,17 +434,17 @@ export class GroupComponent {
     const formattedStrings: string[] = [];
 
     this.pricesMap.forEach((count, price) => {
-      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100)/ 100}€`);
+      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100) / 100}€`);
     });
 
     return formattedStrings;
   }
 
   calcularTotalDesconto() {
-    let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.choosenProperty)?.pricePerNight;
+    let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
     const selectedDates: Date[] = [];
     this.pricesMap = new Map();
-    if (this.currentGroup?.choosenProperty && this.checkInDate && this.checkOutDate) {
+    if (this.currentGroup?.chosenProperty && this.checkInDate && this.checkOutDate) {
       const currentDate = new Date(this.checkInDate);
       while (currentDate < this.checkOutDate) {
         selectedDates.push(new Date(currentDate));
@@ -524,8 +479,8 @@ export class GroupComponent {
   }
 
   priceWithDiscount(discountAmount: number): number {
-    let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.choosenProperty)?.pricePerNight;
-    if (this.currentGroup?.choosenProperty && pricePerNight) {
+    let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
+    if (this.currentGroup?.chosenProperty && pricePerNight) {
       const discountMultiplier = 1 - discountAmount / 100;
 
       return Math.round(((pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
@@ -536,4 +491,7 @@ export class GroupComponent {
   redirectToProperty(propertyId: string) {
     this.router.navigate(['/property', propertyId]);
   }
+
+  protected readonly console = console;
+  protected readonly navigator = navigator;
 }

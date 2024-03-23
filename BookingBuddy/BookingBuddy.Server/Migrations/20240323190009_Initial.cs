@@ -54,22 +54,17 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Groups",
+                name: "GroupMessage",
                 columns: table => new
                 {
-                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    GroupOwnerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    MembersId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PropertiesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ChoosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MessagesId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GroupAction = table.Column<int>(type: "int", nullable: false),
-                    GroupBookingId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    MessageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GroupId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.GroupId);
+                    table.PrimaryKey("PK_GroupMessage", x => x.MessageId);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +99,25 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Property",
+                columns: table => new
+                {
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AmenityIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    PricePerNight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ImagesUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Clicks = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Property", x => x.PropertyId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -125,48 +139,27 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupMessage",
+                name: "Groups",
                 columns: table => new
                 {
-                    MessageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GroupOwnerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    MembersId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddedPropertyIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ChosenProperty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ChatId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    GroupAction = table.Column<int>(type: "int", nullable: false),
+                    GroupBookingId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupMessage", x => x.MessageId);
+                    table.PrimaryKey("PK_Groups", x => x.GroupId);
                     table.ForeignKey(
-                        name: "FK_GroupMessage_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Property",
-                columns: table => new
-                {
-                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AmenityIds = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    PricePerNight = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ImagesUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Clicks = table.Column<int>(type: "int", nullable: false),
-                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Property", x => x.PropertyId);
-                    table.ForeignKey(
-                        name: "FK_Property_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "GroupId");
+                        name: "FK_Groups_Chat_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chat",
+                        principalColumn: "ChatId");
                 });
 
             migrationBuilder.CreateTable(
@@ -571,6 +564,37 @@ namespace BookingBuddy.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserAddedProperty",
+                columns: table => new
+                {
+                    UserAddedPropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PropertyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    GroupId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAddedProperty", x => x.UserAddedPropertyId);
+                    table.ForeignKey(
+                        name: "FK_UserAddedProperty_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserAddedProperty_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId");
+                    table.ForeignKey(
+                        name: "FK_UserAddedProperty_Property_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Property",
+                        principalColumn: "PropertyId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupOrderPayment",
                 columns: table => new
                 {
@@ -606,19 +630,19 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AmenityId", "DisplayName", "Name", "PropertyId" },
                 values: new object[,]
                 {
-                    { "0c6456a1-95fc-4c4b-9083-2f2b6cc76f6e", "Varanda", "Varanda", null },
-                    { "2a724a46-9e16-4843-8884-da5a0b9f4767", "Piscina Partilhada", "PiscinaPartilhada", null },
-                    { "48505009-7d59-4612-8daa-3b352a0ae64e", "Estacionamento", "Estacionamento", null },
-                    { "57b92f1a-5f10-4526-8d7a-82deb74a4d0c", "Animais", "Animais", null },
-                    { "57cb1ce1-6c30-47b0-9e30-3bc48209f15b", "Câmaras", "Camaras", null },
-                    { "6647ad35-34b6-4473-b1e4-6303e1894bfb", "TV", "Tv", null },
-                    { "a44cfb5c-7d5c-4f33-9209-7285bd5bea50", "Microondas", "Microondas", null },
-                    { "b7274cca-a8d4-4bfc-b9d5-d8adf208ffbc", "Máquina de Lavar", "MaquinaLavar", null },
-                    { "bd4dd96b-8064-49dd-868a-af3141c6ad88", "Cozinha", "Cozinha", null },
-                    { "dcd962fd-05bb-41e7-bc97-d57e4de9ae7b", "Piscina Individual", "PiscinaIndividual", null },
-                    { "e2846290-cc9e-47c5-bcf5-824738babddd", "Frigorífico", "Frigorifico", null },
-                    { "e5907ede-577f-471f-96a6-06288fe717a3", "Quintal", "Quintal", null },
-                    { "faf8cea5-6984-4221-b248-f9e6563a3594", "Wifi", "Wifi", null }
+                    { "00507742-6781-4b6e-9f17-bc264e1b9ec8", "Piscina Partilhada", "PiscinaPartilhada", null },
+                    { "35113619-f908-4ab1-b448-a60bd35b66d8", "Microondas", "Microondas", null },
+                    { "4c4a6b16-7fcf-47ae-a930-5059f0a5a89c", "Cozinha", "Cozinha", null },
+                    { "67ed4a19-4c5a-4327-a2d4-0e7322eabec4", "Varanda", "Varanda", null },
+                    { "71c4bc51-09ef-45e7-8f57-b380dd33a592", "Estacionamento", "Estacionamento", null },
+                    { "72f9f703-e2f0-41f9-9ca3-cabba957ac91", "Câmaras", "Camaras", null },
+                    { "73356c1e-0104-48b5-bf9d-ae5eabdd1e17", "Quintal", "Quintal", null },
+                    { "93e77f87-6e92-45f4-9fb0-6124edf8dee2", "Piscina Individual", "PiscinaIndividual", null },
+                    { "9d13e9f6-dde8-4fd2-9002-855cc5ff70c9", "Animais", "Animais", null },
+                    { "ad331cbf-8f00-41c7-9890-12a0ec338051", "Frigorífico", "Frigorifico", null },
+                    { "d1d810af-c2d1-44ea-9f34-46b58286624e", "Máquina de Lavar", "MaquinaLavar", null },
+                    { "e6c0df1c-6265-41fc-b11a-b97c552c48e8", "Wifi", "Wifi", null },
+                    { "e8621944-2e9d-46ed-8e47-e586f37b8f4a", "TV", "Tv", null }
                 });
 
             migrationBuilder.InsertData(
@@ -626,9 +650,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "AspNetProviderId", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "a4f158ad-5a48-4dda-8ee4-c2125eace1e7", "local", "LOCAL" },
-                    { "d50a2395-aa10-486c-8d3f-f895eea740e5", "microsoft", "MICROSOFT" },
-                    { "f21a2ab8-04ae-49c6-bd26-f1bd38b4cc90", "google", "GOOGLE" }
+                    { "343cb2e7-4398-4df7-b0be-3af7408099c7", "local", "LOCAL" },
+                    { "e39e1337-594d-46f2-bb60-79279624c691", "google", "GOOGLE" },
+                    { "f831ef7f-9715-44fa-bf15-5d443a4e985a", "microsoft", "MICROSOFT" }
                 });
 
             migrationBuilder.InsertData(
@@ -636,9 +660,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3c7a28de-3fec-4bb1-ba21-3df2d87b599e", "4c0e25c0-093b-4f0c-9dea-54db02e12c9b", "user", "USER" },
-                    { "6e5a3337-b945-4299-a94d-07c7a9c022de", "de6b1dfe-2155-4620-a922-b9a7ba13aaf4", "landlord", "LANDLORD" },
-                    { "ce923822-d6ff-48ea-a3e2-11f29e5c2bfb", "8d8bdfc3-8c1d-4e12-b956-9230bdb958bd", "admin", "ADMIN" }
+                    { "0ccf7447-2660-496d-a024-a9977f759f6d", "fc40b516-a729-497f-8c3f-d3503ebbd65b", "admin", "ADMIN" },
+                    { "4d84c4da-ab85-418f-9500-5fa4f7b95a4e", "5718a62c-05e7-4edd-aa13-37970e3c6ca1", "user", "USER" },
+                    { "59c01113-b1ee-49ea-a7b4-0aee373c2ed3", "3dcb59a2-dfc9-4849-a5b2-4ec6fef79f91", "landlord", "LANDLORD" }
                 });
 
             migrationBuilder.InsertData(
@@ -646,9 +670,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "GroupBookingOrderOrderId", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "PictureUrl", "ProviderId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "80de2007-e6b2-47b2-8e2e-e52e80adee65", 0, "e39f371a-7f10-4ec4-a5a6-a5c75b18bd4b", "bookingbuddy.admin@bookingbuddy.com", true, null, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEKRzCd8JV1yyJQZtSV6hXkGWftU6NDJ6nMUqGnP3SqIxpOgX41q2x0vQzM0tGUcdCQ==", null, false, null, "a4f158ad-5a48-4dda-8ee4-c2125eace1e7", "2daed617-b6d1-43ec-962f-ecbcccf3c53f", false, "bookingbuddy.admin@bookingbuddy.com" },
-                    { "bf0511a0-e4fe-4700-8004-d18a3cd3f83e", 0, "4f54f5ae-b404-4494-bf70-9295e66284bd", "bookingbuddy.landlord@bookingbuddy.com", true, null, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAECKQu5oVKaNe9bnmkfM7fpxoOYqWGXH9AYQQynmtDUhYh31djYR+8GA08Kb9wJUn9A==", null, false, null, "a4f158ad-5a48-4dda-8ee4-c2125eace1e7", "a3057396-0948-4dc7-8760-bbe338a1249d", false, "bookingbuddy.landlord@bookingbuddy.com" },
-                    { "f3a899f1-f2a7-49e0-842c-aa6ee654731c", 0, "f5d023eb-665a-4638-8c23-848d0e4c1129", "bookingbuddy.user@bookingbuddy.com", true, null, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAECA1licH3pqzDcqiqdmpFp730dlV0dsDRdcHhx+sNAlPc60adKy5EQRDulXNSwVqHw==", null, false, null, "a4f158ad-5a48-4dda-8ee4-c2125eace1e7", "b28d44c9-616a-4b4a-8f91-b2087233950c", false, "bookingbuddy.user@bookingbuddy.com" }
+                    { "5152a9de-4b2d-47ef-8262-e24cee724985", 0, "2f8ebd5e-22b8-45e5-ae66-f22888c8fcb2", "bookingbuddy.admin@bookingbuddy.com", true, null, false, null, "admin", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEEfpyeO54GfixB7Gah95XTdpU3i/MsufyhAWOj/Ns9UodfcGSpCvto0rbvdJPpRdeA==", null, false, null, "343cb2e7-4398-4df7-b0be-3af7408099c7", "83b84d34-64b5-4c2a-aa4c-765d4bcbd2f0", false, "bookingbuddy.admin@bookingbuddy.com" },
+                    { "a127f887-7538-4f40-bc3f-6b063153dfe1", 0, "dff265ec-b04e-4af6-a6a5-de8ad6f450e5", "bookingbuddy.user@bookingbuddy.com", true, null, false, null, "user", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAELSypOev+WeDJPf46K9otxUlr/DMnTlOSXXNdFR66Ui4raOFLEH3vVoqH5Bp2r6KpQ==", null, false, null, "343cb2e7-4398-4df7-b0be-3af7408099c7", "cca9e631-79e0-457a-a928-034d2691b250", false, "bookingbuddy.user@bookingbuddy.com" },
+                    { "a7c7f8df-941e-4efe-bb29-689d21be90e3", 0, "9eccc15a-e56c-4fd1-9399-1e2d3eb4a74f", "bookingbuddy.landlord@bookingbuddy.com", true, null, false, null, "landlord", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM", "AQAAAAIAAYagAAAAEBVtm0VUs20PGWi+bOMnXwMZJ1imBrqz9CXUO2v26HaSvbSoDhxeSHBdipx1AcYhEg==", null, false, null, "343cb2e7-4398-4df7-b0be-3af7408099c7", "49a12427-2089-4ab8-8527-68b310a38984", false, "bookingbuddy.landlord@bookingbuddy.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -656,9 +680,9 @@ namespace BookingBuddy.Server.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
-                    { "ce923822-d6ff-48ea-a3e2-11f29e5c2bfb", "80de2007-e6b2-47b2-8e2e-e52e80adee65" },
-                    { "6e5a3337-b945-4299-a94d-07c7a9c022de", "bf0511a0-e4fe-4700-8004-d18a3cd3f83e" },
-                    { "3c7a28de-3fec-4bb1-ba21-3df2d87b599e", "f3a899f1-f2a7-49e0-842c-aa6ee654731c" }
+                    { "0ccf7447-2660-496d-a024-a9977f759f6d", "5152a9de-4b2d-47ef-8262-e24cee724985" },
+                    { "4d84c4da-ab85-418f-9500-5fa4f7b95a4e", "a127f887-7538-4f40-bc3f-6b063153dfe1" },
+                    { "59c01113-b1ee-49ea-a7b4-0aee373c2ed3", "a7c7f8df-941e-4efe-bb29-689d21be90e3" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -781,11 +805,6 @@ namespace BookingBuddy.Server.Migrations
                 column: "PropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupMessage_GroupId",
-                table: "GroupMessage",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_GroupOrderPayment_ApplicationUserId",
                 table: "GroupOrderPayment",
                 column: "ApplicationUserId");
@@ -799,6 +818,11 @@ namespace BookingBuddy.Server.Migrations
                 name: "IX_GroupOrderPayment_PaymentId",
                 table: "GroupOrderPayment",
                 column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_ChatId",
+                table: "Groups",
+                column: "ChatId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PromoteOrder_ApplicationUserId",
@@ -831,14 +855,24 @@ namespace BookingBuddy.Server.Migrations
                 column: "PropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Property_GroupId",
-                table: "Property",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Rating_ApplicationUserId",
                 table: "Rating",
                 column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAddedProperty_ApplicationUserId",
+                table: "UserAddedProperty",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAddedProperty_GroupId",
+                table: "UserAddedProperty",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAddedProperty_PropertyId",
+                table: "UserAddedProperty",
+                column: "PropertyId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserClaims_AspNetUsers_UserId",
@@ -938,10 +972,10 @@ namespace BookingBuddy.Server.Migrations
                 name: "Rating");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "UserAddedProperty");
 
             migrationBuilder.DropTable(
-                name: "Chat");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Payment");
@@ -960,6 +994,9 @@ namespace BookingBuddy.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "Groups");
+
+            migrationBuilder.DropTable(
+                name: "Chat");
         }
     }
 }

@@ -444,12 +444,12 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound("Grupo não encontrado");
                 }
 
-                if (group.ChoosenProperty.IsNullOrEmpty())
+                if (group.ChosenProperty.IsNullOrEmpty())
                 {
                     return BadRequest("Propriedade não escolhida");
                 }
 
-                var property = await context.Property.FindAsync(group.ChoosenProperty);
+                var property = await context.Property.FindAsync(group.ChosenProperty);
                 if (property == null)
                 {
                     return NotFound("Propriedade não encontrada");
@@ -470,7 +470,7 @@ namespace BookingBuddy.Server.Controllers
 
                 foreach (var selectedDate in selectedDates)
                 {
-                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == group.ChoosenProperty)
+                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == group.ChosenProperty)
                         .Where(d => d.StartDate <= selectedDate && d.EndDate >= selectedDate)
                         .FirstOrDefaultAsync();
 
@@ -498,7 +498,7 @@ namespace BookingBuddy.Server.Controllers
                         OrderId = Guid.NewGuid().ToString(),
                         ApplicationUserId = user.Id,
                         GroupId = model.GroupId,
-                        PropertyId = group.ChoosenProperty!,
+                        PropertyId = group.ChosenProperty!,
                         StartDate = model.StartDate,
                         EndDate = model.EndDate,
                         TotalAmount = reservationAmount,

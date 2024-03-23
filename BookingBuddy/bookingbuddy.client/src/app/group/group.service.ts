@@ -1,9 +1,9 @@
-import { Injectable, Component } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject, catchError, map, of } from 'rxjs';
-import { environment } from "../../environments/environment";
-import { Group, GroupCreate } from "../models/group";
-import { group } from '@angular/animations';
+import {Injectable, Component} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {BehaviorSubject, Observable, Subject, catchError, map, of} from 'rxjs';
+import {environment} from "../../environments/environment";
+import {Group, GroupCreate} from "../models/group";
+import {group} from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -14,15 +14,17 @@ export class GroupService {
   }
 
   public getGroups() {
-    return this.http.get(`${environment.apiUrl}/api/groups/`, { withCredentials: true });
+    return this.http.get<Group[]>(`${environment.apiUrl}/api/groups/`, {
+      withCredentials: true
+    });
   }
 
   public getGroup(groupId: string) {
-    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}`, { withCredentials: true });
+    return this.http.get<Group>(`${environment.apiUrl}/api/groups/${groupId}`, {withCredentials: true});
   }
 
-  public getGroupsByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/groups/user/${userId}`, { withCredentials: true });
+  public getGroupsByUserId(userId: string) {
+    return this.http.get<Group[]>(`${environment.apiUrl}/api/groups/user/${userId}`, {withCredentials: true});
   }
 
   public createGroup(group: GroupCreate) {
@@ -40,34 +42,34 @@ export class GroupService {
   }
 
   public addMemberToGroup(groupId: string) {
-    return this.http.put(`${environment.apiUrl}/api/groups/addMember?groupId=${groupId}`, {}, 
-    {
-      withCredentials: true,
-      observe: 'response',
-      //responseType: 'text'
-    }).pipe(map((res: any) => { 
-      return res.body as Group; 
+    return this.http.put(`${environment.apiUrl}/api/groups/addMember?groupId=${groupId}`, {},
+      {
+        withCredentials: true,
+        observe: 'response',
+        //responseType: 'text'
+      }).pipe(map((res: any) => {
+      return res.body as Group;
     }));
   }
 
   public setGroupAction(groupId: string, groupAction: string) {
-    return this.http.put(`${environment.apiUrl}/api/groups/setGroupAction?groupId=${groupId}&groupAction=${groupAction}`, {}, 
-    {
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'text'
-    }).pipe(map((res: any) => { 
+    return this.http.put(`${environment.apiUrl}/api/groups/setGroupAction?groupId=${groupId}&groupAction=${groupAction}`, {},
+      {
+        withCredentials: true,
+        observe: 'response',
+        responseType: 'text'
+      }).pipe(map((res: any) => {
       return res.body;
     }));
   }
 
   public setChoosenProperty(groupId: string, propertyId: string) {
-    return this.http.put(`${environment.apiUrl}/api/groups/setChoosenProperty?groupId=${groupId}&propertyId=${propertyId}`, {}, 
-    {
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'text'
-    }).pipe(map((res: any) => { 
+    return this.http.put(`${environment.apiUrl}/api/groups/setChoosenProperty?groupId=${groupId}&propertyId=${propertyId}`, {},
+      {
+        withCredentials: true,
+        observe: 'response',
+        responseType: 'text'
+      }).pipe(map((res: any) => {
       return res.body;
     }));
   }
@@ -78,8 +80,8 @@ export class GroupService {
         withCredentials: true,
         observe: 'response',
       }).pipe(map((res: HttpResponse<any>) => {
-        return res.body;
-      }));
+      return res.body;
+    }));
   }
 
   public removePropertyFromGroup(groupId: string, propertyId: string): Observable<any> {
@@ -88,8 +90,8 @@ export class GroupService {
         withCredentials: true,
         observe: 'response',
       }).pipe(map((res: HttpResponse<any>) => {
-        return res.body;
-      }));
+      return res.body;
+    }));
   }
 
   public deleteGroup(groupId: string): Observable<any> {
@@ -103,7 +105,7 @@ export class GroupService {
   }
 
   public getGroupMessages(groupId: string) {
-    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}/messages`, { withCredentials: true });
+    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}/messages`, {withCredentials: true});
   }
 
   public sendGroupMessage(groupId: string, message: string) {

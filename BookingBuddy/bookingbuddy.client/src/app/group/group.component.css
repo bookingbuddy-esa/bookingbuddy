@@ -5,17 +5,23 @@
   justify-content: center;
 }
 
-.property:hover {
+.on-hover-pointer:hover {
   cursor: pointer;
 }
 
-.property-list{
+.property-list {
   height: 25%;
 }
 
 @media screen and (max-width: 768px) {
   .property-list {
-    height: 40%;
+    height: 30%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .chat {
+    height: 50vh;
   }
 }
 
@@ -36,37 +42,4 @@
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: #198653;
-}
-
-.chat {
-  background-color: #ccd5cb;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.chat p {
-  color: #3e5e38;
-}
-
-.chat input {
-  background-color: #ffffff;
-  border: 1px solid #82987e;
-  color: #5c7858;
-}
-
-.chat button {
-  background-color: #82987e;
-  color: #ffffff;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.chat button:hover {
-  background-color: #718d73;
-}
-
-.chat button:active {
-  background-color: #92a897;
 }
