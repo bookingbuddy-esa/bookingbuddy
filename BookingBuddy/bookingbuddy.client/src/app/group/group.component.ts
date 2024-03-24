@@ -115,16 +115,19 @@ export class GroupComponent {
             // TODO: enviar alert do tipo "info" (fazer um alerta genérico em vez de success e error)
             break;
           case 'booking':
-            this.currentGroup!.groupAction = GroupAction.booking;
             var mostVotedId = this.getMostVotedProperty();
-            console.log("Most Voted: " + mostVotedId);
-            this.groupService.setChoosenProperty(this.currentGroup!.groupId, mostVotedId).forEach(response => {
-              if (response) {
-                console.log(response);
-              }
-            });
+            if (mostVotedId && mostVotedId != "") {
+              this.currentGroup!.groupAction = GroupAction.booking;
 
-            this.setChoosenPropertyById(mostVotedId);
+              console.log("Most Voted: " + mostVotedId);
+              this.groupService.setChoosenProperty(this.currentGroup!.groupId, mostVotedId).forEach(response => {
+                if (response) {
+                  console.log(response);
+                }
+              });
+
+              this.setChoosenPropertyById(mostVotedId);
+            }
             break;
           case 'paying':
             this.currentGroup!.groupAction = GroupAction.paying;
@@ -141,16 +144,23 @@ export class GroupComponent {
 
   public getMostVotedProperty() {
     let maxVotes = 0;
-    var votesMap = new Map<string, number>();
     let mostVotedPropertyId = '';
+    let tie = false;
 
-    for (var i = 0; i < this.currentGroup!.properties.length; i++) {
-      var votes = this.getPropertyVotes(this.currentGroup!.properties[i]);
-      votesMap.set(this.currentGroup!.properties[i].propertyId, votes);
+    for (let i = 0; i < this.currentGroup!.properties.length; i++) {
+      const votes = this.getPropertyVotes(this.currentGroup!.properties[i]);
       if (votes > maxVotes) {
         maxVotes = votes;
         mostVotedPropertyId = this.currentGroup!.properties[i].propertyId;
+        tie = false; // Reset the tie flag when a new maximum votes is found
+      } else if (votes === maxVotes) {
+        tie = true; // Set the tie flag if votes are equal to the current maximum votes
       }
+    }
+
+    if (tie) {
+      this.errors.push('Não é possível prosseguir com a reserva pois existem propriedades com o mesmo número de votos.');
+      return "";
     }
 
     return mostVotedPropertyId;
