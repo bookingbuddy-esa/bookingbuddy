@@ -119,6 +119,7 @@ namespace BookingBuddy.Server.Migrations
                             DisplayName = "Camaras",
                             Name = "Camaras"
                         },
+                        new
                         {
 
                             AmenityId = "6647ad35-34b6-4473-b1e4-6303e1894bfb",
