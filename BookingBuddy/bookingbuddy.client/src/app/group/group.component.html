@@ -1,8 +1,9 @@
 <div *ngIf="!global_loading" class="row justify-content-center mt-4 w-100">
+  <!-- Coluna esquerda com os grupos e os membros -->
   <div class="col-md-3 mb-5">
     <div class="accordion mb-3" id="accordionGroups">
       <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
+        <h2 class="accordion-header" id="headingOne1">
           <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse"
                   data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
             Lista de Grupos
@@ -35,7 +36,6 @@
         </div>
       </div>
     </div>
-
     <div class="accordion" id="accordionMembers" *ngIf="currentGroup">
       <div class="accordion-item">
         <h2 class="accordion-header" id="headingOne">
@@ -64,17 +64,8 @@
       </div>
     </div>
   </div>
+  <!-- Coluna direita que contém informação consoante a "Group Action" -->
   <div class="col-12 col-md-9 d-flex flex-column">
-    <div #successAlerts class="alert alert-success alert-dismissible fade show" role="alert"
-         *ngFor="let success_message of success_alerts">
-      <span>{{ success_message }}</span>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    <div #errorAlerts class="alert alert-danger alert-dismissible fade show" role="alert"
-         *ngFor="let error_message of errors">
-      <span>{{ error_message }}</span>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
     <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
       <span class="text-center fs-2">{{ currentGroup.name }}</span>
       <div class="d-flex flex-row mt-2 mb-2">
@@ -89,6 +80,7 @@
       </div>
     </div>
 
+    <!--  Lista de propriedades  -->
     <div class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
       <div *ngIf="!currentGroup" class="text-center">
         <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
@@ -110,7 +102,7 @@
                 </div>
                 <div class="d-flex flex-row">
                   <button class="btn btn-sm btn-danger me-2"
-                          *ngIf="currentGroup?.groupAction !== 'Voting' && property.addedBy.id===user?.userId"
+                          *ngIf="currentGroup?.groupAction !== 'Voting' && (property.addedBy.id===user?.userId || isGroupOwner)"
                           matTooltip="Remover Propriedade"
                           (click)="removeProperty(property.propertyId)">
                     <i class="bi bi-x-square"></i>
@@ -130,56 +122,9 @@
           </div>
         </div>
       </div>
-      <!-- TODO: Criar componente para o passo seguinte -->
-      <!--      <div *ngIf="currentGroup && currentGroup?.chosenProperty && currentGroup.groupAction === 'Booking'" class="w-100">-->
-      <!--        &lt;!&ndash;<h3>Property Escolhida: {{ currentGroup?.choosenProperty }}</h3>&ndash;&gt;-->
-      <!--        &lt;!&ndash;<app-payment [data]="bookingData"></app-payment>&ndash;&gt;-->
-      <!--        <div class="text-center text-wrap text-muted mt-2 mb-4" *ngIf="!isGroupOwner">-->
-      <!--          <h5>Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</h5>-->
-      <!--          <h5>Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como-->
-      <!--            membro.</h5>-->
-      <!--        </div>-->
-      <!--        <div class="w-75 text-center mx-auto mb-4" *ngIf="isGroupOwner">-->
-      <!--          <form [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">-->
-      <!--            <mat-form-field (click)="picker.open()">-->
-      <!--              <mat-label>Selecione as datas</mat-label>-->
-      <!--              <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">-->
-      <!--                <input matStartDate placeholder="Check-In" formControlName="checkIn"-->
-      <!--                       (dateChange)="onDateChange($event, 'start')">-->
-      <!--                <input matEndDate placeholder="Check-Out" formControlName="checkOut"-->
-      <!--                       (dateChange)="onDateChange($event, 'end')">-->
-      <!--              </mat-date-range-input>-->
-      <!--              <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>-->
-      <!--              <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">-->
-      <!--                <mat-icon matDatepickerToggleIcon>clear</mat-icon>-->
-      <!--              </mat-datepicker-toggle>-->
-      <!--              <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>-->
-      <!--            </mat-form-field>-->
-
-      <!--            <div class="mb-1">-->
-      <!--              <label for="hospedes">Hóspedes: {{ getGroupMembers() }}</label>-->
-      <!--            </div>-->
-      <!--            <button class="btn btn-success mt-1 mb-3">Reservar</button>-->
-      <!--            <h6 class="text-secondary mb-3">Ainda não vai ser cobrado</h6>-->
-      <!--            <div class="precos mb-2">-->
-      <!--              <div *ngFor="let formattedString of formatPricesMap()">-->
-      <!--                <h6 class="text-secondary mb-2"><u>{{ formattedString }}</u></h6>-->
-      <!--              </div>-->
-      <!--            </div>-->
-      <!--            <hr class="mt-4 mb-2">-->
-      <!--            <div class="mb-4">-->
-      <!--              <span>Total: </span>-->
-      <!--              <span>{{ calcularTotalDesconto() }}€</span>-->
-      <!--            </div>-->
-      <!--          </form>-->
-      <!--        </div>-->
-      <!--      </div>-->
-
-      <div *ngIf="currentGroup && currentGroup.groupAction === 'Paying'">
-        <app-payment [data]="setBookingData()"></app-payment>
-      </div>
     </div>
 
+    <!--  Botões em baixo da lista de propriedades e chat -->
     <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
       <div class="d-flex flex-row justify-content-around align-items-center">
         <button type="button" class="btn btn-md btn-success me-2" data-bs-toggle="modal"
@@ -192,6 +137,7 @@
       </div>
       <app-chat-new class="chat"></app-chat-new>
     </div>
+
     <div *ngIf="submitting " class="h-100">
       <app-loader></app-loader>
     </div>
@@ -252,37 +198,6 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-success" data-bs-dismiss="modal" routerLink="/">Aceitar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="acceptInvite" tabindex="-1" aria-labelledby="acceptInviteLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="acceptInviteLabel">Convite para grupo de reserva</h5>
-        <button *ngIf="failed_invite && !submitting_invite" type="button" class="btn-close" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <span
-          *ngIf="!failed_invite && !submitting_invite">Aceitar o convite para o grupo de reserva <strong>{{ pendingGroup?.name }}</strong>?</span>
-        <span *ngIf="failed_invite && !submitting_invite"
-              class="text-center">Ocorreu um erro ao aceitar o convite!</span>
-        <app-loader class="m-3" *ngIf="submitting_invite"></app-loader>
-      </div>
-      <div *ngIf="!submitting_invite" class="modal-footer">
-        <button *ngIf="!failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                [routerLink]="['/groups']">
-          Rejeitar
-        </button>
-        <button *ngIf="!failed_invite" type="button" class="btn btn-success" (click)="acceptInvite()">
-          Aceitar
-        </button>
-        <button *ngIf="failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                [routerLink]="['/groups']">
-          Fechar
-        </button>
       </div>
     </div>
   </div>

@@ -36,9 +36,7 @@ export class GroupService {
       withCredentials: true,
       observe: 'response',
       responseType: 'text'
-    }).pipe(map((res: any) => {
-      return res.body;
-    }));
+    }).pipe<Group>((map((res: HttpResponse<any>) => JSON.parse(res.body))));
   }
 
   public addMemberToGroup(groupId: string) {

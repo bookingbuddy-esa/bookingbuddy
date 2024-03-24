@@ -56,7 +56,7 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
-            var addedProperty = model.propertyId != null
+            var addedProperty = !string.IsNullOrEmpty(model.propertyId)
                 ? new UserAddedProperty
                 {
                     UserAddedPropertyId = Guid.NewGuid().ToString(),
@@ -457,7 +457,7 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound("A propriedade não existe no grupo.");
             }
 
-            if (addedProperty.ApplicationUserId != user.Id)
+            if (addedProperty.ApplicationUserId != user.Id && group.GroupOwnerId != user.Id)
             {
                 return Forbid();
             }
@@ -576,20 +576,28 @@ namespace BookingBuddy.Server.Controllers
             }
 
             var user = await _userManager.GetUserAsync(User);
-            if (user == null || group.GroupOwnerId != user.Id)
+            if (user == null)
             {
                 return Unauthorized();
             }
-
-            var groupMessages = _context.GroupMessage.Where(m => m.GroupId == groupId);
-
-            // Remover todas as mensagens associadas
-            _context.GroupMessage.RemoveRange(groupMessages);
+            
+            if (group.GroupOwnerId != user.Id)
+            {
+                return Forbid();
+            }
 
             _context.Groups.Remove(group);
             try
             {
                 await _context.SaveChangesAsync();
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "GroupDeleted",
+                        Content = JsonSerializer.Serialize(new { groupId = group.GroupId })
+                    });
+                }
                 return Ok("Grupo eliminado com sucesso.");
             }
             catch (Exception e)

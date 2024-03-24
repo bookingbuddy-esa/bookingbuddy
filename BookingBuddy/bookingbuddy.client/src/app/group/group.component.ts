@@ -1,8 +1,7 @@
-import {ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {ChangeDetectorRef, Component, ElementRef, EventEmitter, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {environment} from "../../environments/environment";
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {GroupService} from './group.service';
-import {timeout} from 'rxjs';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
 import {Group, GroupAction, GroupMember, GroupProperty} from '../models/group';
@@ -13,7 +12,9 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {OrderService} from '../payment/order.service';
 import {WebsocketMessage} from "../models/websocket-message";
-import {Modal} from 'bootstrap';
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-group',
@@ -46,7 +47,7 @@ export class GroupComponent implements OnInit {
   invite_link: boolean = false;
   failed_invite: boolean = false;
   pendingGroup: Group | undefined;
-  acceptInviteModal: Modal | undefined;
+  //acceptInviteModal: Modal | undefined;
 
   // Datas de Reservas
   calendarMaxDate: Date = new Date(8640000000000000);
@@ -67,6 +68,7 @@ export class GroupComponent implements OnInit {
               private cdref: ChangeDetectorRef,
               private groupService: GroupService,
               private propertyService: PropertyAdService,
+              private modalService: NgbModal,
               private orderService: OrderService) {
     this.reservarPropriedadeFailed = false;
 
@@ -94,25 +96,41 @@ export class GroupComponent implements OnInit {
     if (this.user) {
       return this.groupService.getGroupsByUserId(this.user.userId).forEach(groups => {
         this.group_list = groups;
-      }).then(() => {
+      }).then(async () => {
         let queryGroupId = this.route.snapshot.queryParams['groupId'];
         if (queryGroupId) {
           let group = this.group_list.find(g => g.groupId == queryGroupId);
           if (group) {
             this.chooseGroup(group);
-            this.initWebSocket(group);
+            await this.initWebSocket(group);
           } else {
             this.invite_link = true;
             this.groupService.getGroup(queryGroupId).forEach(group => {
               this.pendingGroup = group;
             }).then(() => {
-              this.acceptInviteModal = new Modal(document.getElementById('acceptInvite') as HTMLElement, {
-                backdrop: 'static',
-                keyboard: false
-              });
-              this.acceptInviteModal.show();
+              let modalRef = this.modalService.open(AcceptInviteModal,
+                {
+                  backdrop: 'static',
+                  keyboard: false,
+                  animation: true,
+                  centered: true,
+                });
+              modalRef.componentInstance.pendingGroup = this.pendingGroup;
+              modalRef.componentInstance.failed_invite = this.failed_invite;
+              modalRef.componentInstance.submitting_invite = this.submitting_invite;
+              modalRef.componentInstance.onAcceptInvite.forEach(() => {
+                  this.acceptInvite()
+                  modalRef.close();
+                }
+              );
+              modalRef.componentInstance.onClose.forEach(() => {
+                  modalRef.close();
+                  this.router.navigate(['/groups']);
+                }
+              )
             }).catch(error => {
               console.error('Erro ao carregar grupo:', error);
+              this.router.navigate(['/groups']);
             });
           }
         }
@@ -122,7 +140,7 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  initWebSocket(group: Group) {
+  async initWebSocket(group: Group) {
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
     if (this.ws) this.ws.close();
@@ -136,18 +154,25 @@ export class GroupComponent implements OnInit {
           break;
         case 'PropertyAdded':
           let property = JSON.parse(message.content) as GroupProperty;
-          console.log(property);
-          if (this.currentGroup?.properties.find(p => p.propertyId == property.propertyId) == undefined) {
+          if (!this.currentGroup?.properties.find(p => p.propertyId == property.propertyId)) {
             this.currentGroup!.properties.push(property);
           }
-          console.log(this.currentGroup?.properties);
           break;
         case 'MemberAdded':
           let member = JSON.parse(message.content) as GroupMember;
-          if (this.currentGroup?.members.find(m => m.id == member.id) == undefined) {
+          if (!this.currentGroup?.members.find(m => m.id == member.id)) {
             this.currentGroup!.members.push(member);
           }
           break;
+        case 'GroupDeleted':
+          let groupId = JSON.parse(message.content) as { groupId: string };
+          if (this.group_list.find(g => g.groupId == groupId.groupId)) {
+            if (this.currentGroup?.groupId == groupId.groupId) {
+              this.currentGroup = undefined;
+              this.router.navigate(['/groups']);
+            }
+            this.group_list = this.group_list.filter(g => g.groupId != groupId.groupId);
+          }
       }
     };
   }
@@ -157,7 +182,6 @@ export class GroupComponent implements OnInit {
     this.groupService.addMemberToGroup(this.pendingGroup!.groupId).forEach(response => {
       if (response) {
         this.submitting_invite = false;
-        this.acceptInviteModal?.hide();
       }
     }).then(() => {
       this.global_loading = true;
@@ -177,23 +201,6 @@ export class GroupComponent implements OnInit {
       orderType: 'group-booking'
     };
   }
-
-  // get groupAction(): string {
-  //   if (this.currentGroup) {
-  //     switch (this.currentGroup.groupAction) {
-  //       case GroupAction.none:
-  //         return 'None';
-  //       case GroupAction.voting:
-  //         return 'Voting';
-  //       case GroupAction.booking:
-  //         return 'Booking';
-  //       case GroupAction.paying:
-  //         return 'Paying';
-  //     }
-  //   }
-  //
-  //   return 'None';
-  // }
 
   public copyGroupLink(): void {
     let url = window.location.href;
@@ -230,12 +237,11 @@ export class GroupComponent implements OnInit {
   }
 
   public deleteGroup(): void {
-    this.groupService.deleteGroup(this.currentGroup!.groupId).forEach(response => {
+    this.groupService.deleteGroup(this.currentGroup!.groupId).forEach(async response => {
       if (response) {
-        this.success_alerts.push("Grupo removido com sucesso!");
-        this.loadUserGroups();
         this.currentGroup = undefined;
-        this.router.navigateByUrl('/groups');
+        this.group_list = this.group_list.filter(g => g.groupId != this.currentGroup?.groupId);
+        await this.router.navigate(['/groups']);
       }
     }).catch(error => {
       this.errors.push(error.error);
@@ -294,74 +300,10 @@ export class GroupComponent implements OnInit {
     this.router.navigate([], {queryParams: {groupId: group.groupId}});
 
     this.currentGroup = group;
-    console.log(group);
     this.isGroupOwner = group.groupOwner.id === this.user?.userId;
 
     this.loadDiscounts();
     this.loadBlockedDates();
-
-    let url = environment.apiUrl;
-    url = url.replace('https', 'wss');
-    // TODO: Estabelecer conexão com WebSocket
-  }
-
-  public getPropertyImage(property: Property) {
-    if (property && property.imagesUrl && property.imagesUrl.length > 0) {
-      return property.imagesUrl[0];
-    }
-
-    return 'N/A'; // TODO: foto default caso nao tenha?
-  }
-
-  public getGroupMembers(): number {
-    if (this.currentGroup && this.currentGroup?.members.length > 0) {
-      return this.currentGroup.members.length;
-    }
-
-    return 0;
-  }
-
-  private loadUserGroups() {
-    this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
-      this.group_list = groups;
-      console.log(groups);
-    }).catch(error => {
-      console.log(error.error);
-    }).then(() => {
-      this.submitting = false;
-    });
-  }
-
-  private async setupGroupById() {
-    if (this.user) {
-      this.submitting = true;
-      // this.route.queryParams.forEach(params => {
-      //   if (params['groupId']) {
-      //     this.groupService.getGroup(params['groupId']).forEach(getGroupResponse => {
-      //       if (getGroupResponse) {
-      //         const group: Group = getGroupResponse as Group;
-      //         let isMemberOfGroup = group.membersId.includes(this.user!.userId);
-      //         if (!isMemberOfGroup) {
-      //           this.groupService.addMemberToGroup(params['groupId']).forEach(addMemberResponse => {
-      //             if (addMemberResponse) {
-      //               this.loadUserGroups();
-      //               this.success_alerts.push("Membro adicionado ao grupo com sucesso!");
-      //             }
-      //           }).catch(error => {
-      //             this.errors.push("Erro ao adicionar membro ao grupo!");
-      //             //console.log("Erro ao adicionar membro ao grupo: " + JSON.stringify(error));
-      //           });
-      //         }
-      //       }
-      //
-      //       return Promise.resolve();
-      //     }).catch(error => {
-      //       this.errors.push(error.error);
-      //       //console.log("Erro ao receber grupo: " + JSON.stringify(error));
-      //     });
-      //   }
-      // });
-    }
   }
 
   dateFilter = (date: Date | null): boolean => {
@@ -570,4 +512,50 @@ export class GroupComponent implements OnInit {
   redirectToProperty(propertyId: string) {
     this.router.navigate(['/property', propertyId]);
   }
+}
+
+@Component({
+  standalone: true,
+  template: `
+    <div class="modal-header">
+      <h5 class="modal-title" id="acceptInviteLabel">Convite para grupo de reserva</h5>
+      <button *ngIf="failed_invite && !submitting_invite" type="button" class="btn-close" aria-label="Close"
+              (click)="this.onClose.emit()"></button>
+    </div>
+    <div class="modal-body">
+      <span *ngIf="!failed_invite && !submitting_invite">
+        Aceitar o convite para o grupo de reserva <strong>{{ pendingGroup?.name }}</strong>?
+      </span>
+      <span *ngIf="failed_invite && !submitting_invite"
+            class="text-center">Ocorreu um erro ao aceitar o convite!</span>
+      <app-loader class="m-3" *ngIf="submitting_invite"></app-loader>
+    </div>
+    <div *ngIf="!submitting_invite" class="modal-footer">
+      <button *ngIf="!failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+              (click)="this.onClose.emit()">
+        Rejeitar
+      </button>
+      <button *ngIf="!failed_invite" type="button" class="btn btn-success"
+              (click)="this.onAcceptInvite.emit();">
+        Aceitar
+      </button>
+      <button *ngIf="failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+              (click)="this.onClose.emit()">
+        Fechar
+      </button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class AcceptInviteModal {
+  failed_invite: boolean = false;
+  submitting_invite: boolean = false;
+  pendingGroup: Group | undefined;
+  onAcceptInvite: EventEmitter<void> = new EventEmitter<void>();
+  onClose: EventEmitter<void> = new EventEmitter<void>();
 }
