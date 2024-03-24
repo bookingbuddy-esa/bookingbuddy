@@ -6,24 +6,25 @@ export interface Group {
     "name": string,
   },
   "name": string,
-  "members": {
-    "id": string,
-    "name": string,
-  }[],
-  "properties": {
-    "propertyId": string,
-    "name": string,
-    "pricePerNight": number,
-    "imagesUrl": string[],
-    "location": string,
-    "addedBy": {
-      "id": string,
-      "name": string,
-    }
-  }[],
+  "members": GroupMember[],
+  "properties": GroupProperty[],
   "chosenProperty": string | null,
   "chatId": string
   "groupAction": string
+}
+
+export interface GroupMember {
+  "id": string,
+  "name": string,
+}
+
+export interface GroupProperty {
+  "propertyId": string,
+  "name": string,
+  "pricePerNight": number,
+  "imagesUrl": string[],
+  "location": string,
+  "addedBy": GroupMember,
 }
 
 export interface GroupCreate {

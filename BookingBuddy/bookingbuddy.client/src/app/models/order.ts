@@ -1,4 +1,4 @@
-import {ApplicationUser} from "./applicationUser";
+import {ApplicationUser} from "./application-user";
 
 export interface BookingOrder {
   bookingOrderId: string;

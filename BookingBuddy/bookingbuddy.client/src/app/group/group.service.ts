@@ -84,14 +84,17 @@ export class GroupService {
     }));
   }
 
-  public removePropertyFromGroup(groupId: string, propertyId: string): Observable<any> {
-    return this.http.put(`${environment.apiUrl}/api/groups/removeProperty?groupId=${groupId}&propertyId=${propertyId}`, {},
+  public removePropertyFromGroup(groupId: string, propertyId: string): Observable<boolean> {
+    return this.http.put(`${environment.apiUrl}/api/groups/removeProperty`, {
+        groupId: groupId,
+        propertyId: propertyId
+      },
       {
         withCredentials: true,
+        responseType: 'text',
         observe: 'response',
-      }).pipe(map((res: HttpResponse<any>) => {
-      return res.body;
-    }));
+      }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok)
+    );
   }
 
   public deleteGroup(groupId: string): Observable<any> {

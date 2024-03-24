@@ -270,3 +270,17 @@ public class WebSocketEventArgs : EventArgs
     /// </summary>
     public SocketMessage? Message { get; init; }
 }
+
+/// <summary>
+/// Exceção lançada quando uma mensagem de WebSocket é inválida.
+/// </summary>
+public class InvalidSocketMessageException : Exception
+{
+    /// <summary>
+    /// Cria uma nova instância de <see cref="InvalidSocketMessageException"/>.
+    /// </summary>
+    /// <param name="message">Mensagem de erro.</param>
+    public InvalidSocketMessageException(string? message = null) : base(message)
+    {
+    }
+}

@@ -169,8 +169,10 @@
                 <div class="d-flex flex-row">
                   <button class="btn btn-sm btn-danger me-2"
                           *ngIf="currentGroup?.groupAction !== 'Voting' && property.addedBy.id===user?.userId"
-                          matTooltip="Remover Propriedade"><i
-                    class="bi bi-x-square"></i></button>
+                          matTooltip="Remover Propriedade"
+                          (click)="removeProperty(property.propertyId)">
+                    <i class="bi bi-x-square"></i>
+                  </button>
                   <button class="btn btn-sm btn-info" *ngIf="currentGroup?.groupAction === 'Voting'"
                           matTooltip="Selecionar Propriedade"><i
                     class="bi bi-check2-circle"></i></button>
@@ -186,50 +188,50 @@
           </div>
         </div>
       </div>
+      <!-- TODO: Criar componente para o passo seguinte -->
+      <!--      <div *ngIf="currentGroup && currentGroup?.chosenProperty && currentGroup.groupAction === 'Booking'" class="w-100">-->
+      <!--        &lt;!&ndash;<h3>Property Escolhida: {{ currentGroup?.choosenProperty }}</h3>&ndash;&gt;-->
+      <!--        &lt;!&ndash;<app-payment [data]="bookingData"></app-payment>&ndash;&gt;-->
+      <!--        <div class="text-center text-wrap text-muted mt-2 mb-4" *ngIf="!isGroupOwner">-->
+      <!--          <h5>Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</h5>-->
+      <!--          <h5>Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como-->
+      <!--            membro.</h5>-->
+      <!--        </div>-->
+      <!--        <div class="w-75 text-center mx-auto mb-4" *ngIf="isGroupOwner">-->
+      <!--          <form [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">-->
+      <!--            <mat-form-field (click)="picker.open()">-->
+      <!--              <mat-label>Selecione as datas</mat-label>-->
+      <!--              <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">-->
+      <!--                <input matStartDate placeholder="Check-In" formControlName="checkIn"-->
+      <!--                       (dateChange)="onDateChange($event, 'start')">-->
+      <!--                <input matEndDate placeholder="Check-Out" formControlName="checkOut"-->
+      <!--                       (dateChange)="onDateChange($event, 'end')">-->
+      <!--              </mat-date-range-input>-->
+      <!--              <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>-->
+      <!--              <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">-->
+      <!--                <mat-icon matDatepickerToggleIcon>clear</mat-icon>-->
+      <!--              </mat-datepicker-toggle>-->
+      <!--              <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>-->
+      <!--            </mat-form-field>-->
 
-      <div *ngIf="currentGroup && currentGroup?.chosenProperty && currentGroup.groupAction === 'Booking'" class="w-100">
-        <!--<h3>Property Escolhida: {{ currentGroup?.choosenProperty }}</h3>-->
-        <!--<app-payment [data]="bookingData"></app-payment>-->
-        <div class="text-center text-wrap text-muted mt-2 mb-4" *ngIf="!isGroupOwner">
-          <h5>Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</h5>
-          <h5>Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como
-            membro.</h5>
-        </div>
-        <div class="w-75 text-center mx-auto mb-4" *ngIf="isGroupOwner">
-          <form [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
-            <mat-form-field (click)="picker.open()">
-              <mat-label>Selecione as datas</mat-label>
-              <mat-date-range-input [rangePicker]="picker" [dateFilter]="dateFilter" [max]="maxDate">
-                <input matStartDate placeholder="Check-In" formControlName="checkIn"
-                       (dateChange)="onDateChange($event, 'start')">
-                <input matEndDate placeholder="Check-Out" formControlName="checkOut"
-                       (dateChange)="onDateChange($event, 'end')">
-              </mat-date-range-input>
-              <mat-datepicker-toggle *ngIf="!checkInDate" matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker-toggle *ngIf="checkInDate" matSuffix (click)="clearDates()">
-                <mat-icon matDatepickerToggleIcon>clear</mat-icon>
-              </mat-datepicker-toggle>
-              <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
-            </mat-form-field>
-
-            <div class="mb-1">
-              <label for="hospedes">Hóspedes: {{ getGroupMembers() }}</label>
-            </div>
-            <button class="btn btn-success mt-1 mb-3">Reservar</button>
-            <h6 class="text-secondary mb-3">Ainda não vai ser cobrado</h6>
-            <div class="precos mb-2">
-              <div *ngFor="let formattedString of formatPricesMap()">
-                <h6 class="text-secondary mb-2"><u>{{ formattedString }}</u></h6>
-              </div>
-            </div>
-            <hr class="mt-4 mb-2">
-            <div class="mb-4">
-              <span>Total: </span>
-              <span>{{ calcularTotalDesconto() }}€</span>
-            </div>
-          </form>
-        </div>
-      </div>
+      <!--            <div class="mb-1">-->
+      <!--              <label for="hospedes">Hóspedes: {{ getGroupMembers() }}</label>-->
+      <!--            </div>-->
+      <!--            <button class="btn btn-success mt-1 mb-3">Reservar</button>-->
+      <!--            <h6 class="text-secondary mb-3">Ainda não vai ser cobrado</h6>-->
+      <!--            <div class="precos mb-2">-->
+      <!--              <div *ngFor="let formattedString of formatPricesMap()">-->
+      <!--                <h6 class="text-secondary mb-2"><u>{{ formattedString }}</u></h6>-->
+      <!--              </div>-->
+      <!--            </div>-->
+      <!--            <hr class="mt-4 mb-2">-->
+      <!--            <div class="mb-4">-->
+      <!--              <span>Total: </span>-->
+      <!--              <span>{{ calcularTotalDesconto() }}€</span>-->
+      <!--            </div>-->
+      <!--          </form>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
       <div *ngIf="currentGroup && currentGroup.groupAction === 'Paying'">
         <app-payment [data]="setBookingData()"></app-payment>
@@ -239,11 +241,12 @@
     <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
       <div class="d-flex flex-row justify-content-around align-items-center">
         <button type="button" class="btn btn-md btn-success me-2" data-bs-toggle="modal"
-                data-bs-target="#addPropertyModal ">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2 "></i>
+                data-bs-target="#addPropertyModal ">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>
         </button>
-        <div class="flex-fill "></div>
-        <button class="btn btn-md btn-dark " (click)="sendMessageWS() ">Reservar Selecionada<i
-          class="bi bi-arrow-right ms-2 "></i></button>
+        <div class="flex-fill"></div>
+        <button class="btn btn-md btn-dark" *ngIf="currentGroup && currentGroup.chosenProperty">
+          Reservar Selecionada<i class="bi bi-arrow-right ms-2 "></i>
+        </button>
       </div>
       <app-chat-new class="chat"></app-chat-new>
     </div>

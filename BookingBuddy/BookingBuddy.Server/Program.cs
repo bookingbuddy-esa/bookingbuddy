@@ -4,6 +4,7 @@ using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 using BookingBuddy.Server.Controllers;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,12 @@ builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.None;
 });
+
+builder.Services.AddAuthentication().AddCookie(o =>
+{
+    o.DataProtectionProvider = DataProtectionProvider.Create("BookingBuddy.Server");
+});
+
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingBuddyServerContext>()
@@ -88,23 +95,25 @@ app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController pa
     }
 });
 
-// TODO: Deixar de usar o userId como parâmetro e passar a usar um token JWT
-app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupController, string groupId) =>
-{
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
+// TODO: Deixar de usar o userId como parâmetro e passar a usar um token
+app.Map("/api/groups/ws",
+    async (HttpContext httpContext, GroupController groupController, string groupId) =>
     {
-        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        await groupController.HandleWebSocketAsync(groupId, webSocket);
-    }
-    else
-    {
-        httpContext.Response.StatusCode = 400;
-    }
-});
+        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
+        {
+            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+            await groupController.HandleWebSocketAsync(groupId, webSocket);
+        }
+        else
+        {
+            httpContext.Response.StatusCode = 400;
+        }
+    });
 
+// TODO: Deixar de usar o userId como parâmetro e passar a usar um token
 app.Map("/api/chat/ws", async (HttpContext httpContext, ChatController chatController, string chatId, string userId) =>
 {
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId))
+    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId) && !string.IsNullOrEmpty(userId))
     {
         var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
         await chatController.HandleWebSocketAsync(chatId, userId, webSocket);

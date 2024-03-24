@@ -1,4 +1,4 @@
-import {ApplicationUser} from "./applicationUser";
+import {ApplicationUser} from "./application-user";
 import {Amenity} from "./amenity";
 import {BookingOrder} from "./order";
 

@@ -5,13 +5,14 @@ import {GroupService} from './group.service';
 import {timeout} from 'rxjs';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
-import {Group, GroupAction} from '../models/group';
+import {Group, GroupAction, GroupProperty} from '../models/group';
 import {Property} from '../models/property';
 import {Discount} from '../models/discount';
 import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {OrderService} from '../payment/order.service';
+import {WebsocketMessage} from "../models/websocket-message";
 
 @Component({
   selector: 'app-group',
@@ -77,6 +78,7 @@ export class GroupComponent implements OnInit {
             let group = this.group_list.find(g => g.groupId == queryGroupId);
             if (group) {
               this.chooseGroup(group);
+              this.initWebSocket(group);
             }
           }
           this.global_loading = false;
@@ -89,6 +91,35 @@ export class GroupComponent implements OnInit {
       console.error('Erro ao carregar utilizador:', error);
       this.global_loading = false;
     });
+  }
+
+  initWebSocket(group: Group) {
+    let url = environment.apiUrl;
+    url = url.replace('https', 'wss');
+    this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
+    this.ws.onopen = () => {
+      console.log('WebSocket opened');
+    };
+    this.ws.onmessage = (event) => {
+      let message = JSON.parse(event.data) as WebsocketMessage;
+      switch (message.code) {
+        case 'PropertyRemoved':
+          let content = JSON.parse(message.content) as { propertyId: string }
+          this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != content?.propertyId);
+          break;
+        case 'PropertyAdded':
+          let property = JSON.parse(message.content) as GroupProperty;
+          console.log(property);
+          if (this.currentGroup?.properties.find(p => p.propertyId == property.propertyId) == undefined) {
+            this.currentGroup!.properties.push(property);
+          }
+          console.log(this.currentGroup?.properties);
+          break;
+      }
+    };
+    this.ws.onclose = () => {
+      console.log('WebSocket closed');
+    };
   }
 
   setBookingData(): any {
@@ -197,16 +228,15 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  public removeProperty(property: Property) {
-    this.groupService.removePropertyFromGroup(this.currentGroup?.groupId!, property.propertyId).forEach(response => {
+  public removeProperty(propertyId: string) {
+    this.groupService.removePropertyFromGroup(this.currentGroup?.groupId!, propertyId).forEach(response => {
       if (response) {
-        //console.log(response);
+        this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != propertyId);
       }
-    });
-    // const idIndex = this.currentGroup?.propertiesId.indexOf(property.propertyId);
-    // const propertyIndex = this.currentGroup?.properties.indexOf(property);
-    // this.currentGroup?.propertiesId.splice(idIndex!, 1);
-    // this.currentGroup?.properties.splice(propertyIndex!, 1);
+    }).catch(error => {
+        console.log("Erro ao remover propriedade: " + JSON.stringify(error));
+      }
+    );
   }
 
   public chooseGroup(group: Group): void {

@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 import { AuthorizeService } from "../../auth/authorize.service";
 import { PropertyAdService } from '../property-ad.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {AmenitiesHelper} from "../../models/amenityEnum";
+import {AmenitiesHelper} from "../../models/amenity-enum";
 import { AppComponent } from '../../app.component';
 
 import { UserInfo } from "../../auth/authorize.dto";
@@ -54,7 +54,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   @ViewChild('myModalClose') modalClose: any;
   constructor(private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
     this.reservarPropriedadeFailed = false;
-    
+
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required],
@@ -91,7 +91,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         error => {
           // TODO return error message
         }
-    ); 
+    );
   }
 
   private loadUserGroups() {
@@ -197,7 +197,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     if (type === 'start' && event.value) {
       this.checkInDate = event.value;
       this.updateMaxDate();
-    } else if (event.value){        
+    } else if (event.value){
       this.checkOutDate = event.value;
     }
     this.cdref.detectChanges();
@@ -209,7 +209,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
       if (nextBlockedDate) {
         this.maxDate = nextBlockedDate;
-      } else {  
+      } else {
         this.maxDate =this.calendarMaxDate;
       }
     }
@@ -222,7 +222,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     } else {
       this.selected_group_list.splice(index, 1);
     }
-    
+
   }
 
 
@@ -345,7 +345,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   priceWithDiscount(discountAmount: number): number {
     if (this.property) {
-      const discountMultiplier = 1 - discountAmount / 100; 
+      const discountMultiplier = 1 - discountAmount / 100;
       return Math.round(((this.property.pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
     }
     return 0;
@@ -386,7 +386,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     console.log("Check-out: " + checkOutDate);
 
     // TODO: verificar se datas sao validas antes de fazer a order
-    this.router.navigate(['/transaction-handler'], { 
+    this.router.navigate(['/transaction-handler'], {
         queryParams: {
             propertyId: this.property?.propertyId,
             startDate: checkInDate.toISOString().split('T')[0],

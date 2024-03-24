@@ -304,6 +304,8 @@ namespace BookingBuddy.Server.Controllers
         [NonAction]
         public async Task HandleWebSocketAsync(string paymentId, WebSocket webSocket)
         {
+            var payment = await _context.Payment.FindAsync(paymentId);
+            if(payment == null) return;
             WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
             {
                 if (PaymentSockets.TryGetValue(paymentId, out var value))

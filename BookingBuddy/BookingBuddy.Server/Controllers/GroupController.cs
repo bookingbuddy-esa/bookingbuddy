@@ -1,4 +1,6 @@
 ﻿using System.Net.WebSockets;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
@@ -6,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Property = BookingBuddy.Server.Models.Property;
 
 namespace BookingBuddy.Server.Controllers
 {
@@ -20,7 +21,10 @@ namespace BookingBuddy.Server.Controllers
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
-        // private static readonly WebSocketWrapper<Group> WebSocketWrapper = new();
+        private static readonly WebSocketWrapper WebSocketWrapper = new();
+        private static readonly Dictionary<string, List<WebSocket>> GroupSockets = new();
+        //private static readonly Dictionary<ApplicationUser, List<WebSocket>> UserSockets = new();
+
 
         /// <summary>
         /// Construtor da classe PropertyController.
@@ -344,6 +348,12 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var group = await _context.Groups.FindAsync(groupId);
 
             if (group == null)
@@ -364,12 +374,49 @@ namespace BookingBuddy.Server.Controllers
                 return BadRequest("A propriedade ja existe no grupo!");
             }
 
-            group.AddedPropertyIds.Add(propertyId);
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            var addedProperty = new UserAddedProperty
+            {
+                UserAddedPropertyId = Guid.NewGuid().ToString(),
+                ApplicationUserId = user.Id,
+                PropertyId = propertyId
+            };
+            group.AddedPropertyIds.Add(addedProperty.UserAddedPropertyId);
             try
             {
+                _context.UserAddedProperty.Add(addedProperty);
                 await _context.SaveChangesAsync();
 
-                return Ok("Propriedade adicionada com sucesso.");
+                var returnProperty = new ReturnProperty
+                {
+                    PropertyId = addedProperty.PropertyId,
+                    Name = property.Name,
+                    PricePerNight = property.PricePerNight,
+                    ImagesUrl = property.ImagesUrl,
+                    Location = property.Location,
+                    AddedBy = new ReturnUser
+                    {
+                        Id = user.Id,
+                        Name = user.Name
+                    }
+                };
+
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "PropertyAdded",
+                        Content = JsonSerializer.Serialize(returnProperty)
+                    });
+                }
+
+                return Ok(returnProperty);
             }
             catch (Exception)
             {
@@ -379,32 +426,55 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// Remove um propriedade a um grupo existente.
+        /// Remove uma propriedade a um grupo existente.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
-        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
+        /// <param name="model">Modelo com o identificador da propriedade e do grupo</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpPut("removeProperty")]
         [Authorize]
-        public async Task<IActionResult> RemoveProperty(string groupId, string propertyId)
+        public async Task<IActionResult> RemoveProperty([FromBody] PropertyRemoveModel model)
         {
-            var group = await _context.Groups.FindAsync(groupId);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
 
             if (group == null)
             {
-                return NotFound();
+                return NotFound("O grupo não existe.");
             }
 
+            var addedProperties = _context.UserAddedProperty.Where(uap =>
+                group.AddedPropertyIds.Contains(uap.UserAddedPropertyId)).ToList();
 
-            if (!group.AddedPropertyIds.Contains(propertyId))
+            var addedProperty = addedProperties.FirstOrDefault(uap => uap.PropertyId == model.PropertyId);
+
+            if (addedProperty == null)
             {
-                return BadRequest("A propriedade não existe no grupo!");
+                return NotFound("A propriedade não existe no grupo.");
             }
 
-            group.AddedPropertyIds.Remove(propertyId);
+            if (addedProperty.ApplicationUserId != user.Id)
+            {
+                return Forbid();
+            }
+
+            group.AddedPropertyIds.Remove(addedProperty.UserAddedPropertyId);
+
             try
             {
                 await _context.SaveChangesAsync();
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "PropertyRemoved",
+                        Content = JsonSerializer.Serialize(new { propertyId = addedProperty.PropertyId })
+                    });
+                }
 
                 return Ok("Propriedade removida com sucesso.");
             }
@@ -521,16 +591,64 @@ namespace BookingBuddy.Server.Controllers
         /// Manipula a comunicação WebSocket para um grupo específico.
         /// </summary>
         /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
+        /// <param name="userId">O ID do utilizador que está a tentar comunicar com o grupo.</param>
         /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
         /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         [NonAction]
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
             var group = await _context.Groups.FindAsync(groupId);
-            // await WebSocketWrapper.HandleAsync(group, webSocket, async groupReceived => {
-            //     Console.WriteLine("Group received: " + JsonSerializer.Serialize(groupReceived));
-            //     await WebSocketWrapper.NotifyAllAsync(groupReceived);
-            // });
+            if (group == null) return;
+            // var user = await _userManager.FindByIdAsync(userId);
+            // if (user == null || group == null) return;
+
+            WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
+            {
+                if (GroupSockets.TryGetValue(groupId, out var value))
+                {
+                    value.Add(webSocket);
+                }
+                else
+                {
+                    GroupSockets.Add(groupId, [webSocket]);
+                }
+                // if (UserSockets.TryGetValue(user, out var userValue))
+                // {
+                //     userValue.Add(webSocket);
+                // }
+                // else
+                // {
+                //     UserSockets.Add(user, [webSocket]);
+                // }
+
+                return Task.CompletedTask;
+            });
+            WebSocketWrapper.AddOnReceiveListener(webSocket, async (_, webSocketEvent) =>
+            {
+                switch (webSocketEvent.Message?.Code)
+                {
+                    default:
+                    {
+                        Console.WriteLine("Mensagem recebida: " + JsonSerializer.Serialize(webSocketEvent.Message));
+                        break;
+                    }
+                }
+            });
+            WebSocketWrapper.AddOnCloseListener(webSocket, (_, _) =>
+            {
+                if (GroupSockets.TryGetValue(groupId, out var value))
+                {
+                    value.Remove(webSocket);
+                }
+                // if (UserSockets.TryGetValue(user, out var userValue))
+                // {
+                //     userValue.Remove(webSocket);
+                // }
+
+                return Task.CompletedTask;
+            });
+
+            await WebSocketWrapper.HandleAsync(webSocket);
         }
     }
 
@@ -542,29 +660,121 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="memberEmails">Uma lista de endereços de e-mail dos membros a serem adicionados ao grupo (opcional).</param>
     public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
 
-    public record NewGroupMessage(string message);
-
-    public record ReturnGroup
+    /// <summary>
+    /// Modelo que representa a remoção de uma propriedade de um grupo.
+    /// </summary>
+    public record PropertyRemoveModel
     {
-        public string GroupId { get; set; }
-        public string? GroupBookingId { get; set; }
-        public ReturnUser GroupOwner { get; set; }
-        public string Name { get; set; }
-        public List<ReturnUser> Members { get; set; }
-        public List<ReturnProperty> Properties { get; set; }
-        public string? ChosenProperty { get; set; }
-        public string? ChatId { get; set; }
-        public string GroupAction { get; set; }
+        /// <summary>
+        /// O identificador do grupo.
+        /// </summary>
+        public required string GroupId { get; set; }
+        /// <summary>
+        /// O identificador da propriedade.
+        /// </summary>
+        public required string PropertyId { get; set; }
+
     }
 
+    /// <summary>
+    /// Modelo que representa um grupo a ser retornado.
+    /// </summary>
+    public record ReturnGroup
+    {
+        /// <summary>
+        /// O identificador do grupo.
+        /// </summary>
+        [JsonPropertyName("groupId")]
+        public required string GroupId { get; set; }
+
+        /// <summary>
+        /// O identificador da reserva do grupo.
+        /// </summary>
+        [JsonPropertyName("groupBookingId")]
+        public string? GroupBookingId { get; set; }
+
+        /// <summary>
+        /// O utilizador que é dono do grupo.
+        /// </summary>
+        [JsonPropertyName("groupOwner")]
+        public required ReturnUser GroupOwner { get; set; }
+
+        /// <summary>
+        /// O nome do grupo.
+        /// </summary>
+        [JsonPropertyName("name")]
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// A lista de membros do grupo.
+        /// </summary>
+        [JsonPropertyName("members")]
+        public List<ReturnUser> Members { get; set; } = [];
+
+        /// <summary>
+        /// A lista de propriedades adicionadas ao grupo.
+        /// </summary>
+        [JsonPropertyName("properties")]
+        public List<ReturnProperty> Properties { get; set; } = [];
+
+        /// <summary>
+        /// A propriedade escolhida para o grupo.
+        /// </summary>
+        [JsonPropertyName("chosenProperty")]
+        public string? ChosenProperty { get; set; }
+
+        /// <summary>
+        /// O identificador do chat associado ao grupo.
+        /// </summary>
+        [JsonPropertyName("chatId")]
+        public string? ChatId { get; set; }
+
+        /// <summary>
+        /// A ação do grupo.
+        /// </summary>
+        [JsonPropertyName("groupAction")]
+        public required string GroupAction { get; set; }
+    }
+
+    /// <summary>
+    /// Modelo que representa uma propriedade a ser retornada.
+    /// </summary>
     public record ReturnProperty
     {
-        public string PropertyId { get; set; }
-        public string Name { get; set; }
-        public decimal PricePerNight { get; set; }
-        public List<string> ImagesUrl { get; set; }
-        public string Location { get; set; }
+        /// <summary>
+        /// O identificador da propriedade.
+        /// </summary>
+        [JsonPropertyName("propertyId")]
+        public required string PropertyId { get; set; }
 
-        public ReturnUser AddedBy { get; set; }
+        /// <summary>
+        /// O nome da propriedade.
+        /// </summary>
+        [JsonPropertyName("name")]
+        public required string Name { get; set; }
+
+        /// <summary>
+        /// O preço por noite da propriedade.
+        /// </summary>
+        [JsonPropertyName("pricePerNight")]
+        public decimal PricePerNight { get; set; }
+
+        /// <summary>
+        /// A lista de URLs das imagens da propriedade.
+        /// </summary>
+        [JsonPropertyName("imagesUrl")]
+        public List<string> ImagesUrl { get; set; } = [];
+
+        /// <summary>
+        /// A localização da propriedade.
+        /// </summary>
+        [JsonPropertyName("location")]
+        public required string Location { get; set; }
+
+        /// <summary>
+        /// O utilizador que adicionou a propriedade.
+        /// </summary>
+        [JsonPropertyName("addedBy")]
+        public required ReturnUser AddedBy { get; set; }
     }
 }
