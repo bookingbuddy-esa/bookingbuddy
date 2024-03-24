@@ -510,8 +510,20 @@ namespace BookingBuddy.Server.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-                return CreatedAtAction("GetGroup", new { groupId = group.GroupId }, group);
-                //return Ok("Membro adicionado ao grupo com sucesso.");
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "MemberAdded",
+                        Content = JsonSerializer.Serialize(new ReturnUser
+                        {
+                            Id = user.Id,
+                            Name = user.Name
+                        })
+                    });
+                }
+
+                return NoContent();
             }
             catch (Exception)
             {
@@ -669,11 +681,11 @@ namespace BookingBuddy.Server.Controllers
         /// O identificador do grupo.
         /// </summary>
         public required string GroupId { get; set; }
+
         /// <summary>
         /// O identificador da propriedade.
         /// </summary>
         public required string PropertyId { get; set; }
-
     }
 
     /// <summary>

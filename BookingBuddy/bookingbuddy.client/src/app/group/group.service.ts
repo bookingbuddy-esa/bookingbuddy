@@ -46,10 +46,7 @@ export class GroupService {
       {
         withCredentials: true,
         observe: 'response',
-        //responseType: 'text'
-      }).pipe(map((res: any) => {
-      return res.body as Group;
-    }));
+      }).pipe<boolean>((map((res: HttpResponse<any>) => res.ok)));
   }
 
   public setGroupAction(groupId: string, groupAction: string) {

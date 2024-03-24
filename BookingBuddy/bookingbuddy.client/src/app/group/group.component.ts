@@ -5,7 +5,7 @@ import {GroupService} from './group.service';
 import {timeout} from 'rxjs';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
-import {Group, GroupAction, GroupProperty} from '../models/group';
+import {Group, GroupAction, GroupMember, GroupProperty} from '../models/group';
 import {Property} from '../models/property';
 import {Discount} from '../models/discount';
 import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
@@ -13,6 +13,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {OrderService} from '../payment/order.service';
 import {WebsocketMessage} from "../models/websocket-message";
+import {Modal} from 'bootstrap';
 
 @Component({
   selector: 'app-group',
@@ -23,16 +24,29 @@ export class GroupComponent implements OnInit {
   @ViewChildren('successAlerts, errorAlerts') alertContainers!: QueryList<ElementRef>;
   success_alerts: string[] = [];
   errors: string[] = [];
+  protected readonly navigator = navigator;
+
+  // Carregamento de dados
+
   global_loading: boolean = false;
   submitting: boolean = false;
+  submitting_invite: boolean = false;
+
+  // Utilizador, grupos e reservas
+
   user: UserInfo | undefined;
   group_list: Group[] = [];
   currentGroup: Group | undefined;
+  isGroupOwner: boolean = false;
+  bookingData: any;
   ws: WebSocket | undefined;
 
-  newMessage: string = '';
-  modalOpen: boolean = false;
-  isGroupOwner: boolean = false;
+  // Convidar para grupo
+
+  invite_link: boolean = false;
+  failed_invite: boolean = false;
+  pendingGroup: Group | undefined;
+  acceptInviteModal: Modal | undefined;
 
   // Datas de Reservas
   calendarMaxDate: Date = new Date(8640000000000000);
@@ -46,12 +60,10 @@ export class GroupComponent implements OnInit {
   reservarPropriedadeFailed: boolean;
   pricesMap: Map<number, number> = new Map<number, number>();
 
-  bookingData: any;
-
   constructor(private authService: AuthorizeService,
               private formBuilder: FormBuilder,
               private route: ActivatedRoute,
-              private router: Router,
+              protected router: Router,
               private cdref: ChangeDetectorRef,
               private groupService: GroupService,
               private propertyService: PropertyAdService,
@@ -69,37 +81,52 @@ export class GroupComponent implements OnInit {
     this.authService.user().forEach(async user => {
       this.user = user;
     }).then(() => {
-      if (this.user) {
-        this.groupService.getGroupsByUserId(this.user.userId).forEach(groups => {
-          this.group_list = groups;
-        }).then(() => {
-          let queryGroupId = this.route.snapshot.queryParams['groupId'];
-          if (queryGroupId) {
-            let group = this.group_list.find(g => g.groupId == queryGroupId);
-            if (group) {
-              this.chooseGroup(group);
-              this.initWebSocket(group);
-            }
-          }
-          this.global_loading = false;
-        }).catch(error => {
-          console.error('Erro ao carregar grupos:', error);
-          this.global_loading = false;
-        });
-      }
+      this.loadGroups().then(() => {
+        this.global_loading = false;
+      });
     }).catch(error => {
       console.error('Erro ao carregar utilizador:', error);
       this.global_loading = false;
     });
   }
 
+  async loadGroups() {
+    if (this.user) {
+      return this.groupService.getGroupsByUserId(this.user.userId).forEach(groups => {
+        this.group_list = groups;
+      }).then(() => {
+        let queryGroupId = this.route.snapshot.queryParams['groupId'];
+        if (queryGroupId) {
+          let group = this.group_list.find(g => g.groupId == queryGroupId);
+          if (group) {
+            this.chooseGroup(group);
+            this.initWebSocket(group);
+          } else {
+            this.invite_link = true;
+            this.groupService.getGroup(queryGroupId).forEach(group => {
+              this.pendingGroup = group;
+            }).then(() => {
+              this.acceptInviteModal = new Modal(document.getElementById('acceptInvite') as HTMLElement, {
+                backdrop: 'static',
+                keyboard: false
+              });
+              this.acceptInviteModal.show();
+            }).catch(error => {
+              console.error('Erro ao carregar grupo:', error);
+            });
+          }
+        }
+      }).catch(error => {
+        console.error('Erro ao carregar grupos:', error);
+      });
+    }
+  }
+
   initWebSocket(group: Group) {
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
+    if (this.ws) this.ws.close();
     this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
-    this.ws.onopen = () => {
-      console.log('WebSocket opened');
-    };
     this.ws.onmessage = (event) => {
       let message = JSON.parse(event.data) as WebsocketMessage;
       switch (message.code) {
@@ -115,11 +142,33 @@ export class GroupComponent implements OnInit {
           }
           console.log(this.currentGroup?.properties);
           break;
+        case 'MemberAdded':
+          let member = JSON.parse(message.content) as GroupMember;
+          if (this.currentGroup?.members.find(m => m.id == member.id) == undefined) {
+            this.currentGroup!.members.push(member);
+          }
+          break;
       }
     };
-    this.ws.onclose = () => {
-      console.log('WebSocket closed');
-    };
+  }
+
+  acceptInvite() {
+    this.submitting_invite = true;
+    this.groupService.addMemberToGroup(this.pendingGroup!.groupId).forEach(response => {
+      if (response) {
+        this.submitting_invite = false;
+        this.acceptInviteModal?.hide();
+      }
+    }).then(() => {
+      this.global_loading = true;
+      this.loadGroups()
+        .then(() => {
+          this.global_loading = false;
+        });
+    }).catch(error => {
+      console.error('Erro ao aceitar convite:', error);
+      this.failed_invite = true;
+    });
   }
 
   setBookingData(): any {
@@ -521,7 +570,4 @@ export class GroupComponent implements OnInit {
   redirectToProperty(propertyId: string) {
     this.router.navigate(['/property', propertyId]);
   }
-
-  protected readonly console = console;
-  protected readonly navigator = navigator;
 }

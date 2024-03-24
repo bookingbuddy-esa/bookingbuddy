@@ -1,62 +1,4 @@
 <div *ngIf="!global_loading" class="row justify-content-center mt-4 w-100">
-  <div class="modal fade align-self-center" id="deleteGroupModal" tabindex="-1" aria-labelledby="deleteGroupModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteGroupModalLabel">Apagar Grupo</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Tem certeza de que deseja apagar este grupo?</p>
-          <p>Esta ação é <strong>irreversível</strong> e resultará na exclusão do grupo para todos os membros. Todos os
-            dados associados serão perdidos.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteGroup()">Apagar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="addPropertyModal" tabindex="-1" aria-labelledby="addPropertyModalLabel"
-       aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addPropertyModalLabel">Adicionar Propriedade</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
-          <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
-          <ol class="list-group list-group-numbered list-group-flush mb-2">
-            <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a
-              explorar.
-            </li>
-            <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se
-              adeque às suas necessidades.
-            </li>
-            <li class="list-group-item"><strong>Adicionar ao Grupo:</strong> Selecione uma propriedade e clique em
-              "Adicionar ao Grupo de Reserva".
-            </li>
-            <li class="list-group-item"><strong>Selecionar Grupo:</strong> Escolha o grupo de reserva onde deseja
-              incluir a propriedade.
-            </li>
-            <li class="list-group-item"><strong>Concluir:</strong> A propriedade será automaticamente adicionada ao
-              grupo selecionado.
-            </li>
-          </ol>
-          <p class="mt-2"><strong>NOTA:</strong> Para cada grupo de reserva existe um máximo de 6 propriedades a
-            escolher.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-success" data-bs-dismiss="modal" routerLink="/">Aceitar</button>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="col-md-3 mb-5">
     <div class="accordion mb-3" id="accordionGroups">
       <div class="accordion-item">
@@ -252,6 +194,96 @@
     </div>
     <div *ngIf="submitting " class="h-100">
       <app-loader></app-loader>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade align-self-center" id="deleteGroupModal" tabindex="-1" aria-labelledby="deleteGroupModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteGroupModalLabel">Apagar Grupo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza de que deseja apagar este grupo?</p>
+        <p>Esta ação é <strong>irreversível</strong> e resultará na exclusão do grupo para todos os membros. Todos os
+          dados associados serão perdidos.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteGroup()">Apagar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addPropertyModal" tabindex="-1" aria-labelledby="addPropertyModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPropertyModalLabel">Adicionar Propriedade</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
+        <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
+        <ol class="list-group list-group-numbered list-group-flush mb-2">
+          <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a
+            explorar.
+          </li>
+          <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se
+            adeque às suas necessidades.
+          </li>
+          <li class="list-group-item"><strong>Adicionar ao Grupo:</strong> Selecione uma propriedade e clique em
+            "Adicionar ao Grupo de Reserva".
+          </li>
+          <li class="list-group-item"><strong>Selecionar Grupo:</strong> Escolha o grupo de reserva onde deseja
+            incluir a propriedade.
+          </li>
+          <li class="list-group-item"><strong>Concluir:</strong> A propriedade será automaticamente adicionada ao
+            grupo selecionado.
+          </li>
+        </ol>
+        <p class="mt-2"><strong>NOTA:</strong> Para cada grupo de reserva existe um máximo de 6 propriedades a
+          escolher.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" routerLink="/">Aceitar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="acceptInvite" tabindex="-1" aria-labelledby="acceptInviteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="acceptInviteLabel">Convite para grupo de reserva</h5>
+        <button *ngIf="failed_invite && !submitting_invite" type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <span
+          *ngIf="!failed_invite && !submitting_invite">Aceitar o convite para o grupo de reserva <strong>{{ pendingGroup?.name }}</strong>?</span>
+        <span *ngIf="failed_invite && !submitting_invite"
+              class="text-center">Ocorreu um erro ao aceitar o convite!</span>
+        <app-loader class="m-3" *ngIf="submitting_invite"></app-loader>
+      </div>
+      <div *ngIf="!submitting_invite" class="modal-footer">
+        <button *ngIf="!failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                [routerLink]="['/groups']">
+          Rejeitar
+        </button>
+        <button *ngIf="!failed_invite" type="button" class="btn btn-success" (click)="acceptInvite()">
+          Aceitar
+        </button>
+        <button *ngIf="failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                [routerLink]="['/groups']">
+          Fechar
+        </button>
+      </div>
     </div>
   </div>
 </div>

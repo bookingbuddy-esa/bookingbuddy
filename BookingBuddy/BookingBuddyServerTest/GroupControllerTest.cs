@@ -202,6 +202,6 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         var result = await controller.AddMember(group!.GroupId);
 
         
-        Assert.IsType<CreatedAtActionResult>(result);
+        Assert.IsType<NoContentResult>(result);
     }
 }
