@@ -38,7 +38,7 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
   { path: 'unauthorized', component: UnauthorizedComponent },
-  { path: 'faq-page', component: FaqPageComponent },
+  { path: 'faq', component: FaqPageComponent },
   { path: 'about', component: AboutComponent },
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
