@@ -47,6 +47,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FaqPageComponent } from './faq-page/faq-page.component';
 import { FooterComponent } from './footer/footer.component';
 import { ChatNewComponent } from './chat-new/chat-new.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,7 @@ import { ChatNewComponent } from './chat-new/chat-new.component';
     HostingModule, GoogleMap, MapMarker,
     MatIconModule, MatDatepickerModule,
     MatFormFieldModule, MatInputModule,
-    MatNativeDateModule, PaymentComponent, MatTooltipModule
+    MatNativeDateModule, PaymentComponent, MatTooltipModule, NgbModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
