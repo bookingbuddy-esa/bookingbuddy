@@ -50,7 +50,7 @@
         </div>
     </div>
 </div>-->
-<div class="d-flex flex-row flex-grow-1 mt-5">
+<div class="d-flex flex-row flex-grow-1 my-5">
     <div class="lista-reservas col-2">
         <div class="list-group text-center">
             <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)" [class.selected]="booking === selectedBooking">
@@ -67,7 +67,7 @@
         </div>
         <div *ngIf="selectedBooking" class="mx-auto w-100">
             <div class="text-center">
-                <div *ngIf="selectedBooking.state != 2" class="alert alert-danger w-75" role="alert">
+                <div *ngIf="selectedBooking.state != 2" class="alert alert-danger w-75 mx-auto" role="alert">
                     Esta reserva ainda não se encontra paga por todos os membros do grupo.
                 </div>
 

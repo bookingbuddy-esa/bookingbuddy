@@ -10,6 +10,7 @@ import { GroupName } from "./group-name-step/group-name-step.component";
 import { GroupMembers } from "./group-members-step/group-members-step.component";
 
 import { PropertyAdService } from '../../property-ad/property-ad.service';
+import {FooterService} from "../../auxiliary/footer.service";
 
 @Component({
   selector: 'app-group-create',
@@ -43,8 +44,10 @@ export class GroupCreateComponent implements OnInit {
     private authService: AuthorizeService,
     private route: ActivatedRoute,
     private router: Router,
+    private footerService: FooterService,
     private groupService: GroupService) {
     this.errors = [];
+    this.footerService.hideFooter();
   }
 
   ngOnInit(): void {

@@ -8,6 +8,7 @@ import {UserInfo} from "../../auth/authorize.dto";
 import {Property, PropertyCreate} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
+import {FooterService} from "../../auxiliary/footer.service";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -43,8 +44,10 @@ export class PropertyAdCreateComponent implements OnInit {
 
   constructor(private authService: AuthorizeService,
               private router: Router,
+              private footerService: FooterService,
               private propertyService: PropertyAdService) {
     this.errors = [];
+    this.footerService.hideFooter();
   }
 
   ngOnInit(): void {
