@@ -1,6 +1,6 @@
 <div class="row flex-nowrap">
   <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
-    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-dark">
+    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 text-dark">
       <h4>Propriedades</h4>
       <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property"
                            (click)="setCurrentProperty(property)"

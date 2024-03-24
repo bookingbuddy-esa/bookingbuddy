@@ -48,6 +48,7 @@ import { FaqPageComponent } from './faq-page/faq-page.component';
 import { FooterComponent } from './footer/footer.component';
 import { ChatNewComponent } from './chat-new/chat-new.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ChatComponent,
     FavoriteSidebarComponent,
     ProfileComponent,
-    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupMembersStepComponent, FirstStepComponent, FaqPageComponent, FooterComponent, ChatNewComponent
+    BookingComponent, FavoritebarPropertyComponent, TransactionHandlerComponent, GroupComponent, GroupCreateComponent, GroupNameStepComponent, GroupMembersStepComponent, FirstStepComponent, FaqPageComponent, FooterComponent, ChatNewComponent,AboutComponent
+
   ],
   imports: [
     BrowserModule, HttpClientModule,

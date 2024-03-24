@@ -21,6 +21,7 @@ import { TransactionHandlerComponent } from './payment/transaction-handler/trans
 import { GroupComponent } from './group/group.component';
 import { GroupCreateComponent } from './group/group-create/group-create.component';
 import { FaqPageComponent } from './faq-page/faq-page.component';
+import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -36,8 +37,9 @@ const routes: Routes = [
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
-  {path: 'faq', component: FaqPageComponent},
-  {path: 'unauthorized', component: UnauthorizedComponent},
+  { path: 'unauthorized', component: UnauthorizedComponent },
+  { path: 'faq', component: FaqPageComponent },
+  { path: 'about', component: AboutComponent },
   {path: 'bad-request', component: BadRequestComponent},
   {path: 'forbidden', component: ForbiddenComponent},
   {path: '**', component: NotfoundComponent}
