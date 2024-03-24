@@ -2,7 +2,7 @@
     <div class="col-12 d-flex flex-column justify-content-center align-items-center">
         <p class="h4">{{ property.name }}</p>
         <div class="d-flex flex-row gap-2">
-            <p class="h5">★ 4.9</p>
+            <p class="h5"><i class="bi bi-star-fill yellow"></i> 4.9</p>
             <p class="h5">{{ property.location }}</p>
         </div>
         <div id="carouselExampleControls" class="carousel mycarousel img-shorter" data-bs-ride="carousel">
@@ -25,10 +25,10 @@
         <div class="d-flex mt-2 mb-2 align-items-center">
             <h5 class="m-0 flex-fill">Hospedado por {{ property.applicationUser?.name }}</h5>
             <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
-        <i class="bi bi-star text-warning"></i>
+        <i class="bi bi-bookmark-star text-warning h3"></i>
       </button>
             <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
-        <i class="bi bi-star-fill text-warning"></i>
+        <i class="bi bi-bookmark-star-fill text-warning h3"></i>
       </button>
         </div>
         <hr class="m-1" />
@@ -36,10 +36,10 @@
         <div class="comodidades mt-5 mb-3 d-flex flex-column">
             <h5>Comodidades</h5>
             <div *ngFor="let amenity of property.amenities" class="d-inline-flex">
-                <span class="text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
-                <h6 class="my-auto">{{ amenity.displayName }}</h6>
+                <span class="text-center material-symbols-outlined mx-3 my-1">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
+                <h6 class=" mx-3 my-1">{{ amenity.displayName }}</h6>
             </div>
-            <hr class="mb-2">
+            <!--<hr class="mb-2">-->
         </div>
     </div>
     <div class="col-12 col-lg-3 p-4 mt-2 mt-lg-5 border border-secondary rounded text-center">
@@ -93,7 +93,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="addToGroupModal" tabindex="-1" aria-labelledby="addToGroupModalLabel" aria-hidden="true">
+<!--<div class="modal fade" id="addToGroupModal" tabindex="-1" aria-labelledby="addToGroupModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -139,3 +139,4 @@
         </div>
     </div>
 </div>
+</div>-->
