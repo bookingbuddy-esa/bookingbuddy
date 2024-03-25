@@ -14,11 +14,13 @@ export class BookingService {
     return this.http.get(`${environment.apiUrl}/api/bookings/`, { withCredentials: true });
   }
 
-  public getBookingMessages(bookingId: string){
+  public getBookingMessages(bookingId: string) {
+    console.log("BookingId: " + bookingId);
     return this.http.get(`${environment.apiUrl}/api/bookings/${bookingId}/messages`, { withCredentials: true });
   }
 
-  public sendBookingMessage(bookingId: string, message: string){
+  public sendBookingMessage(bookingId: string, message: string) {
+    console.log("BookingId: " + bookingId + "Mensagem: " + message);
     return this.http.post(`${environment.apiUrl}/api/bookings/${bookingId}/messages`, {
       message
     }, {

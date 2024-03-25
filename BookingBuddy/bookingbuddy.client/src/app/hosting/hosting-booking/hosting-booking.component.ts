@@ -32,12 +32,14 @@ export class HostingBookingComponent {
   }
 
   selectBooking(booking: any) {
+    console.log("Booking: ");
+    console.log(booking);
     this.selectedBooking = booking;
     this.getBookingMessages();
   }
 
   sendMessage() {
-    this.bookingService.sendBookingMessage(this.selectedBooking.bookingOrderId, this.newMessage).forEach(
+    this.bookingService.sendBookingMessage(this.selectedBooking.orderId, this.newMessage).forEach(
       response => {
         if (response) {
           this.newMessage = "";
@@ -51,7 +53,7 @@ export class HostingBookingComponent {
   }
 
   getBookingMessages() {
-    this.bookingService.getBookingMessages(this.selectedBooking.bookingOrderId).forEach(
+    this.bookingService.getBookingMessages(this.selectedBooking.orderId).forEach(
       response => {
         if (response) {
           this.messages = response as any[];
