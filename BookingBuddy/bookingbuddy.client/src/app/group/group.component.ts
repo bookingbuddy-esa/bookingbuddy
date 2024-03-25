@@ -47,7 +47,6 @@ export class GroupComponent implements OnInit {
   invite_link: boolean = false;
   failed_invite: boolean = false;
   pendingGroup: Group | undefined;
-  //acceptInviteModal: Modal | undefined;
 
   // Datas de Reservas
   calendarMaxDate: Date = new Date(8640000000000000);
@@ -71,7 +70,6 @@ export class GroupComponent implements OnInit {
               private modalService: NgbModal,
               private orderService: OrderService) {
     this.reservarPropriedadeFailed = false;
-
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required]
@@ -92,7 +90,7 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  async loadGroups() {
+  private async loadGroups() {
     if (this.user) {
       return this.groupService.getGroupsByUserId(this.user.userId).forEach(groups => {
         this.group_list = groups;
@@ -148,38 +146,85 @@ export class GroupComponent implements OnInit {
     this.ws.onmessage = (event) => {
       let message = JSON.parse(event.data) as WebsocketMessage;
       switch (message.code) {
-        case 'PropertyRemoved':
+        case 'PropertyRemoved': {
           let content = JSON.parse(message.content) as { groupId: string, propertyId: string }
-          this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != content?.propertyId);
-          break;
-        case 'PropertyAdded':
-          let paContent = JSON.parse(message.content) as { groupId: string, property: GroupProperty };
-          if (!this.currentGroup?.properties.find(p => p.propertyId == paContent.property.propertyId)) {
-            this.currentGroup!.properties.push(paContent.property);
+          if (this.currentGroup?.groupId == content?.groupId) {
+            this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != content?.propertyId);
+          } else {
+            let group = this.group_list.find(g => g.groupId == content?.groupId);
+            if (group) {
+              group.properties = group.properties.filter(p => p.propertyId != content?.propertyId);
+            }
           }
           break;
-        case 'MemberAdded':
-          let maContent = JSON.parse(message.content) as { groupId: string, member: GroupMember };
-          if (!this.currentGroup?.members.find(m => m.id == maContent.member.id)) {
-            this.currentGroup!.members.push(maContent.member);
+        }
+        case 'PropertyAdded': {
+          let content = JSON.parse(message.content) as { groupId: string, property: GroupProperty };
+          if (this.currentGroup?.groupId == content.groupId) {
+            if (!this.currentGroup?.properties.find(p => p.propertyId == content.property.propertyId)) {
+              this.currentGroup!.properties.push(content.property);
+            }
+          } else {
+            let group = this.group_list.find(g => g.groupId == content.groupId);
+            if (group) {
+              if (!group.properties.find(p => p.propertyId == content.property.propertyId)) {
+                group.properties.push(content.property);
+              }
+            }
           }
           break;
-        case 'GroupDeleted':
-          let groupId = JSON.parse(message.content) as { groupId: string };
-          if (this.group_list.find(g => g.groupId == groupId.groupId)) {
-            if (this.currentGroup?.groupId == groupId.groupId) {
+        }
+        case 'MemberAdded': {
+          let content = JSON.parse(message.content) as { groupId: string, member: GroupMember };
+          if (this.currentGroup?.groupId == content.groupId) {
+            if (!this.currentGroup?.members.find(m => m.id == content.member.id)) {
+              this.currentGroup!.members.push(content.member);
+            }
+          } else {
+            let group = this.group_list.find(g => g.groupId == content.groupId);
+            if (group) {
+              if (!group.members.find(m => m.id == content.member.id)) {
+                group.members.push(content.member);
+              }
+            }
+          }
+          break;
+        }
+        case 'GroupDeleted': {
+          let content = JSON.parse(message.content) as { groupId: string };
+          if (this.group_list.find(g => g.groupId == content.groupId)) {
+            if (this.currentGroup?.groupId == content.groupId) {
               this.currentGroup = undefined;
               this.router.navigate(['/groups']);
             }
-            this.group_list = this.group_list.filter(g => g.groupId != groupId.groupId);
+            this.group_list = this.group_list.filter(g => g.groupId != content.groupId);
           }
           break;
-        case 'GroupActionUpdated':
-          let action = JSON.parse(message.content) as { groupId: string, groupAction: string };
-          if (this.currentGroup?.groupId == action.groupId) {
-            this.currentGroup!.groupAction = action.groupAction;
+        }
+        case 'GroupActionUpdated': {
+          let content = JSON.parse(message.content) as { groupId: string, groupAction: string };
+          if (this.currentGroup?.groupId == content.groupId) {
+            this.currentGroup!.groupAction = content.groupAction;
+          } else {
+            let group = this.group_list.find(g => g.groupId == content.groupId);
+            if (group) {
+              group.groupAction = content.groupAction;
+            }
           }
           break;
+        }
+        case 'ChosenPropertyUpdated': {
+          let content = JSON.parse(message.content) as { groupId: string, property: GroupProperty };
+          if (this.currentGroup?.groupId == content.groupId) {
+            this.currentGroup!.chosenProperty = content.property;
+          } else {
+            let group = this.group_list.find(g => g.groupId == content.groupId);
+            if (group) {
+              group.chosenProperty = content.property;
+            }
+          }
+          break;
+        }
       }
     };
   }
@@ -202,26 +247,19 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  setBookingData(): any {
-    return this.bookingData = {
-      groupBookingId: this.currentGroup?.groupBookingId,
-      orderType: 'group-booking'
-    };
-  }
-
-  public async copyGroupLink() {
+  protected async copyGroupLink() {
     let url = window.location.href;
     await navigator.clipboard.writeText(url);
   }
 
-  public updateGroupAction(action: GroupAction): void {
+  protected updateGroupAction(action: GroupAction): void {
     if (!this.currentGroup) {
       return;
     }
 
     let actionString = GroupActionHelper.AsString(action);
     this.groupService.updateGroupAction(this.currentGroup.groupId, actionString).forEach(response => {
-      if (response) {
+      if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
         this.currentGroup!.groupAction = actionString;
       }
     }).catch(error => {
@@ -229,9 +267,9 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  public deleteGroup(): void {
+  protected deleteGroup(): void {
     this.groupService.deleteGroup(this.currentGroup!.groupId).forEach(async response => {
-      if (response) {
+      if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
         this.currentGroup = undefined;
         this.group_list = this.group_list.filter(g => g.groupId != this.currentGroup?.groupId);
         await this.router.navigate(['/groups']);
@@ -241,9 +279,9 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  public removeProperty(propertyId: string) {
+  protected removeProperty(propertyId: string) {
     this.groupService.removePropertyFromGroup(this.currentGroup?.groupId!, propertyId).forEach(response => {
-      if (response) {
+      if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
         this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != propertyId);
       }
     }).catch(error => {
@@ -256,12 +294,31 @@ export class GroupComponent implements OnInit {
     this.errors = [];
     this.success_alerts = [];
     await this.router.navigate([], {queryParams: {groupId: group.groupId}});
-
     this.currentGroup = group;
     this.isGroupOwner = group.groupOwner.id === this.user?.userId;
 
-    this.loadDiscounts();
-    this.loadBlockedDates();
+    // this.loadDiscounts();
+    // this.loadBlockedDates();
+  }
+
+  public async chooseProperty(property: GroupProperty) {
+    if (!this.currentGroup) {
+      return;
+    }
+    await this.groupService.updateChosenProperty(this.currentGroup.groupId!, property.propertyId).forEach(response => {
+      if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
+        this.currentGroup!.chosenProperty = property;
+      }
+    }).catch(error => {
+      console.error('Erro ao escolher propriedade:', error);
+    });
+  }
+
+  setBookingData(): any {
+    return this.bookingData = {
+      groupBookingId: this.currentGroup?.groupBookingId,
+      orderType: 'group-booking'
+    };
   }
 
   dateFilter = (date: Date | null): boolean => {
@@ -355,59 +412,59 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  loadBlockedDates() {
-    if (this.currentGroup?.chosenProperty) {
-      this.propertyService.getPropertyBlockedDates(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
-        this.blockedDates = [];
-
-        dateRanges.forEach(dateRange => {
-          const startDate = new Date(dateRange.start);
-          const endDate = new Date(dateRange.end);
-          const currentDate = new Date(startDate);
-          while (currentDate <= endDate) {
-            this.blockedDates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
-        });
-
-      }).catch(error => {
-        console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-      });
-    }
-  }
-
-  loadDiscounts() {
-    if (this.currentGroup?.chosenProperty) {
-      this.propertyService.getPropertyDiscounts(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
-        this.discounts = [];
-
-        dateRanges.forEach(dateRange => {
-          const discount: Discount = {
-            discountId: dateRange.discountId,
-            startDate: dateRange.startDate,
-            endDate: dateRange.endDate,
-            discountAmount: dateRange.discountAmount,
-            dates: []
-          };
-
-          const startDate = new Date(dateRange.startDate);
-          const endDate = new Date(dateRange.endDate);
-          const currentDate = new Date(startDate);
-
-          while (currentDate <= endDate) {
-            discount.dates.push(new Date(currentDate));
-            this.discountDates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
-
-          this.discounts.push(discount);
-        });
-      }).catch(error => {
-          console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-        }
-      );
-    }
-  }
+  // loadBlockedDates() {
+  //   if (this.currentGroup?.chosenProperty) {
+  //     this.propertyService.getPropertyBlockedDates(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
+  //       this.blockedDates = [];
+  //
+  //       dateRanges.forEach(dateRange => {
+  //         const startDate = new Date(dateRange.start);
+  //         const endDate = new Date(dateRange.end);
+  //         const currentDate = new Date(startDate);
+  //         while (currentDate <= endDate) {
+  //           this.blockedDates.push(new Date(currentDate));
+  //           currentDate.setDate(currentDate.getDate() + 1);
+  //         }
+  //       });
+  //
+  //     }).catch(error => {
+  //       console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+  //     });
+  //   }
+  // }
+  //
+  // loadDiscounts() {
+  //   if (this.currentGroup?.chosenProperty) {
+  //     this.propertyService.getPropertyDiscounts(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
+  //       this.discounts = [];
+  //
+  //       dateRanges.forEach(dateRange => {
+  //         const discount: Discount = {
+  //           discountId: dateRange.discountId,
+  //           startDate: dateRange.startDate,
+  //           endDate: dateRange.endDate,
+  //           discountAmount: dateRange.discountAmount,
+  //           dates: []
+  //         };
+  //
+  //         const startDate = new Date(dateRange.startDate);
+  //         const endDate = new Date(dateRange.endDate);
+  //         const currentDate = new Date(startDate);
+  //
+  //         while (currentDate <= endDate) {
+  //           discount.dates.push(new Date(currentDate));
+  //           this.discountDates.push(new Date(currentDate));
+  //           currentDate.setDate(currentDate.getDate() + 1);
+  //         }
+  //
+  //         this.discounts.push(discount);
+  //       });
+  //     }).catch(error => {
+  //         console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+  //       }
+  //     );
+  //   }
+  // }
 
   formatPricesMap(): string[] {
     const formattedStrings: string[] = [];
@@ -419,53 +476,53 @@ export class GroupComponent implements OnInit {
     return formattedStrings;
   }
 
-  calcularTotalDesconto() {
-    let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
-    const selectedDates: Date[] = [];
-    this.pricesMap = new Map();
-    if (this.currentGroup?.chosenProperty && this.checkInDate && this.checkOutDate) {
-      const currentDate = new Date(this.checkInDate);
-      while (currentDate < this.checkOutDate) {
-        selectedDates.push(new Date(currentDate));
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
+  // calcularTotalDesconto() {
+  //   let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
+  //   const selectedDates: Date[] = [];
+  //   this.pricesMap = new Map();
+  //   if (this.currentGroup?.chosenProperty && this.checkInDate && this.checkOutDate) {
+  //     const currentDate = new Date(this.checkInDate);
+  //     while (currentDate < this.checkOutDate) {
+  //       selectedDates.push(new Date(currentDate));
+  //       currentDate.setDate(currentDate.getDate() + 1);
+  //     }
+  //
+  //     selectedDates.forEach(selectedDate => {
+  //       const matchingDiscounts = this.discounts.filter(discount =>
+  //         discount.dates.some(date => this.isSameDay(date, selectedDate))
+  //       );
+  //
+  //       if (matchingDiscounts.length > 0) {
+  //         matchingDiscounts.forEach(discount => {
+  //           const newPrice = this.priceWithDiscount(discount.discountAmount);
+  //           const currentCount = this.pricesMap.get(newPrice) || 0;
+  //           this.pricesMap.set(newPrice, currentCount + 1);
+  //         });
+  //       } else {
+  //         const currentCount = this.pricesMap.get(pricePerNight as number) || 0;
+  //         this.pricesMap.set(pricePerNight as number, currentCount + 1);
+  //       }
+  //     });
+  //
+  //     let totalPrice = 0;
+  //     this.pricesMap.forEach((count, price) => {
+  //       const aux = count * price;
+  //       totalPrice += aux;
+  //     });
+  //     return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
+  //   }
+  //   return 0;
+  // }
 
-      selectedDates.forEach(selectedDate => {
-        const matchingDiscounts = this.discounts.filter(discount =>
-          discount.dates.some(date => this.isSameDay(date, selectedDate))
-        );
-
-        if (matchingDiscounts.length > 0) {
-          matchingDiscounts.forEach(discount => {
-            const newPrice = this.priceWithDiscount(discount.discountAmount);
-            const currentCount = this.pricesMap.get(newPrice) || 0;
-            this.pricesMap.set(newPrice, currentCount + 1);
-          });
-        } else {
-          const currentCount = this.pricesMap.get(pricePerNight as number) || 0;
-          this.pricesMap.set(pricePerNight as number, currentCount + 1);
-        }
-      });
-
-      let totalPrice = 0;
-      this.pricesMap.forEach((count, price) => {
-        const aux = count * price;
-        totalPrice += aux;
-      });
-      return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
-    }
-    return 0;
-  }
-
-  priceWithDiscount(discountAmount: number): number {
-    let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
-    if (this.currentGroup?.chosenProperty && pricePerNight) {
-      const discountMultiplier = 1 - discountAmount / 100;
-
-      return Math.round(((pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
-    }
-    return 0;
-  }
+  // priceWithDiscount(discountAmount: number): number {
+  //   let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
+  //   if (this.currentGroup?.chosenProperty && pricePerNight) {
+  //     const discountMultiplier = 1 - discountAmount / 100;
+  //
+  //     return Math.round(((pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
+  //   }
+  //   return 0;
+  // }
 
 }
 

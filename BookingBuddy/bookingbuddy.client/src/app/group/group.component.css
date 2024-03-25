@@ -10,12 +10,12 @@
 }
 
 .property-list {
-  height: 25%;
+  min-height: 25%;
 }
 
 @media screen and (max-width: 768px) {
   .property-list {
-    height: 30%;
+    min-height: 20vh;
   }
 }
 

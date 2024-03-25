@@ -48,7 +48,7 @@ public class Group
     public List<string> UserVoteIds { get; set; } = [];
 
     /// <summary>
-    /// Propriedade que diz respeito ao identificador da propriedade escolhida.
+    /// Propriedade que diz respeito ao identificador da propriedade adicionada escolhida.
     /// </summary>
     [JsonPropertyName("chosenProperty")]
     public string? ChosenProperty { get; set; }

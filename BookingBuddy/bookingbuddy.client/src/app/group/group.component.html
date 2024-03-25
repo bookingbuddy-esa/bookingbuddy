@@ -71,10 +71,21 @@
       <div class="d-flex flex-row mt-2 mb-2">
         <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite"><i
           class="bi bi-link"></i></button>
-        <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (click)="updateGroupAction(GroupAction.voting)"
-                matTooltip="Iniciar Votação"><i class="bi bi-chat-square-heart-fill"></i></button>
-        <!--        <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('booking')"-->
-        <!--                matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i></button>-->
+        <button class="btn btn-sm btn-warning me-2"
+                *ngIf="isGroupOwner && currentGroup.groupAction === 'None'"
+                (click)="updateGroupAction(GroupAction.voting)"
+                matTooltip="Iniciar Votação">
+          <i class="bi bi-chat-square-heart-fill"></i>
+        </button>
+        <button class="btn btn-sm btn-success me-2"
+                *ngIf="isGroupOwner && currentGroup.groupAction === 'Voting'"
+                (click)="updateGroupAction(GroupAction.booking)"
+                matTooltip="Concluir Votação">
+          <i class="bi bi-chat-square-heart-fill"></i>
+        </button>
+        <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner && currentGroup.groupAction === 'Booking' "
+                matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i>
+        </button>
         <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal"
                 data-bs-target="#deleteGroupModal" matTooltip="Apagar Grupo"><i class="bi bi-trash"></i></button>
       </div>
@@ -92,9 +103,10 @@
            *ngIf="currentGroup && currentGroup.properties?.length !== 0 && currentGroup.groupAction === 'None' || currentGroup?.groupAction === 'Voting'">
         <div class="row row-cols-1 row-cols-md-4 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
           <div class="col property" *ngFor="let property of currentGroup?.properties">
-            <div class="card h-100 w-100">
-              <img class="card-img object-fit-cover opacity-50 h-100 w-100" [ngSrc]="property.imagesUrl[0]" fill
-                   priority
+            <div class="card h-100 w-100" [ngClass]="{'border-success border-5 rounded': currentGroup?.chosenProperty?.propertyId === property.propertyId}">
+              <img class="card-img object-fit-cover opacity-50 h-100 w-100"
+                   [ngSrc]="property.imagesUrl[0]" fill priority
+                   [ngClass]="{'rounded-0': currentGroup?.chosenProperty?.propertyId === property.propertyId}"
                    alt="Imagem da Propriedade">
               <div class="card-img-overlay d-flex flex-column">
                 <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',property.propertyId]">
@@ -103,18 +115,19 @@
                 </div>
                 <div class="d-flex flex-row">
                   <button class="btn btn-sm btn-danger me-2"
-                          *ngIf="currentGroup?.groupAction !== 'Voting' && (property.addedBy.id===user?.userId || isGroupOwner)"
+                          *ngIf="currentGroup?.groupAction !== 'Voting' && (property.addedBy.id === user?.userId || isGroupOwner)"
                           matTooltip="Remover Propriedade"
                           (click)="removeProperty(property.propertyId)">
                     <i class="bi bi-x-square"></i>
                   </button>
                   <button class="btn btn-sm btn-info" *ngIf="currentGroup?.groupAction === 'Voting'"
-                          matTooltip="Selecionar Propriedade"><i
+                          matTooltip="Votar na Propriedade"><i
                     class="bi bi-check2-circle"></i></button>
                   <button class="btn btn-sm btn-success ms-2"
                           *ngIf="currentGroup?.groupAction === 'Voting' && isGroupOwner"
-                          matTooltip="Selecionar Propriedade DEV"><i
-                    class="bi bi-check2-circle"></i>
+                          matTooltip="Selecionar Propriedade"
+                          (click)="chooseProperty(property)">
+                    <i class="bi bi-check2-circle"></i>
                   </button>
                   <div class="flex-fill on-hover-pointer" [routerLink]="['/property',property.propertyId]"></div>
                 </div>
@@ -128,13 +141,19 @@
     <!--  Botões em baixo da lista de propriedades e chat -->
     <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
       <div class="d-flex flex-row justify-content-around align-items-center">
-        <button type="button" class="btn btn-md btn-success me-2" data-bs-toggle="modal"
-                data-bs-target="#addPropertyModal ">Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>
+        <button type="button"
+                *ngIf="currentGroup && currentGroup.properties.length < 6 && currentGroup.groupAction === 'None'"
+                class="btn btn-md btn-success me-2"
+                data-bs-toggle="modal"
+                data-bs-target="#addPropertyModal ">
+          Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>
         </button>
-        <div class="flex-fill"></div>
-        <button class="btn btn-md btn-dark" *ngIf="currentGroup && currentGroup.chosenProperty">
-          Reservar Selecionada<i class="bi bi-arrow-right ms-2 "></i>
-        </button>
+        <div class="flex-fill">
+          <div class="text-center text-bg-info h-100 w-100 rounded fs-5"
+               *ngIf="currentGroup && currentGroup.groupAction === 'Voting'">
+            Votação em curso!
+          </div>
+        </div>
       </div>
       <app-chat-new class="chat"></app-chat-new>
     </div>

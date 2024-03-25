@@ -9,7 +9,7 @@ export interface Group {
   "members": GroupMember[],
   "properties": GroupProperty[],
   "votes": GroupVote[],
-  "chosenProperty": string | null,
+  "chosenProperty": GroupProperty | null,
   "chatId": string
   "groupAction": string
 }

@@ -184,6 +184,8 @@ namespace BookingBuddy.Server.Controllers
                 var userVote = await _context.UserVote.Where(uv => group.UserVoteIds.Contains(uv.UserVoteId))
                     .ToListAsync();
 
+                var chosenProperty = addedProperties.FirstOrDefault(uap => uap.UserAddedPropertyId == group.ChosenProperty);
+
                 return Ok(new ReturnGroup
                 {
                     GroupId = group.GroupId,
@@ -214,7 +216,21 @@ namespace BookingBuddy.Server.Controllers
                         UserId = uv.ApplicationUserId,
                         PropertyId = uv.PropertyId
                     }).ToList(),
-                    ChosenProperty = group.ChosenProperty,
+                    ChosenProperty = group.ChosenProperty != null
+                        ? new ReturnProperty
+                        {
+                            PropertyId = chosenProperty?.PropertyId ?? "Unknown",
+                            Name = chosenProperty?.Property?.Name ?? "Unknown",
+                            PricePerNight = chosenProperty?.Property?.PricePerNight ?? 0,
+                            ImagesUrl = chosenProperty?.Property?.ImagesUrl ?? [],
+                            Location = chosenProperty?.Property?.Location ?? "Unknown",
+                            AddedBy = new ReturnUser
+                            {
+                                Id = chosenProperty?.ApplicationUserId ?? "Unknown",
+                                Name = chosenProperty?.ApplicationUser?.Name ?? "Unknown"
+                            }
+                        }
+                        : null,
                     ChatId = group.ChatId,
                     GroupAction = group.GroupAction.ToString()
                 });
@@ -333,36 +349,70 @@ namespace BookingBuddy.Server.Controllers
         }
 
 
-        [HttpPut("setChoosenProperty")]
+        /// <summary>
+        /// Método que atualiza a propriedade escolhida de um grupo.
+        /// </summary>
+        /// <param name="model">Modelo com o identificador do grupo e da propriedade a ser escolhida</param>
+        /// <returns>Retorna o resultado da atualização da propriedade escolhida do grupo.</returns>
+        [HttpPut("updateChosenProperty")]
         [Authorize]
-        public async Task<IActionResult> SetChoosenProperty(string groupId, string propertyId)
+        public async Task<IActionResult> UpdateChosenProperty([FromBody] UpdateChosenPropertyModel model)
         {
-            var group = await _context.Groups.FindAsync(groupId);
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
 
             if (group == null)
             {
                 return NotFound();
             }
 
-            if (group.ChosenProperty != null)
-            {
-                return BadRequest("Já existe uma propriedade escolhida para este grupo.");
-            }
+            var groupProperties = await _context.UserAddedProperty
+                .Where(uap => group.AddedPropertyIds.Contains(uap.UserAddedPropertyId))
+                .Include(userAddedProperty => userAddedProperty.Property)
+                .Include(userAddedProperty => userAddedProperty.ApplicationUser)
+                .ToListAsync();
 
-            var addedProperty =
-                await _context.UserAddedProperty.FirstOrDefaultAsync(uap =>
-                    group.AddedPropertyIds.Contains(uap.UserAddedPropertyId));
-
-            if (!addedProperty?.PropertyId.Contains(propertyId) ?? false)
+            if (groupProperties.All(uap => uap.PropertyId != model.PropertyId))
             {
                 return BadRequest("A propriedade não existe no grupo.");
             }
 
-            group.ChosenProperty = propertyId;
+            var addedProperty = groupProperties.First(uap => uap.PropertyId == model.PropertyId);
+            group.ChosenProperty = addedProperty.UserAddedPropertyId;
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok("Propriedade escolhida com sucesso.");
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "ChosenPropertyUpdated",
+                        Content = JsonSerializer.Serialize(new
+                        {
+                            groupId = group.GroupId,
+                            property = new ReturnProperty
+                            {
+                                PropertyId = addedProperty.PropertyId,
+                                Name = addedProperty.Property?.Name ?? "Unknown",
+                                PricePerNight = addedProperty.Property?.PricePerNight ?? 0,
+                                ImagesUrl = addedProperty.Property?.ImagesUrl ?? [],
+                                Location = addedProperty.Property?.Location ?? "Unknown",
+                                AddedBy = new ReturnUser
+                                {
+                                    Id = addedProperty.ApplicationUserId,
+                                    Name = addedProperty.ApplicationUser?.Name ?? "Unknown"
+                                }
+                            }
+                        })
+                    });
+                }
+
+                return NoContent();
             }
             catch (Exception)
             {
@@ -783,9 +833,25 @@ namespace BookingBuddy.Server.Controllers
     }
 
     /// <summary>
+    /// Modelo que representa a atualização de uma propriedade escolhida.
+    /// </summary>
+    public record UpdateChosenPropertyModel
+    {
+        /// <summary>
+        /// O identificador do grupo.
+        /// </summary>
+        public required string GroupId { get; set; }
+
+        /// <summary>
+        /// O identificador da propriedade.
+        /// </summary>
+        public required string PropertyId { get; set; }
+    }
+
+    /// <summary>
     /// Modelo que representa a atualização de uma ação de grupo.
     /// </summary>
-    public class UpdateGroupActionModel
+    public record UpdateGroupActionModel
     {
         /// <summary>
         /// O identificador do grupo.
@@ -889,7 +955,7 @@ namespace BookingBuddy.Server.Controllers
         /// A propriedade escolhida para o grupo.
         /// </summary>
         [JsonPropertyName("chosenProperty")]
-        public string? ChosenProperty { get; set; }
+        public ReturnProperty? ChosenProperty { get; set; }
 
         /// <summary>
         /// O identificador do chat associado ao grupo.

@@ -59,15 +59,16 @@ export class GroupService {
       }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
   }
 
-  public setChosenProperty(groupId: string, propertyId: string) {
-    return this.http.put(`${environment.apiUrl}/api/groups/setChoosenProperty?groupId=${groupId}&propertyId=${propertyId}`, {},
+  public updateChosenProperty(groupId: string, propertyId: string) {
+    return this.http.put(`${environment.apiUrl}/api/groups/updateChosenProperty`, {
+        groupId: groupId,
+        propertyId: propertyId
+      },
       {
         withCredentials: true,
         observe: 'response',
         responseType: 'text'
-      }).pipe(map((res: any) => {
-      return res.body;
-    }));
+      }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
   }
 
   public addPropertyToGroup(groupId: string, propertyId: string): Observable<any> {
