@@ -17,11 +17,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-var azureSignalrConnectionString = builder.Configuration.GetConnectionString("AzureSignalR") ??
-                                   throw new InvalidOperationException(
-                                       "Connection string 'AzureSignalR' not found.");
-builder.Services.AddSignalR().AddAzureSignalR(options => { options.ConnectionString = azureSignalrConnectionString; });
-
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ??
                          throw new InvalidOperationException(
@@ -74,8 +69,6 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.MapHub<ChatHubController>("/hubs/chat");
 
 app.UseWebSockets(new WebSocketOptions
 {

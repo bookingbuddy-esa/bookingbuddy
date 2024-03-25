@@ -12,7 +12,6 @@ import {PropertyPromoteComponent} from './hosting/property-promote/property-prom
 import {ForbiddenComponent} from "./auxiliary/forbidden/forbidden.component";
 import {AuthGuard} from "./auth/authorize.guard";
 import {LandlordRoleGuardService} from "./auth/role-guard/landlord-role-guard.service";
-import { ChatComponent } from './chat/chat.component';
 import { BookingComponent } from './booking/booking.component';
 import { ProfileComponent } from './profile/profile.component';
 import {PropertyPerformanceComponent} from './hosting/property-performance/property-performance.component';
@@ -36,7 +35,6 @@ const routes: Routes = [
   {path: 'group-booking', component: GroupCreateComponent, canActivate: [AuthGuard]},
   {path: 'bookings', component: BookingComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
-  //{path: 'chat', component: ChatComponent/*, canActivate: [AuthGuard] */},
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: 'faq', component: FaqPageComponent },
   { path: 'about', component: AboutComponent },

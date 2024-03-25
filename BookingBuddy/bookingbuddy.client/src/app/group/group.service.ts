@@ -47,18 +47,19 @@ export class GroupService {
       }).pipe<boolean>((map((res: HttpResponse<any>) => res.ok)));
   }
 
-  public setGroupAction(groupId: string, groupAction: string) {
-    return this.http.put(`${environment.apiUrl}/api/groups/setGroupAction?groupId=${groupId}&groupAction=${groupAction}`, {},
+  public updateGroupAction(groupId: string, groupAction: string) {
+    return this.http.put(`${environment.apiUrl}/api/groups/updateGroupAction`, {
+        groupId: groupId,
+        groupAction: groupAction
+      },
       {
         withCredentials: true,
         observe: 'response',
         responseType: 'text'
-      }).pipe(map((res: any) => {
-      return res.body;
-    }));
+      }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
   }
 
-  public setChoosenProperty(groupId: string, propertyId: string) {
+  public setChosenProperty(groupId: string, propertyId: string) {
     return this.http.put(`${environment.apiUrl}/api/groups/setChoosenProperty?groupId=${groupId}&propertyId=${propertyId}`, {},
       {
         withCredentials: true,
@@ -102,20 +103,15 @@ export class GroupService {
     );
   }
 
-  public getGroupMessages(groupId: string) {
-    return this.http.get(`${environment.apiUrl}/api/groups/${groupId}/messages`, {withCredentials: true});
+  public voteForProperty(groupId: string, propertyId: string) {
+    return this.http.put(`${environment.apiUrl}/api/groups/voteForProperty`, {
+        groupId: groupId,
+        propertyId: propertyId,
+      },
+      {
+        withCredentials: true,
+        observe: 'response',
+        responseType: 'text'
+      }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
   }
-
-  public sendGroupMessage(groupId: string, message: string) {
-    return this.http.post(`${environment.apiUrl}/api/groups/${groupId}/messages`, {
-      message
-    }, {
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'text'
-    }).pipe<boolean>(map((res: HttpResponse<string>) => {
-      return res.ok;
-    }));
-  }
-
 }

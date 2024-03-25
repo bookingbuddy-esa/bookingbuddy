@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
@@ -15,7 +15,7 @@ import {FooterService} from "../../auxiliary/footer.service";
   templateUrl: './property-ad-create.component.html',
   styleUrl: './property-ad-create.component.css'
 })
-export class PropertyAdCreateComponent implements OnInit {
+export class PropertyAdCreateComponent implements OnInit,OnDestroy {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
   protected errors: string[] = [];
@@ -57,6 +57,10 @@ export class PropertyAdCreateComponent implements OnInit {
     this.onStepChange().forEach(step => {
       this.currentStep = step;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.footerService.showFooter();
   }
 
   previousStep() {

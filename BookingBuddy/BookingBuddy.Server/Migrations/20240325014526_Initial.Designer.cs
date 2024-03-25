@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookingBuddy.Server.Migrations
 {
     [DbContext(typeof(BookingBuddyServerContext))]
-    [Migration("20240323190009_Initial")]
+    [Migration("20240325014526_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -31,7 +31,6 @@ namespace BookingBuddy.Server.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DisplayName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -52,79 +51,79 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            AmenityId = "71c4bc51-09ef-45e7-8f57-b380dd33a592",
+                            AmenityId = "4a7c2f9d-0025-4b42-bb47-b15b1f60211f",
                             DisplayName = "Estacionamento",
                             Name = "Estacionamento"
                         },
                         new
                         {
-                            AmenityId = "e6c0df1c-6265-41fc-b11a-b97c552c48e8",
+                            AmenityId = "ea52bdb9-af1f-4b67-a442-6cec9f51dcb3",
                             DisplayName = "Wifi",
                             Name = "Wifi"
                         },
                         new
                         {
-                            AmenityId = "4c4a6b16-7fcf-47ae-a930-5059f0a5a89c",
+                            AmenityId = "b0b09e14-d1b7-4d00-8bf7-6a0dbbb0d7d7",
                             DisplayName = "Cozinha",
                             Name = "Cozinha"
                         },
                         new
                         {
-                            AmenityId = "67ed4a19-4c5a-4327-a2d4-0e7322eabec4",
+                            AmenityId = "bb467b90-9d22-49a0-b186-dd8b3cae99dc",
                             DisplayName = "Varanda",
                             Name = "Varanda"
                         },
                         new
                         {
-                            AmenityId = "ad331cbf-8f00-41c7-9890-12a0ec338051",
+                            AmenityId = "0933cbcc-dfed-4965-aed7-9b333a28b420",
                             DisplayName = "Frigorífico",
                             Name = "Frigorifico"
                         },
                         new
                         {
-                            AmenityId = "35113619-f908-4ab1-b448-a60bd35b66d8",
+                            AmenityId = "2c9ca8f2-fc7d-47d4-a60b-5009eb984333",
                             DisplayName = "Microondas",
                             Name = "Microondas"
                         },
                         new
                         {
-                            AmenityId = "73356c1e-0104-48b5-bf9d-ae5eabdd1e17",
+                            AmenityId = "b665de37-1cbc-452f-aa76-f2ce7c6b5617",
                             DisplayName = "Quintal",
                             Name = "Quintal"
                         },
                         new
                         {
-                            AmenityId = "d1d810af-c2d1-44ea-9f34-46b58286624e",
+                            AmenityId = "991cb213-eee7-4767-bd07-719460b3429a",
                             DisplayName = "Máquina de Lavar",
                             Name = "MaquinaLavar"
                         },
                         new
                         {
-                            AmenityId = "00507742-6781-4b6e-9f17-bc264e1b9ec8",
+                            AmenityId = "b43b6543-24dc-402d-8d2c-72e049e75deb",
                             DisplayName = "Piscina Partilhada",
                             Name = "PiscinaPartilhada"
                         },
                         new
                         {
-                            AmenityId = "93e77f87-6e92-45f4-9fb0-6124edf8dee2",
+                            AmenityId = "c655aea4-72e9-423b-8452-51fc6d654666",
                             DisplayName = "Piscina Individual",
                             Name = "PiscinaIndividual"
                         },
                         new
                         {
-                            AmenityId = "9d13e9f6-dde8-4fd2-9002-855cc5ff70c9",
+                            AmenityId = "5d5aafad-20b4-4a1d-9b18-ead91ec94e22",
                             DisplayName = "Animais",
                             Name = "Animais"
                         },
                         new
                         {
-                            AmenityId = "72f9f703-e2f0-41f9-9ca3-cabba957ac91",
+                            AmenityId = "8b336182-7167-4128-9aed-7376e5a039ea",
                             DisplayName = "Câmaras",
                             Name = "Camaras"
                         },
                         new
                         {
-                            AmenityId = "e8621944-2e9d-46ed-8e47-e586f37b8f4a",
+                            AmenityId = "f30a7c7a-b036-4560-b693-46e97b44b76f",
                             DisplayName = "TV",
                             Name = "Tv"
                         });
@@ -217,55 +216,55 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5152a9de-4b2d-47ef-8262-e24cee724985",
+                            Id = "a39d08d0-bc15-4003-8144-aa2eef919a77",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2f8ebd5e-22b8-45e5-ae66-f22888c8fcb2",
+                            ConcurrencyStamp = "1b406dbb-08ff-4531-9110-56e25f598481",
                             Email = "bookingbuddy.admin@bookingbuddy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "admin",
                             NormalizedEmail = "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM",
                             NormalizedUserName = "BOOKINGBUDDY.ADMIN@BOOKINGBUDDY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEfpyeO54GfixB7Gah95XTdpU3i/MsufyhAWOj/Ns9UodfcGSpCvto0rbvdJPpRdeA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGO29cxe6+MzqEjNf0Yd12l6yNIYm6vbtD6HNyvOs25irKrDOqFXK0WtlmhuRS0vPw==",
                             PhoneNumberConfirmed = false,
-                            ProviderId = "343cb2e7-4398-4df7-b0be-3af7408099c7",
-                            SecurityStamp = "83b84d34-64b5-4c2a-aa4c-765d4bcbd2f0",
+                            ProviderId = "d16883f5-62f0-4c75-9282-e0dd18ab2963",
+                            SecurityStamp = "f1a72605-ae19-450b-a232-d24f0c8b60d3",
                             TwoFactorEnabled = false,
                             UserName = "bookingbuddy.admin@bookingbuddy.com"
                         },
                         new
                         {
-                            Id = "a127f887-7538-4f40-bc3f-6b063153dfe1",
+                            Id = "c4a5cf1a-e17a-4c4c-aefa-ca1c78abb703",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "dff265ec-b04e-4af6-a6a5-de8ad6f450e5",
+                            ConcurrencyStamp = "adf02eca-0483-4fc0-93eb-fd3e91d72981",
                             Email = "bookingbuddy.user@bookingbuddy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "user",
                             NormalizedEmail = "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM",
                             NormalizedUserName = "BOOKINGBUDDY.USER@BOOKINGBUDDY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELSypOev+WeDJPf46K9otxUlr/DMnTlOSXXNdFR66Ui4raOFLEH3vVoqH5Bp2r6KpQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOxGsvy/3z+o+5InnSCpNuKO3wSJQYVdu+EFEZvYbjKXMTZwSkI8MGux6UW6rlyT7Q==",
                             PhoneNumberConfirmed = false,
-                            ProviderId = "343cb2e7-4398-4df7-b0be-3af7408099c7",
-                            SecurityStamp = "cca9e631-79e0-457a-a928-034d2691b250",
+                            ProviderId = "d16883f5-62f0-4c75-9282-e0dd18ab2963",
+                            SecurityStamp = "4740fab9-2930-4cbd-b6f4-c4ce54570374",
                             TwoFactorEnabled = false,
                             UserName = "bookingbuddy.user@bookingbuddy.com"
                         },
                         new
                         {
-                            Id = "a7c7f8df-941e-4efe-bb29-689d21be90e3",
+                            Id = "6095890e-d648-4068-a573-bec722a25dc9",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9eccc15a-e56c-4fd1-9399-1e2d3eb4a74f",
+                            ConcurrencyStamp = "9b17e702-941b-4745-b837-8d0890339445",
                             Email = "bookingbuddy.landlord@bookingbuddy.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "landlord",
                             NormalizedEmail = "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM",
                             NormalizedUserName = "BOOKINGBUDDY.LANDLORD@BOOKINGBUDDY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBVtm0VUs20PGWi+bOMnXwMZJ1imBrqz9CXUO2v26HaSvbSoDhxeSHBdipx1AcYhEg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPhQUbEM6SdPKy5kDSXPS7j5mjFXLtTG6GSm487Dt1+uZcMFZZdjF2io3LioezDxCQ==",
                             PhoneNumberConfirmed = false,
-                            ProviderId = "343cb2e7-4398-4df7-b0be-3af7408099c7",
-                            SecurityStamp = "49a12427-2089-4ab8-8527-68b310a38984",
+                            ProviderId = "d16883f5-62f0-4c75-9282-e0dd18ab2963",
+                            SecurityStamp = "28557ea8-a958-4402-bd34-2d8f197e4ff4",
                             TwoFactorEnabled = false,
                             UserName = "bookingbuddy.landlord@bookingbuddy.com"
                         });
@@ -291,19 +290,19 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            AspNetProviderId = "e39e1337-594d-46f2-bb60-79279624c691",
+                            AspNetProviderId = "22f07bfd-7470-4a16-a408-941b04818fe3",
                             Name = "google",
                             NormalizedName = "GOOGLE"
                         },
                         new
                         {
-                            AspNetProviderId = "f831ef7f-9715-44fa-bf15-5d443a4e985a",
+                            AspNetProviderId = "8c79eff0-2029-48b5-9f5b-6877f490f891",
                             Name = "microsoft",
                             NormalizedName = "MICROSOFT"
                         },
                         new
                         {
-                            AspNetProviderId = "343cb2e7-4398-4df7-b0be-3af7408099c7",
+                            AspNetProviderId = "d16883f5-62f0-4c75-9282-e0dd18ab2963",
                             Name = "local",
                             NormalizedName = "LOCAL"
                         });
@@ -552,6 +551,11 @@ namespace BookingBuddy.Server.Migrations
                         .HasColumnType("nvarchar(25)")
                         .HasAnnotation("Relational:JsonPropertyName", "name");
 
+                    b.Property<string>("UserVoteIds")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasAnnotation("Relational:JsonPropertyName", "userVoteIds");
+
                     b.HasKey("GroupId");
 
                     b.HasIndex("ChatId");
@@ -605,32 +609,6 @@ namespace BookingBuddy.Server.Migrations
                     b.HasIndex("PropertyId");
 
                     b.ToTable("GroupBookingOrder");
-                });
-
-            modelBuilder.Entity("BookingBuddy.Server.Models.GroupMessage", b =>
-                {
-                    b.Property<string>("MessageId")
-                        .HasColumnType("nvarchar(450)")
-                        .HasAnnotation("Relational:JsonPropertyName", "messageId");
-
-                    b.Property<string>("GroupId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "groupId");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "message");
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasAnnotation("Relational:JsonPropertyName", "userName");
-
-                    b.HasKey("MessageId");
-
-                    b.ToTable("GroupMessage");
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.GroupOrderPayment", b =>
@@ -894,6 +872,35 @@ namespace BookingBuddy.Server.Migrations
                     b.HasAnnotation("Relational:JsonPropertyName", "addedProperties");
                 });
 
+            modelBuilder.Entity("BookingBuddy.Server.Models.UserVote", b =>
+                {
+                    b.Property<string>("UserVoteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("GroupId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PropertyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserVoteId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("UserVote");
+
+                    b.HasAnnotation("Relational:JsonPropertyName", "userVotes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -923,22 +930,22 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "0ccf7447-2660-496d-a024-a9977f759f6d",
-                            ConcurrencyStamp = "fc40b516-a729-497f-8c3f-d3503ebbd65b",
+                            Id = "e3c6c525-2475-4fe4-ac7d-1df5bb6f0ed1",
+                            ConcurrencyStamp = "88aa73d0-b3a0-457a-a664-b6be9912cbc6",
                             Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4d84c4da-ab85-418f-9500-5fa4f7b95a4e",
-                            ConcurrencyStamp = "5718a62c-05e7-4edd-aa13-37970e3c6ca1",
+                            Id = "3225bc27-4b0c-48b8-a33c-18fddd1e3649",
+                            ConcurrencyStamp = "24ae1ced-a7a5-43a2-8739-0905dda82658",
                             Name = "user",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "59c01113-b1ee-49ea-a7b4-0aee373c2ed3",
-                            ConcurrencyStamp = "3dcb59a2-dfc9-4849-a5b2-4ec6fef79f91",
+                            Id = "4f0df77a-59f4-4716-acb8-cc282cc7526d",
+                            ConcurrencyStamp = "2bb24d20-31cc-4b22-9c00-91a8c537098c",
                             Name = "landlord",
                             NormalizedName = "LANDLORD"
                         });
@@ -1033,18 +1040,18 @@ namespace BookingBuddy.Server.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "5152a9de-4b2d-47ef-8262-e24cee724985",
-                            RoleId = "0ccf7447-2660-496d-a024-a9977f759f6d"
+                            UserId = "a39d08d0-bc15-4003-8144-aa2eef919a77",
+                            RoleId = "e3c6c525-2475-4fe4-ac7d-1df5bb6f0ed1"
                         },
                         new
                         {
-                            UserId = "a127f887-7538-4f40-bc3f-6b063153dfe1",
-                            RoleId = "4d84c4da-ab85-418f-9500-5fa4f7b95a4e"
+                            UserId = "c4a5cf1a-e17a-4c4c-aefa-ca1c78abb703",
+                            RoleId = "3225bc27-4b0c-48b8-a33c-18fddd1e3649"
                         },
                         new
                         {
-                            UserId = "a7c7f8df-941e-4efe-bb29-689d21be90e3",
-                            RoleId = "59c01113-b1ee-49ea-a7b4-0aee373c2ed3"
+                            UserId = "6095890e-d648-4068-a573-bec722a25dc9",
+                            RoleId = "4f0df77a-59f4-4716-acb8-cc282cc7526d"
                         });
                 });
 
@@ -1326,6 +1333,29 @@ namespace BookingBuddy.Server.Migrations
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("BookingBuddy.Server.Models.UserVote", b =>
+                {
+                    b.HasOne("BookingBuddy.Server.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookingBuddy.Server.Models.Group", null)
+                        .WithMany("UserVotes")
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("BookingBuddy.Server.Models.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Property");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1385,6 +1415,8 @@ namespace BookingBuddy.Server.Migrations
             modelBuilder.Entity("BookingBuddy.Server.Models.Group", b =>
                 {
                     b.Navigation("AddedProperties");
+
+                    b.Navigation("UserVotes");
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.GroupBookingOrder", b =>

@@ -4,8 +4,7 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {GroupService} from './group.service';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
-import {Group, GroupAction, GroupMember, GroupProperty} from '../models/group';
-import {Property} from '../models/property';
+import {Group, GroupAction, GroupActionHelper, GroupMember, GroupProperty} from '../models/group';
 import {Discount} from '../models/discount';
 import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -26,6 +25,7 @@ export class GroupComponent implements OnInit {
   success_alerts: string[] = [];
   errors: string[] = [];
   protected readonly navigator = navigator;
+  protected readonly GroupAction = GroupAction;
 
   // Carregamento de dados
 
@@ -101,7 +101,7 @@ export class GroupComponent implements OnInit {
         if (queryGroupId) {
           let group = this.group_list.find(g => g.groupId == queryGroupId);
           if (group) {
-            this.chooseGroup(group);
+            await this.chooseGroup(group);
             await this.initWebSocket(group);
           } else {
             this.invite_link = true;
@@ -118,8 +118,8 @@ export class GroupComponent implements OnInit {
               modalRef.componentInstance.pendingGroup = this.pendingGroup;
               modalRef.componentInstance.failed_invite = this.failed_invite;
               modalRef.componentInstance.submitting_invite = this.submitting_invite;
-              modalRef.componentInstance.onAcceptInvite.forEach(() => {
-                  this.acceptInvite()
+              modalRef.componentInstance.onAcceptInvite.forEach(async () => {
+                  await this.acceptInvite()
                   modalRef.close();
                 }
               );
@@ -140,7 +140,7 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  async initWebSocket(group: Group) {
+  private async initWebSocket(group: Group) {
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
     if (this.ws) this.ws.close();
@@ -149,19 +149,19 @@ export class GroupComponent implements OnInit {
       let message = JSON.parse(event.data) as WebsocketMessage;
       switch (message.code) {
         case 'PropertyRemoved':
-          let content = JSON.parse(message.content) as { propertyId: string }
+          let content = JSON.parse(message.content) as { groupId: string, propertyId: string }
           this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != content?.propertyId);
           break;
         case 'PropertyAdded':
-          let property = JSON.parse(message.content) as GroupProperty;
-          if (!this.currentGroup?.properties.find(p => p.propertyId == property.propertyId)) {
-            this.currentGroup!.properties.push(property);
+          let paContent = JSON.parse(message.content) as { groupId: string, property: GroupProperty };
+          if (!this.currentGroup?.properties.find(p => p.propertyId == paContent.property.propertyId)) {
+            this.currentGroup!.properties.push(paContent.property);
           }
           break;
         case 'MemberAdded':
-          let member = JSON.parse(message.content) as GroupMember;
-          if (!this.currentGroup?.members.find(m => m.id == member.id)) {
-            this.currentGroup!.members.push(member);
+          let maContent = JSON.parse(message.content) as { groupId: string, member: GroupMember };
+          if (!this.currentGroup?.members.find(m => m.id == maContent.member.id)) {
+            this.currentGroup!.members.push(maContent.member);
           }
           break;
         case 'GroupDeleted':
@@ -173,13 +173,20 @@ export class GroupComponent implements OnInit {
             }
             this.group_list = this.group_list.filter(g => g.groupId != groupId.groupId);
           }
+          break;
+        case 'GroupActionUpdated':
+          let action = JSON.parse(message.content) as { groupId: string, groupAction: string };
+          if (this.currentGroup?.groupId == action.groupId) {
+            this.currentGroup!.groupAction = action.groupAction;
+          }
+          break;
       }
     };
   }
 
-  acceptInvite() {
+  private async acceptInvite() {
     this.submitting_invite = true;
-    this.groupService.addMemberToGroup(this.pendingGroup!.groupId).forEach(response => {
+    return this.groupService.addMemberToGroup(this.pendingGroup!.groupId).forEach(response => {
       if (response) {
         this.submitting_invite = false;
       }
@@ -202,37 +209,23 @@ export class GroupComponent implements OnInit {
     };
   }
 
-  public copyGroupLink(): void {
+  public async copyGroupLink() {
     let url = window.location.href;
-    navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(url);
   }
 
-  public setGroupAction(action: string): void {
-    if (!this.currentGroup || action != 'voting' && action != 'booking' && action != 'paying') {
+  public updateGroupAction(action: GroupAction): void {
+    if (!this.currentGroup) {
       return;
     }
 
-    this.groupService.setGroupAction(this.currentGroup!.groupId, action).forEach(response => {
+    let actionString = GroupActionHelper.AsString(action);
+    this.groupService.updateGroupAction(this.currentGroup.groupId, actionString).forEach(response => {
       if (response) {
-        //this.success_alerts.push("Ação do grupo atualizada com sucesso!");
-        // switch (action) {
-        //   case 'voting':
-        //     this.currentGroup!.groupAction = GroupAction.voting;
-        //     // TODO: enviar alert do tipo "info" (fazer um alerta genérico em vez de success e error)
-        //     break;
-        //   case 'booking':
-        //     this.currentGroup!.groupAction = GroupAction.booking;
-        //     break;
-        //   case 'paying':
-        //     this.currentGroup!.groupAction = GroupAction.paying;
-        //     break;
-        // }
-
-        this.sendMessageWS();
+        this.currentGroup!.groupAction = actionString;
       }
     }).catch(error => {
-      //this.errors.push(error.error);
-      console.log("ERROR: " + JSON.stringify(error));
+      this.errors.push(error.error);
     });
   }
 
@@ -248,41 +241,6 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  public sendMessageWS(): void {
-    if (this.ws) {
-      this.ws.send(JSON.stringify(this.currentGroup));
-      console.log("Sending to WS: " + JSON.stringify(this.currentGroup));
-    }
-  }
-
-
-  public setChoosenProperty(property: Property) {
-    /*this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
-      if (response) {
-        console.log(response);
-        this.currentGroup!.choosenProperty = property.propertyId;
-        this.sendMessageWS();
-      }
-    });*/
-    if (property) {
-      this.currentGroup!.chosenProperty = property.propertyId;
-      this.sendMessageWS();
-    }
-  }
-
-  public setChoosenPropertyDEV(property: Property) {
-    this.groupService.setChoosenProperty(this.currentGroup!.groupId, property.propertyId).forEach(response => {
-      if (response) {
-        console.log(response);
-        this.currentGroup!.chosenProperty = property.propertyId;
-        this.sendMessageWS();
-      }
-    }).catch(error => {
-      console.log("Erro ao setChoosenProperty: " + JSON.stringify(error));
-      //this.errors.push(error.error);
-    });
-  }
-
   public removeProperty(propertyId: string) {
     this.groupService.removePropertyFromGroup(this.currentGroup?.groupId!, propertyId).forEach(response => {
       if (response) {
@@ -294,10 +252,10 @@ export class GroupComponent implements OnInit {
     );
   }
 
-  public chooseGroup(group: Group): void {
+  public async chooseGroup(group: Group) {
     this.errors = [];
     this.success_alerts = [];
-    this.router.navigate([], {queryParams: {groupId: group.groupId}});
+    await this.router.navigate([], {queryParams: {groupId: group.groupId}});
 
     this.currentGroup = group;
     this.isGroupOwner = group.groupOwner.id === this.user?.userId;
@@ -388,7 +346,7 @@ export class GroupComponent implements OnInit {
           };*/
 
           this.currentGroup!.groupBookingId = response.orderId;
-          this.setGroupAction('paying');
+          //this.setGroupAction('paying');
           //this.sendMessageWS();
         }
       }).catch(error => {
@@ -509,9 +467,6 @@ export class GroupComponent implements OnInit {
     return 0;
   }
 
-  redirectToProperty(propertyId: string) {
-    this.router.navigate(['/property', propertyId]);
-  }
 }
 
 @Component({

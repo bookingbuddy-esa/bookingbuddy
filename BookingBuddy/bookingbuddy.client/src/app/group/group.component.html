@@ -71,10 +71,10 @@
       <div class="d-flex flex-row mt-2 mb-2">
         <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite"><i
           class="bi bi-link"></i></button>
-        <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (click)="setGroupAction('voting')"
+        <button class="btn btn-sm btn-warning me-2" *ngIf="isGroupOwner" (click)="updateGroupAction(GroupAction.voting)"
                 matTooltip="Iniciar Votação"><i class="bi bi-chat-square-heart-fill"></i></button>
-        <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('booking')"
-                matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i></button>
+        <!--        <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner" (click)="setGroupAction('booking')"-->
+        <!--                matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i></button>-->
         <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal"
                 data-bs-target="#deleteGroupModal" matTooltip="Apagar Grupo"><i class="bi bi-trash"></i></button>
       </div>
@@ -93,7 +93,8 @@
         <div class="row row-cols-1 row-cols-md-4 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
           <div class="col property" *ngFor="let property of currentGroup?.properties">
             <div class="card h-100 w-100">
-              <img class="card-img object-fit-cover opacity-50 h-100 w-100" [src]="property.imagesUrl[0]"
+              <img class="card-img object-fit-cover opacity-50 h-100 w-100" [ngSrc]="property.imagesUrl[0]" fill
+                   priority
                    alt="Imagem da Propriedade">
               <div class="card-img-overlay d-flex flex-column">
                 <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',property.propertyId]">

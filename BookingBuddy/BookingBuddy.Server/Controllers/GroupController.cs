@@ -23,8 +23,6 @@ namespace BookingBuddy.Server.Controllers
         private readonly IConfiguration _configuration;
         private static readonly WebSocketWrapper WebSocketWrapper = new();
         private static readonly Dictionary<string, List<WebSocket>> GroupSockets = new();
-        //private static readonly Dictionary<ApplicationUser, List<WebSocket>> UserSockets = new();
-
 
         /// <summary>
         /// Construtor da classe PropertyController.
@@ -151,25 +149,25 @@ namespace BookingBuddy.Server.Controllers
                 }
 
                 List<UserAddedProperty> addedProperties = [];
-                group.AddedPropertyIds.ForEach(userAddedPropertyId =>
+                foreach (var userAddedPropertyId in group.AddedPropertyIds)
                 {
-                    var userAddedProperty = _context.UserAddedProperty
+                    var userAddedProperty = await _context.UserAddedProperty
                         .Include(uap => uap.Property)
                         .Include(uap => uap.ApplicationUser)
-                        .FirstOrDefault(uap =>
+                        .FirstOrDefaultAsync(uap =>
                             uap.UserAddedPropertyId == userAddedPropertyId);
-                    if (userAddedProperty == null) return;
+                    if (userAddedProperty == null) continue;
 
                     addedProperties.Add(userAddedProperty);
-                });
+                }
 
                 group.AddedProperties = addedProperties;
 
                 List<ReturnUser> users = [];
 
-                group.MembersId.ForEach(memberId =>
+                foreach (var memberId in group.MembersId)
                 {
-                    var member = _context.Users.FirstOrDefault(u => u.Id == memberId);
+                    var member = await _context.Users.FirstOrDefaultAsync(u => u.Id == memberId);
                     if (member != null)
                     {
                         users.Add(new ReturnUser
@@ -178,10 +176,13 @@ namespace BookingBuddy.Server.Controllers
                             Name = member.Name
                         });
                     }
-                });
+                }
 
                 group.Members = users;
-                var owner = _context.Users.FirstOrDefault(u => u.Id == group.GroupOwnerId);
+                var owner = await _context.Users.FirstOrDefaultAsync(u => u.Id == group.GroupOwnerId);
+
+                var userVote = await _context.UserVote.Where(uv => group.UserVoteIds.Contains(uv.UserVoteId))
+                    .ToListAsync();
 
                 return Ok(new ReturnGroup
                 {
@@ -208,9 +209,14 @@ namespace BookingBuddy.Server.Controllers
                                 Name = uap.ApplicationUser?.Name ?? "Unknown"
                             }
                         }).ToList(),
+                    Votes = userVote.Select(uv => new ReturnVote
+                    {
+                        UserId = uv.ApplicationUserId,
+                        PropertyId = uv.PropertyId
+                    }).ToList(),
                     ChosenProperty = group.ChosenProperty,
                     ChatId = group.ChatId,
-                    GroupAction = group.GroupAction.AsString()
+                    GroupAction = group.GroupAction.ToString()
                 });
             }
             catch (Exception ex)
@@ -256,42 +262,69 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
-        [HttpPut("setGroupAction")]
+        /// <summary>
+        /// Método que atualiza a ação de um grupo.
+        /// </summary>
+        /// <param name="model">Modelo com o identificador do grupo e a ação a ser atualizada</param>
+        /// <returns>Retorna o resultado da atualização da ação do grupo.</returns>
+        [HttpPut("updateGroupAction")]
         [Authorize]
-        public async Task<IActionResult> SetGroupAction(string groupId, string groupAction)
+        public async Task<IActionResult> UpdateGroupAction([FromBody] UpdateGroupActionModel model)
         {
-            var group = await _context.Groups.FindAsync(groupId);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
 
             if (group == null)
             {
                 return NotFound();
             }
 
-            if (groupAction != "none" && groupAction != "voting" && groupAction != "booking" && groupAction != "paying")
+            if (group.GroupOwnerId != user.Id)
             {
-                return BadRequest("Ação inválida.");
+                return Forbid();
             }
 
-            switch (groupAction.ToLower())
-            {
-                case "none":
-                    group.GroupAction = GroupAction.None;
-                    break;
-                case "voting":
-                    group.GroupAction = GroupAction.Voting;
-                    break;
-                case "booking":
-                    group.GroupAction = GroupAction.Booking;
-                    break;
-                case "paying":
-                    group.GroupAction = GroupAction.Paying;
-                    break;
-            }
+            var groupAction = model.GroupAction;
+            GroupAction? parsedGroupAction;
 
             try
             {
+                parsedGroupAction = Enum.Parse<GroupAction>(groupAction, true);
+            }
+            catch
+            {
+                return BadRequest("A ação do grupo não é válida.");
+            }
+
+            if (parsedGroupAction == group.GroupAction)
+            {
+                NoContent();
+            }
+
+            group.GroupAction = parsedGroupAction.Value;
+            try
+            {
                 await _context.SaveChangesAsync();
-                return Ok("Ação do grupo atualizada com sucesso.");
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "GroupActionUpdated",
+                        Content = JsonSerializer.Serialize(new
+                        {
+                            groupId = group.GroupId,
+                            groupAction = group.GroupAction.ToString()
+                        })
+                    });
+                }
+
+                return NoContent();
             }
             catch (Exception)
             {
@@ -412,7 +445,11 @@ namespace BookingBuddy.Server.Controllers
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "PropertyAdded",
-                        Content = JsonSerializer.Serialize(returnProperty)
+                        Content = JsonSerializer.Serialize(new
+                        {
+                            groupId,
+                            property = returnProperty
+                        })
                     });
                 }
 
@@ -472,7 +509,11 @@ namespace BookingBuddy.Server.Controllers
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "PropertyRemoved",
-                        Content = JsonSerializer.Serialize(new { propertyId = addedProperty.PropertyId })
+                        Content = JsonSerializer.Serialize(new
+                        {
+                            groupId = group.GroupId,
+                            propertyId = addedProperty.PropertyId
+                        })
                     });
                 }
 
@@ -488,7 +529,6 @@ namespace BookingBuddy.Server.Controllers
         /// Adiciona um utilizador como membro de um grupo existente.
         /// </summary>
         /// <param name="groupId">O ID do grupo ao qual o utilizador será adicionado como membro.</param>
-        /// <param name="userId">O ID do utilizador a ser adicionado como membro.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [Authorize]
         [HttpPut("addMember")]
@@ -515,10 +555,14 @@ namespace BookingBuddy.Server.Controllers
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "MemberAdded",
-                        Content = JsonSerializer.Serialize(new ReturnUser
+                        Content = JsonSerializer.Serialize(new
                         {
-                            Id = user.Id,
-                            Name = user.Name
+                            groupId = group.GroupId,
+                            member = new ReturnUser
+                            {
+                                Id = user.Id,
+                                Name = user.Name
+                            }
                         })
                     });
                 }
@@ -565,6 +609,11 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Remove um grupo de reserva.
+        /// </summary>
+        /// <param name="groupId">O ID do grupo a ser removido.</param>
+        /// <returns>Rertorna o resultado da remoção do grupo.</returns>
         [HttpDelete("delete/{groupId}")]
         [Authorize]
         public async Task<IActionResult> DeleteGroup(string groupId)
@@ -580,7 +629,7 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Unauthorized();
             }
-            
+
             if (group.GroupOwnerId != user.Id)
             {
                 return Forbid();
@@ -595,9 +644,13 @@ namespace BookingBuddy.Server.Controllers
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "GroupDeleted",
-                        Content = JsonSerializer.Serialize(new { groupId = group.GroupId })
+                        Content = JsonSerializer.Serialize(new
+                        {
+                            groupId = group.GroupId
+                        })
                     });
                 }
+
                 return Ok("Grupo eliminado com sucesso.");
             }
             catch (Exception e)
@@ -606,12 +659,94 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        [HttpPost("addVote")]
+        [Authorize]
+        public async Task<IActionResult> AddVote([FromBody] AddVoteModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (!group.MembersId.Contains(user.Id))
+            {
+                return Forbid();
+            }
+
+            if (group.GroupAction != GroupAction.Voting)
+            {
+                return BadRequest("O grupo não está em votação.");
+            }
+
+            var property = await _context.Property.FindAsync(model.PropertyId);
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            List<UserVote> votes = [];
+            foreach (var userVoteId in group.UserVoteIds)
+            {
+                var uv = await _context.UserVote.FindAsync(userVoteId);
+                if (uv == null) continue;
+                votes.Add(uv);
+            }
+
+            if (votes.Any(uv => uv.ApplicationUserId == user.Id))
+            {
+                return BadRequest("O utilizador já votou.");
+            }
+
+            var userVote = new UserVote
+            {
+                UserVoteId = Guid.NewGuid().ToString(),
+                ApplicationUserId = user.Id,
+                PropertyId = property.PropertyId
+            };
+            group.UserVoteIds.Add(userVote.UserVoteId);
+
+            try
+            {
+                _context.UserVote.Add(userVote);
+                await _context.SaveChangesAsync();
+                foreach (var socket in GroupSockets.Where(gs => gs.Key == group.GroupId).SelectMany(gs => gs.Value))
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                        {
+                            Code = "VoteAdded",
+                            Content = JsonSerializer.Serialize(new
+                            {
+                                groupId = group.GroupId,
+                                vote = new ReturnVote
+                                {
+                                    UserId = userVote.ApplicationUserId,
+                                    PropertyId = userVote.PropertyId
+                                }
+                            })
+                        }
+                    );
+                }
+
+                return Ok("Voto adicionado com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
 
         /// <summary>
         /// Manipula a comunicação WebSocket para um grupo específico.
         /// </summary>
         /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
-        /// <param name="userId">O ID do utilizador que está a tentar comunicar com o grupo.</param>
         /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
         /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         [NonAction]
@@ -619,8 +754,6 @@ namespace BookingBuddy.Server.Controllers
         {
             var group = await _context.Groups.FindAsync(groupId);
             if (group == null) return;
-            // var user = await _userManager.FindByIdAsync(userId);
-            // if (user == null || group == null) return;
 
             WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
             {
@@ -632,27 +765,8 @@ namespace BookingBuddy.Server.Controllers
                 {
                     GroupSockets.Add(groupId, [webSocket]);
                 }
-                // if (UserSockets.TryGetValue(user, out var userValue))
-                // {
-                //     userValue.Add(webSocket);
-                // }
-                // else
-                // {
-                //     UserSockets.Add(user, [webSocket]);
-                // }
 
                 return Task.CompletedTask;
-            });
-            WebSocketWrapper.AddOnReceiveListener(webSocket, async (_, webSocketEvent) =>
-            {
-                switch (webSocketEvent.Message?.Code)
-                {
-                    default:
-                    {
-                        Console.WriteLine("Mensagem recebida: " + JsonSerializer.Serialize(webSocketEvent.Message));
-                        break;
-                    }
-                }
             });
             WebSocketWrapper.AddOnCloseListener(webSocket, (_, _) =>
             {
@@ -660,16 +774,44 @@ namespace BookingBuddy.Server.Controllers
                 {
                     value.Remove(webSocket);
                 }
-                // if (UserSockets.TryGetValue(user, out var userValue))
-                // {
-                //     userValue.Remove(webSocket);
-                // }
 
                 return Task.CompletedTask;
             });
 
             await WebSocketWrapper.HandleAsync(webSocket);
         }
+    }
+
+    /// <summary>
+    /// Modelo que representa a atualização de uma ação de grupo.
+    /// </summary>
+    public class UpdateGroupActionModel
+    {
+        /// <summary>
+        /// O identificador do grupo.
+        /// </summary>
+        public required string GroupId { get; set; }
+
+        /// <summary>
+        /// A ação do grupo.
+        /// </summary>
+        public required string GroupAction { get; set; }
+    }
+
+    /// <summary>
+    /// Modelo que representa a adição de um voto.
+    /// </summary>
+    public record AddVoteModel
+    {
+        /// <summary>
+        /// O identificador do grupo.
+        /// </summary>
+        public required string GroupId { get; set; }
+
+        /// <summary>
+        /// O identificador da propriedade.
+        /// </summary>
+        public required string PropertyId { get; set; }
     }
 
     /// <summary>
@@ -738,6 +880,12 @@ namespace BookingBuddy.Server.Controllers
         public List<ReturnProperty> Properties { get; set; } = [];
 
         /// <summary>
+        /// A lista de votos dos utilizadores.
+        /// </summary>
+        [JsonPropertyName("votes")]
+        public List<ReturnVote> Votes { get; set; } = [];
+
+        /// <summary>
         /// A propriedade escolhida para o grupo.
         /// </summary>
         [JsonPropertyName("chosenProperty")]
@@ -796,5 +944,23 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         [JsonPropertyName("addedBy")]
         public required ReturnUser AddedBy { get; set; }
+    }
+
+    /// <summary>
+    /// Modelo que representa um voto de um utilizador.
+    /// </summary>
+    public record ReturnVote
+    {
+        /// <summary>
+        /// Propriedade que diz respeito ao identificador do voto de um utilizador numa propriedade.
+        /// </summary>
+        [JsonPropertyName("userId")]
+        public required string UserId { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito ao identificador da propriedade votada.
+        /// </summary>
+        [JsonPropertyName("propertyId")]
+        public required string PropertyId { get; set; }
     }
 }

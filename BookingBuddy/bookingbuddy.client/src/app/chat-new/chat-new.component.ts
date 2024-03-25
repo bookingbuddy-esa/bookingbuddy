@@ -13,7 +13,6 @@ export class ChatNewComponent implements OnInit{
   }
 
   ngOnInit(): void {
-      throw new Error('Method not implemented.');
   }
   @Input() chatId: string | undefined;
 

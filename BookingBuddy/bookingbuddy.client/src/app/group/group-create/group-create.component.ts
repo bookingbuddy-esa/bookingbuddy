@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
@@ -17,7 +17,7 @@ import {FooterService} from "../../auxiliary/footer.service";
   templateUrl: './group-create.component.html',
   styleUrl: './group-create.component.css'
 })
-export class GroupCreateComponent implements OnInit {
+export class GroupCreateComponent implements OnInit, OnDestroy {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
   protected errors: string[] = [];
@@ -51,7 +51,6 @@ export class GroupCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.authService.user().forEach(user => {
       this.user = user;
     });
@@ -72,6 +71,10 @@ export class GroupCreateComponent implements OnInit {
         );
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.footerService.showFooter();
   }
 
   previousStep() {
@@ -139,7 +142,7 @@ export class GroupCreateComponent implements OnInit {
     this.groupService.createGroup(newGroup).forEach(group => {
         if (group) {
           this.submitting = true;
-          this.router.navigate(['/groups'], { queryParams: { groupId: group.groupId } }).then(() => {
+          this.router.navigate(['/groups'], {queryParams: {groupId: group.groupId}}).then(() => {
               this.submitting = false;
             }
           );

@@ -106,13 +106,16 @@ namespace BookingBuddy.Server.Data
         ///  Propriedade que diz respeito às mensagens do chat.
         /// </summary>
         public DbSet<ChatMessage> ChatMessage { get; set; } = default!;
-
-        /// <summary>
-        /// Propriedade que diz respeito às mensagens de grupo.
-        /// </summary>
-        public DbSet<GroupMessage> GroupMessage { get; init; } = default!;
         
+        /// <summary>
+        /// Propriedade que diz respeito às propriedades adicionadas pelo utilizador.
+        /// </summary>
         public DbSet<UserAddedProperty> UserAddedProperty { get; set; } = default!;
+        
+        /// <summary>
+        /// Propriedade que diz respeito aos votos dos utilizadores.
+        /// </summary>
+        public DbSet<UserVote> UserVote { get; set; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.
@@ -250,7 +253,7 @@ namespace BookingBuddy.Server.Data
             List<Amenity> amenities = [];
             amenities.AddRange(Enum.GetValues<AmenityEnum>().Select(amenity => new Amenity
             {
-                AmenityId = Guid.NewGuid().ToString(), Name = amenity.ToString(), DisplayName = amenity.GetAmenityName()
+                AmenityId = Guid.NewGuid().ToString(), Name = amenity.ToString(), DisplayName = amenity.GetDescription()
             }));
 
             builder.Entity<Amenity>().HasData(amenities);

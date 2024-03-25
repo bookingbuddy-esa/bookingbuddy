@@ -8,6 +8,7 @@ export interface Group {
   "name": string,
   "members": GroupMember[],
   "properties": GroupProperty[],
+  "votes": GroupVote[],
   "chosenProperty": string | null,
   "chatId": string
   "groupAction": string
@@ -27,6 +28,11 @@ export interface GroupProperty {
   "addedBy": GroupMember,
 }
 
+export interface GroupVote {
+  "userId": string,
+  "propertyId": string,
+}
+
 export interface GroupCreate {
   name: string;
   propertyId?: string;
@@ -40,13 +46,15 @@ export enum GroupAction {
   paying
 }
 
-export class GroupHelper {
+export class GroupActionHelper {
   public static getGroupActions(): string[] {
     return Object.keys(GroupAction).filter(k => typeof GroupAction[k as any] === "number")
   }
 
-  public static parseGroupAction(groupAction: string): GroupAction {
+  public static parseGroupAction(groupAction: string): GroupAction | null {
     switch (groupAction) {
+      case "None":
+        return GroupAction.none;
       case "Voting":
         return GroupAction.voting;
       case "Booking":
@@ -54,7 +62,20 @@ export class GroupHelper {
       case "Paying":
         return GroupAction.paying;
       default:
-        return GroupAction.none;
+        return null;
+    }
+  }
+
+  public static AsString(groupAction: GroupAction): string {
+    switch (groupAction) {
+      case GroupAction.voting:
+        return "Voting";
+      case GroupAction.booking:
+        return "Booking";
+      case GroupAction.paying:
+        return "Paying";
+      default:
+        return "None";
     }
   }
 
