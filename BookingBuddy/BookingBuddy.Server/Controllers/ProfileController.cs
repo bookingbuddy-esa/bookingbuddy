@@ -18,14 +18,12 @@ namespace BookingBuddy.Server.Controllers
     /// </remarks>
     /// <param name="userManager">Gestor de Utilizadores</param>
     /// <param name="signInManager">Gestor de logins</param>
-    /// <param name="configuration">Configurações globais</param>
     [ApiController]
     [Route("api/profile")]
     public class ProfileController(
         BookingBuddyServerContext context,
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager,
-        IConfiguration configuration) : ControllerBase
+        SignInManager<ApplicationUser> signInManager) : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
 
