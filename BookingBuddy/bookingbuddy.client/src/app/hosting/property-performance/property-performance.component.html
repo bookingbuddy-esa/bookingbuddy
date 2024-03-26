@@ -1,7 +1,7 @@
-<div class="row flex-nowrap">
+
   <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
-    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 text-dark">
-      <h4>Propriedades</h4>
+    <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
+      <h3>Propriedades</h3>
       <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property"
                            (click)="setCurrentProperty(property)"
                            [class.current-property]="property === currentProperty"></app-side-properties>
@@ -31,4 +31,4 @@
       <p>{{ propertyGains.toFixed(2) }}€</p>
     </div>
   </div>
-</div>
+
