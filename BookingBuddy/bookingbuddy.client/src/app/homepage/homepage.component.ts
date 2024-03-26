@@ -21,7 +21,8 @@ export class HomepageComponent implements OnInit {
     private authService: AuthorizeService,
     private propertyService: PropertyAdService,
     private router: Router,
-    private FeedbackService: FeedbackService) {}
+    private FeedbackService: FeedbackService) {
+  }
 
   ngOnInit(): void {
     this.authService.isSignedIn().forEach(
@@ -37,7 +38,8 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
-
+    // TODO: Após atualizar o controlador de propriedades, o método recebe um número de propriedades a serem retornados
+    //  e um index onde a lista de propriedades deve começar
     this.propertyService.getProperties().forEach(
       response => {
         if (response) {
