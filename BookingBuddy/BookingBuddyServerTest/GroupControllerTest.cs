@@ -54,7 +54,8 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
             MembersId = [user.Id],
             PropertiesId = [],
             MessagesId = [],
-            ChoosenProperty = null
+            ChoosenProperty = null,
+            VotesId = []
         };
 
         try
