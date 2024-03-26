@@ -3,7 +3,7 @@
    <description></description>
    <name>button_Finalizar</name>
    <tag></tag>
-   <elementGuidId>97f61e81-259f-499f-b65e-d28739d0dc49</elementGuidId>
+   <elementGuidId>16bce570-2fc6-4c8a-af6d-034223ff0d15</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
@@ -29,7 +29,7 @@
       <name>tag</name>
       <type>Main</type>
       <value>button</value>
-      <webElementGuid>f401a956-34ee-428b-be4b-884cd1e8ee50</webElementGuid>
+      <webElementGuid>5623072f-0f30-4a15-afff-73c01d714d66</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -37,7 +37,7 @@
       <name>class</name>
       <type>Main</type>
       <value>btn btn-dark</value>
-      <webElementGuid>0ec6cf73-2f1e-42d8-9254-c447ec6003d2</webElementGuid>
+      <webElementGuid>2bb7acdb-3d68-4275-bb34-a33a9e39cb95</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
@@ -45,7 +45,7 @@
       <name>text</name>
       <type>Main</type>
       <value>Finalizar</value>
-      <webElementGuid>12117879-5dae-410e-bc21-3ce33b8bde2e</webElementGuid>
+      <webElementGuid>7fc2d924-8008-443a-84e9-20495109340f</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -53,7 +53,7 @@
       <name>xpath</name>
       <type>Main</type>
       <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group-create[1]/div[@class=&quot;d-flex h-100 w-100 flex-column align-items-center&quot;]/div[@class=&quot;d-flex flex-column w-100 align-items-center&quot;]/div[@class=&quot;d-flex flex-row h-100 w-100 align-items-center justify-content-between px-5 py-3&quot;]/button[@class=&quot;btn btn-dark&quot;]</value>
-      <webElementGuid>b1cf256a-1a4c-41a5-a720-2d1609b9f674</webElementGuid>
+      <webElementGuid>d6c4048a-fe83-4ccf-bd23-72a62f3bade7</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
@@ -61,7 +61,7 @@
       <name>xpath:neighbor</name>
       <type>Main</type>
       <value>(.//*[normalize-space(text()) and normalize-space(.)='Anterior'])[1]/following::button[1]</value>
-      <webElementGuid>61e6b038-f7e1-4c2a-bf81-776be3919650</webElementGuid>
+      <webElementGuid>f41efc69-e0fa-4be4-80f1-be54f16ec471</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -69,7 +69,7 @@
       <name>xpath:neighbor</name>
       <type>Main</type>
       <value>(.//*[normalize-space(text()) and normalize-space(.)='Preencher informações sobre o grupo'])[1]/following::button[2]</value>
-      <webElementGuid>4066a0b7-0e82-4809-8eca-37ca6569fe7b</webElementGuid>
+      <webElementGuid>90601dd1-45ab-4b03-8525-9c9bcfe3fc27</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -77,7 +77,7 @@
       <name>xpath:neighbor</name>
       <type>Main</type>
       <value>//*/text()[normalize-space(.)='Finalizar']/parent::*</value>
-      <webElementGuid>22dd2d3d-6f28-4df7-87eb-b5bf4e8440ea</webElementGuid>
+      <webElementGuid>abac6055-dd24-4a20-aa06-2d6874565e75</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -85,7 +85,7 @@
       <name>xpath:position</name>
       <type>Main</type>
       <value>//button[2]</value>
-      <webElementGuid>5510f75a-8290-436d-8e33-b28f9a017eb6</webElementGuid>
+      <webElementGuid>529bea2d-0575-4210-8acb-5acb731ba936</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -93,6 +93,6 @@
       <name>xpath:customAttributes</name>
       <type>Main</type>
       <value>//button[(text() = 'Finalizar' or . = 'Finalizar')]</value>
-      <webElementGuid>f8be1c99-6db2-4bc5-af16-c01e6b3ba7b6</webElementGuid>
+      <webElementGuid>365410b4-1756-4ae4-ab8e-9b69646ad86c</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

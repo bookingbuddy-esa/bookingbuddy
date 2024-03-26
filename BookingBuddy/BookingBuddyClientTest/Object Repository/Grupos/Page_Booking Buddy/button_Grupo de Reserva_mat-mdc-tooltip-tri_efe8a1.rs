@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>button_Grupo de Reserva_mat-mdc-tooltip-tri_3a193c</name>
+   <name>button_Grupo de Reserva_mat-mdc-tooltip-tri_efe8a1</name>
    <tag></tag>
-   <elementGuidId>117d814d-929a-459d-beef-1b1f3bc6ec88</elementGuidId>
+   <elementGuidId>8c44003a-cce3-47d5-bc74-1d885d1d303c</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
-         <value>button.mat-mdc-tooltip-trigger.btn.btn-sm.btn-success.me-2.cdk-focused.cdk-mouse-focused</value>
+         <value>button.mat-mdc-tooltip-trigger.btn.btn-sm.btn-warning.me-2.ng-star-inserted.cdk-focused.cdk-mouse-focused</value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(.//*[normalize-space(text()) and normalize-space(.)='Grupo de Reserva'])[1]/following::button[3]</value>
+         <value>(.//*[normalize-space(text()) and normalize-space(.)='Grupo de Reserva'])[1]/following::button[2]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
    <smartLocatorCollection>
       <entry>
          <key>SMART_LOCATOR</key>
-         <value>internal:role=button[name=&quot;&quot;i]</value>
+         <value>internal:role=button[name=&quot;&quot;i]</value>
       </entry>
    </smartLocatorCollection>
    <smartLocatorEnabled>false</smartLocatorEnabled>
@@ -29,39 +29,39 @@
       <name>tag</name>
       <type>Main</type>
       <value>button</value>
-      <webElementGuid>ef8c6811-d1d3-4b81-bf53-2d19f6fc62fc</webElementGuid>
+      <webElementGuid>8a59104f-f1ab-4afe-bb14-615d115aae70</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>mattooltip</name>
       <type>Main</type>
-      <value>Efetuar Reserva</value>
-      <webElementGuid>7a73d8cb-f8d7-4ee0-b3fd-789f5c63d46c</webElementGuid>
+      <value>Iniciar Votação</value>
+      <webElementGuid>574c5857-b43a-40c6-ad73-8d60979187dc</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>class</name>
       <type>Main</type>
-      <value>mat-mdc-tooltip-trigger btn btn-sm btn-success me-2 cdk-focused cdk-mouse-focused</value>
-      <webElementGuid>adc0776c-5dad-4003-86b8-789cd73a778e</webElementGuid>
+      <value>mat-mdc-tooltip-trigger btn btn-sm btn-warning me-2 ng-star-inserted cdk-focused cdk-mouse-focused</value>
+      <webElementGuid>0fa3e036-22bc-4fb4-911f-9d5c6f4c7a4b</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>ng-reflect-message</name>
       <type>Main</type>
-      <value>Efetuar Reserva</value>
-      <webElementGuid>fd6d3384-3a96-4e4c-bb61-90d597abf5bc</webElementGuid>
+      <value>Iniciar Votação</value>
+      <webElementGuid>b75a4101-c2cc-487c-8884-4d13bfc74dcf</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>aria-describedby</name>
       <type>Main</type>
-      <value>cdk-describedby-message-ng-1-4</value>
-      <webElementGuid>c09afda9-a4b6-456c-bf34-d574cc6eff68</webElementGuid>
+      <value>cdk-describedby-message-ng-1-3</value>
+      <webElementGuid>0aadc15f-d018-4f7e-83a3-47119305b91f</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -69,54 +69,54 @@
       <name>cdk-describedby-host</name>
       <type>Main</type>
       <value>ng-1</value>
-      <webElementGuid>7df43b38-6b57-43e8-989e-8bad50a55e8d</webElementGuid>
+      <webElementGuid>f1a977d3-4600-4e3d-80b5-8173bbe76565</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath</name>
       <type>Main</type>
-      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[1]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[@class=&quot;d-flex flex-row justify-content-end mt-2 mb-2&quot;]/button[@class=&quot;mat-mdc-tooltip-trigger btn btn-sm btn-success me-2 cdk-focused cdk-mouse-focused&quot;]</value>
-      <webElementGuid>90703c66-00fe-4b0d-9ce7-d0f9ec8bb945</webElementGuid>
+      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[@class=&quot;ng-star-inserted&quot;]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[@class=&quot;d-flex flex-row justify-content-end mt-2 mb-2 ng-star-inserted&quot;]/button[@class=&quot;mat-mdc-tooltip-trigger btn btn-sm btn-warning me-2 ng-star-inserted cdk-focused cdk-mouse-focused&quot;]</value>
+      <webElementGuid>f4384852-69a8-4a1f-9d71-9c4a43a01535</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Grupo de Reserva'])[1]/following::button[3]</value>
-      <webElementGuid>31b6e2d3-5b4f-43d3-8364-2f7f3b7ab3c9</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Grupo de Reserva'])[1]/following::button[2]</value>
+      <webElementGuid>ddc35862-2ac8-4464-8a82-2af29efc2798</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='landlord'])[2]/following::button[3]</value>
-      <webElementGuid>c0a6b812-98b1-4a22-8809-63cd71e1a0ac</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='landlord'])[2]/following::button[2]</value>
+      <webElementGuid>eaff5fb7-0603-408a-b8e7-9d9fdf6c21e4</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Não existem propriedades para este grupo.'])[1]/preceding::button[2]</value>
-      <webElementGuid>07c4830e-bfa0-4e64-bb1b-6c1d5513f2ca</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Casa em Lisboa'])[1]/preceding::button[3]</value>
+      <webElementGuid>e7c86ebd-ff3b-497b-88b2-98b085259faa</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Chat com o grupo'])[1]/preceding::button[2]</value>
-      <webElementGuid>858a6179-f252-4729-b204-b74513d8c7e3</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Chat com o grupo'])[1]/preceding::button[4]</value>
+      <webElementGuid>ef287a46-7c42-4609-af32-3292cd2b8cd4</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:position</name>
       <type>Main</type>
-      <value>//div[4]/div/button[3]</value>
-      <webElementGuid>71077f48-6975-4e33-8f1a-94f8d69fcbd6</webElementGuid>
+      <value>//div[4]/div/button[2]</value>
+      <webElementGuid>cdb177a9-e476-42e8-9dfa-86d674b51b10</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

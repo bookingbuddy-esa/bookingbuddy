@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>i_Criar um grupo de reserva_bi bi-person-fill-add</name>
+   <tag></tag>
+   <elementGuidId>dcf0a9ce-6cad-4800-ba4f-9ce03944a472</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>i.bi.bi-person-fill-add</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//div[@id='collapseOne']/div/div/div/span/button/i</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>i</value>
+      <webElementGuid>fb37d0af-c244-4a23-9259-4102b2e79c1a</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>bi bi-person-fill-add</value>
+      <webElementGuid>1d902fa1-be63-4634-8ceb-f68cc5b8f95b</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;collapseOne&quot;)/div[@class=&quot;overflow-auto accordion-body p-1 overflow-auto&quot;]/div[@class=&quot;list-group list-group-flush overflow-auto&quot;]/div[@class=&quot;mx-auto p-2&quot;]/span[@class=&quot;text-muted small&quot;]/button[@class=&quot;btn btn-outline-success btn-sm rounded-pill ms-2&quot;]/i[@class=&quot;bi bi-person-fill-add&quot;]</value>
+      <webElementGuid>57c797a4-5aac-4af6-9b32-ae7e1c844038</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//div[@id='collapseOne']/div/div/div/span/button/i</value>
+      <webElementGuid>c72f9bfe-986b-4172-bc95-b9498d540b00</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//span/button/i</value>
+      <webElementGuid>220d53f0-9d39-473a-bbec-472d2eb061c1</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

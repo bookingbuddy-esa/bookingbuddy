@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>i_Grupo de Reserva_bi bi-chat-square-heart-fill</name>
+   <name>i_Favoritos_bi bi-list</name>
    <tag></tag>
-   <elementGuidId>747c27e0-a21f-483d-9669-18dcbd868965</elementGuidId>
+   <elementGuidId>e7a8ef41-21ac-48cd-a41e-60b7cad72a4d</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
-         <value>i.bi.bi-chat-square-heart-fill</value>
+         <value>i.bi.bi-list</value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>//button[2]/i</value>
+         <value>//a[@id='navbarDarkDropdownMenuLink']/i</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
    <smartLocatorCollection>
       <entry>
          <key>SMART_LOCATOR</key>
-         <value>internal:role=button[name=&quot;&quot;i]</value>
+         <value>internal:role=button[name=&quot;&quot;i]</value>
       </entry>
    </smartLocatorCollection>
    <smartLocatorEnabled>false</smartLocatorEnabled>
@@ -29,30 +29,38 @@
       <name>tag</name>
       <type>Main</type>
       <value>i</value>
-      <webElementGuid>30e5a319-8557-4d82-b54c-4fb17329ce2c</webElementGuid>
+      <webElementGuid>67425590-86ff-4834-953d-c7f8ad4f2b81</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>class</name>
       <type>Main</type>
-      <value>bi bi-chat-square-heart-fill</value>
-      <webElementGuid>be0fa043-6adc-4c3a-932e-dc90dcae2059</webElementGuid>
+      <value>bi bi-list</value>
+      <webElementGuid>1ffe0b55-f8d2-4aac-968e-25519572d3bb</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath</name>
       <type>Main</type>
-      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[1]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[@class=&quot;d-flex flex-row justify-content-end mt-2 mb-2&quot;]/button[@class=&quot;mat-mdc-tooltip-trigger btn btn-sm btn-warning me-2 cdk-focused cdk-mouse-focused&quot;]/i[@class=&quot;bi bi-chat-square-heart-fill&quot;]</value>
-      <webElementGuid>a583677d-cf2c-4934-b2bf-e5617a589c1e</webElementGuid>
+      <value>id(&quot;navbarDarkDropdownMenuLink&quot;)/i[@class=&quot;bi bi-list&quot;]</value>
+      <webElementGuid>72c9989d-a771-470a-b078-bde920de5a37</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//a[@id='navbarDarkDropdownMenuLink']/i</value>
+      <webElementGuid>b01ee178-4987-4087-926b-e0e6a82caeef</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
       <name>xpath:position</name>
       <type>Main</type>
-      <value>//button[2]/i</value>
-      <webElementGuid>ef9d3161-8263-4102-9d43-b8e269ac23da</webElementGuid>
+      <value>//a/i</value>
+      <webElementGuid>34bdb002-930e-4633-8a9b-d78e9047afb6</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

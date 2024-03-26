@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>span_JUN</name>
+   <tag></tag>
+   <elementGuidId>a60717fa-bf4a-4fe4-a6c4-348e269e3720</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>button.mat-calendar-body-cell.mat-calendar-body-active > span.mat-calendar-body-cell-content.mat-focus-indicator</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//mat-calendar[@id='mat-datepicker-1']/div/mat-year-view/table/tbody/tr[3]/td[2]/button/span</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:label=&quot;junho de 2025&quot;i</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>span</value>
+      <webElementGuid>559bfbab-3286-4956-a462-724a2a74cc50</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>mat-calendar-body-cell-content mat-focus-indicator</value>
+      <webElementGuid>de046bf3-975f-4693-9e9b-6f3ebbe3eb8f</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value> JUN. </value>
+      <webElementGuid>211f0b14-192b-45f9-91e9-f7135c87ba86</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;mat-datepicker-1&quot;)/div[@class=&quot;mat-calendar-content cdk-focused cdk-mouse-focused&quot;]/mat-year-view[@class=&quot;ng-star-inserted&quot;]/table[@class=&quot;mat-calendar-table&quot;]/tbody[@class=&quot;mat-calendar-body&quot;]/tr[@class=&quot;ng-star-inserted&quot;]/td[@class=&quot;mat-calendar-body-cell-container ng-star-inserted&quot;]/button[@class=&quot;mat-calendar-body-cell mat-calendar-body-active&quot;]/span[@class=&quot;mat-calendar-body-cell-content mat-focus-indicator&quot;]</value>
+      <webElementGuid>496320a5-fa45-4dce-b521-8d31cfe7ea84</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//mat-calendar[@id='mat-datepicker-1']/div/mat-year-view/table/tbody/tr[3]/td[2]/button/span</value>
+      <webElementGuid>63397d8a-e269-4c9f-a078-1e6d75f7bf98</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='MAI.'])[1]/following::span[2]</value>
+      <webElementGuid>9c02e92d-2b1f-45bf-bbde-3dd16542a8c3</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='ABR.'])[1]/following::span[4]</value>
+      <webElementGuid>e617bd3f-0cd3-4004-8013-fab6547bf311</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='JUL.'])[1]/preceding::span[2]</value>
+      <webElementGuid>54a62898-d9ab-45d9-8fac-a39f173a322c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='AGO.'])[1]/preceding::span[4]</value>
+      <webElementGuid>1b794379-ac51-4300-8f56-1a2af1fd0da1</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='JUN.']/parent::*</value>
+      <webElementGuid>ad3cfd44-4ba4-4ea5-a850-c47442e4895f</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//tr[3]/td[2]/button/span</value>
+      <webElementGuid>71834a11-974a-4d4d-96c1-aa4f96778f42</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//span[(text() = ' JUN. ' or . = ' JUN. ')]</value>
+      <webElementGuid>71c4ae41-5754-4db6-a555-f2acc5dc670e</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

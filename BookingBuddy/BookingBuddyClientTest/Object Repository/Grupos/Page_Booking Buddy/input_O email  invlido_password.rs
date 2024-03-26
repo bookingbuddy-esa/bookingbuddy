@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>input_Preencha o seguinte campo com a infor_4e208c</name>
+   <name>input_O email  invlido_password</name>
    <tag></tag>
-   <elementGuidId>babc7a92-efe8-430e-8126-8677bc8e93d3</elementGuidId>
+   <elementGuidId>0cead868-84b9-450e-8606-3720518dcd5e</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
-         <value>input[name=&quot;name&quot;]</value>
+         <value>#password</value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>//input[@name='name']</value>
+         <value>//input[@id='password']</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
    <smartLocatorCollection>
       <entry>
          <key>SMART_LOCATOR</key>
-         <value>internal:attr=[placeholder=&quot;Introduza o nome do grupo&quot;i]</value>
+         <value>internal:attr=[placeholder=&quot;Insira a sua palavra passe&quot;i]</value>
       </entry>
    </smartLocatorCollection>
    <smartLocatorEnabled>false</smartLocatorEnabled>
@@ -29,94 +29,94 @@
       <name>tag</name>
       <type>Main</type>
       <value>input</value>
-      <webElementGuid>616733a9-b33a-448c-8243-13389ad7aff4</webElementGuid>
+      <webElementGuid>374a8ff1-68c8-4cc2-88e5-aa16d97fe9ea</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>type</name>
       <type>Main</type>
-      <value>text</value>
-      <webElementGuid>6b3c4129-b608-4ae6-a56e-92e452af1a1d</webElementGuid>
+      <value>password</value>
+      <webElementGuid>95de7205-1759-4b41-9d66-9ca200e5699e</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
-      <name>name</name>
+      <name>id</name>
       <type>Main</type>
-      <value>name</value>
-      <webElementGuid>1e59762f-9816-4add-ae25-e143657b8ed7</webElementGuid>
-   </webElementProperties>
-   <webElementProperties>
-      <isSelected>false</isSelected>
-      <matchCondition>equals</matchCondition>
-      <name>formcontrolname</name>
-      <type>Main</type>
-      <value>name</value>
-      <webElementGuid>203626c4-93a1-46b4-8019-c59f1318a092</webElementGuid>
+      <value>password</value>
+      <webElementGuid>59ad180b-0881-42a7-a1c0-178b45f8babc</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>placeholder</name>
       <type>Main</type>
-      <value>Introduza o nome do grupo</value>
-      <webElementGuid>0c85465a-32d5-473d-a0f0-9407a32b8c71</webElementGuid>
+      <value>Insira a sua palavra passe</value>
+      <webElementGuid>f1ab1b93-5769-4beb-9d6d-53e62d73b513</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>name</name>
+      <type>Main</type>
+      <value>password</value>
+      <webElementGuid>7272b37f-51a5-46a3-9d32-98b8a612c2aa</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>formcontrolname</name>
+      <type>Main</type>
+      <value>password</value>
+      <webElementGuid>d614c92f-f6f0-4f8b-b583-dee1b798994d</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>class</name>
       <type>Main</type>
-      <value>form-control ng-untouched ng-pristine ng-invalid</value>
-      <webElementGuid>fde18f27-408a-4f65-98e0-b63a43ff9b05</webElementGuid>
+      <value>form-control form-input p-2 ng-untouched ng-dirty ng-valid</value>
+      <webElementGuid>1c1ad81a-9b86-4da6-807c-1b6d2862c945</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>ng-reflect-name</name>
       <type>Main</type>
-      <value>name</value>
-      <webElementGuid>b8578131-de66-4d37-8705-80c5f2c8ec3f</webElementGuid>
-   </webElementProperties>
-   <webElementProperties>
-      <isSelected>false</isSelected>
-      <matchCondition>equals</matchCondition>
-      <name>ng-reflect-ng-class</name>
-      <type>Main</type>
-      <value>[object Object]</value>
-      <webElementGuid>5b9022c1-584c-40ef-88cb-13ca5349cd90</webElementGuid>
+      <value>password</value>
+      <webElementGuid>da807786-c32c-4735-a65d-e1040ef1aba4</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath</name>
       <type>Main</type>
-      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group-create[1]/div[@class=&quot;d-flex h-100 w-100 flex-column align-items-center&quot;]/app-group-name-step[1]/div[@class=&quot;d-flex flex-column align-items-center justify-content-start my-auto p-5 flex-grow-1&quot;]/form[@class=&quot;d-flex w-75 mt-3 h-50 flex-column align-items-center justify-content-center p5 ng-untouched ng-pristine ng-invalid&quot;]/div[@class=&quot;d-flex w-100 flex-column mb-3 flex-grow-1&quot;]/input[@class=&quot;form-control ng-untouched ng-pristine ng-invalid&quot;]</value>
-      <webElementGuid>c1ab5b1c-6954-4e11-b9d3-2fe3f5e97583</webElementGuid>
+      <value>id(&quot;password&quot;)</value>
+      <webElementGuid>d388638b-f2d3-4ccb-8296-6cade869e8d9</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:attributes</name>
       <type>Main</type>
-      <value>//input[@name='name']</value>
-      <webElementGuid>8241c6a6-9c6e-4b4a-b4cb-f422a67c9278</webElementGuid>
+      <value>//input[@id='password']</value>
+      <webElementGuid>69e7cd9d-f0f2-44cf-9bb9-ed599f15c36d</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:position</name>
       <type>Main</type>
-      <value>//app-group-name-step/div/form/div/input</value>
-      <webElementGuid>1f2def2c-fd76-4360-b112-107841dd621b</webElementGuid>
+      <value>//div[2]/input</value>
+      <webElementGuid>92fee70c-2c0c-41a0-a871-c604778c6874</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:customAttributes</name>
       <type>Main</type>
-      <value>//input[@type = 'text' and @name = 'name' and @placeholder = 'Introduza o nome do grupo']</value>
-      <webElementGuid>671ab670-e0ec-486f-9a27-06a38a93442b</webElementGuid>
+      <value>//input[@type = 'password' and @id = 'password' and @placeholder = 'Insira a sua palavra passe' and @name = 'password']</value>
+      <webElementGuid>223c0963-1122-402c-88dd-f51d4db7b686</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>button_Enviar</name>
+   <name>button_Efetuar pagamento</name>
    <tag></tag>
-   <elementGuidId>bb7826ba-c810-456e-ad50-2cc0567a1798</elementGuidId>
+   <elementGuidId>33a2876a-c0bd-4b1e-8700-fc39c1a853d7</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
-         <value>button.btn.btn-outline-secondary</value>
+         <value>button.btn.btn-success.mt-4</value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>//button[@type='button ']</value>
+         <value>(//button[@type='button'])[12]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
    <smartLocatorCollection>
       <entry>
          <key>SMART_LOCATOR</key>
-         <value>internal:role=button[name=&quot;Enviar&quot;i]</value>
+         <value>internal:role=button[name=&quot;Efetuar pagamento&quot;i]</value>
       </entry>
    </smartLocatorCollection>
    <smartLocatorEnabled>false</smartLocatorEnabled>
@@ -29,102 +29,102 @@
       <name>tag</name>
       <type>Main</type>
       <value>button</value>
-      <webElementGuid>3f19417f-acb4-4ff0-9035-ff01959aa187</webElementGuid>
+      <webElementGuid>b6fe69f5-cf75-4319-8902-88818f8d511c</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>type</name>
       <type>Main</type>
-      <value>button </value>
-      <webElementGuid>47c91c69-d70c-490e-b83d-9f34fd826496</webElementGuid>
+      <value>button</value>
+      <webElementGuid>9c19ee7f-1a79-4477-8778-bdd2d72df0ae</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>class</name>
       <type>Main</type>
-      <value>btn btn-outline-secondary</value>
-      <webElementGuid>890c8b52-9c4e-482e-adff-2a6f2a28591c</webElementGuid>
+      <value>btn btn-success mt-4</value>
+      <webElementGuid>6c61a6d4-e325-4ac0-9ed5-7136eeac7f00</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>text</name>
       <type>Main</type>
-      <value>Enviar</value>
-      <webElementGuid>db24aac0-c32f-4e3a-b58f-4abdb043a266</webElementGuid>
+      <value>Efetuar pagamento</value>
+      <webElementGuid>8821c7ce-69c4-4e60-b293-99843f34aade</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath</name>
       <type>Main</type>
-      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[1]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[3]/div[@class=&quot;chat w-50 mx-auto mt-2 mb-3&quot;]/div[@class=&quot;input-group mt-3&quot;]/button[@class=&quot;btn btn-outline-secondary&quot;]</value>
-      <webElementGuid>8e5622dc-87b8-489d-a123-f00ef06c9901</webElementGuid>
+      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[@class=&quot;ng-star-inserted&quot;]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[@class=&quot;d-flex flex-column justify-content-center align-items-center&quot;]/div[@class=&quot;ng-star-inserted&quot;]/app-payment[1]/div[@class=&quot;form-group d-flex flex-column align-items-center ng-star-inserted&quot;]/button[@class=&quot;btn btn-success mt-4&quot;]</value>
+      <webElementGuid>69f50619-68b1-4b02-ae7f-dfcf208f2c35</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:attributes</name>
       <type>Main</type>
-      <value>//button[@type='button ']</value>
-      <webElementGuid>e3e8f95a-b223-4d4d-be5c-536fe2b08f54</webElementGuid>
+      <value>(//button[@type='button'])[12]</value>
+      <webElementGuid>f2196beb-4e88-4c31-9f0c-567ed318cecf</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Chat com o grupo'])[1]/following::button[1]</value>
-      <webElementGuid>3f6177fe-8100-4516-b44f-91b4d75b8616</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Escolha o método de pagamento:'])[1]/following::button[1]</value>
+      <webElementGuid>31d0f141-76bb-4987-ad4b-d8257a17417a</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Não existem propriedades para este grupo.'])[1]/following::button[1]</value>
-      <webElementGuid>7b8f9f37-1861-41fb-b99d-457b84c4883e</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Grupo de Reserva'])[1]/following::button[5]</value>
+      <webElementGuid>e4a259b8-7e92-4653-b810-161d85ac54c1</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Adicionar Propriedade'])[2]/preceding::button[1]</value>
-      <webElementGuid>c2c70145-1637-4d54-8b6a-8dfe9af14c0b</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Chat com o grupo'])[1]/preceding::button[1]</value>
+      <webElementGuid>fee5c971-b596-4404-a8d0-db94f4fcfb69</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Reservar Selecionada'])[1]/preceding::button[2]</value>
-      <webElementGuid>97a43fef-9579-45c9-b9fd-67a0121f18f6</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='landlord:'])[1]/preceding::button[1]</value>
+      <webElementGuid>99140cfc-5b26-4ac5-b3db-636bbfc6ceb9</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>//*/text()[normalize-space(.)='Enviar']/parent::*</value>
-      <webElementGuid>043fac13-284a-47b9-93ad-cfbdd31fac55</webElementGuid>
+      <value>//*/text()[normalize-space(.)='Efetuar pagamento']/parent::*</value>
+      <webElementGuid>7bcb8b67-75fd-4b47-807b-fe6cc87c703c</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:position</name>
       <type>Main</type>
-      <value>//div[3]/div/div[2]/button</value>
-      <webElementGuid>07143f32-ab03-498f-a423-62e7fb66650b</webElementGuid>
+      <value>//app-payment/div/button</value>
+      <webElementGuid>9444e4cf-4bd4-4ea9-b664-2b695a9ff6b6</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:customAttributes</name>
       <type>Main</type>
-      <value>//button[@type = 'button ' and (text() = 'Enviar' or . = 'Enviar')]</value>
-      <webElementGuid>5088b62a-e208-40e2-8f73-5acb279e65f9</webElementGuid>
+      <value>//button[@type = 'button' and (text() = 'Efetuar pagamento' or . = 'Efetuar pagamento')]</value>
+      <webElementGuid>19791129-4eef-458b-937a-77164b5e3fac</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

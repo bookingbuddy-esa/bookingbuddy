@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<TestCaseEntity>
-   <description>Criar um novo grupo de viagem e escrever no chat do mesmo</description>
-   <name>Criar_grupo</name>
-   <tag></tag>
-   <comment></comment>
-   <testCaseGuid>b210b7db-b626-47f5-835e-542aab22eb66</testCaseGuid>
-</TestCaseEntity>

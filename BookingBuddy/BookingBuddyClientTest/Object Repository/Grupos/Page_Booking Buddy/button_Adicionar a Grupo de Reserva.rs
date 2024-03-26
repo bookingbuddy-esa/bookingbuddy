@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <WebElementEntity>
    <description></description>
-   <name>button_Adicionar Propriedade</name>
+   <name>button_Adicionar a Grupo de Reserva</name>
    <tag></tag>
-   <elementGuidId>08dae3a4-747a-42d9-ad8a-2ecc6aecf249</elementGuidId>
+   <elementGuidId>2faa583f-44b7-410f-a542-aa67840af77b</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
-         <value>button.btn.btn-md.btn-success.me-2</value>
+         <value>button.btn.btn-outline-info.rounded-pill</value>
       </entry>
       <entry>
          <key>XPATH</key>
-         <value>(//button[@type='button '])[2]</value>
+         <value>(//button[@type='button'])[6]</value>
       </entry>
    </selectorCollection>
    <selectorMethod>XPATH</selectorMethod>
    <smartLocatorCollection>
       <entry>
          <key>SMART_LOCATOR</key>
-         <value>internal:role=button[name=&quot;Adicionar Propriedade &quot;i]</value>
+         <value>internal:role=button[name=&quot;Adicionar a Grupo de Reserva &quot;i]</value>
       </entry>
    </smartLocatorCollection>
    <smartLocatorEnabled>false</smartLocatorEnabled>
@@ -29,110 +29,110 @@
       <name>tag</name>
       <type>Main</type>
       <value>button</value>
-      <webElementGuid>a6c5517f-5dda-4f9e-9a96-f2d73f1ebce9</webElementGuid>
+      <webElementGuid>9de37cca-7981-4a75-831c-57c3f9c17bac</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>type</name>
       <type>Main</type>
-      <value>button </value>
-      <webElementGuid>aa8a14d4-d7d5-49b8-834d-1484586b5c26</webElementGuid>
+      <value>button</value>
+      <webElementGuid>8c9ee1f9-d3dc-40fb-a3cd-a19ae018c8fe</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>data-bs-toggle</name>
       <type>Main</type>
-      <value>modal </value>
-      <webElementGuid>60ff5b83-a470-4d4a-9465-e8736f082773</webElementGuid>
+      <value>modal</value>
+      <webElementGuid>810d3d04-ae00-44fa-8bf0-dfbbf838b19f</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>data-bs-target</name>
       <type>Main</type>
-      <value>#addPropertyModal </value>
-      <webElementGuid>5cb1776a-22d4-423e-bccd-3f87f9f67319</webElementGuid>
+      <value>#addToGroupModal</value>
+      <webElementGuid>2a12fbcb-2533-4e45-bd99-b6c32915981b</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>class</name>
       <type>Main</type>
-      <value>btn btn-md btn-success me-2</value>
-      <webElementGuid>b0cb9af5-f18a-4187-aa37-b1e27e10d49a</webElementGuid>
+      <value>btn btn-outline-info rounded-pill</value>
+      <webElementGuid>3feb64dd-8215-4a29-95bb-38a5d36baa17</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>text</name>
       <type>Main</type>
-      <value>Adicionar Propriedade</value>
-      <webElementGuid>dc6f567f-4014-41dd-abab-33d7d2766cbc</webElementGuid>
+      <value>Adicionar a Grupo de Reserva</value>
+      <webElementGuid>776ead70-61d7-432e-b98c-d2bcccd40c79</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath</name>
       <type>Main</type>
-      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[1]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[3]/div[@class=&quot;d-flex flex-row justify-content-around align-items-center mt-5&quot;]/button[@class=&quot;btn btn-md btn-success me-2&quot;]</value>
-      <webElementGuid>58cf063c-349f-445b-8a0e-6b09efc9dad2</webElementGuid>
+      <value>/html[1]/body[@class=&quot;modal-open&quot;]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-property-ad-retrieve[1]/div[@class=&quot;row mx-auto p-5&quot;]/div[@class=&quot;col-12 col-lg-3 p-4 mt-2 mt-lg-5 border border-secondary rounded text-center&quot;]/form[@class=&quot;d-flex flex-column align-items-center mb-4 ng-untouched ng-pristine ng-invalid&quot;]/div[@class=&quot;d-flex flex-column justify-content-around gap-2&quot;]/button[@class=&quot;btn btn-outline-info rounded-pill&quot;]</value>
+      <webElementGuid>cdd2bb1c-b4eb-4d07-9064-3487f438b287</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:attributes</name>
       <type>Main</type>
-      <value>(//button[@type='button '])[2]</value>
-      <webElementGuid>f79b525c-2dc2-43ff-8f5d-7f532dc6654a</webElementGuid>
+      <value>(//button[@type='button'])[6]</value>
+      <webElementGuid>aa87a0b6-e349-42ab-bb01-e9b5d6884601</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Enviar'])[1]/following::button[1]</value>
-      <webElementGuid>014a31ac-c8e9-43fd-aabf-7b807e490cd5</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Criar Grupo de Reserva'])[1]/following::button[1]</value>
+      <webElementGuid>003da60f-2abb-4f30-9b38-a07ec10a1bf3</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='landlord:'])[1]/following::button[2]</value>
-      <webElementGuid>f6d7d158-60bb-4c6c-8226-c2651fe67b75</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Cozinha'])[1]/following::button[2]</value>
+      <webElementGuid>61d3af33-ade4-4ecd-a9b8-030897ff5078</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Reservar Selecionada'])[1]/preceding::button[1]</value>
-      <webElementGuid>a3068cfa-9ed1-432b-9066-5f34ec6a92da</webElementGuid>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Selecione as datas'])[1]/preceding::button[1]</value>
+      <webElementGuid>5f608f18-190b-4750-a10e-80bcb3139527</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:neighbor</name>
       <type>Main</type>
-      <value>(.//*[normalize-space(text()) and normalize-space(.)='Copiar link de convite'])[1]/preceding::button[2]</value>
-      <webElementGuid>a02eeb39-a6bf-4f3c-84cd-bf54b2649410</webElementGuid>
+      <value>//*/text()[normalize-space(.)='Adicionar a Grupo de Reserva']/parent::*</value>
+      <webElementGuid>4c643eb9-ab56-443d-9d7f-b007a097c17b</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:position</name>
       <type>Main</type>
-      <value>//div[2]/button</value>
-      <webElementGuid>4b62714e-72f5-4577-906b-3ddf1c8ecac3</webElementGuid>
+      <value>//form/div/button[2]</value>
+      <webElementGuid>d6f9fb98-447e-474a-b155-8a8640d18267</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
       <matchCondition>equals</matchCondition>
       <name>xpath:customAttributes</name>
       <type>Main</type>
-      <value>//button[@type = 'button ' and (text() = 'Adicionar Propriedade' or . = 'Adicionar Propriedade')]</value>
-      <webElementGuid>5083e610-ab82-4d89-8c87-8a1c672aba12</webElementGuid>
+      <value>//button[@type = 'button' and (text() = 'Adicionar a Grupo de Reserva' or . = 'Adicionar a Grupo de Reserva')]</value>
+      <webElementGuid>f6b09052-e200-43b8-b5bc-a7b3dafaa58e</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>
