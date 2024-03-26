@@ -44,6 +44,7 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
+
             var individualBookings = _context.BookingOrder
                 .Include(booking => booking.Property)
                 .Include(booking => booking.Payment)
@@ -54,7 +55,7 @@ namespace BookingBuddy.Server.Controllers
                     propertyName = booking.Property!.Name,
                     host =  new ReturnUser{
                         Id = booking.Property.ApplicationUserId,
-                        Name = booking.Property.ApplicationUser.Name,
+                        Name = _userManager.FindByIdAsync(booking.Property.ApplicationUserId).Result!.Name
                     },
                     checkIn = booking.StartDate,
                     checkOut = booking.EndDate,
@@ -75,7 +76,7 @@ namespace BookingBuddy.Server.Controllers
                     propertyName = groupBooking.Property.Name,
                     host = new ReturnUser{
                         Id = groupBooking.Property.ApplicationUserId,
-                        Name = groupBooking.Property.ApplicationUser.Name,
+                        Name = _userManager.FindByIdAsync(groupBooking.Property.ApplicationUserId).Result!.Name
                     },
                     checkIn = groupBooking.StartDate,
                     checkOut = groupBooking.EndDate,
@@ -89,6 +90,7 @@ namespace BookingBuddy.Server.Controllers
             var allBookings = individualBookings.Cast<object>().Concat(groupBookings.Cast<object>());
             return Ok(allBookings);
         }
+
 
         /// <summary>
         /// Obtém as mensagens relacionadas a uma reserva específica.
@@ -173,6 +175,7 @@ namespace BookingBuddy.Server.Controllers
             var newMessage = new BookingMessage
             {
                 BookingMessageId = Guid.NewGuid().ToString(),
+                BookingOrderId = bookingOrder.OrderId,
                 ApplicationUserId = user.Id,
                 Message = message.Message,
                 SentAt = DateTime.Now

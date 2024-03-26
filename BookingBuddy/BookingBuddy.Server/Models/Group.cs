@@ -44,6 +44,12 @@ namespace BookingBuddy.Server.Models
         [JsonPropertyName("messages")]
         public List<GroupMessage>? Messages { get; set; }
 
+        [JsonPropertyName("votesId")]
+        public List<string> VotesId { get; set; }
+
+        [JsonPropertyName("votes")]
+        public List<GroupVote>? Votes { get; set; }
+
         [JsonPropertyName("groupAction")]
         public GroupAction GroupAction { get; set; }
 
@@ -68,6 +74,25 @@ namespace BookingBuddy.Server.Models
 
         [JsonPropertyName("groupId")]
         public string GroupId {  get; set; }
+    }
+
+    /// <summary>
+    /// Classe que representa os votos nas propriedades de um grupo.
+    /// </summary>
+    public class GroupVote
+    {
+        [Key]
+        [JsonPropertyName("voteId")]
+        public string VoteId { get; set; }
+
+        [JsonPropertyName("propertyId")]
+        public string PropertyId { get; set; }
+
+        [JsonPropertyName("userId")]
+        public string UserId { get; set; }
+
+        [JsonPropertyName("groupId")]
+        public string GroupId { get; set; }
     }
 
     /// <summary>
