@@ -36,13 +36,18 @@ export class ProfileComponent {
           this.user = user;
           this.route.params.subscribe(params => {
             if (!params['id']) {
-              console.log("User ID: " + this.user!.userId);
               this.getProfile(this.user!.userId);
+              this.hostingService.getPropertiesByUserId(this.user!.userId).forEach(properties => {
+                this.userProperties = properties;
+              })
               this.isViewingOwnProfile = true;
             } else if(params['id'] === this.user!.userId) {
               this.router.navigate(['/profile']);
             } else {
               this.getProfile(params['id']);
+              this.hostingService.getPropertiesByUserId(this.user!.userId).forEach(properties => {
+                this.userProperties = properties;
+              })
             }
           });
         });
@@ -94,10 +99,6 @@ export class ProfileComponent {
   saveProfile(): void {
     this.isEditing = false;
     this.success = ["Perfil atualizado com sucesso!"];
-  }
-
-  editProfile(): void {
-    this.isEditing = true;
   }
 
   uploadPhoto(): void {

@@ -49,6 +49,23 @@ namespace BookingBuddy.Server.Controllers
 
             return Ok(profileInfo);
         }
+
+        [HttpPut]
+        [Authorize]
+        // TODO: REVER ISTO
+        public async Task<IActionResult> UpdateProfile([FromBody] ProfileInfoModel profileInfo)
+        {
+            var user = await _userManager.FindByIdAsync(profileInfo.UserId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.Description = profileInfo.Description;
+            await _userManager.UpdateAsync(user);
+
+            return Ok();
+        }
     }
 
     public record ProfileInfoModel(

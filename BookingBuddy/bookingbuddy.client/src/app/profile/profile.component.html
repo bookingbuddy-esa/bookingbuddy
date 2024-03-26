@@ -9,32 +9,32 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
         </div>
     </div>
-    <div class="d-flex flex-row p-4">
+    <div class="d-flex flex-row position-relative p-4">
         <div class="card text-center align-items-center justify-content-center me-5">
             <div class="ms-auto me-2 mt-2" *ngIf="isViewingOwnProfile">
                 <button class="bg-transparent border-0" type="button" (click)="uploadPhoto()">
                     <i class="bi bi-camera-fill"></i>
                   </button>
             </div>
-            <img src="../../assets/img/user_logo.png" class="rounded-circle p-1" width="120" height="120" alt="Imagem de Perfil">
+            <img src="../../assets/img/user_logo.png" class="rounded-circle p-1 img-fluid" width="120" height="120" alt="Imagem de Perfil">
             <div class="card-body">
-                <h5 class="card-title">{{name}}</h5>
+                <h5 class="card-title mw-100">{{name}}</h5>
                 <p class="card-text">{{role}}</p>
             </div>
             <div class="ms-auto me-2 mb-2" *ngIf="isViewingOwnProfile">
-                <button class="bg-transparent border-0" type="button" (click)="editProfile()">
+                <button class="bg-transparent border-0" type="button" (click)="isEditing = true">
                   <i class="bi bi-pencil-fill text-muted"></i>
                 </button>
             </div>
         </div>
         <div class="text-start align-self-center">
-            <h3>Sobre {{name}}</h3>
+            <h3>Sobre <i>{{name}}</i></h3>
             <p [contentEditable]="isEditing" [class.editable]="isEditing">{{description}}</p>
-            <button type="button" class="btn btn-success position-absolute bottom-0 end-0 mb-3 me-3" *ngIf="isEditing" (click)="saveProfile()">Salvar alterações<i class="bi bi-floppy-fill ms-2"></i></button>
         </div>
+        <button type="button" class="btn btn-success position-absolute bottom-0 end-0 mb-1 me-3" *ngIf="isEditing" (click)="saveProfile()">Salvar alterações<i class="bi bi-floppy-fill ms-2"></i></button>
     </div>
     <hr class="hr" />
-    <div class="d-flex flex-row justify-content-between p-3" *ngIf="isViewingOwnProfile">
+    <!--<div class="d-flex flex-row justify-content-between p-3" *ngIf="isViewingOwnProfile">
         <div class="col-4">
             <p class="mt-1">Nome</p>
             <input type="text" #nameInput class="form-control" id="name" placeholder="user_name" disabled>
@@ -47,14 +47,17 @@
                 <button type="button" class="btn btn-outline-secondary mb-2" [routerLink]="['/groups']">Visualizar grupos de reserva<i class="bi bi-people ms-2"></i></button>
             </div>
         </div>
-    </div>
-    <div class="d-flex flex-row justify-content-between p-3" *ngIf="!isViewingOwnProfile">
+    </div>-->
+    <div class="d-flex flex-row justify-content-between p-3">
         <div class="card" style="width: 18rem;" *ngFor="let property of userProperties">
             <img [src]="getPropertyImage(property)" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title">{{property.name}}</h5>
                 <p class="card-text">{{property.location}}</p>
-                <a [routerLink]="['/property', property.propertyId]" class="btn btn-primary">Ver anúncio</a>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a [routerLink]="['/property', property.propertyId]" class="btn btn-primary">Ver anúncio</a>
+                    <button type="button" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
+                </div>
             </div>
         </div>
     </div>

@@ -18,11 +18,12 @@ import { PropertyPerformanceComponent } from './property-performance/property-pe
 import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
 import { HostingBookingComponent } from './hosting-booking/hosting-booking.component';
 import { FormsModule } from '@angular/forms';
+import { HostingDashboardComponent } from './hosting-dashboard/hosting-dashboard.component';
 
 @NgModule({
   declarations: [
     CalendarComponent, HomepagePropertyComponent, PropertyPromoteComponent, SidePropertiesComponent,
-    CalendarPopupComponent, PropertyPerformanceComponent, HostingBookingComponent
+    CalendarPopupComponent, PropertyPerformanceComponent, HostingBookingComponent, HostingDashboardComponent
   ],
     imports: [
         CommonModule, BrowserModule, FormsModule,
