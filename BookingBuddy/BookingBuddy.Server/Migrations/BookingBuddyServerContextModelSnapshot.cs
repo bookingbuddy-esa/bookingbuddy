@@ -42,7 +42,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Amenity");
+                    b.ToTable("Amenity", (string)null);
 
                     b.HasAnnotation("Relational:JsonPropertyName", "amenities");
 
@@ -299,7 +299,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("AspNetProviderId");
 
-                    b.ToTable("AspNetProviders");
+                    b.ToTable("AspNetProviders", (string)null);
 
                     b.HasData(
                         new
@@ -346,7 +346,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("BlockedDate");
+                    b.ToTable("BlockedDate", (string)null);
 
                     b.HasAnnotation("Relational:JsonPropertyName", "blockedDates");
                 });
@@ -375,7 +375,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("BookingMessage");
+                    b.ToTable("BookingMessage", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.BookingOrder", b =>
@@ -415,7 +415,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("BookingOrder");
+                    b.ToTable("BookingOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Chat", b =>
@@ -433,7 +433,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("ChatId");
 
-                    b.ToTable("Chat");
+                    b.ToTable("Chat", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.ChatMessage", b =>
@@ -465,7 +465,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.ToTable("ChatMessage");
+                    b.ToTable("ChatMessage", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Discount", b =>
@@ -490,7 +490,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Discount");
+                    b.ToTable("Discount", (string)null);
 
                     b.HasAnnotation("Relational:JsonPropertyName", "discounts");
                 });
@@ -517,7 +517,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("Favorites");
+                    b.ToTable("Favorites", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Group", b =>
@@ -571,7 +571,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.GroupBookingOrder", b =>
@@ -619,7 +619,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("GroupBookingOrder");
+                    b.ToTable("GroupBookingOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.GroupMessage", b =>
@@ -647,7 +647,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("GroupMessage");
+                    b.ToTable("GroupMessage", (string)null);
 
                     b.HasAnnotation("Relational:JsonPropertyName", "messages");
                 });
@@ -676,7 +676,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PaymentId");
 
-                    b.ToTable("GroupOrderPayment");
+                    b.ToTable("GroupOrderPayment", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.GroupVote", b =>
@@ -723,7 +723,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("OrderId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Payment", b =>
@@ -756,7 +756,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasKey("PaymentId");
 
-                    b.ToTable("Payment");
+                    b.ToTable("Payment", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.PromoteOrder", b =>
@@ -793,7 +793,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PromoteOrder");
+                    b.ToTable("PromoteOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.PromotionOrder", b =>
@@ -833,7 +833,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PromotionOrder");
+                    b.ToTable("PromotionOrder", (string)null);
                 });
 
             modelBuilder.Entity("BookingBuddy.Server.Models.Property", b =>
@@ -888,7 +888,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Property");
+                    b.ToTable("Property", (string)null);
 
                     b.HasAnnotation("Relational:JsonPropertyName", "properties");
                 });
@@ -913,7 +913,7 @@ namespace BookingBuddy.Server.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Rating");
+                    b.ToTable("Rating", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

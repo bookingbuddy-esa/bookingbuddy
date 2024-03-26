@@ -29,5 +29,7 @@ namespace BookingBuddy.Server.Models
         /// Propriedade que diz respeito ao fornecedor de login do utilizador.
         /// </summary>
         public AspNetProvider? Provider { get; set; }
+
+        public string Description { get; set; }
     }
 }

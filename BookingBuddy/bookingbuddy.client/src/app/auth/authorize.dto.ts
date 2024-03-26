@@ -13,4 +13,5 @@ export interface UserInfo {
   userName: string;
   email: string;
   isEmailConfirmed: boolean;
+  description: string;
 }

@@ -1,46 +1,50 @@
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 .profile-without-hover {
-  scale: 2;
-  color: black;
+    scale: 2;
+    color: black;
 }
 
 .profile {
-  scale: 2;
-  color: black;
+    scale: 2;
+    color: black;
 }
 
 .profile:hover {
-  scale: 2;
-  color: white;
+    scale: 2;
+    color: white;
 }
 
 .btn-lg-border {
-  border: 2px solid black;
+    border: 2px solid black;
 }
 
 .btn:disabled {
-  opacity: 100%;
+    opacity: 100%;
+}
+
+.logout {
+    color: black;
 }
 
 .logout:hover {
-  background-color: #dc3545;
-  color: white;
+    background-color: #dc3545;
+    color: white;
 }
 
 .dropdown-toggle::after {
-  display: none;
+    display: none;
 }
 
 .favoritesBtn {
-  background: none;
-  border: none;
+    background: none;
+    border: none;
 }

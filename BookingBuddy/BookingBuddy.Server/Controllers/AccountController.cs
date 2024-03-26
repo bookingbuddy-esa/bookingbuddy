@@ -57,7 +57,8 @@ namespace BookingBuddy.Server.Controllers
                 UserName = model.Email,
                 Email = model.Email,
                 Name = model.Name,
-                ProviderId = provider!.AspNetProviderId
+                ProviderId = provider!.AspNetProviderId,
+                Description = "",
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
@@ -286,7 +287,8 @@ namespace BookingBuddy.Server.Controllers
                     UserName = email,
                     Name = name,
                     EmailConfirmed = true,
-                    PictureUrl = photoUrl
+                    PictureUrl = photoUrl,
+                    Description = ""
                 };
                 var userCreateResult = await _userManager.CreateAsync(user);
                 if (!userCreateResult.Succeeded) return BadRequest(userCreateResult.Errors);
@@ -516,7 +518,8 @@ namespace BookingBuddy.Server.Controllers
                     existingUser.Name,
                     existingUser.UserName!,
                     existingUser.Email!,
-                    existingUser.EmailConfirmed
+                    existingUser.EmailConfirmed,
+                    existingUser.Description
                 )
             );
         }
@@ -749,5 +752,6 @@ namespace BookingBuddy.Server.Controllers
         string Name,
         string UserName,
         string Email,
-        bool IsEmailConfirmed);
+        bool IsEmailConfirmed,
+        string Description);
 }
