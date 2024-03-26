@@ -242,6 +242,7 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é a descrição da conta de teste do JMeter."
             };
             jMeterUser.PasswordHash =
                 new PasswordHasher<ApplicationUser>().HashPassword(jMeterUser, "jmeterBB123!");
