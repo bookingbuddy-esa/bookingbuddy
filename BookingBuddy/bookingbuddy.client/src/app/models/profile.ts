@@ -5,4 +5,5 @@ export interface ProfileInfo {
     email: string;
     roles: string[];
     description: string;
+    pictureUrl: string;
 }

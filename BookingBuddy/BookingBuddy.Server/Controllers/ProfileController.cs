@@ -34,7 +34,7 @@ namespace BookingBuddy.Server.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Utilizador não encontrado!");
             }
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -52,19 +52,46 @@ namespace BookingBuddy.Server.Controllers
 
         [HttpPut]
         [Authorize]
-        // TODO: REVER ISTO
-        public async Task<IActionResult> UpdateProfile([FromBody] ProfileInfoModel profileInfo)
+        [Route("updateDescription")]
+        public async Task<IActionResult> UpdateDescription([FromBody] UpdateDescriptionModel model)
         {
-            var user = await _userManager.FindByIdAsync(profileInfo.UserId);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Utilizador não encontrado!");
             }
 
-            user.Description = profileInfo.Description;
-            await _userManager.UpdateAsync(user);
+            user.Description = model.Description;
+            try {
+                await _userManager.UpdateAsync(user);
+                await context.SaveChangesAsync();
+            } catch (Exception e) {
+                return BadRequest("Erro ao atualizar descrição!");
+            }
 
-            return Ok();
+            return Ok("Descrição atualizada com sucesso!");
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("updateProfilePicture")]
+        public async Task<IActionResult> UpdateProfilePicture([FromBody] UpdateProfilePictureModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound("Utilizador não encontrado!");
+            }
+
+            user.PictureUrl = model.ImageUrl;
+            try {
+                await _userManager.UpdateAsync(user);
+                await context.SaveChangesAsync();
+            } catch (Exception e) {
+                return BadRequest("Erro ao atualizar imagem de perfil!");
+            }
+
+            return Ok("Imagem de perfil atualizada com sucesso!");
         }
     }
 
@@ -75,5 +102,13 @@ namespace BookingBuddy.Server.Controllers
         List<string> Roles,
         string PictureUrl,
         string Description
+    );
+
+    public record UpdateDescriptionModel(
+        string Description
+    );
+
+    public record UpdateProfilePictureModel(
+        string ImageUrl
     );
 }
