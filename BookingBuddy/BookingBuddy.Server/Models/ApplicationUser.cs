@@ -13,6 +13,13 @@ namespace BookingBuddy.Server.Models
         [PersonalData]
         public string Name { get; set; }
 
+            
+        /// <summary>
+        /// Propriedade que diz respeito à descrição do utilizador.
+        /// </summary>
+        [PersonalData]
+        public string? Description { get; set; }
+        
         /// <summary>
         /// Propriedade que diz respeito ao url da imagem de perfil do utilizador.
         /// </summary>

@@ -13,7 +13,14 @@ export class MenuComponent implements OnInit {
   protected user: UserInfo | undefined;
   protected isLandlord: boolean = false;
 
+  resize: ResizeObserver = new ResizeObserver(() => {
+    if(window.innerWidth > 768 && this.isExpanded) {
+      this.isExpanded = false;
+    }
+  });
+
   constructor(private authService: AuthorizeService, private router: Router) {
+    this.resize.observe(document.body);
   }
 
   ngOnInit(): void {

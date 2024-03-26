@@ -40,7 +40,7 @@ namespace BookingBuddy.Server.Controllers
         /// <returns>Lista de propriedades</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProperties()
+        public async Task<IActionResult> GetProperties([FromQuery] int numberOfProperties = 50,[FromQuery] int startIndex = 0)
         {
             var properties = await _context.Property.ToListAsync();
             foreach (var property in properties)
@@ -78,7 +78,7 @@ namespace BookingBuddy.Server.Controllers
                 .OrderByDescending(property => property.Clicks)
                 .ToList();
 
-            var orderedProperties = promotedProperties.Concat(otherProperties).ToList();
+            var orderedProperties = promotedProperties.Concat(otherProperties).Skip(startIndex).Take(numberOfProperties).ToList();
 
             return Ok(orderedProperties);
         }

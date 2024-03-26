@@ -19,6 +19,7 @@ export class BookingComponent {
     this.bookingService.getBookings().forEach( response => {
       if (response) {
         this.bookings = response as any[];
+        console.log("BAOS");
         console.log(this.bookings);
         this.selectedBooking = this.bookings[0];
       }
@@ -29,6 +30,7 @@ export class BookingComponent {
 
   selectBooking(booking: any) {
     this.selectedBooking = booking;
+    
     this.getBookingMessages();
   }
 

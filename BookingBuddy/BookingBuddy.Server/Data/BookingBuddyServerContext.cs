@@ -190,6 +190,7 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de administrador do BookingBuddy."
             };
             adminUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(adminUser, "adminBB123!");
 
@@ -206,6 +207,7 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de utilizador (padrão) do BookingBuddy."
             };
             userUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(userUser, "userBB123!");
 
@@ -222,14 +224,34 @@ namespace BookingBuddy.Server.Data
                 ProviderId = localProvider.AspNetProviderId,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é a descrição da conta de proprietário do BookingBuddy."
             };
             landlordUser.PasswordHash =
                 new PasswordHasher<ApplicationUser>().HashPassword(landlordUser, "landlordBB123!");
 
+            var jMeterUser = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "JMeter",
+                UserName = "bookingbuddy.jmeter@bookingbuddy.com",
+                NormalizedUserName = "BOOKINGBUDDY.JMETER@BOOKINGBUDDY.COM",
+                Email = "bookingbuddy.jmeter@bookingbuddy.com",
+                NormalizedEmail = "BOOKINGBUDDY.JMETER@BOOKINGBUDDY.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                ProviderId = localProvider.AspNetProviderId,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é a descrição da conta de teste do JMeter."
+            };
+            jMeterUser.PasswordHash =
+                new PasswordHasher<ApplicationUser>().HashPassword(jMeterUser, "jmeterBB123!");
+            
             builder.Entity<ApplicationUser>().HasData(
                 adminUser,
                 userUser,
-                landlordUser
+                landlordUser,
+                jMeterUser
             );
 
             builder.Entity<IdentityUserRole<string>>().HasData(
@@ -247,6 +269,11 @@ namespace BookingBuddy.Server.Data
                 {
                     RoleId = landlordRole.Id,
                     UserId = landlordUser.Id
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = adminRole.Id,
+                    UserId = jMeterUser.Id
                 }
             );
 
