@@ -44,7 +44,7 @@
                 <p class="card-text">{{property.location}}</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <a [routerLink]="['/property', property.propertyId]" class="btn btn-primary">Ver anúncio</a>
-                    <button type="button" class="btn btn-danger" *ngIf="isPropertyOwner(property)"><i class="bi bi-trash-fill"></i></button>
+                    <button type="button" class="btn btn-danger" *ngIf="isPropertyOwner(property)" title="Apagar anúncio"><i class="bi bi-trash-fill"></i></button>
                 </div>
             </div>
         </div>
