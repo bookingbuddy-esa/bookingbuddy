@@ -4,3 +4,7 @@
     width: inherit;
     justify-content: center;
 }
+
+.tab-content-height {
+  height: 50px; /* Ajuste conforme necessário */
+}
