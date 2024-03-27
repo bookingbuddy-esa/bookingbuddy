@@ -33,7 +33,11 @@
         </button>
       </div>
       <hr class="m-1" />
-      <p>{{ property.maxGuestsNumber }} Hóspedes <strong>·</strong> {{ property.roomsNumber }} Quartos</p>
+      <p>
+  {{ property.maxGuestsNumber }} Hóspede<span *ngIf="property.maxGuestsNumber !== 1">s</span>
+  <strong> ·</strong>
+  {{ property.roomsNumber }} Quarto<span *ngIf="property.roomsNumber !== 1">s</span>
+</p>
       <p>{{ property.description }}</p>
       <div class="comodidades mt-5 mb-3 d-flex flex-column">
         <h5>Comodidades</h5>
@@ -66,14 +70,9 @@
 
                 <div class="d-flex flex-row gap-3 mt-1 align-items-center">
                     <label for="hospedes">Hóspedes</label>
-                    <!-- TODO: número de hóspedes com base no que está na base de dados sobre a propriedade -->
                     <select name="hospedes" id="hospedes" class="form-select" formControlName="numberOfGuests">
-            <option value="1">1 hóspede</option>
-            <option value="2">2 hóspedes</option>
-            <option value="3">3 hóspedes</option>
-            <option value="4">4 hóspedes</option>
-            <option value="5">5 hóspedes</option>
-          </select>
+                      <option *ngFor="let number of guestNumbers()" [value]="number">{{ number }} hóspede{{ number !== 1 ? 's' : '' }}</option>
+                    </select>
                 </div>
                 <button class="btn btn-success mt-1" [disabled]="reservarPropriedadeForm.invalid">Reservar</button>
                 <h6 class="text-secondary">Ainda não vai ser cobrado</h6>

@@ -131,6 +131,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
+  guestNumbers(): number[] {
+    const maxGuests = this.property?.maxGuestsNumber || 1; 
+    return Array.from({ length: maxGuests }, (_, index) => index + 1);
+  }
+
   loadDiscounts() {
     if (this.property) {
       this.propertyService.getPropertyDiscounts(this.property.propertyId)
