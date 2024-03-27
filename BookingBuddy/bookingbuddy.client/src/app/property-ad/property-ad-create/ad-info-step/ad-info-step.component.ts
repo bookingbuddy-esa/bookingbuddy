@@ -16,10 +16,10 @@ export class AdInfoStepComponent implements OnInit {
     name: ['', Validators.required],
     description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
     pricePerNight: ['', [Validators.required, Validators.min(1)]],
-    guestsNumber: ['', [Validators.required, Validators.min(1)]], 
+    maxGuestsNumber: ['', [Validators.required, Validators.min(1)]], 
     roomsNumber: ['', [Validators.required, Validators.min(1)]]
   });
-
+  
   constructor(private formBuilder: FormBuilder) {
 
   }
@@ -38,7 +38,7 @@ export class AdInfoStepComponent implements OnInit {
         name: this.nameFormField!.value ?? "",
         description: this.descriptionFormField!.value ?? "",
         pricePerNight: parseFloat(this.pricePerNightFormField!.value ?? "0"),
-        guestsNumber: parseFloat(this.guestsNumberFormField!.value ?? "0"),
+        maxGuestsNumber: parseFloat(this.maxGuestsNumberFormField!.value ?? "0"),
         roomsNumber: parseFloat(this.roomsNumberFormField!.value ?? "0"),
 
       };
@@ -58,8 +58,8 @@ export class AdInfoStepComponent implements OnInit {
     return this.infoForm.get('pricePerNight');
   }
 
-  get guestsNumberFormField() {
-    return this.infoForm.get('guestsNumber');
+  get maxGuestsNumberFormField() {
+    return this.infoForm.get('maxGuestsNumber');
   }
 
   get roomsNumberFormField() {
@@ -72,6 +72,6 @@ export interface AdInfo {
   name: string;
   description: string;
   pricePerNight: number;
-  guestsNumber: number;
+  maxGuestsNumber: number;
   roomsNumber: number;
 }

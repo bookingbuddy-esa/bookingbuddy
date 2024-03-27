@@ -44,9 +44,9 @@
       </div>
     </div>
     <div class="d-flex w-100 flex-column mb-3">
-      <input type="number" name="guestsNumber" class="form-control" formControlName="guestsNumber" min="1"
+      <input type="number" name="maxGuestsNumber" class="form-control" formControlName="maxGuestsNumber" min="1"
              placeholder="Introduza o numero máximo de hóspedes"
-             [ngClass]="{'is-valid':guestsNumberFormField?.valid && guestsNumberFormField?.dirty,'is-invalid':guestsNumberFormField?.invalid && guestsNumberFormField?.dirty}" />
+             [ngClass]="{'is-valid':maxGuestsNumberFormField?.valid && maxGuestsNumberFormField?.dirty,'is-invalid':maxGuestsNumberFormField?.invalid && maxGuestsNumberFormField?.dirty}" />
       <div class="invalid-feedback">
         O numero de hóspedes obrigatório.
       </div>

@@ -316,6 +316,8 @@ namespace BookingBuddy.Server.Controllers
                 Name = model.Name,
                 Description = model.Description,
                 PricePerNight = model.PricePerNight,
+                MaxGuestsNumber = model.MaxGuestsNumber,
+                RoomsNumber = model.RoomsNumber,
                 Location = model.Location,
                 AmenityIds = amenities.Select(a => a.AmenityId).ToList(),
                 ImagesUrl = model.ImagesUrl,
@@ -880,12 +882,16 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
+    /// <param name="MaxGuestsNumber">Numero máximo de hóspedes da propriedade</param>
+    /// <param name="RoomsNumber">Numero de quartos da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
     /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
     public record PropertyCreateModel(
         string Name,
         string Description,
         decimal PricePerNight,
+        int MaxGuestsNumber,
+        int RoomsNumber,
         string Location,
         List<string>? Amenities,
         List<string> ImagesUrl);

@@ -54,6 +54,25 @@ namespace BookingBuddy.Server.Models
         [JsonPropertyName("pricePerNight")]
         public decimal PricePerNight { get; set; }
 
+
+        /// <summary>
+        /// Propriedade que diz respeito ao numero de hóspedes da propriedade física a anunciar.
+        /// </summary>
+        [Required(ErrorMessage = "O numero máximo de hóspedes da propriedade é obrigatório")]
+        [Range(1, 1000000)]
+        [Display(Name = "Numero de Hóspedes")]
+        [JsonPropertyName("maxGuestsNumber")]
+        public int MaxGuestsNumber { get; set; }
+
+        /// <summary>
+        /// Propriedade que diz respeito ao numero de hóspedes da propriedade física a anunciar.
+        /// </summary>
+        [Required(ErrorMessage = "O numero de quartos da propriedade é obrigatório")]
+        [Range(1, 1000000)]
+        [Display(Name = "Numero de Quartos")]
+        [JsonPropertyName("roomsNumber")]
+        public int RoomsNumber { get; set; }
+
         /// <summary>
         /// Propriedade de navegação que diz respeito às comodidades da propriedade física a anunciar.
         /// </summary>

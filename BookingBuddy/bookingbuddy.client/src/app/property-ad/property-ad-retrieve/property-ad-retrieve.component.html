@@ -23,25 +23,26 @@
         </div>
     </div>
     <div class="col-12 col-lg-9 mt-5">
-        <div class="d-flex mt-2 mb-2 align-items-center">
-            <h5 class="m-0 flex-fill">Hospedado por <a [routerLink]="['/profile', property.applicationUserId]">{{ property.applicationUser?.name }}</a></h5>
-            <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
-        <i class="bi bi-bookmark-star text-warning h3"></i>
-      </button>
-            <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
-        <i class="bi bi-bookmark-star-fill text-warning h3"></i>
-      </button>
+      <div class="d-flex mt-2 mb-2 align-items-center">
+        <h5 class="m-0 flex-fill">Hospedado por <a [routerLink]="['/profile', property.applicationUserId]">{{ property.applicationUser?.name }}</a></h5>
+        <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
+          <i class="bi bi-bookmark-star text-warning h3"></i>
+        </button>
+        <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
+          <i class="bi bi-bookmark-star-fill text-warning h3"></i>
+        </button>
+      </div>
+      <hr class="m-1" />
+      <p>{{ property.maxGuestsNumber }} Hóspedes <strong>·</strong> {{ property.roomsNumber }} Quartos</p>
+      <p>{{ property.description }}</p>
+      <div class="comodidades mt-5 mb-3 d-flex flex-column">
+        <h5>Comodidades</h5>
+        <div *ngFor="let amenity of property.amenities" class="d-inline-flex">
+          <span class="text-center material-symbols-outlined mx-3 my-1">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
+          <h6 class=" mx-3 my-1">{{ amenity.displayName }}</h6>
         </div>
-        <hr class="m-1" />
-        <p>{{ property.description }}</p>
-        <div class="comodidades mt-5 mb-3 d-flex flex-column">
-            <h5>Comodidades</h5>
-            <div *ngFor="let amenity of property.amenities" class="d-inline-flex">
-                <span class="text-center material-symbols-outlined mx-3 my-1">{{ AmenitiesHelper.getAmenityIcon(amenity.name) }}</span>
-                <h6 class=" mx-3 my-1">{{ amenity.displayName }}</h6>
-            </div>
-            <!--<hr class="mb-2">-->
-        </div>
+        <!--<hr class="mb-2">-->
+      </div>
     </div>
     <div class="col-12 col-lg-3 p-4 mt-2 mt-lg-5 border border-secondary rounded text-center">
         <form class="d-flex flex-column align-items-center mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
