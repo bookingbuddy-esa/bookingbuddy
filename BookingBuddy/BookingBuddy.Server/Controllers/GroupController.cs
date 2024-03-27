@@ -340,12 +340,21 @@ namespace BookingBuddy.Server.Controllers
 
             if(group == null)
             {
-                return NotFound();
+                return NotFound("Grupo não encontrado");
             }
 
             if (group.PropertiesId.Count >= 6)
             {
                 return BadRequest("O Grupo ja tem 6 propriedades na votação!");
+            }
+
+            var property = await _context.Property.FindAsync(propertyId);
+
+            if (property == null) { return NotFound("A propriedade nao existe"); }
+
+            if (group.MembersId.Count > property.MaxGuestsNumber)
+            {
+                return BadRequest("A propriedade não permite o número de hóspedes");
             }
 
             if (group.PropertiesId.Contains(propertyId))

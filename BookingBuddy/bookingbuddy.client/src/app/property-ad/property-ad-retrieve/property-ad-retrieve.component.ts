@@ -96,13 +96,12 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   private loadUserGroups() {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
-      //console.log("Grupos Recebidos deste User: " + JSON.stringify(groups));
       this.group_list = groups;
+      this.group_list = this.group_list.filter(group => group.membersId.length <= this.property!.maxGuestsNumber && !group.propertiesId.includes(this.property!.propertyId));
       this.submitting = false;
     }).catch(error => {
       this.errors.push(error.error);
       this.submitting = false;
-      //console.log("Erro ao receber grupos: " + JSON.stringify(error));
     });
   }
 
