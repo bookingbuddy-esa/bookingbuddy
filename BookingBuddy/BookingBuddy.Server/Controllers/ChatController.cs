@@ -32,10 +32,15 @@ public class ChatController : ControllerBase
     }
 
     /// <summary>
-    /// Método que cria um chat.
+    /// Cria um novo chat com o nome especificado.
     /// </summary>
-    /// <param name="name">Nome do chat.</param>
-    /// <returns>Retorna um IActionResult indicando o resultado da operação</returns>
+    /// <param name="name">O nome do novo chat a ser criado.</param>
+    /// <returns>
+    /// Um objeto contendo o identificador único e o nome do chat criado se for bem-sucedido.
+    /// Um código de estado 200 (OK) se o chat for criado com sucesso.
+    /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+    /// Um código de estado 400 (Pedido Inválido) se ocorrerem erros durante o processo.
+    /// </returns>
     [HttpPost]
     [Authorize]
     [Route("create")]
@@ -64,10 +69,14 @@ public class ChatController : ControllerBase
     }
 
     /// <summary>
-    /// Método que obtém um chat.
+    /// Obtém informações sobre um chat específico, incluindo os últimos 10 mensagens enviadas.
     /// </summary>
-    /// <param name="chatId">Identificador do chat.</param>
-    /// <returns>Retorna um IActionResult indicando o resultado da operação</returns>
+    /// <param name="chatId">O identificador único do chat.</param>
+    /// <returns>
+    /// Um objeto contendo informações sobre o chat, incluindo os últimos 10 mensagens, se for bem-sucedido.
+    /// Um código de estado 200 (OK) se as informações do chat forem obtidas com sucesso.
+    /// Um código de estado 404 (Não Encontrado) se o chat com o ID especificado não existir.
+    /// </returns>
     [HttpGet]
     [Route("{chatId}")]
     public async Task<IActionResult> GetChat(string chatId)
@@ -105,12 +114,16 @@ public class ChatController : ControllerBase
     }
 
     /// <summary>
-    /// Método que obtém as mensagens de um chat.
+    /// Obtém as mensagens de um chat específico, com a opção de especificar o número de mensagens e o índice de início.
     /// </summary>
-    /// <param name="chatId">Identificador do chat.</param>
-    /// <param name="numberOfMessages">Número de mensagens a obter.</param>
-    /// <param name="startIndex">Índice de início.</param>
-    /// <returns>Retorna um IActionResult indicando o resultado da operação</returns>
+    /// <param name="chatId">O identificador único do chat.</param>
+    /// <param name="numberOfMessages">O número de mensagens a serem retornadas. O padrão é 10.</param>
+    /// <param name="startIndex">O índice de início das mensagens a serem retornadas. O padrão é 0.</param>
+    /// <returns>
+    /// Uma lista de mensagens do chat, com a opção de especificar o número de mensagens e o índice de início, se for bem-sucedido.
+    /// Um código de estado 200 (OK) se as mensagens do chat forem obtidas com sucesso.
+    /// Um código de estado 404 (Não Encontrado) se o chat com o ID especificado não existir.
+    /// </returns>
     [HttpGet]
     [Route("messages/{chatId}")]
     public async Task<IActionResult> GetChatMessages(string chatId, [FromQuery] int numberOfMessages = 10,
@@ -147,8 +160,8 @@ public class ChatController : ControllerBase
     /// <summary>
     /// Método que lida com a conexão de um WebSocket.
     /// </summary>
-    /// <param name="chatId">Identificador do chat.</param>
-    /// <param name="userId">Identificador do utilizador.</param>
+    /// <param name="chatId">Identificador único do chat.</param>
+    /// <param name="userId">Identificador único do utilizador.</param>
     /// <param name="webSocket">WebSocket a ser tratado.</param>
     [NonAction]
     public async Task HandleWebSocketAsync(string chatId, string userId, WebSocket webSocket)

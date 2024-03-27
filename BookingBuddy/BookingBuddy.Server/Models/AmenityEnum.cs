@@ -1,5 +1,8 @@
 ﻿namespace BookingBuddy.Server.Models
 {
+    /// <summary>
+    /// Enumerado que representa as comodidades de uma propriedade física na plataforma.
+    /// </summary>
     public enum AmenityEnum {
         Estacionamento,
         Wifi,
@@ -16,8 +19,16 @@
         Tv
     }
     
+    /// <summary>
+    /// Classe de extensão para o enumerado <see cref="AmenityEnum"/>.
+    /// </summary>
     public static class AmenityExtension
     {
+        /// <summary>
+        /// Método que retorna o nome de uma comodidade de uma propriedade física a anunciar.
+        /// </summary>
+        /// <param name="amenity"></param>
+        /// <returns></returns>
         public static string GetAmenityName(this AmenityEnum amenity)
         {
             return amenity switch

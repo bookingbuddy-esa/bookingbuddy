@@ -27,6 +27,15 @@ namespace BookingBuddy.Server.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager = userManager;
 
+        /// <summary>
+        /// Obtém as informações do perfil de um utilizador com base no seu identificador único.
+        /// </summary>
+        /// <param name="userId">O identificador único do utilizador para o qual se pretende obter o perfil.</param>
+        /// <returns>
+        /// As informações do perfil do utilizador especificado, incluindo nome, email, funções, URL da imagem e descrição.
+        /// Retorna um código de estado 200 (OK) se as informações do perfil forem obtidas com sucesso.
+        /// Retorna um código de estado 404 (Não Encontrado) se o utilizador não for encontrado.
+        /// </returns>
         [HttpGet]
         [Route("{userId}")]
         public async Task<IActionResult> GetProfile(string userId)
@@ -50,6 +59,15 @@ namespace BookingBuddy.Server.Controllers
             return Ok(profileInfo);
         }
 
+        /// <summary>
+        /// Atualiza a descrição de perfil de um utilizador autenticado.
+        /// </summary>
+        /// <param name="model">O modelo que contém a nova descrição de perfil.</param>
+        /// <returns>
+        /// Retorna um código de estado 200 (OK) se a descrição for atualizada com sucesso.
+        /// Retorna um código de estado 404 (Não Encontrado) se o utilizador autenticado não for encontrado.
+        /// Retorna um código de estado 400 (Pedido Inválido) se ocorrer um erro ao atualizar a descrição.
+        /// </returns>
         [HttpPut]
         [Authorize]
         [Route("updateDescription")]
@@ -72,6 +90,15 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Descrição atualizada com sucesso!");
         }
 
+        /// <summary>
+        /// Atualiza a imagem de perfil de um utilizador autenticado.
+        /// </summary>
+        /// <param name="model">O modelo que contém a URL da nova imagem de perfil.</param>
+        /// <returns>
+        /// Retorna um código de estado 200 (OK) se a imagem de perfil for atualizada com sucesso.
+        /// Retorna um código de estado 404 (Não Encontrado) se o utilizador autenticado não for encontrado.
+        /// Retorna um código de estado 400 (Pedido Inválido) se ocorrer um erro ao atualizar a imagem de perfil.
+        /// </returns>
         [HttpPut]
         [Authorize]
         [Route("updateProfilePicture")]
@@ -95,6 +122,9 @@ namespace BookingBuddy.Server.Controllers
         }
     }
 
+    /// <summary>
+    /// Modelo que representa as informações do perfil de um utilizador.
+    /// </summary>
     public record ProfileInfoModel(
         string UserId,
         string Name,
@@ -104,10 +134,16 @@ namespace BookingBuddy.Server.Controllers
         string Description
     );
 
+    /// <summary>
+    /// Modelo para atualização da descrição do perfil de um utilizador.
+    /// </summary>
     public record UpdateDescriptionModel(
         string Description
     );
 
+    /// <summary>
+    /// Modelo para atualização da imagem de perfil de um utilizador.
+    /// </summary>
     public record UpdateProfilePictureModel(
         string ImageUrl
     );

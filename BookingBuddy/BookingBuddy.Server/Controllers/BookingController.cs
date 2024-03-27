@@ -29,21 +29,22 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Obtém as reservas do utilizador.
+        /// Obtém todas as reservas associadas ao utilizador autenticado.
+        /// Inclui tanto as reservas individuais como as reservas em grupo em que o utilizador é membro.
         /// </summary>
-        /// <returns>Retorna as reservas do utilizador.</returns>
-
+        /// <returns>
+        /// Um código de estado 200 (OK) com a lista de todas as reservas do utilizador.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// </returns>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetBookings()
         {
             var user = await _userManager.GetUserAsync(User);
-
             if (user == null)
             {
                 return Unauthorized();
             }
-
 
             var individualBookings = _context.BookingOrder
                 .Include(booking => booking.Property)
@@ -65,7 +66,6 @@ namespace BookingBuddy.Server.Controllers
                 })
                 .ToList();
 
-            // Obter todas as reservas em grupo
             var groupBookings = _context.GroupBookingOrder
                 .Include(groupBooking => groupBooking.Property)
                 .Include(groupBooking => groupBooking.Group)
@@ -86,17 +86,21 @@ namespace BookingBuddy.Server.Controllers
                 })
                 .ToList();
 
-           
             var allBookings = individualBookings.Cast<object>().Concat(groupBookings.Cast<object>());
             return Ok(allBookings);
         }
 
 
         /// <summary>
-        /// Obtém as mensagens relacionadas a uma reserva específica.
+        /// Obtém todas as mensagens associadas a uma reserva específica.
         /// </summary>
-        /// <param name="bookingId">O ID da reserva para a qual as mensagens serão obtidas.</param>
-        /// <returns>Retorna as mensagens relacionadas à reserva.</returns>
+        /// <param name="bookingId">O identificador único da reserva.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) com a lista de mensagens associadas à reserva.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 404 (Não Encontrado) se a reserva não existir.
+        /// </returns>
+
         [HttpGet("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string bookingId)
@@ -139,12 +143,16 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Cria uma nova mensagem relacionada a uma reserva específica.
+        /// Cria uma nova mensagem para uma reserva especificada.
         /// </summary>
-        /// <param name="bookingId">O ID da reserva à qual a mensagem será adicionada.</param>
-        /// <param name="message">Os dados da nova mensagem a ser criada.</param>
-        /// <returns>Retorna o resultado da criação da mensagem.</returns>
-
+        /// <param name="bookingId">O identificador único da reserva.</param>
+        /// <param name="message">Os detalhes da nova mensagem.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se a mensagem for criada com sucesso.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 404 (Não Encontrado) se a reserva não for encontrada.
+        /// Um código de estado 400 (Pedido Inválido) se ocorrerem erros durante o processo.
+        /// </returns>
         [HttpPost("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> CreateMessage(string bookingId, [FromBody] NewBookingMessage message)

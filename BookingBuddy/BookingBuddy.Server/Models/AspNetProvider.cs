@@ -1,7 +1,7 @@
 ﻿namespace BookingBuddy.Server.Models;
 
 /// <summary>
-/// Classe que representa um fornecedor de logins.
+/// Classe que representa um fornecedor de login.
 /// </summary>
 public class AspNetProvider
 {
