@@ -74,7 +74,7 @@
             <option value="5">5 hóspedes</option>
           </select>
                 </div>
-                <button class="btn btn-success mt-1">Reservar</button>
+                <button class="btn btn-success mt-1" [disabled]="reservarPropriedadeForm.invalid">Reservar</button>
                 <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
                 <div class="precos mt-2">
                     <div *ngFor="let formattedString of formatPricesMap()">
