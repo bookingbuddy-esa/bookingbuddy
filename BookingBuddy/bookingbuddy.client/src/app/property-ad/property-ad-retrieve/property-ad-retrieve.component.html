@@ -47,7 +47,7 @@
         <form class="d-flex flex-column align-items-center mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
             <div class="d-flex flex-column justify-content-around gap-2">
                 <button type="button" class="btn btn-outline-success rounded-pill" [routerLink]="['/group-booking']" [queryParams]="{propertyId: property.propertyId}">Criar Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
-                <button type="button" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#addToGroupModal">Adicionar a Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
+                <button type="button" *ngIf="group_list.length > 0" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#addToGroupModal">Adicionar a Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
                 <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
 
                 <mat-form-field (click)="picker.open()">
@@ -74,7 +74,7 @@
             <option value="5">5 hóspedes</option>
           </select>
                 </div>
-                <button class="btn btn-success mt-1">Reservar</button>
+                <button class="btn btn-success mt-1" [disabled]="reservarPropriedadeForm.invalid">Reservar</button>
                 <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
                 <div class="precos mt-2">
                     <div *ngFor="let formattedString of formatPricesMap()">

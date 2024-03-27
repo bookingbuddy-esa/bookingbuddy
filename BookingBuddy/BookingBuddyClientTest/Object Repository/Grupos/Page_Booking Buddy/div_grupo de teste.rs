@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>div_grupo de teste</name>
+   <tag></tag>
+   <elementGuidId>ccd0aaec-7462-4277-8f02-8ef7c0479586</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>div.fw-bold</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//div[@id='collapseOne']/div/div/button/div/div</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;grupo de teste 1 &quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>div</value>
+      <webElementGuid>218264b1-9c22-4348-b2b3-32d028af2e6e</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>fw-bold</value>
+      <webElementGuid>538e9800-0344-4f20-b91b-59561f7abdca</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>grupo de teste</value>
+      <webElementGuid>cfcb5899-7084-4e92-90f7-e15492446454</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;collapseOne&quot;)/div[@class=&quot;overflow-auto accordion-body p-1 overflow-auto&quot;]/div[@class=&quot;list-group list-group-flush overflow-auto&quot;]/button[@class=&quot;list-group-item list-group-item-action&quot;]/div[@class=&quot;d-flex justify-content-between align-items-center&quot;]/div[@class=&quot;fw-bold&quot;]</value>
+      <webElementGuid>2f90b298-2efb-4bf5-b0eb-46e379a73e7d</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//div[@id='collapseOne']/div/div/button/div/div</value>
+      <webElementGuid>bc200cdc-48b6-45c5-b137-c25145e0e8d1</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Criar um grupo de reserva'])[1]/following::div[2]</value>
+      <webElementGuid>259ed3ee-6bfa-4406-908e-1abafc14bb55</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Lista de Grupos'])[1]/following::div[6]</value>
+      <webElementGuid>97e9d35b-43d9-42de-afd6-93c1331b74e2</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Grupo de Reserva'])[1]/preceding::div[1]</value>
+      <webElementGuid>d4243566-8c22-474a-b446-591114643c8d</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Selecione um grupo na barra lateral ou crie um novo grupo de reserva!'])[1]/preceding::div[1]</value>
+      <webElementGuid>d01d69a7-a803-48b0-b03c-ec1ef56daa72</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='grupo de teste']/parent::*</value>
+      <webElementGuid>c3159a96-edf6-4549-a471-d0e87a508ae7</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//button/div/div</value>
+      <webElementGuid>cc806c13-6fed-4bdb-acdf-0e156fa4894c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//div[(text() = 'grupo de teste' or . = 'grupo de teste')]</value>
+      <webElementGuid>5e02609e-51dd-4a4b-adc0-7cd2d29e8946</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>img_Logout_w-100 h-100 rounded-3</name>
+   <tag></tag>
+   <elementGuidId>85a0b58f-e117-47e8-bc7c-8222fb2102a4</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>img.w-100.h-100.rounded-3</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//img[contains(@src,'https://bookingbuddyrepository.blob.core.windows.net/images/cae0df9f-907c-440b-ac86-df8130e358d7.jpg')]</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=main >> internal:role=link >> nth=1</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>img</value>
+      <webElementGuid>ff2ffe00-a63e-4e08-b568-cb417ac88a8f</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>w-100 h-100 rounded-3</value>
+      <webElementGuid>08ad7228-f501-40cb-8c54-3ce43932af9b</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>src</name>
+      <type>Main</type>
+      <value>https://bookingbuddyrepository.blob.core.windows.net/images/cae0df9f-907c-440b-ac86-df8130e358d7.jpg</value>
+      <webElementGuid>8080625d-7038-47d0-bac8-f094c406d73f</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-homepage[1]/div[@class=&quot;d-flex p-3 w-100 flex-row flex-wrap align-content-start justify-content-start&quot;]/app-homepage-property[1]/div[@class=&quot;property d-flex flex-column p-3 w-100 h-100&quot;]/a[@class=&quot;w-100 h-75 m-1&quot;]/img[@class=&quot;w-100 h-100 rounded-3&quot;]</value>
+      <webElementGuid>89ac901b-b3bc-4014-898f-2c2e3b6a57a3</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:img</name>
+      <type>Main</type>
+      <value>//img[contains(@src,'https://bookingbuddyrepository.blob.core.windows.net/images/cae0df9f-907c-440b-ac86-df8130e358d7.jpg')]</value>
+      <webElementGuid>a7632751-e5c6-41cd-b61c-c4969e797c73</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//app-homepage-property/div/a/img</value>
+      <webElementGuid>dd41b413-1385-408a-ae72-de8449060d33</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//img[@src = 'https://bookingbuddyrepository.blob.core.windows.net/images/cae0df9f-907c-440b-ac86-df8130e358d7.jpg']</value>
+      <webElementGuid>1f28f096-563b-42b6-bb05-157492ae4db8</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

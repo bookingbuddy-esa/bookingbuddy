@@ -3,7 +3,7 @@
    <description></description>
    <name>input_Chat com o grupo_form-control ng-unto_2eeb6a</name>
    <tag></tag>
-   <elementGuidId>56cdc90d-6ed1-4398-a3c9-9ea3ae8aa1b0</elementGuidId>
+   <elementGuidId>3e9ce680-b9d9-4e12-8486-123de6e13f05</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
@@ -29,7 +29,7 @@
       <name>tag</name>
       <type>Main</type>
       <value>input</value>
-      <webElementGuid>53c13daf-2e32-4122-9288-ac24b5d7b998</webElementGuid>
+      <webElementGuid>062050b6-03cd-45be-90b2-09afd27dbc9b</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
@@ -37,7 +37,7 @@
       <name>type</name>
       <type>Main</type>
       <value>text </value>
-      <webElementGuid>a7135e89-59d5-4584-a65e-24b4653509f8</webElementGuid>
+      <webElementGuid>ac741902-fae0-42d3-8656-9dab8e36fdf6</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
@@ -45,7 +45,7 @@
       <name>placeholder</name>
       <type>Main</type>
       <value>Escreva a sua mensagem </value>
-      <webElementGuid>cc26dc24-89d0-4418-bab5-3cf77fe7527f</webElementGuid>
+      <webElementGuid>4b03826d-efae-4839-b85a-d76cc9e0a624</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -53,7 +53,7 @@
       <name>class</name>
       <type>Main</type>
       <value>form-control ng-untouched ng-pristine ng-valid</value>
-      <webElementGuid>511a8ae6-0649-4ffb-99ca-1b1165d7bfa2</webElementGuid>
+      <webElementGuid>9f58ecd1-b531-43d2-ac1e-8cb4e987311e</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -61,7 +61,7 @@
       <name>xpath</name>
       <type>Main</type>
       <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group[1]/div[@class=&quot;row justify-content-center mt-5 w-100&quot;]/div[@class=&quot;col-12 col-md-9 mb-5&quot;]/div[3]/div[@class=&quot;chat w-50 mx-auto mt-2 mb-3&quot;]/div[@class=&quot;input-group mt-3&quot;]/input[@class=&quot;form-control ng-untouched ng-pristine ng-valid&quot;]</value>
-      <webElementGuid>49fec8d9-97da-4edb-84a5-930c52a5ccf2</webElementGuid>
+      <webElementGuid>8c9ddf38-6dd5-4436-8735-bf005209b5af</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
@@ -69,7 +69,7 @@
       <name>xpath:attributes</name>
       <type>Main</type>
       <value>//input[@type='text ']</value>
-      <webElementGuid>2b0f84ea-e467-463d-8529-fb28e5315ab2</webElementGuid>
+      <webElementGuid>4c6da077-2538-4157-a1a9-38afe770a140</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -77,7 +77,7 @@
       <name>xpath:position</name>
       <type>Main</type>
       <value>//div[2]/input</value>
-      <webElementGuid>89b3fc9d-033f-4416-9fb3-b164deaf1b9f</webElementGuid>
+      <webElementGuid>49d16160-b7f7-411f-a2f7-4b549cee882a</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -85,6 +85,6 @@
       <name>xpath:customAttributes</name>
       <type>Main</type>
       <value>//input[@type = 'text ' and @placeholder = 'Escreva a sua mensagem ']</value>
-      <webElementGuid>5b229e18-6390-49ac-a7bc-1518ad1ab5d4</webElementGuid>
+      <webElementGuid>47baf1b3-4711-47b3-a355-97cd587c3047</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

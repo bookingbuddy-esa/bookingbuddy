@@ -181,6 +181,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
       return false;
     }
 
+    if (this.checkInDate && this.isSameDay(this.checkInDate, date)) {
+      return false;
+    }
+
     const currentDate = new Date();
 
     return date >= currentDate && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));

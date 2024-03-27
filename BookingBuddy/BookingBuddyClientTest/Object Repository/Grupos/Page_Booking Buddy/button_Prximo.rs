@@ -3,7 +3,7 @@
    <description></description>
    <name>button_Prximo</name>
    <tag></tag>
-   <elementGuidId>ba8a1f7b-3384-410e-a6af-1dd80ca1f8b2</elementGuidId>
+   <elementGuidId>52b6f47d-1947-4338-b88d-4d72afecb63a</elementGuidId>
    <selectorCollection>
       <entry>
          <key>CSS</key>
@@ -29,7 +29,7 @@
       <name>tag</name>
       <type>Main</type>
       <value>button</value>
-      <webElementGuid>6d8c3579-e4d0-4598-b40d-f127a1cca31f</webElementGuid>
+      <webElementGuid>22f8e1c0-5314-48c7-b1f1-9f4a44433d5f</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -37,7 +37,7 @@
       <name>class</name>
       <type>Main</type>
       <value>btn btn-dark</value>
-      <webElementGuid>489a00e6-9eef-4c2d-8142-9dabde9953fe</webElementGuid>
+      <webElementGuid>c81bf370-029b-4cfa-a310-de3fbc11e925</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>true</isSelected>
@@ -45,7 +45,7 @@
       <name>text</name>
       <type>Main</type>
       <value>Próximo</value>
-      <webElementGuid>a69cec9f-e1c6-43c7-b673-4cdadb90d9c7</webElementGuid>
+      <webElementGuid>4205eaae-d2fc-4033-958a-de8575e9fb3d</webElementGuid>
    </webElementProperties>
    <webElementProperties>
       <isSelected>false</isSelected>
@@ -53,7 +53,7 @@
       <name>xpath</name>
       <type>Main</type>
       <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group-create[1]/div[@class=&quot;d-flex h-100 w-100 flex-column align-items-center&quot;]/div[@class=&quot;d-flex flex-column w-100 align-items-center&quot;]/div[@class=&quot;d-flex flex-row h-100 w-100 align-items-center justify-content-between px-5 py-3&quot;]/button[@class=&quot;btn btn-dark&quot;]</value>
-      <webElementGuid>3dfa0363-f869-42db-8de7-a0964c91dae4</webElementGuid>
+      <webElementGuid>1051f8bd-55ae-4d06-ae4b-f81100a98cce</webElementGuid>
    </webElementProperties>
    <webElementXpaths>
       <isSelected>true</isSelected>
@@ -61,7 +61,7 @@
       <name>xpath:neighbor</name>
       <type>Main</type>
       <value>(.//*[normalize-space(text()) and normalize-space(.)='Cancelar'])[1]/following::button[1]</value>
-      <webElementGuid>8a1201e1-1cca-441a-b309-31fc1f9dde62</webElementGuid>
+      <webElementGuid>5d778500-424d-436d-a4f8-b101280f1369</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -69,7 +69,7 @@
       <name>xpath:neighbor</name>
       <type>Main</type>
       <value>(.//*[normalize-space(text()) and normalize-space(.)='Forneça o nome do grupo de reserva.'])[1]/following::button[2]</value>
-      <webElementGuid>4961cae2-e131-4a50-8b41-f9ebc2d6c230</webElementGuid>
+      <webElementGuid>ba3fd264-b648-4687-b9d9-6103f76c98be</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -77,7 +77,7 @@
       <name>xpath:neighbor</name>
       <type>Main</type>
       <value>//*/text()[normalize-space(.)='Próximo']/parent::*</value>
-      <webElementGuid>58e78db8-58e4-4ec6-9004-1dd285277b60</webElementGuid>
+      <webElementGuid>645eeb53-ba35-45b8-81a6-8a09d5cf239c</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -85,7 +85,7 @@
       <name>xpath:position</name>
       <type>Main</type>
       <value>//button[2]</value>
-      <webElementGuid>ab502a2e-48d1-4f4a-ba30-b20538aeb7f7</webElementGuid>
+      <webElementGuid>9ebe5d50-7a9b-4675-a897-5efae172c167</webElementGuid>
    </webElementXpaths>
    <webElementXpaths>
       <isSelected>false</isSelected>
@@ -93,6 +93,6 @@
       <name>xpath:customAttributes</name>
       <type>Main</type>
       <value>//button[(text() = 'Próximo' or . = 'Próximo')]</value>
-      <webElementGuid>0784f2e2-d9a3-46c4-ae28-fb62882d6596</webElementGuid>
+      <webElementGuid>0ab083ce-05a8-44d7-980a-ec55dc7b95db</webElementGuid>
    </webElementXpaths>
 </WebElementEntity>

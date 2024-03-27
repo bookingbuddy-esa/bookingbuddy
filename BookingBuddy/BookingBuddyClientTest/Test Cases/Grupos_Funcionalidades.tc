@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCaseEntity>
+   <description>Criar grupo;&#xd;
+Adicionar propriedade;&#xd;
+Utilizar chat;&#xd;
+Iniciar processo de votação e votar;&#xd;
+Efetuar pagamento e reserva;&#xd;
+Apagar grupo.</description>
+   <name>Grupos_Funcionalidades</name>
+   <tag></tag>
+   <comment></comment>
+   <testCaseGuid>f18b3cc3-3661-4057-a04e-3c6f895bb8c5</testCaseGuid>
+</TestCaseEntity>
