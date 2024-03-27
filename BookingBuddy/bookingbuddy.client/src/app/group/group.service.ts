@@ -105,7 +105,7 @@ export class GroupService {
   }
 
   public voteForProperty(groupId: string, propertyId: string) {
-    return this.http.put(`${environment.apiUrl}/api/groups/voteForProperty`, {
+    return this.http.post(`${environment.apiUrl}/api/groups/voteForProperty`, {
         groupId: groupId,
         propertyId: propertyId,
       },

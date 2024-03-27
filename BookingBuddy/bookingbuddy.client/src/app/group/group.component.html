@@ -27,7 +27,8 @@
               <span class="mx-auto p-2 fw-bold small"
                     *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
               <button *ngFor="let group of group_list" class="list-group-item list-group-item-action"
-                      (click)="chooseGroup(group)" [ngClass]="{'bg-success text-white': group === currentGroup}">
+                      (click)="chooseGroup(group.groupId)"
+                      [ngClass]="{'bg-success text-white': group === currentGroup}">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="fw-bold">{{ group.name }}</div>
                   <!--                  <span class="badge bg-success-medium rounded">{{ group.membersId.length }}<i-->
@@ -69,47 +70,34 @@
     </div>
   </div>
   <!-- Coluna direita que contém informação consoante a "Group Action" -->
-  <div *ngIf="!submitting" class="col-12 col-md-9 d-flex flex-column">
+  <div *ngIf="!submitting && !ws_loading" class="col-12 col-md-9 d-flex flex-column">
     <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
-      <div class="d-flex flex-row align-items-center" [ngSwitch]="ws?.readyState">
+      <div class="d-flex flex-row align-items-center">
         <span class="text-center fs-2 me-2"> {{ currentGroup.name }}</span>
-        <span *ngSwitchCase="ws?.CONNECTING"
-              class="badge text-bg-secondary rounded-circle p-2">
-          <span class="visually-hidden">Connecting</span>
-        </span>
-        <span *ngSwitchCase="ws?.OPEN"
-              class="badge text-bg-success rounded-circle p-2">
-          <span class="visually-hidden">Connected</span>
-        </span>
-        <span *ngSwitchCase="ws?.CLOSING"
-              class="badge text-bg-warning rounded-circle p-2">
-          <span class="visually-hidden">Disconnecting</span>
-        </span>
-        <span *ngSwitchCase="ws?.CLOSED"
-              class="badge text-bg-danger rounded-circle p-2">
-          <span class="visually-hidden">Disconnected</span>
-        </span>
       </div>
       <div class="d-flex flex-row mt-2 mb-2">
         <button class="btn btn-sm btn-info me-2"
-                *ngIf="isGroupOwner && currentGroup.groupAction === 'None'"
-                (click)="updateGroupAction(GroupAction.voting)"
-                matTooltip="Iniciar Votação">
+                *ngIf="isOwner && currentGroup.groupAction === 'None'"
+                (click)="isActionVoting = true"
+                matTooltip="Iniciar votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
         <button class="btn btn-sm btn-success me-2"
-                *ngIf="isGroupOwner && currentGroup.groupAction === 'Voting'"
-                (click)="updateGroupAction(GroupAction.booking)"
-                matTooltip="Concluir Votação">
+                *ngIf="isOwner && isActionVoting"
+                (click)="concludeVoting()"
+                matTooltip="Concluir votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
-        <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner && currentGroup.groupAction === 'Booking' "
-                matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i>
+        <button class="btn btn-sm btn-success me-2" *ngIf="isOwner && currentGroup.groupAction === 'Booking' "
+                matTooltip="Efetuar reserva"><i class="bi bi-credit-card-fill"></i>
         </button>
-        <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite">
+        <button class="btn btn-sm btn-secondary me-2"
+                (click)="copyGroupLink()"
+                matTooltip="Copiar link de convite">
           <i class="bi bi-link"></i>
         </button>
-        <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" matTooltip="Apagar Grupo"
+        <button class="btn btn-sm btn-danger"
+                *ngIf="isOwner" matTooltip="Apagar grupo"
                 (click)="showDeleteGroupModal()">
           <i class="bi bi-trash"></i>
         </button>
@@ -125,14 +113,16 @@
         <span class="text-muted small">Não existem propriedades para este grupo.</span>
       </div>
       <div class="w-100 h-100"
-           *ngIf="currentGroup && currentGroup.properties?.length !== 0 && currentGroup.groupAction === 'None' || currentGroup?.groupAction === 'Voting'">
+           *ngIf="currentGroup && currentGroup.properties?.length !== 0 && (isActionNone || isActionVoting)">
         <div class="row row-cols-1 row-cols-md-4 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
           <div class="col property" *ngFor="let property of currentGroup?.properties">
             <div class="card h-100 w-100"
-                 [ngClass]="{'border-success border-5 rounded': currentGroup?.chosenProperty?.propertyId === property.propertyId}">
+                 [ngClass]="{
+                 'border-success border-5 rounded': isPropertyChosen(property.propertyId),
+                 'border-info border-5 rounded': isPropertyVotedByUser(property.propertyId) && isActionVoting}">
               <img class="card-img object-fit-cover opacity-50 h-100 w-100"
                    [ngSrc]="property.imagesUrl[0]" fill priority
-                   [ngClass]="{'rounded-0': currentGroup?.chosenProperty?.propertyId === property.propertyId}"
+                   [ngClass]="{'rounded-0': isPropertyChosen(property.propertyId) || isPropertyVotedByUser(property.propertyId)}"
                    alt="Imagem da Propriedade">
               <div class="card-img-overlay d-flex flex-column">
                 <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',property.propertyId]">
@@ -141,21 +131,33 @@
                 </div>
                 <div class="d-flex flex-row">
                   <button class="btn btn-sm btn-danger me-2"
-                          *ngIf="currentGroup?.groupAction !== 'Voting' && (property.addedBy.id === user?.userId || isGroupOwner)"
-                          matTooltip="Remover Propriedade"
+                          *ngIf="!isActionVoting && (property.addedBy.id === user?.userId || isOwner)"
+                          matTooltip="Remover propriedade"
                           (click)="removeProperty(property.propertyId)">
                     <i class="bi bi-x-square"></i>
                   </button>
-                  <button class="btn btn-sm btn-info" *ngIf="currentGroup?.groupAction === 'Voting'"
-                          matTooltip="Votar na Propriedade"><i
-                    class="bi bi-check2-circle"></i></button>
+                  <button class="btn btn-sm btn-info"
+                          *ngIf="isActionVoting && !hasVotedInProperty(property)"
+                          matTooltip="Votar na propriedade"
+                          (click)="voteForProperty(property.propertyId)">
+                    <i class="bi bi-check2-circle"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger"
+                          *ngIf="isActionVoting && hasVotedInProperty(property)"
+                          matTooltip="Remover voto na propriedade">
+                    <i class="bi bi-check2-circle"></i>
+                  </button>
                   <button class="btn btn-sm btn-success ms-2"
-                          *ngIf="currentGroup?.groupAction === 'Voting' && isGroupOwner"
-                          matTooltip="Selecionar Propriedade"
+                          *ngIf="isActionBooking && isOwner"
+                          matTooltip="Selecionar propriedade"
                           (click)="chooseProperty(property)">
                     <i class="bi bi-check2-circle"></i>
                   </button>
                   <div class="flex-fill on-hover-pointer" [routerLink]="['/property',property.propertyId]"></div>
+                  <span class="badge text-bg-info rounded p-2"
+                        *ngIf="isActionVoting">
+                    {{ numberOfPropertyVotes(property.propertyId) }}<i class="bi bi-person ms-1"></i>
+                  </span>
                 </div>
               </div>
             </div>
@@ -184,7 +186,7 @@
     </div>
   </div>
 
-  <div *ngIf="submitting" class="col-12 col-md-9 d-flex flex-column h-100">
+  <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
     <app-loader class="w-100"></app-loader>
   </div>
 </div>

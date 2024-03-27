@@ -28,11 +28,6 @@ builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.None;
 });
 
-builder.Services.AddAuthentication().AddCookie(o =>
-{
-    o.DataProtectionProvider = DataProtectionProvider.Create("BookingBuddy.Server");
-});
-
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingBuddyServerContext>()
@@ -72,17 +67,24 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
 
 app.UseWebSockets(new WebSocketOptions
 {
-    KeepAliveInterval = TimeSpan.FromSeconds(30)
+    AllowedOrigins = { builder.Configuration.GetSection("Front-End-Url").Value ?? "" }
 });
 
 app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string paymentId) =>
 {
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
+    try
     {
-        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
+        {
+            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+            await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+        }
+        else
+        {
+            throw new Exception("Invalid request.");
+        }
     }
-    else
+    catch
     {
         httpContext.Response.StatusCode = 400;
     }
@@ -90,14 +92,21 @@ app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController pa
 
 // TODO: Deixar de usar o userId como parâmetro e passar a usar um token
 app.Map("/api/groups/ws",
-    async (HttpContext httpContext, GroupController groupController, string groupId) =>
+    async (HttpContext httpContext, GroupController groupController, string userId) =>
     {
-        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
+        try
         {
-            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-            await groupController.HandleWebSocketAsync(groupId, webSocket);
+            if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(userId))
+            {
+                var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                await groupController.HandleWebSocketAsync(userId, webSocket);
+            }
+            else
+            {
+                throw new Exception("Invalid request.");
+            }
         }
-        else
+        catch
         {
             httpContext.Response.StatusCode = 400;
         }

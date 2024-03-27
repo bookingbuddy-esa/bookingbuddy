@@ -1,4 +1,4 @@
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {GroupService} from './group.service';
@@ -23,8 +23,6 @@ export class GroupComponent implements OnInit {
   protected router: Router = inject(Router);
   private groupService: GroupService = inject(GroupService);
   private modalService: NgbModal = inject(NgbModal);
-  protected readonly navigator = navigator;
-  protected readonly GroupAction = GroupAction;
 
   // Carregamento de dados
 
@@ -37,12 +35,11 @@ export class GroupComponent implements OnInit {
   protected user: UserInfo | undefined;
   protected group_list: Group[] = [];
   protected currentGroup: Group | undefined;
-  protected isGroupOwner: boolean = false;
 
   // WebSocket
 
   protected ws: WebSocket | undefined;
-  protected wsLoading: boolean = false;
+  protected ws_loading: boolean = false;
 
   // Convidar para grupo
 
@@ -56,6 +53,7 @@ export class GroupComponent implements OnInit {
     }).then(() => {
       this.loadGroups().then(() => {
         this.global_loading = false;
+        this.initWebSocket();
       });
     }).catch(error => {
       console.error('Erro ao carregar utilizador:', error);
@@ -72,7 +70,7 @@ export class GroupComponent implements OnInit {
         if (queryGroupId) {
           let group = this.group_list.find(g => g.groupId == queryGroupId);
           if (group) {
-            await this.chooseGroup(group);
+            await this.chooseGroup(group.groupId);
           } else {
             this.groupService.getGroup(queryGroupId).forEach(group => {
               this.pendingGroup = group;
@@ -107,19 +105,20 @@ export class GroupComponent implements OnInit {
     }
   }
 
-  private async initWebSocket(group: Group) {
-    this.wsLoading = true;
+  private initWebSocket() {
+    this.ws_loading = true;
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
-    let fullUrl = `${url}/api/groups/ws?groupId=${group.groupId}`
-
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.close(3000, 'Changing group');
-    }
+    let fullUrl = `${url}/api/groups/ws?userId=${this.user?.userId}`
     this.ws = new WebSocket(fullUrl);
-
+    console.log(`[WebSocket] A estabelecer conexão...`);
     this.ws.onopen = () => {
-      this.wsLoading = false;
+      this.ws_loading = false;
+      console.log(`[WebSocket] Conexão estabelecida.`);
+    }
+    this.ws.onerror = (ev) => {
+      this.ws_loading = false;
+      console.error(`[WebSocket] Erro de conexão: ${ev}`);
     }
     this.ws.onmessage = (event) => {
       let message = JSON.parse(event.data) as WebsocketMessage;
@@ -128,11 +127,6 @@ export class GroupComponent implements OnInit {
           let content = JSON.parse(message.content) as { groupId: string, propertyId: string }
           if (this.currentGroup?.groupId == content?.groupId) {
             this.currentGroup!.properties = this.currentGroup!.properties.filter(p => p.propertyId != content?.propertyId);
-          } else {
-            let group = this.group_list.find(g => g.groupId == content?.groupId);
-            if (group) {
-              group.properties = group.properties.filter(p => p.propertyId != content?.propertyId);
-            }
           }
           break;
         }
@@ -142,13 +136,6 @@ export class GroupComponent implements OnInit {
             if (!this.currentGroup?.properties.find(p => p.propertyId == content.property.propertyId)) {
               this.currentGroup!.properties.push(content.property);
             }
-          } else {
-            let group = this.group_list.find(g => g.groupId == content.groupId);
-            if (group) {
-              if (!group.properties.find(p => p.propertyId == content.property.propertyId)) {
-                group.properties.push(content.property);
-              }
-            }
           }
           break;
         }
@@ -157,13 +144,6 @@ export class GroupComponent implements OnInit {
           if (this.currentGroup?.groupId == content.groupId) {
             if (!this.currentGroup?.members.find(m => m.id == content.member.id)) {
               this.currentGroup!.members.push(content.member);
-            }
-          } else {
-            let group = this.group_list.find(g => g.groupId == content.groupId);
-            if (group) {
-              if (!group.members.find(m => m.id == content.member.id)) {
-                group.members.push(content.member);
-              }
             }
           }
           break;
@@ -183,11 +163,6 @@ export class GroupComponent implements OnInit {
           let content = JSON.parse(message.content) as { groupId: string, groupAction: string };
           if (this.currentGroup?.groupId == content.groupId) {
             this.currentGroup!.groupAction = content.groupAction;
-          } else {
-            let group = this.group_list.find(g => g.groupId == content.groupId);
-            if (group) {
-              group.groupAction = content.groupAction;
-            }
           }
           break;
         }
@@ -195,17 +170,37 @@ export class GroupComponent implements OnInit {
           let content = JSON.parse(message.content) as { groupId: string, property: GroupProperty };
           if (this.currentGroup?.groupId == content.groupId) {
             this.currentGroup!.chosenProperty = content.property;
-          } else {
-            let group = this.group_list.find(g => g.groupId == content.groupId);
-            if (group) {
-              group.chosenProperty = content.property;
-            }
+          }
+          break;
+        }
+        case 'UserVoted': {
+          let content = JSON.parse(message.content) as {
+            groupId: string,
+            vote: { userId: string, propertyId: string }
+          };
+          if (this.currentGroup?.groupId == content.groupId) {
+            this.currentGroup!.votes = this.currentGroup!.votes.map(v => {
+              if (v.userId == content.vote.userId) {
+                return {userId: content.vote.userId, propertyId: content.vote.propertyId}
+              }
+              return v;
+            });
           }
           break;
         }
       }
     };
-    this.ws.onclose = (event) => {
+    this.ws.onclose = (ev) => {
+      this.ws_loading = true;
+      console.log(`[WebSocket] Conexão perdida. À espera de reconexão...`);
+      setTimeout(async () => {
+        this.initWebSocket();
+        this.ws?.addEventListener('open', async () => {
+          if (this.currentGroup) {
+            await this.chooseGroup(this.currentGroup.groupId);
+          }
+        });
+      }, 1500);
     }
   }
 
@@ -236,7 +231,6 @@ export class GroupComponent implements OnInit {
     if (!this.currentGroup) {
       return;
     }
-
     let actionString = GroupActionHelper.AsString(action);
     this.groupService.updateGroupAction(this.currentGroup.groupId, actionString).forEach(response => {
       if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
@@ -270,11 +264,20 @@ export class GroupComponent implements OnInit {
     );
   }
 
-  protected async chooseGroup(group: Group) {
-    await this.router.navigate([], {queryParams: {groupId: group.groupId}});
-    this.currentGroup = group;
-    this.isGroupOwner = group.groupOwner.id === this.user?.userId;
-    await this.initWebSocket(group);
+  protected async chooseGroup(groupId: string) {
+    await this.router.navigate([], {queryParams: {groupId: groupId}});
+    return this.groupService.getGroup(groupId).forEach(group => {
+      this.currentGroup = group;
+      this.group_list = this.group_list.map(g => {
+        if (g.groupId == group.groupId) {
+          return group;
+        } else {
+          return g;
+        }
+      });
+    }).catch(error => {
+      console.error('Erro ao carregar grupo:', error);
+    });
   }
 
   protected async chooseProperty(property: GroupProperty) {
@@ -289,6 +292,103 @@ export class GroupComponent implements OnInit {
       console.error('Erro ao escolher propriedade:', error);
     });
   }
+
+  protected hasVotedInProperty(property: GroupProperty) {
+    if (!this.currentGroup) {
+      return false;
+    } else {
+      return this.currentGroup.votes.find(v => v.propertyId == property.propertyId && v.userId == this.user?.userId) != undefined;
+    }
+  }
+
+  protected voteForProperty(propertyId: string) {
+    if (!this.currentGroup) {
+      return;
+    }
+    this.groupService.voteForProperty(this.currentGroup.groupId!, propertyId).forEach(response => {
+      if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
+        this.currentGroup!.votes = this.currentGroup!.votes.map(v => {
+          if (v.userId == this.user?.userId) {
+            return {userId: this.user?.userId, propertyId: propertyId}
+          }
+          return v;
+        });
+      }
+    }).catch(error => {
+      console.error('Erro ao votar em propriedade:', error);
+    });
+  }
+
+  protected concludeVoting() {
+    if (!this.currentGroup) {
+      return;
+    }
+
+    if (this.currentGroup.votes.length !== this.currentGroup.members.length) {
+
+    }
+
+  }
+
+  protected numberOfPropertyVotes(propertyId: string): number {
+    return this.currentGroup?.votes.filter(v => v.propertyId == propertyId).length || 0;
+  }
+
+  protected isPropertyVotedByUser(propertyId: string): boolean {
+    return this.currentGroup?.votes.find(v => v.userId == this.user?.userId && v.propertyId == propertyId) != undefined;
+  }
+
+  protected isPropertyChosen(propertyId: string): boolean {
+    return this.currentGroup?.chosenProperty?.propertyId == propertyId;
+  }
+
+  // Propriedades auxiliares
+
+  protected get isActionNone(): boolean {
+    return this.currentGroup?.groupAction == GroupActionHelper.AsString(GroupAction.none);
+  }
+
+  protected get isActionVoting(): boolean {
+    return this.currentGroup?.groupAction == GroupActionHelper.AsString(GroupAction.voting);
+  }
+
+  protected get isActionBooking(): boolean {
+    return this.currentGroup?.groupAction == GroupActionHelper.AsString(GroupAction.booking);
+  }
+
+  protected get isActionPaying(): boolean {
+    return this.currentGroup?.groupAction == GroupActionHelper.AsString(GroupAction.paying);
+  }
+
+  protected get isOwner(): boolean {
+    return this.currentGroup?.groupOwner.id == this.user?.userId;
+  }
+
+  protected set isActionNone(value: boolean) {
+    if (value) {
+      this.updateGroupAction(GroupAction.none);
+    }
+  }
+
+  protected set isActionVoting(value: boolean) {
+    if (value) {
+      this.updateGroupAction(GroupAction.voting);
+    }
+  }
+
+  protected set isActionBooking(value: boolean) {
+    if (value) {
+      this.updateGroupAction(GroupAction.booking);
+    }
+  }
+
+  protected set isActionPaying(value: boolean) {
+    if (value) {
+      this.updateGroupAction(GroupAction.paying);
+    }
+  }
+
+  // Modals
 
   protected showAddPropertyModal() {
     let modalRef = this.modalService.open(AddPropertyModal,
@@ -311,10 +411,11 @@ export class GroupComponent implements OnInit {
       });
     modalRef.componentInstance.group = this.currentGroup;
     modalRef.componentInstance.onAccept = async () => {
-      await this.deleteGroup();
+      this.deleteGroup();
       modalRef.close();
     }
   }
+
 }
 
 // Componentes auxiliares
@@ -373,6 +474,7 @@ export class AcceptInviteModal {
 
 @Component({
   standalone: true,
+  selector: 'add-property-modal',
   template: `
     <div class="modal-header" aria-labelledby="acceptInviteLabel">
       <h5 class="modal-title" id="acceptInviteLabel">Adicionar Propriedade</h5>
@@ -450,6 +552,42 @@ export class AddPropertyModal {
   ]
 })
 export class DeleteGroupModal {
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected group: Group | undefined;
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
+}
+
+@Component({
+  selector: 'delete-group-modal',
+  standalone: true,
+  template: `
+    <div class="modal-header" aria-labelledby="concludeVotingModal">
+      <h5 class="modal-title" id="concludeVotingModal">Apagar Grupo</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+    </div>
+    <div class="modal-body">
+      <p>Tem certeza de que deseja apagar <strong>{{ group?.name }}</strong>?</p>
+      <p>Esta ação é <strong>irreversível</strong> e resultará na exclusão do grupo para todos os membros. Todos os
+        dados associados serão perdidos.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-danger" aria-label="Delete" (click)="onAccept()">Apagar</button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class ConcludeVotingModal {
   private activeModal: NgbActiveModal = inject(NgbActiveModal);
   protected group: Group | undefined;
   protected onClose: Function = () => {
