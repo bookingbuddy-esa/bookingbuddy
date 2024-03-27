@@ -1,17 +1,12 @@
-import {ChangeDetectorRef, Component, ElementRef, EventEmitter, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {GroupService} from './group.service';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
 import {Group, GroupAction, GroupActionHelper, GroupMember, GroupProperty} from '../models/group';
-import {Discount} from '../models/discount';
-import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {PropertyAdService} from '../property-ad/property-ad.service';
-import {OrderService} from '../payment/order.service';
 import {WebsocketMessage} from "../models/websocket-message";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
 import {NgIf} from "@angular/common";
 
@@ -21,60 +16,38 @@ import {NgIf} from "@angular/common";
   styleUrl: './group.component.css'
 })
 export class GroupComponent implements OnInit {
-  @ViewChildren('successAlerts, errorAlerts') alertContainers!: QueryList<ElementRef>;
-  success_alerts: string[] = [];
-  errors: string[] = [];
+  // Serviços
+
+  private authService: AuthorizeService = inject(AuthorizeService);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  protected router: Router = inject(Router);
+  private groupService: GroupService = inject(GroupService);
+  private modalService: NgbModal = inject(NgbModal);
   protected readonly navigator = navigator;
   protected readonly GroupAction = GroupAction;
 
   // Carregamento de dados
 
-  global_loading: boolean = false;
-  submitting: boolean = false;
-  submitting_invite: boolean = false;
+  protected global_loading: boolean = false;
+  protected submitting: boolean = false;
+  protected submitting_invite: boolean = false;
 
   // Utilizador, grupos e reservas
 
-  user: UserInfo | undefined;
-  group_list: Group[] = [];
-  currentGroup: Group | undefined;
-  isGroupOwner: boolean = false;
-  bookingData: any;
-  ws: WebSocket | undefined;
+  protected user: UserInfo | undefined;
+  protected group_list: Group[] = [];
+  protected currentGroup: Group | undefined;
+  protected isGroupOwner: boolean = false;
+
+  // WebSocket
+
+  protected ws: WebSocket | undefined;
+  protected wsLoading: boolean = false;
 
   // Convidar para grupo
 
-  invite_link: boolean = false;
-  failed_invite: boolean = false;
-  pendingGroup: Group | undefined;
-
-  // Datas de Reservas
-  calendarMaxDate: Date = new Date(8640000000000000);
-  maxDate: Date = this.calendarMaxDate;
-  blockedDates: Date[] = [];
-  discounts: Discount[] = [];
-  discountDates: Date[] = [];
-  checkInDate: Date | undefined;
-  checkOutDate: Date | undefined;
-  reservarPropriedadeForm!: FormGroup;
-  reservarPropriedadeFailed: boolean;
-  pricesMap: Map<number, number> = new Map<number, number>();
-
-  constructor(private authService: AuthorizeService,
-              private formBuilder: FormBuilder,
-              private route: ActivatedRoute,
-              protected router: Router,
-              private cdref: ChangeDetectorRef,
-              private groupService: GroupService,
-              private propertyService: PropertyAdService,
-              private modalService: NgbModal,
-              private orderService: OrderService) {
-    this.reservarPropriedadeFailed = false;
-    this.reservarPropriedadeForm = this.formBuilder.group({
-      checkIn: ['', Validators.required],
-      checkOut: ['', Validators.required]
-    });
-  }
+  protected failed_invite: boolean = false;
+  protected pendingGroup: Group | undefined;
 
   ngOnInit(): void {
     this.global_loading = true;
@@ -100,9 +73,7 @@ export class GroupComponent implements OnInit {
           let group = this.group_list.find(g => g.groupId == queryGroupId);
           if (group) {
             await this.chooseGroup(group);
-            await this.initWebSocket(group);
           } else {
-            this.invite_link = true;
             this.groupService.getGroup(queryGroupId).forEach(group => {
               this.pendingGroup = group;
             }).then(() => {
@@ -116,16 +87,14 @@ export class GroupComponent implements OnInit {
               modalRef.componentInstance.pendingGroup = this.pendingGroup;
               modalRef.componentInstance.failed_invite = this.failed_invite;
               modalRef.componentInstance.submitting_invite = this.submitting_invite;
-              modalRef.componentInstance.onAcceptInvite.forEach(async () => {
-                  await this.acceptInvite()
-                  modalRef.close();
-                }
-              );
-              modalRef.componentInstance.onClose.forEach(() => {
-                  modalRef.close();
-                  this.router.navigate(['/groups']);
-                }
-              )
+              modalRef.componentInstance.onAccept = async () => {
+                await this.acceptInvite();
+                modalRef.close();
+              }
+              modalRef.componentInstance.onClose = async () => {
+                modalRef.close();
+                await this.router.navigate(['/groups']);
+              }
             }).catch(error => {
               console.error('Erro ao carregar grupo:', error);
               this.router.navigate(['/groups']);
@@ -139,10 +108,19 @@ export class GroupComponent implements OnInit {
   }
 
   private async initWebSocket(group: Group) {
+    this.wsLoading = true;
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
-    if (this.ws) this.ws.close();
-    this.ws = new WebSocket(`${url}/api/groups/ws?groupId=${group.groupId}`);
+    let fullUrl = `${url}/api/groups/ws?groupId=${group.groupId}`
+
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.close(3000, 'Changing group');
+    }
+    this.ws = new WebSocket(fullUrl);
+
+    this.ws.onopen = () => {
+      this.wsLoading = false;
+    }
     this.ws.onmessage = (event) => {
       let message = JSON.parse(event.data) as WebsocketMessage;
       switch (message.code) {
@@ -227,6 +205,8 @@ export class GroupComponent implements OnInit {
         }
       }
     };
+    this.ws.onclose = (event) => {
+    }
   }
 
   private async acceptInvite() {
@@ -263,11 +243,11 @@ export class GroupComponent implements OnInit {
         this.currentGroup!.groupAction = actionString;
       }
     }).catch(error => {
-      this.errors.push(error.error);
+      console.error('Erro ao atualizar ação do grupo:', error);
     });
   }
 
-  protected deleteGroup(): void {
+  protected deleteGroup() {
     this.groupService.deleteGroup(this.currentGroup!.groupId).forEach(async response => {
       if (response && !(this.ws?.readyState === WebSocket.OPEN)) {
         this.currentGroup = undefined;
@@ -275,7 +255,7 @@ export class GroupComponent implements OnInit {
         await this.router.navigate(['/groups']);
       }
     }).catch(error => {
-      this.errors.push(error.error);
+      console.error('Erro ao apagar grupo:', error);
     });
   }
 
@@ -290,18 +270,14 @@ export class GroupComponent implements OnInit {
     );
   }
 
-  public async chooseGroup(group: Group) {
-    this.errors = [];
-    this.success_alerts = [];
+  protected async chooseGroup(group: Group) {
     await this.router.navigate([], {queryParams: {groupId: group.groupId}});
     this.currentGroup = group;
     this.isGroupOwner = group.groupOwner.id === this.user?.userId;
-
-    // this.loadDiscounts();
-    // this.loadBlockedDates();
+    await this.initWebSocket(group);
   }
 
-  public async chooseProperty(property: GroupProperty) {
+  protected async chooseProperty(property: GroupProperty) {
     if (!this.currentGroup) {
       return;
     }
@@ -314,225 +290,43 @@ export class GroupComponent implements OnInit {
     });
   }
 
-  setBookingData(): any {
-    return this.bookingData = {
-      groupBookingId: this.currentGroup?.groupBookingId,
-      orderType: 'group-booking'
-    };
-  }
-
-  dateFilter = (date: Date | null): boolean => {
-    if (!date) {
-      return false;
-    }
-
-    const currentDate = new Date();
-
-    return date >= currentDate && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
-  };
-
-  onDateChange(event: MatDatepickerInputEvent<Date>, type: 'start' | 'end'): void {
-    if (type === 'start' && event.value) {
-      this.checkInDate = event.value;
-      this.updateMaxDate();
-    } else if (event.value) {
-      this.checkOutDate = event.value;
-    }
-    this.cdref.detectChanges();
-  }
-
-  clearDates() {
-    this.reservarPropriedadeForm.patchValue({
-      checkIn: null,
-      checkOut: null
-    });
-
-    this.checkInDate = this.checkOutDate = undefined;
-    this.maxDate = this.calendarMaxDate;
-    this.cdref.detectChanges();
-  }
-
-  discountClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    if (this.discountDates.some(discountDate => this.isSameDay(cellDate, discountDate))) {
-      return 'discount-date-class';
-    }
-
-    return '';
-  };
-
-  private isSameDay(date1: Date, date2: Date): boolean {
-    return date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate();
-  }
-
-  updateMaxDate(): void {
-    if (this.checkInDate) {
-      const nextBlockedDate = this.blockedDates.find(date => date > this.checkInDate!);
-
-      if (nextBlockedDate) {
-        this.maxDate = nextBlockedDate;
-      } else {
-        this.maxDate = this.calendarMaxDate;
-      }
-    }
-  }
-
-  public reservar(_: any) {
-    if (this.currentGroup) {
-      this.reservarPropriedadeFailed = false;
-      const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
-      const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
-
-      // TODO: verificar se datas sao validas antes de fazer a order
-      /*this.router.navigate(['/transaction-handler'], {
-          queryParams: {
-              groupId: this.currentGroup?.groupId,
-              startDate: checkInDate.toISOString().split('T')[0],
-              endDate: checkOutDate.toISOString().split('T')[0],
-              orderType: 'group-booking'
-          }
-      });*/
-
-      this.orderService.createBookingOrder(this.currentGroup?.groupId!, checkInDate, checkOutDate).forEach(response => {
-        if (response) {
-          //console.log(response);
-          /*this.bookingData = {
-            groupBookingId: response.orderId,
-            orderType: 'group-booking'
-          };*/
-
-          this.currentGroup!.groupBookingId = response.orderId;
-          //this.setGroupAction('paying');
-          //this.sendMessageWS();
-        }
-      }).catch(error => {
-        this.reservarPropriedadeFailed = true;
+  protected showAddPropertyModal() {
+    let modalRef = this.modalService.open(AddPropertyModal,
+      {
+        animation: true,
+        size: 'lg',
+        centered: true,
       });
+    modalRef.componentInstance.onAccept = async () => {
+      modalRef.close();
+      await this.router.navigate(['/']);
     }
   }
 
-  // loadBlockedDates() {
-  //   if (this.currentGroup?.chosenProperty) {
-  //     this.propertyService.getPropertyBlockedDates(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
-  //       this.blockedDates = [];
-  //
-  //       dateRanges.forEach(dateRange => {
-  //         const startDate = new Date(dateRange.start);
-  //         const endDate = new Date(dateRange.end);
-  //         const currentDate = new Date(startDate);
-  //         while (currentDate <= endDate) {
-  //           this.blockedDates.push(new Date(currentDate));
-  //           currentDate.setDate(currentDate.getDate() + 1);
-  //         }
-  //       });
-  //
-  //     }).catch(error => {
-  //       console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-  //     });
-  //   }
-  // }
-  //
-  // loadDiscounts() {
-  //   if (this.currentGroup?.chosenProperty) {
-  //     this.propertyService.getPropertyDiscounts(this.currentGroup?.chosenProperty).forEach((dateRanges: any[]) => {
-  //       this.discounts = [];
-  //
-  //       dateRanges.forEach(dateRange => {
-  //         const discount: Discount = {
-  //           discountId: dateRange.discountId,
-  //           startDate: dateRange.startDate,
-  //           endDate: dateRange.endDate,
-  //           discountAmount: dateRange.discountAmount,
-  //           dates: []
-  //         };
-  //
-  //         const startDate = new Date(dateRange.startDate);
-  //         const endDate = new Date(dateRange.endDate);
-  //         const currentDate = new Date(startDate);
-  //
-  //         while (currentDate <= endDate) {
-  //           discount.dates.push(new Date(currentDate));
-  //           this.discountDates.push(new Date(currentDate));
-  //           currentDate.setDate(currentDate.getDate() + 1);
-  //         }
-  //
-  //         this.discounts.push(discount);
-  //       });
-  //     }).catch(error => {
-  //         console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-  //       }
-  //     );
-  //   }
-  // }
-
-  formatPricesMap(): string[] {
-    const formattedStrings: string[] = [];
-
-    this.pricesMap.forEach((count, price) => {
-      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100) / 100}€`);
-    });
-
-    return formattedStrings;
+  protected showDeleteGroupModal() {
+    let modalRef = this.modalService.open(DeleteGroupModal,
+      {
+        animation: true,
+        centered: true,
+      });
+    modalRef.componentInstance.group = this.currentGroup;
+    modalRef.componentInstance.onAccept = async () => {
+      await this.deleteGroup();
+      modalRef.close();
+    }
   }
-
-  // calcularTotalDesconto() {
-  //   let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
-  //   const selectedDates: Date[] = [];
-  //   this.pricesMap = new Map();
-  //   if (this.currentGroup?.chosenProperty && this.checkInDate && this.checkOutDate) {
-  //     const currentDate = new Date(this.checkInDate);
-  //     while (currentDate < this.checkOutDate) {
-  //       selectedDates.push(new Date(currentDate));
-  //       currentDate.setDate(currentDate.getDate() + 1);
-  //     }
-  //
-  //     selectedDates.forEach(selectedDate => {
-  //       const matchingDiscounts = this.discounts.filter(discount =>
-  //         discount.dates.some(date => this.isSameDay(date, selectedDate))
-  //       );
-  //
-  //       if (matchingDiscounts.length > 0) {
-  //         matchingDiscounts.forEach(discount => {
-  //           const newPrice = this.priceWithDiscount(discount.discountAmount);
-  //           const currentCount = this.pricesMap.get(newPrice) || 0;
-  //           this.pricesMap.set(newPrice, currentCount + 1);
-  //         });
-  //       } else {
-  //         const currentCount = this.pricesMap.get(pricePerNight as number) || 0;
-  //         this.pricesMap.set(pricePerNight as number, currentCount + 1);
-  //       }
-  //     });
-  //
-  //     let totalPrice = 0;
-  //     this.pricesMap.forEach((count, price) => {
-  //       const aux = count * price;
-  //       totalPrice += aux;
-  //     });
-  //     return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
-  //   }
-  //   return 0;
-  // }
-
-  // priceWithDiscount(discountAmount: number): number {
-  //   let pricePerNight = this.currentGroup?.properties.find(p => p.propertyId === this.currentGroup?.chosenProperty)?.pricePerNight;
-  //   if (this.currentGroup?.chosenProperty && pricePerNight) {
-  //     const discountMultiplier = 1 - discountAmount / 100;
-  //
-  //     return Math.round(((pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
-  //   }
-  //   return 0;
-  // }
-
 }
+
+// Componentes auxiliares
 
 @Component({
   standalone: true,
+  selector: 'accept-invite-modal',
   template: `
     <div class="modal-header">
       <h5 class="modal-title" id="acceptInviteLabel">Convite para grupo de reserva</h5>
       <button *ngIf="failed_invite && !submitting_invite" type="button" class="btn-close" aria-label="Close"
-              (click)="this.onClose.emit()"></button>
+              (click)="onClose()"></button>
     </div>
     <div class="modal-body">
       <span *ngIf="!failed_invite && !submitting_invite">
@@ -544,15 +338,15 @@ export class GroupComponent implements OnInit {
     </div>
     <div *ngIf="!submitting_invite" class="modal-footer">
       <button *ngIf="!failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
-              (click)="this.onClose.emit()">
+              (click)="onClose()">
         Rejeitar
       </button>
       <button *ngIf="!failed_invite" type="button" class="btn btn-success"
-              (click)="this.onAcceptInvite.emit();">
+              (click)="onAccept()">
         Aceitar
       </button>
       <button *ngIf="failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
-              (click)="this.onClose.emit()">
+              (click)="onClose()">
         Fechar
       </button>
     </div>
@@ -565,9 +359,103 @@ export class GroupComponent implements OnInit {
   ]
 })
 export class AcceptInviteModal {
-  failed_invite: boolean = false;
-  submitting_invite: boolean = false;
-  pendingGroup: Group | undefined;
-  onAcceptInvite: EventEmitter<void> = new EventEmitter<void>();
-  onClose: EventEmitter<void> = new EventEmitter<void>();
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected failed_invite: boolean = false;
+  protected submitting_invite: boolean = false;
+  protected pendingGroup: Group | undefined;
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  standalone: true,
+  template: `
+    <div class="modal-header" aria-labelledby="acceptInviteLabel">
+      <h5 class="modal-title" id="acceptInviteLabel">Adicionar Propriedade</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+    </div>
+    <div class="modal-body">
+      <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
+      <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
+      <ol class="list-group list-group-numbered list-group-flush mb-2">
+        <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a
+          explorar.
+        </li>
+        <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se
+          adeque às suas necessidades.
+        </li>
+        <li class="list-group-item"><strong>Adicionar ao Grupo:</strong> Selecione uma propriedade e clique em
+          "Adicionar ao Grupo de Reserva".
+        </li>
+        <li class="list-group-item"><strong>Selecionar Grupo:</strong> Escolha o grupo de reserva onde deseja
+          incluir a propriedade.
+        </li>
+        <li class="list-group-item"><strong>Concluir:</strong> A propriedade será automaticamente adicionada ao grupo
+          selecionado.
+        </li>
+      </ol>
+      <p class="mt-2"><strong>NOTA:</strong> Para cada grupo de reserva existe um máximo de 6 propriedades a escolher.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-success" (click)="onAccept()">Aceitar</button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class AddPropertyModal {
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
+}
+
+@Component({
+  selector: 'delete-group-modal',
+  standalone: true,
+  template: `
+    <div class="modal-header" aria-labelledby="deleteGroupModalLabel">
+      <h5 class="modal-title" id="deleteGroupModalLabel">Apagar Grupo</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+    </div>
+    <div class="modal-body">
+      <p>Tem certeza de que deseja apagar <strong>{{ group?.name }}</strong>?</p>
+      <p>Esta ação é <strong>irreversível</strong> e resultará na exclusão do grupo para todos os membros. Todos os
+        dados associados serão perdidos.</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-danger" aria-label="Delete" (click)="onAccept()">Apagar</button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class DeleteGroupModal {
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected group: Group | undefined;
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
 }

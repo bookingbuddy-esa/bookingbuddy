@@ -14,10 +14,14 @@
           <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
             <div class="list-group list-group-flush overflow-auto">
               <div class="mx-auto p-2">
-                <span class="text-muted small">Criar um grupo de reserva<button type="button"
-                                                                                class="btn btn-outline-success btn-sm rounded-pill ms-2"
-                                                                                routerLink="/group-booking"><i
-                  class="bi bi-person-fill-add"></i></button></span>
+                <span class="text-muted small">
+                  Criar um grupo de reserva
+                  <button type="button"
+                          class="btn btn-outline-success btn-sm rounded-pill ms-2"
+                          routerLink="/group-booking">
+                    <i class="bi bi-person-fill-add"></i>
+                  </button>
+                </span>
               </div>
               <hr class="m-0"/>
               <span class="mx-auto p-2 fw-bold small"
@@ -65,13 +69,29 @@
     </div>
   </div>
   <!-- Coluna direita que contém informação consoante a "Group Action" -->
-  <div class="col-12 col-md-9 d-flex flex-column">
+  <div *ngIf="!submitting" class="col-12 col-md-9 d-flex flex-column">
     <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
-      <span class="text-center fs-2">{{ currentGroup.name }}</span>
+      <div class="d-flex flex-row align-items-center" [ngSwitch]="ws?.readyState">
+        <span class="text-center fs-2 me-2"> {{ currentGroup.name }}</span>
+        <span *ngSwitchCase="ws?.CONNECTING"
+              class="badge text-bg-secondary rounded-circle p-2">
+          <span class="visually-hidden">Connecting</span>
+        </span>
+        <span *ngSwitchCase="ws?.OPEN"
+              class="badge text-bg-success rounded-circle p-2">
+          <span class="visually-hidden">Connected</span>
+        </span>
+        <span *ngSwitchCase="ws?.CLOSING"
+              class="badge text-bg-warning rounded-circle p-2">
+          <span class="visually-hidden">Disconnecting</span>
+        </span>
+        <span *ngSwitchCase="ws?.CLOSED"
+              class="badge text-bg-danger rounded-circle p-2">
+          <span class="visually-hidden">Disconnected</span>
+        </span>
+      </div>
       <div class="d-flex flex-row mt-2 mb-2">
-        <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite"><i
-          class="bi bi-link"></i></button>
-        <button class="btn btn-sm btn-warning me-2"
+        <button class="btn btn-sm btn-info me-2"
                 *ngIf="isGroupOwner && currentGroup.groupAction === 'None'"
                 (click)="updateGroupAction(GroupAction.voting)"
                 matTooltip="Iniciar Votação">
@@ -86,8 +106,13 @@
         <button class="btn btn-sm btn-success me-2" *ngIf="isGroupOwner && currentGroup.groupAction === 'Booking' "
                 matTooltip="Efetuar Reserva"><i class="bi bi-credit-card-fill"></i>
         </button>
-        <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" data-bs-toggle="modal"
-                data-bs-target="#deleteGroupModal" matTooltip="Apagar Grupo"><i class="bi bi-trash"></i></button>
+        <button class="btn btn-sm btn-secondary me-2" (click)="copyGroupLink()" matTooltip="Copiar link de convite">
+          <i class="bi bi-link"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" *ngIf="isGroupOwner" matTooltip="Apagar Grupo"
+                (click)="showDeleteGroupModal()">
+          <i class="bi bi-trash"></i>
+        </button>
       </div>
     </div>
 
@@ -103,7 +128,8 @@
            *ngIf="currentGroup && currentGroup.properties?.length !== 0 && currentGroup.groupAction === 'None' || currentGroup?.groupAction === 'Voting'">
         <div class="row row-cols-1 row-cols-md-4 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
           <div class="col property" *ngFor="let property of currentGroup?.properties">
-            <div class="card h-100 w-100" [ngClass]="{'border-success border-5 rounded': currentGroup?.chosenProperty?.propertyId === property.propertyId}">
+            <div class="card h-100 w-100"
+                 [ngClass]="{'border-success border-5 rounded': currentGroup?.chosenProperty?.propertyId === property.propertyId}">
               <img class="card-img object-fit-cover opacity-50 h-100 w-100"
                    [ngSrc]="property.imagesUrl[0]" fill priority
                    [ngClass]="{'rounded-0': currentGroup?.chosenProperty?.propertyId === property.propertyId}"
@@ -144,8 +170,7 @@
         <button type="button"
                 *ngIf="currentGroup && currentGroup.properties.length < 6 && currentGroup.groupAction === 'None'"
                 class="btn btn-md btn-success me-2"
-                data-bs-toggle="modal"
-                data-bs-target="#addPropertyModal ">
+                (click)="showAddPropertyModal()">
           Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>
         </button>
         <div class="flex-fill">
@@ -157,69 +182,10 @@
       </div>
       <app-chat-new class="chat"></app-chat-new>
     </div>
-
-    <div *ngIf="submitting " class="h-100">
-      <app-loader></app-loader>
-    </div>
   </div>
-</div>
 
-<div class="modal fade align-self-center" id="deleteGroupModal" tabindex="-1" aria-labelledby="deleteGroupModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteGroupModalLabel">Apagar Grupo</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Tem certeza de que deseja apagar este grupo?</p>
-        <p>Esta ação é <strong>irreversível</strong> e resultará na exclusão do grupo para todos os membros. Todos os
-          dados associados serão perdidos.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="deleteGroup()">Apagar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="addPropertyModal" tabindex="-1" aria-labelledby="addPropertyModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addPropertyModalLabel">Adicionar Propriedade</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
-        <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
-        <ol class="list-group list-group-numbered list-group-flush mb-2">
-          <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a
-            explorar.
-          </li>
-          <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se
-            adeque às suas necessidades.
-          </li>
-          <li class="list-group-item"><strong>Adicionar ao Grupo:</strong> Selecione uma propriedade e clique em
-            "Adicionar ao Grupo de Reserva".
-          </li>
-          <li class="list-group-item"><strong>Selecionar Grupo:</strong> Escolha o grupo de reserva onde deseja
-            incluir a propriedade.
-          </li>
-          <li class="list-group-item"><strong>Concluir:</strong> A propriedade será automaticamente adicionada ao
-            grupo selecionado.
-          </li>
-        </ol>
-        <p class="mt-2"><strong>NOTA:</strong> Para cada grupo de reserva existe um máximo de 6 propriedades a
-          escolher.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-success" data-bs-dismiss="modal" routerLink="/">Aceitar</button>
-      </div>
-    </div>
+  <div *ngIf="submitting" class="col-12 col-md-9 d-flex flex-column h-100">
+    <app-loader class="w-100"></app-loader>
   </div>
 </div>
 
