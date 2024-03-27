@@ -2,8 +2,11 @@
   <div class="lista-reservas col-2">
     <div class="list-group text-center">
       <a class="list-group-item list-group-item-action" *ngFor="let booking of bookings" (click)="selectBooking(booking)" [class.selected]="booking === selectedBooking">
+        {{booking.guest}}
+        <br />
         {{booking.name}}
       </a>
+
     </div>
   </div>
 
