@@ -36,13 +36,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que retorna um pagamento.
+        /// Obtém os detalhes de um pagamento com base no identificador único do pagamento.
         /// </summary>
-        /// <param name="paymentId">Identificador do pagamento</param>
-        /// <returns>Retorna: 
-        /// - O pagamento, caso exista um pagamento com o identificador inserido.
-        /// - 400 Bad Request, caso o identificador inserido seja uma string nula ou vazia.
-        /// - 404 Not Found, caso não exista nenhum pagamento com o id inserido.
+        /// <param name="paymentId">O identificador único do pagamento.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) juntamente com os detalhes do pagamento, se encontrado.
+        /// Um código de estado 400 (Pedido Inválido) se o identificador do pagamento fornecido for inválido.
+        /// Um código de estado 404 (Não Encontrado) se o pagamento não for encontrado.
         /// </returns>
         [HttpGet("{paymentId}")]
         public async Task<IActionResult> GetPayment(string paymentId)

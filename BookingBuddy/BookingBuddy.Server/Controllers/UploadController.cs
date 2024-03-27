@@ -13,6 +13,9 @@ using Azure.Storage.Sas;
 
 namespace BookingBuddy.Server.Controllers
 {
+    /// <summary>
+    /// Controller para enviar ficheiros para o armazenamento Azure.
+    /// </summary>
     [Route("api/upload")]
     [ApiController]
     public class UploadController : ControllerBase
@@ -20,7 +23,7 @@ namespace BookingBuddy.Server.Controllers
         private readonly BlobServiceClient _blobServiceClient;
 
         /// <summary>
-        /// 
+        /// Construtor para o controller de upload.
         /// </summary>
         /// <param name="configuration"></param>
         public UploadController(IConfiguration configuration)
@@ -30,9 +33,12 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// Método para fazer upload de ficheiros para o AzureStorageAccount
+        /// Faz o upload de ficheiros para o armazenamento de blobs.
         /// </summary>
-        /// <returns>Mensagem de feedback: BadRequest ou Ok</returns>
+        /// <returns>
+        /// Um código de estado 200 (OK) juntamente com os URLs dos ficheiros carregados, se o carregamento for bem-sucedido.
+        /// Um código de estado 400 (Pedido Inválido) se nenhum ficheiro for enviado na solicitação.
+        /// </returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UploadFiles()

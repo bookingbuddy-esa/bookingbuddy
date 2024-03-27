@@ -14,7 +14,6 @@ using Property = BookingBuddy.Server.Models.Property;
 
 namespace BookingBuddy.Server.Controllers
 {
-    
     /// <summary>
     /// Controlador para os grupos.
     /// </summary>
@@ -29,10 +28,11 @@ namespace BookingBuddy.Server.Controllers
         // private static readonly WebSocketWrapper<Group> WebSocketWrapper = new();
 
         /// <summary>
-        /// Construtor da classe PropertyController.
+        /// Construtor da classe GroupController.
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
+        /// <param name="configuration">Configuração da aplicação</param>
         public GroupController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
@@ -41,10 +41,14 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método para criar um novo grupo.
+        /// Cria um novo grupo com o utilizador autenticado como proprietário.
         /// </summary>
-        /// <param name="model"></param>
-        /// <returns>Retorna o resultado da criação do grupo.</returns>
+        /// <param name="model">Os dados necessários para criar o grupo.</param>
+        /// <returns>
+        /// Um código de estado 201 (Criado) com os detalhes do grupo recém-criado, se o grupo for criado com sucesso.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 400 (Pedido Inválido) se ocorrer um erro durante a criação do grupo.
+        /// </returns>
         [HttpPost("create")]
         [Authorize]
         public async Task<IActionResult> CreateGroup(GroupInputModel model)
@@ -103,11 +107,13 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// Método que retorna um grupo que contenha o id passado por parâmetro.
-        /// Caso não exista retorna que não foi encontrado.
+        /// Obtém os detalhes de um grupo com base no seu identificador único.
         /// </summary>
-        /// <param name="groupId">Identificador do grupo</param>
-        /// <returns>O grupo, caso exista ou não encontrado, caso contrário</returns>
+        /// <param name="groupId">O identificador único do grupo.</param>
+        /// <returns>
+        /// Um objeto ActionResult contendo os detalhes do grupo, se encontrado.
+        /// Um código de estado 404 (Não Encontrado) se nenhum grupo for encontrado com o ID fornecido.
+        /// </returns>
         [HttpGet("{groupId}")]
         [Authorize]
         public async Task<ActionResult<Models.Group>> GetGroup(string groupId)
@@ -183,10 +189,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que obtém os grupos de um utilizador.
+        /// Obtém todos os grupos aos quais um utilizador está associado com base no seu identificador único.
         /// </summary>
-        /// <param name="userId">Identificador do utilizador</param>
-        /// <returns>Lista com os grupos do utilizador, caso exista ou não encontrada, caso contrário</returns>
+        /// <param name="userId">O identificador único do utilizador.</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo a lista de grupos associados ao utilizador, se encontrados.
+        /// Um código de estado 200 (OK) com uma lista vazia se o utilizador não estiver associado a nenhum grupo.
+        /// </returns>
         [HttpGet("user/{userId}")]
         [Authorize]
         public async Task<IActionResult> GetGroupsByUserId(string userId)
@@ -215,6 +224,16 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Define a ação de grupo para um grupo específico com base no identificador único do grupo e na ação fornecida.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo.</param>
+        /// <param name="groupAction">A ação a ser definida para o grupo. Pode ser "none", "voting", "booking" ou "paying".</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo uma mensagem de sucesso se a ação do grupo for atualizada com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 400 (Pedido inválido) se a ação fornecida for inválida.
+        /// </returns>
         [HttpPut("setGroupAction")]
         [Authorize]
         public async Task<IActionResult> SetGroupAction(string groupId, string groupAction)
@@ -258,8 +277,16 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
-
-
+        /// <summary>
+        /// Define a propriedade escolhida para um grupo específico com base no identificador único do grupo e no identificador único da propriedade.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo.</param>
+        /// <param name="propertyId">O identificador único da propriedade a ser definida como escolhida para o grupo.</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo uma mensagem de sucesso se a propriedade escolhida for definida com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 400 (Pedido inválido) se já houver uma propriedade escolhida para o grupo ou se a propriedade não existir no grupo.
+        /// </returns>
         [HttpPut("setChoosenProperty")]
         [Authorize]
         public async Task<IActionResult> SetChoosenProperty(string groupId, string propertyId)
@@ -295,11 +322,15 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// Adiciona uma propriedade a um grupo existente.
+        /// Adiciona uma propriedade ao grupo especificado com base nos identificadores únicos do grupo e da propriedade.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
-        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
-        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+        /// <param name="groupId">O identificador único do grupo.</param>
+        /// <param name="propertyId">O identificador único da propriedade a ser adicionada ao grupo.</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo uma mensagem de sucesso se a propriedade for adicionada com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 400 (Pedido inválido) se o grupo já tiver 6 propriedades na votação ou se a propriedade já existir no grupo.
+        /// </returns>
         [HttpPut("addProperty")]
         [Authorize]
         public async Task<IActionResult> AddProperty(string groupId, string propertyId)
@@ -335,13 +366,16 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
-
         /// <summary>
-        /// Remove um propriedade a um grupo existente.
+        /// Remove uma propriedade do grupo especificado com base nos identificadores únicos do grupo e da propriedade.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
-        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
-        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+        /// <param name="groupId">O identificador único do grupo.</param>
+        /// <param name="propertyId">O identificador único da propriedade a ser removida do grupo.</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo uma mensagem de sucesso se a propriedade for removida com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 400 (Pedido inválido) se a propriedade não existir no grupo.
+        /// </returns>
         [HttpPut("removeProperty")]
         [Authorize]
         public async Task<IActionResult> RemoveProperty(string groupId, string propertyId)
@@ -374,12 +408,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Adiciona um utilizador como membro de um grupo existente.
+        /// Adiciona o utilizador autenticado como membro ao grupo especificado com base no identificador único do grupo.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual o utilizador será adicionado como membro.</param>
-        /// <param name="userId">O ID do utilizador a ser adicionado como membro.</param>
-        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
-
+        /// <param name="groupId">O identificador único do grupo ao qual o utilizador será adicionado como membro.</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo o grupo atualizado se o utilizador for adicionado com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 401 (Não autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 400 (Pedido inválido) se ocorrer um erro durante o processo de adição do membro.
+        /// </returns>
         [Authorize]
         [HttpPut("addMember")]
         public async Task<IActionResult> AddMember(string groupId)
@@ -410,10 +447,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Remove um utilizador do grupo de reserva.
+        /// Remove o utilizador autenticado como membro do grupo especificado com base no identificador único do grupo.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual o utilizador será removido.</param>
-        /// <returns></returns>
+        /// <param name="groupId">O identificador único do grupo do qual o utilizador será removido como membro.</param>
+        /// <returns>
+        /// Um objeto IActionResult contendo o grupo atualizado após a remoção do utilizador.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 401 (Não autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 400 (Pedido inválido) se ocorrer um erro durante o processo de remoção do membro.
+        /// </returns>
         [Authorize]
         [HttpPut("leaveGroup")]
         public async Task<IActionResult> LeaveGroup(string groupId)
@@ -443,6 +485,16 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Elimina o grupo especificado com base no identificador único do grupo.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo a ser eliminado.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o grupo for eliminado com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 401 (Não autorizado) se o utilizador autenticado não for o proprietário do grupo.
+        /// Um código de estado 400 (Pedido inválido) se ocorrer um erro durante o processo de eliminação do grupo.
+        /// </returns>
         [HttpDelete("delete/{groupId}")]
         [Authorize]
         public async Task<IActionResult> DeleteGroup(string groupId)
@@ -479,9 +531,20 @@ namespace BookingBuddy.Server.Controllers
 
         }
 
+        /// <summary>
+        /// Cria uma nova mensagem no grupo especificado com base no identificador único do grupo.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo onde a mensagem será criada.</param>
+        /// <param name="message">Os dados da nova mensagem a ser criada.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se a mensagem for criada com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 401 (Não autorizado) se o utilizador autenticado não for membro do grupo.
+        /// Um código de estado 400 (Pedido inválido) se ocorrer um erro durante o processo de criação da mensagem.
+        /// </returns>
         [HttpPost("{groupId}/messages")]
-         [Authorize]
-         public async Task<IActionResult> CreateMessage(string groupId, [FromBody] NewGroupMessage message)
+        [Authorize]
+        public async Task<IActionResult> CreateMessage(string groupId, [FromBody] NewGroupMessage message)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -524,6 +587,15 @@ namespace BookingBuddy.Server.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Obtém todas as mensagens do grupo especificado com base no seu identificador único.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo do qual as mensagens serão obtidas.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) e uma lista de mensagens do grupo se as mensagens forem obtidas com sucesso.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado com o ID fornecido.
+        /// Um código de estado 401 (Não autorizado) se o utilizador autenticado não for membro do grupo.
+        /// </returns>
         [HttpGet("{groupId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string groupId)
@@ -553,6 +625,17 @@ namespace BookingBuddy.Server.Controllers
             return Ok(messages);
         }
 
+        /// <summary>
+        /// Cria um voto para uma propriedade específica em um grupo.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo para o qual o voto será criado.</param>
+        /// <param name="vote">Os dados do novo voto a ser criado.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o voto for criado com sucesso.
+        /// Um código de estado 401 (Não autorizado) se o utilizador autenticado não corresponder ao utilizador associado ao voto.
+        /// Um código de estado 404 (Não encontrado) se o grupo ou a propriedade associada ao voto não forem encontrados.
+        /// Um código de estado 400 (Pedido Inválido) se o utilizador autenticado não for membro do grupo ou se a propriedade não estiver associada ao grupo.
+        /// </returns>
         [HttpPost("{groupId}/votes")]
         [Authorize]
         public async Task<IActionResult> CreateVote(string groupId, [FromBody] NewGroupVote vote)
@@ -614,41 +697,42 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtém todos os votos registrados para um grupo específico.
+        /// </summary>
+        /// <param name="groupId">O identificador único do grupo para o qual os votos serão obtidos.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) juntamente com uma lista de votos se os votos forem obtidos com sucesso.
+        /// Um código de estado 401 (Não autorizado) se o utilizador autenticado não corresponder ao utilizador associado ao grupo.
+        /// Um código de estado 404 (Não encontrado) se o grupo não for encontrado.
+        /// </returns>
         [HttpGet("{groupId}/votes")]
         [Authorize]
         public async Task<IActionResult> GetVotes(string groupId)
         {
             var user = await _userManager.GetUserAsync(User);
-
             if (user == null)
             {
                 return Unauthorized();
             }
 
             var group = await _context.Groups.FindAsync(groupId);
-
             if (group == null)
             {
                 return NotFound();
             }
 
-            var votes = await _context.GroupVote
-          .Where(v => v.GroupId == groupId).ToListAsync();
-
-
+            var votes = await _context.GroupVote.Where(v => v.GroupId == groupId).ToListAsync();
             return Ok(votes);
         }
-
-
 
 
         /// <summary>
         /// Manipula a comunicação WebSocket para um grupo específico.
         /// </summary>
-        /// <param name="groupId">O ID do grupo para o qual a comunicação WebSocket será manipulada.</param>
+        /// <param name="groupId">O identificador único do grupo para o qual a comunicação WebSocket será manipulada.</param>
         /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
         /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
-
         [NonAction]
         public async Task HandleWebSocketAsync(string groupId, WebSocket webSocket)
         {
@@ -665,10 +749,20 @@ namespace BookingBuddy.Server.Controllers
     /// Modelo que representa a criação de um grupo.
     /// </summary>
     /// <param name="name">O nome do grupo.</param>
-    /// <param name="propertyId">O ID da propriedade associada ao grupo (opcional).</param>
+    /// <param name="propertyId">O identificador único da propriedade associada ao grupo (opcional).</param>
     /// <param name="memberEmails">Uma lista de endereços de e-mail dos membros a serem adicionados ao grupo (opcional).</param>
     public record GroupInputModel(string name, string? propertyId, List<string>? memberEmails);
 
+    /// <summary>
+    /// Modelo que representa a criação de uma nova mensagem.
+    /// </summary>
+    /// <param name="message">Conteúdo da mensagem</param>
     public record NewGroupMessage(string message);
+
+    /// <summary>
+    /// Modelo que representa a criação de um novo voto.
+    /// </summary>
+    /// <param name="propertyId">O identificador único da propriedade</param>
+    /// <param name="userId">O identificador único do utilizador</param>
     public record NewGroupVote(string propertyId, string userId);
 }

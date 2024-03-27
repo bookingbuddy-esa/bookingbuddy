@@ -35,9 +35,12 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que retorna uma lista com todas as propriedades.
+        /// Método que retorna uma lista das propriedades existentes na base de dados, com paginação aplicada.
+        /// A paginação começa na página fornecida (startIndex) e retorna um número específico de propriedades (numberOfProperties).
         /// </summary>
-        /// <returns>Lista de propriedades</returns>
+        /// <param name="numberOfProperties">Número de propriedades a pesquisar</param>
+        /// <param name="startIndex">Número da página</param>
+        /// <returns>Uma lista das propriedades na página especificada. Se não houver propriedades, retorna uma lista vazia.</returns>
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetProperties([FromQuery] int numberOfProperties = 50,[FromQuery] int startIndex = 0)
@@ -84,11 +87,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que retorna uma propriedade que contenha o id passado por parâmetro.
-        /// Caso não exista retorna que não foi encontrada.
+        /// Método que retorna os detalhes de uma propriedade com base no identificador fornecido.
         /// </summary>
-        /// <param name="propertyId">Identificador da propriedade</param>
-        /// <returns>A propriedade, caso exista, não encontrada, caso contrário</returns>
+        /// <param name="propertyId">O identificador único da propriedade para a qual os detalhes são solicitados.</param>
+        /// <returns>
+        /// Os detalhes da propriedade especificada, incluindo informações como clicks, comodidades e utilizador associado.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada na base de dados.
+        /// </returns>
         [HttpGet("{propertyId}")]
         public async Task<IActionResult> GetProperty(string propertyId)
         {
@@ -134,10 +139,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que retorna as métricas de uma propriedade.
+        /// Método que retorna as métricas de uma propriedade com base no identificador fornecido.
         /// </summary>
-        /// <param name="propertyId">Id da propriedade</param>
-        /// <returns>As métricas da propriedade</returns>
+        /// <param name="propertyId">O identificador único da propriedade para a qual as métricas são solicitadas.</param>
+        /// <returns>
+        /// As métricas da propriedade especificada, incluindo o número de cliques, classificações e pedidos de reserva.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para visualizar as métricas da propriedade.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada na base de dados.
+        /// </returns>
         [HttpGet]
         [Authorize]
         [Route("metrics/{propertyId}")]
@@ -208,11 +218,17 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que atualiza uma propriedade existente na base de dados da aplicação.
+        /// Método que permite editar uma propriedade existente.
         /// </summary>
-        /// <param name="propertyId">Identificador da propriedade a atualizar</param>
-        /// <param name="model">Modelo de edição de uma propriedade</param>
-        /// <returns>Não encontrada, caso a propriedade não exista na base dados, ou uma exceção, ou sem conteúdo, caso contrário</returns>
+        /// <param name="propertyId">O identificador único da propriedade a ser editada.</param>
+        /// <param name="model">O modelo contendo as informações atualizadas da propriedade.</param>
+        /// <returns>
+        /// Um código de estado 204 (No Content) se a edição for bem-sucedida.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para editar a propriedade.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada na base de dados.
+        /// Retorna 400 (Bad Request) se o identificador da propriedade no modelo não corresponder ao identificador fornecido.
+        /// </returns>
         [HttpPut("edit/{propertyId}")]
         [Authorize]
         public async Task<IActionResult> EditProperty(string propertyId, [FromBody] PropertyEditModel model)
@@ -282,10 +298,14 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que adiciona uma nova propriedade na base de dados da aplicação.
+        /// Método que cria uma nova propriedade na base de dados.
         /// </summary>
-        /// <param name="model">Modelo de criação de uma propriedade</param>
-        /// <returns>A propriedade criada, um conflito, caso já exista uma propriedade com o mesmo identificador, ou uma exceção caso contrário</returns>
+        /// <param name="model">O modelo contendo as informações da propriedade a ser criada.</param>
+        /// <returns>
+        /// Um código de estado 201 (Created) e os detalhes da propriedade criada se a operação for bem-sucedida.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 409 (Conflict) se ocorrer um conflito durante a criação da propriedade.
+        /// </returns>
         [HttpPost("create")]
         [Authorize]
         public async Task<IActionResult> CreateProperty([FromBody] PropertyCreateModel model)
@@ -348,10 +368,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que remove uma propriedade da base de dados da aplicação.
+        /// Método que elimina uma propriedade da base de dados com base no identificador fornecido.
         /// </summary>
-        /// <param name="propertyId">Identificador da propriedade a remover</param>
-        /// <returns>Propriedade não encontrada, caso não exista nenhuma propriedade com o identificador fornecido, ou sem conteúdo, caso contrário</returns>
+        /// <param name="propertyId">O identificador único da propriedade a ser eliminada.</param>
+        /// <returns>
+        /// Um código de estado 204 (No Content) se a eliminação for bem-sucedida.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para eliminar a propriedade.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada na base de dados.
+        /// </returns>
         [HttpDelete("delete/{propertyId}")]
         [Authorize]
         public async Task<IActionResult> DeleteProperty(string propertyId)
@@ -387,10 +412,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que obtém as propriedades de um utilizador.
+        /// Método que retorna todas as propriedades associadas a um utilizador com base no identificador fornecido.
         /// </summary>
-        /// <param name="userId">Identificador do utilizador</param>
-        /// <returns>Lista com as propriedades do utilizador, caso exista, ou não encontrada, caso contrário</returns>
+        /// <param name="userId">O identificador único do utilizador para o qual as propriedades são solicitadas.</param>
+        /// <returns>
+        /// Uma lista das propriedades associadas ao utilizador especificado.
+        /// Retorna 404 (Not Found) se não forem encontradas propriedades para o utilizador fornecido.
+        /// </returns>
         [HttpGet("user/{userId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPropertiesByUserId(string userId)
@@ -407,12 +435,14 @@ namespace BookingBuddy.Server.Controllers
             return Ok(properties);
         }
 
-
         /// <summary>
-        /// Método que obtém as datas bloqueadas de uma propriedade.
+        /// Método que retorna as datas bloqueadas de uma propriedade com base no identificador fornecido.
         /// </summary>
-        /// <param name="propertyId">Identificador da propriedade</param>
-        /// <returns>Lista com as datas bloqueadas de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
+        /// <param name="propertyId">O identificador único da propriedade para a qual as datas bloqueadas são solicitadas.</param>
+        /// <returns>
+        /// Uma lista das datas bloqueadas associadas à propriedade especificada.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+        /// </returns>
         [HttpGet("blockedDates/{propertyId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPropertyBlockedDates(string propertyId)
@@ -432,13 +462,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que bloqueia as datas no calendario de uma propriedade.
+        /// Método que bloqueia um intervalo de datas para uma propriedade específica.
         /// </summary>
-        /// <param name="inputModel">Modelo de criação de uma BlockedDate</param>
+        /// <param name="inputModel">O modelo contendo as informações das datas a serem bloqueadas.</param>
         /// <returns>
-        /// Retorna um IActionResult indicando o resultado da operação:
-        /// - 200 OK: Operação bem-sucedida, as datas foram bloqueadas com sucesso.
-        /// - 400 Bad Request: O modelo de entrada é inválido.
+        /// Um código de estado 200 (OK) e uma mensagem de sucesso se as datas forem bloqueadas com êxito.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para bloquear datas para a propriedade.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+        /// Retorna 400 (Bad Request) se ocorrer um erro ao bloquear as datas.
         /// </returns>
         [Authorize]
         [HttpPost("blockDates")]
@@ -484,13 +516,14 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que desbloqueia uma data de uma propriedade.
+        /// Método que desbloqueia uma data previamente bloqueada para uma propriedade.
         /// </summary>
-        /// <param name="id">Identificador da data a desbloquear</param>
+        /// <param name="id">O identificador único da data bloqueada a ser desbloqueada.</param>
         /// <returns>
-        /// Retorna um IActionResult indicando o resultado da operação:
-        /// - 200 OK: Operação bem-sucedida, a data foi desbloqueada com sucesso.
-        /// - 404 Not Found: A data com o identificador fornecido não foi encontrada. 
+        /// Um código de estado 200 (OK) e uma mensagem de sucesso se a data for desbloqueada com êxito.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para desbloquear a data.
+        /// Retorna 404 (Not Found) se a data bloqueada não for encontrada para o identificador fornecido.
         /// </returns>
         [Authorize]
         [HttpDelete("unblock/{id}")]
@@ -524,9 +557,12 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Obtém as reservas associadas do utilizador com login efetuado.
+        /// Método que retorna as reservas associadas às propriedades do utilizador autenticado.
         /// </summary>
-        /// <returns>Ação HTTP que representa o resultado da operação.</returns>
+        /// <returns>
+        /// Uma lista das reservas associadas às propriedades do utilizador autenticado.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// </returns>
         [HttpGet("bookings")]
         [Authorize]
         public async Task<IActionResult> GetAssociatedBookings()
@@ -569,10 +605,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que obtém os descontos de uma propriedade.
+        /// Método que retorna os descontos associados a uma propriedade com base no identificador fornecido.
         /// </summary>
-        /// <param name="propertyId">Identificador da propriedade</param>
-        /// <returns>Lista com os descontos de uma propriedade, caso exista, ou não encontrada, caso contrário</returns>
+        /// <param name="propertyId">O identificador único da propriedade para a qual os descontos são solicitados.</param>
+        /// <returns>
+        /// Uma lista dos descontos associados à propriedade especificada.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+        /// </returns>
         [AllowAnonymous]
         [HttpGet("discounts/{propertyId}")]
         public async Task<IActionResult> GetPropertyDiscounts(string propertyId)
@@ -616,14 +655,16 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que adiciona um desconto no calendario de uma propriedade.
+        /// Método que aplica um desconto a uma propriedade e, opcionalmente, notifica os utilizadores favoritos sobre o desconto.
         /// </summary>
-        /// <param name="inputModel">Modelo de criação de um Discount</param>
-        /// <param name="sendEmail">Indica se deve enviar um email para os utilizadores que têm a propriedade nos favoritos</param>
+        /// <param name="inputModel">O modelo contendo as informações do desconto a ser aplicado.</param>
+        /// <param name="sendEmail">Indica se deve ser enviada uma notificação por email aos utilizadores favoritos, por padrão é enviado email.</param>
         /// <returns>
-        /// Retorna um IActionResult indicando o resultado da operação:
-        /// - 200 OK: Operação bem-sucedida, o desconto foi adicionado com sucesso.
-        /// - 400 Bad Request: O modelo de entrada é inválido.
+        /// Um código de estado 200 (OK) e uma mensagem de sucesso se o desconto for aplicado com êxito.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para aplicar o desconto à propriedade.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+        /// Retorna 400 (Bad Request) se ocorrer um erro ao aplicar o desconto.
         /// </returns>
         [Authorize]
         [HttpPost("createDiscount")]
@@ -694,13 +735,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que remove um desconto de uma propriedade.
+        /// Método que remove um desconto de uma propriedade com base no identificador do desconto.
         /// </summary>
-        /// <param name="id">Identificador do desconto</param>
+        /// <param name="id">O identificador único do desconto a ser removido.</param>
         /// <returns>
-        /// Retorna um IActionResult indicando o resultado da operação:
-        /// - 200 OK: Operação bem-sucedida, o desconto foi removido com sucesso.
-        /// - 404 Not Found: O desconto com o identificador fornecido não foi encontrada. 
+        /// Um código de estado 200 (OK) e uma mensagem de sucesso se o desconto for removido com êxito.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para remover o desconto da propriedade.
+        /// Retorna 404 (Not Found) se o desconto não for encontrado para o identificador fornecido.
+        /// Retorna 400 (Bad Request) se a propriedade associada ao desconto não for encontrada.
         /// </returns>
         [Authorize]
         [HttpDelete("removeDiscount/{id}")]
@@ -739,10 +782,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Adiciona um propriedade aos favoritos
+        /// Método que adiciona uma propriedade à lista de favoritos do utilizador autenticado.
         /// </summary>
-        /// <param name="propertyId"> Parametro que contém o id da propriedade a ser adicionada aos favoritos</param>
-        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+        /// <param name="propertyId">O identificador único da propriedade a ser adicionada aos favoritos.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) e uma mensagem de sucesso se a propriedade for adicionada aos favoritos com êxito.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+        /// Retorna 409 (Conflict) se a propriedade já estiver na lista de favoritos do utilizador.
+        /// </returns>
         [Authorize]
         [HttpPost("favorites/add/{propertyId}")]
         public async Task<IActionResult> AddToFavorite(string propertyId)
@@ -776,10 +824,15 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Remove uma propriedade dos favoritos
+        /// Método que remove uma propriedade da lista de favoritos do utilizador autenticado.
         /// </summary>
-        /// <param name="propertyId">Parametro que contém o id da propriedade a ser removida dos favoritos</param>
-        /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
+        /// <param name="propertyId">O identificador único da propriedade a ser removida dos favoritos.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) e uma mensagem de sucesso se a propriedade for removida dos favoritos com êxito.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+        /// Retorna 400 (Bad Request) se a propriedade não estiver na lista de favoritos do utilizador.
+        /// </returns>
         [HttpDelete]
         [Route("favorites/remove/{propertyId}")]
         [Authorize]
@@ -818,10 +871,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que obtem as propriedades que o utilizador marcou como favoritas
+        /// Método que retorna as propriedades favoritas de um utilizador com base no identificador do utilizador fornecido.
         /// </summary>
-        /// <param name="userId"> Parametro que fornece o id do utilizador</param>
-        /// <returns>Ação HTTP que representa o resultado da operação, neste caso, os favoritos</returns>
+        /// <param name="userId">O identificador único do utilizador para o qual as propriedades favoritas são solicitadas.</param>
+        /// <returns>
+        /// Uma lista das propriedades favoritas do utilizador especificado.
+        /// Retorna 404 (Not Found) se o utilizador não for encontrado para o identificador fornecido.
+        /// </returns>
         [HttpGet("favorites/user/{userId}")]
         public async Task<IActionResult> GetUserFavorites(string userId)
         {
@@ -842,10 +898,14 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Método que verifica se a propriedade escolhida está nos favoritos do utilizador
+        /// Método que verifica se uma propriedade está na lista de favoritos do utilizador autenticado.
         /// </summary>
-        /// <param name="propertyId">Parametro que contém o id da propriedade a ser analisada</param>
-        /// <returns>ação HTTP que representa o resultado da operação.</returns>
+        /// <param name="propertyId">O identificador único da propriedade a ser verificada.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) e verdadeiro se a propriedade estiver na lista de favoritos do utilizador.
+        /// Um código de estado 200 (OK) e falso se a propriedade não estiver na lista de favoritos do utilizador.
+        /// Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+        /// </returns>
         [HttpGet("favorites/check/{propertyId}")]
         public async Task<IActionResult> IsPropertyInFavorites(string propertyId)
         {
@@ -862,13 +922,12 @@ namespace BookingBuddy.Server.Controllers
             return Ok(isInFavorites);
         }
 
-
         /// <summary>
-        /// Método que verifica se uma propriedade existe.
+        /// Verifica se uma propriedade existe na base de dados com base no seu identificador.
         /// </summary>
-        /// <param name="id">Identificador da propriedade.</param>
+        /// <param name="id">O identificador único da propriedade a ser verificada.</param>
         /// <returns>
-        /// Retorna verdadeiro se uma propriedade com o identificador fornecido existir; caso contrário, retorna falso.
+        /// Verdadeiro se a propriedade existir na base de dados; falso caso contrário.
         /// </returns>
         private bool PropertyExists(string id)
         {
@@ -877,7 +936,7 @@ namespace BookingBuddy.Server.Controllers
     }
 
     /// <summary>
-    /// Modelo de criação de propriedade
+    /// Modelo utilizado para criar uma nova propriedade.
     /// </summary>
     /// <param name="Name">Nome da propriedade</param>
     /// <param name="Description">Descrição da propriedade</param>
@@ -885,7 +944,7 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="MaxGuestsNumber">Numero máximo de hóspedes da propriedade</param>
     /// <param name="RoomsNumber">Numero de quartos da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
-    /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
+    /// <param name="ImagesUrl">Lista com URLs das imagens da propriedade</param>
     public record PropertyCreateModel(
         string Name,
         string Description,
@@ -897,7 +956,7 @@ namespace BookingBuddy.Server.Controllers
         List<string> ImagesUrl);
 
     /// <summary>
-    /// Modelo de edição de propriedade
+    /// Modelo utilizado para editar uma propriedade existente.
     /// </summary>
     /// <param name="PropertyId">Identificador da propriedade</param>
     /// <param name="Amenities">Lista de comodidades</param>
@@ -905,8 +964,7 @@ namespace BookingBuddy.Server.Controllers
     /// <param name="Description">Descrição da propriedade</param>
     /// <param name="PricePerNight">Preço por noite da propriedade</param>
     /// <param name="Location">Localização da propriedade</param>
-    /// <param name="Amenities">Lista de comodidades</param>
-    /// <param name="ImagesUrl">Lista com urls das fotografias da propriedade</param>
+    /// <param name="ImagesUrl">Lista com URLs das imagens da propriedade</param>
     public record PropertyEditModel(
         string PropertyId,
         string Name,
@@ -917,19 +975,19 @@ namespace BookingBuddy.Server.Controllers
         List<string> ImagesUrl);
 
     /// <summary>
-    /// Modelo de criação de uma BlockedDate
+    /// Modelo utilizado para criar uma data bloqueada (BlockedDate)
     /// </summary>
-    /// <param name="StartDate">Data Inicial do Bloqueio</param>
+    /// <param name="StartDate">Data Inicial do bloqueio</param>
     /// <param name="EndDate">Data Final do bloqueio</param>
-    /// <param name="PropertyId">Identificador da Propriedade</param>-
+    /// <param name="PropertyId">Identificador único da Propriedade</param>
     public record BlockDateInputModel(string StartDate, string EndDate, string PropertyId);
 
     /// <summary>
-    /// Modelo de criação de um desconto
+    /// Modelo utilizado para criar um desconto (Discount)
     /// </summary>
     /// <param name="Amount">Quantia do Desconto</param>
     /// <param name="StartDate">Data Inicial do Bloqueio</param>
     /// <param name="EndDate">Data Final do bloqueio</param>
-    /// <param name="PropertyId">Identificador da Propriedade</param>-
+    /// <param name="PropertyId">Identificador da Propriedade</param>
     public record DiscountInputModel(int Amount, DateTime StartDate, DateTime EndDate, string PropertyId);
 }
