@@ -33,9 +33,12 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// Método para fazer enviar ficheiros para o armazenamento Azure.
+        /// Faz o upload de ficheiros para o armazenamento de blobs.
         /// </summary>
-        /// <returns>Mensagem de feedback: BadRequest ou Ok</returns>
+        /// <returns>
+        /// Um código de estado 200 (OK) juntamente com os URLs dos ficheiros carregados, se o carregamento for bem-sucedido.
+        /// Um código de estado 400 (Pedido Inválido) se nenhum ficheiro for enviado na solicitação.
+        /// </returns>
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> UploadFiles()
