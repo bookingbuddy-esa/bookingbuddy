@@ -75,7 +75,6 @@ export class PaymentComponent {
             entity: this.paymentResponse.payment.entity,
             reference: this.paymentResponse.payment.reference
           }
-          console.log(response);
 
           if (this.payment) {
             let url = environment.apiUrl;
@@ -84,18 +83,7 @@ export class PaymentComponent {
             ws.onmessage = (event) => {
               let data = JSON.parse(event.data);
               if (data) {
-                this.payment = {
-                  paymentId: data["PaymentId"],
-                  amount: data["Amount"],
-                  method: data["Method"],
-                  status: data["Status"],
-                  expiryDate: new Date(data["ExpiryDate"]),
-                  createdAt: new Date(data["CreatedAt"]),
-                  entity: data["Entity"],
-                  reference: data["Reference"],
-                }
-                console.log(this.payment);
-                if (this.payment.status.toUpperCase() === 'PAID') {
+                if (data.code.toUpperCase() === 'PAYMENTPAID') {
                   ws.close();
                 }
               }

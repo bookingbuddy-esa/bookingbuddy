@@ -1,34 +1,34 @@
-
-  <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
-    <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
-      <h3>Propriedades</h3>
-      <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property"
-                           (click)="setCurrentProperty(property)"
-                           [class.current-property]="property === currentProperty"></app-side-properties>
+<div class="row mt-4 w-100">
+    <div class="col-md-2 d-flex flex-column mb-4">
+        <h4 class="text-center text-truncate">Propriedades</h4>
+        <div class="list-group list-group-flush overflow-auto p-4" style="max-height: 500px;">
+            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
+                <app-side-properties [property]="property"></app-side-properties>
+            </a>
+        </div>
     </div>
-  </div>
+    <div class="col-md-10 mb-4">
+        <div *ngIf="submitting" class="h-100">
+            <app-loader></app-loader>
+        </div>
 
-  <div *ngIf="submitting" class="h-100">
-    <app-loader></app-loader>
-  </div>
+        <h3 *ngIf="currentProperty" class="text-center"><strong>{{currentProperty.name}}</strong></h3>
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h3>Avaliação média</h3>
+            <p><span class="mx-1" *ngIf="propertyRating">★</span>{{ propertyRating ?? "N/A" }}</p>
+        </div>
 
-  <div *ngIf="!submitting" class="col-md-6 mt-5 mx-auto">
-    <div class="d-flex flex-column justify-content-center align-items-center">
-      <h3>Avaliação média</h3>
-      <p><span class="mx-1" *ngIf="propertyRating">★</span>{{ propertyRating ?? "N/A" }}</p>
+        <div *ngIf="!submitting" class="d-flex flex-column justify-content-center align-items-center">
+            <h3>Taxa de ocupação anual</h3>
+            <p>{{ propertyOccupancyByYearPercentage.toFixed(1) }}%</p>
+        </div>
+
+        <hr *ngIf="!submitting" class="my-4">
+
+        <div *ngIf="!submitting" class="d-flex flex-column justify-content-center align-items-center">
+            <h2>Ganhos</h2>
+            <h3>Valor bruto obtido através de reservas nesta propriedade</h3>
+            <p>{{ propertyGains.toFixed(2) }}€</p>
+        </div>
     </div>
-
-    <div *ngIf="!submitting" class="d-flex flex-column justify-content-center align-items-center">
-      <h3>Taxa de ocupação anual</h3>
-      <p>{{ propertyOccupancyByYearPercentage.toFixed(1) }}%</p>
-    </div>
-
-    <hr *ngIf="!submitting" class="my-4">
-
-    <div *ngIf="!submitting" class="d-flex flex-column justify-content-center align-items-center">
-      <h2>Ganhos</h2>
-      <h3>Valor bruto obtido através de reservas nesta propriedade</h3>
-      <p>{{ propertyGains.toFixed(2) }}€</p>
-    </div>
-  </div>
-
+</div>

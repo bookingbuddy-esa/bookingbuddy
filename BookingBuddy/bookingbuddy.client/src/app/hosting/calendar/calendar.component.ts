@@ -27,6 +27,7 @@ export class CalendarComponent implements OnInit {
   currentProperty: Property | null = null;
 
   constructor(private hostingService: HostingService, private authService: AuthorizeService, private router: Router, private dialog: MatDialog) {
+    this.initializeCalendar();
   }
 
   ngOnInit(): void {
@@ -34,12 +35,12 @@ export class CalendarComponent implements OnInit {
       this.user = user;
       this.loadUserProperties();
     });
-    this.initializeCalendar();
   }
 
   private initializeCalendar() {
     this.calendarOptions = {
-      height: '90%',
+      contentHeight: 'auto', 
+      aspectRatio: 2,
       plugins: [dayGridPlugin, interactionPlugin],
       select: this.handleSelect.bind(this),
       events: this.getEventRanges.bind(this),
