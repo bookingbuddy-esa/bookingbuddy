@@ -10,20 +10,35 @@
 }
 
 .property-list {
-  min-height: 25%;
+  min-height: 30%;
+}
+
+.booking-info {
+  min-height: 30%;
+}
+
+.booking-info-owner {
+  min-height: 40%;
 }
 
 @media screen and (max-width: 768px) {
   .property-list {
     min-height: 20vh;
   }
-}
 
-@media screen and (max-width: 768px) {
+  .booking-info {
+    min-height: 20vh;
+  }
+
+  .booking-info-owner {
+    min-height: 40vh;
+  }
+
   .chat {
     height: 50vh;
   }
 }
+
 
 .custom-scroll::-webkit-scrollbar {
   height: 8px;

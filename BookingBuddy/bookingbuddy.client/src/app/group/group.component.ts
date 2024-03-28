@@ -10,6 +10,7 @@ import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
 import {NgIf} from "@angular/common";
 import {v4 as uuidv4} from 'uuid';
+import {group} from "@angular/animations";
 
 @Component({
   selector: 'app-group',
@@ -361,7 +362,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
   }
 
-
   protected async removeVote(propertyId: string) {
     if (!this.currentGroup || !propertyId) return;
     await this.groupService.removePropertyVote(this.currentGroup.groupId!, propertyId, this.ws_uuid).forEach(response => {
@@ -369,6 +369,20 @@ export class GroupComponent implements OnInit, OnDestroy {
         this.currentGroup!.votes = this.currentGroup!.votes.filter(v => v.userId != this.user?.userId);
       }
     });
+  }
+
+  protected startVoting() {
+    if (!this.currentGroup) {
+      return;
+    }
+    let modalRef = this.modalService.open(StartVoteModal, {
+      animation: true,
+      centered: true
+    });
+    modalRef.componentInstance.onAccept = () => {
+      this.updateGroupAction(GroupAction.voting);
+      modalRef.close();
+    }
   }
 
   protected concludeVoting() {
@@ -386,7 +400,6 @@ export class GroupComponent implements OnInit, OnDestroy {
         })
         .sort((a, b) => b.votes - a.votes)
         .filter((p, _, arr) => p.votes == arr[0].votes);
-    console.log(propertyVotes);
     if (propertyVotes[0].votes == 0) {
       let modalRef = this.modalService.open(ConcludeVoteFailedModal, {
         animation: true,
@@ -395,6 +408,29 @@ export class GroupComponent implements OnInit, OnDestroy {
       modalRef.componentInstance.reason = 'Nenhuma propriedade foi votada.';
       modalRef.componentInstance.onClose = () => {
         modalRef.close();
+      }
+    } else {
+      if (propertyVotes.length == 1) {
+        let modalRef = this.modalService.open(ConcludeVoteModal, {
+          animation: true,
+          centered: true
+        });
+        modalRef.componentInstance.allMemberVoted = this.currentGroup.members.length == this.currentGroup.votes.length;
+        modalRef.componentInstance.onAccept = () => {
+          // this.updateGroupAction(GroupAction.booking);
+          this.chooseProperty(propertyVotes[0].property).then(() => {
+            modalRef.close();
+          });
+        }
+      } else {
+        let modalRef = this.modalService.open(ConcludeVoteFailedModal, {
+          animation: true,
+          centered: true
+        });
+        modalRef.componentInstance.reason = 'Houve um empate na votação.';
+        modalRef.componentInstance.onClose = () => {
+          modalRef.close();
+        }
       }
     }
   }
@@ -409,6 +445,13 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   protected isPropertyChosen(propertyId: string): boolean {
     return this.currentGroup?.chosenProperty?.propertyId == propertyId;
+  }
+
+  protected startBooking() {
+    if (!this.currentGroup) {
+      return;
+    }
+    this.updateGroupAction(GroupAction.booking);
   }
 
   // Propriedades auxiliares
@@ -431,6 +474,10 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   protected get isOwner(): boolean {
     return this.currentGroup?.groupOwner.id == this.user?.userId;
+  }
+
+  protected get hasChosenProperty(): boolean {
+    return this.currentGroup?.chosenProperty != undefined;
   }
 
   protected set isActionNone(value: boolean) {
@@ -484,6 +531,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     }
   }
 
+  protected readonly group = group;
 }
 
 // Componentes auxiliares
@@ -631,7 +679,41 @@ export class DeleteGroupModal {
 }
 
 @Component({
-  selector: 'conclude-vote-failed-modal',
+  selector: 'start-vote-modal',
+  standalone: true,
+  template: `
+    <div class="modal-header" aria-labelledby="concludeVoteFailedModalLabel">
+      <h5 class="modal-title" id="concludeVoteFailedModalLabel">Iniciar votação</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+    </div>
+    <div class="modal-body">
+      <p>Tem certeza de que deseja iniciar a votação?</p>
+      <span><strong>Após iniciar a votação não será possível adicionar mais membros ou propriedades ao grupo.</strong></span>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-success" aria-label="Start" (click)="onAccept()">Iniciar</button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class StartVoteModal {
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'conclude-vote-vote-modal',
   standalone: true,
   template: `
     <div class="modal-header" aria-labelledby="concludeVoteFailedModalLabel">
@@ -639,11 +721,45 @@ export class DeleteGroupModal {
       <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
     </div>
     <div class="modal-body">
-      <p>Não é possível concluir a votação.</p>
-      <p *ngIf="reason">{{ reason }}</p>
+      <p *ngIf="!allMemberVoted"><strong>Ainda existem membros que não votaram.</strong></p>
+      <span>Tem a certeza de que deseja concluir a votação?</span>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Fechar</button>
+      <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-success" aria-label="Conclude" (click)="onAccept()">Concluir</button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class ConcludeVoteModal {
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected allMemberVoted: boolean = false;
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+}
+
+@Component({
+  selector: 'conclude-vote-failed-modal',
+  standalone: true,
+  template: `
+    <div class="modal-header" aria-labelledby="concludeVoteFailedModalLabel">
+      <h5 class="modal-title" id="concludeVoteFailedModalLabel">Não foi possível concluir a votação</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+    </div>
+    <div class="modal-body">
+      <span *ngIf="reason">{{ reason }}</span>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" aria-label="Cancel" (click)="onClose()">Fechar</button>
     </div>
   `,
 

@@ -76,20 +76,28 @@
         <span class="text-center fs-2 me-2"> {{ currentGroup.name }}</span>
       </div>
       <div class="d-flex flex-row mt-2 mb-2">
+        <button class="btn btn-sm btn-success me-2"
+                *ngIf="isActionNone && currentGroup.properties.length < 6"
+                (click)="showAddPropertyModal()"
+                matTooltip="Adicionar propriedade">
+          <i class="bi bi-house-add-fill"></i>
+        </button>
         <button class="btn btn-sm btn-info me-2"
                 *ngIf="isOwner && currentGroup.groupAction === 'None' && currentGroup.properties.length > 0"
-                (click)="isActionVoting = true"
+                (click)="startVoting()"
                 matTooltip="Iniciar votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
         <button class="btn btn-sm btn-success me-2"
-                *ngIf="isOwner && isActionVoting"
+                *ngIf="isOwner && isActionVoting && !hasChosenProperty"
                 (click)="concludeVoting()"
                 matTooltip="Concluir votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
-        <button class="btn btn-sm btn-success me-2" *ngIf="isOwner && currentGroup.groupAction === 'Booking' "
-                matTooltip="Efetuar reserva"><i class="bi bi-credit-card-fill"></i>
+        <button class="btn btn-sm btn-success me-2" *ngIf="isOwner && isActionVoting && hasChosenProperty"
+                (click)="startBooking()"
+                matTooltip="Efetuar reserva">
+          <i class="bi bi-credit-card-fill"></i>
         </button>
         <button class="btn btn-sm btn-secondary me-2"
                 (click)="copyGroupLink()"
@@ -104,22 +112,26 @@
       </div>
     </div>
 
+    <div *ngIf="!currentGroup" class="text-center m-auto">
+      <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
+    </div>
+
     <!--  Lista de propriedades  -->
-    <div class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
-      <div *ngIf="!currentGroup" class="text-center">
-        <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
-      </div>
+    <div *ngIf="currentGroup && (isActionNone || isActionVoting)"
+         class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
       <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
         <span class="text-muted small">Não existem propriedades para este grupo.</span>
       </div>
       <div class="w-100 h-100"
            *ngIf="currentGroup && currentGroup.properties?.length !== 0 && (isActionNone || isActionVoting)">
-        <div class="row row-cols-1 row-cols-md-4 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
+        <div
+          class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
           <div class="col property" *ngFor="let property of currentGroup?.properties">
             <div class="card h-100 w-100"
                  [ngClass]="{
-                 'border-success border-5 rounded': isPropertyChosen(property.propertyId),
-                 'border-info border-5 rounded': isPropertyVotedByUser(property.propertyId) && isActionVoting}">
+                 'border-success': isPropertyChosen(property.propertyId),
+                 'border-info': isPropertyVotedByUser(property.propertyId) && !currentGroup.chosenProperty,
+                 'border-5 rounded': isPropertyVotedByUser(property.propertyId) || isPropertyChosen(property.propertyId)}">
               <img class="card-img object-fit-cover opacity-50 h-100 w-100"
                    [ngSrc]="property.imagesUrl[0]" fill priority
                    [ngClass]="{'rounded-0': isPropertyChosen(property.propertyId) || isPropertyVotedByUser(property.propertyId)}"
@@ -131,32 +143,26 @@
                 </div>
                 <div class="d-flex flex-row">
                   <button class="btn btn-sm btn-danger me-2"
-                          *ngIf="!isActionVoting && (property.addedBy.id === user?.userId || isOwner)"
+                          *ngIf="isActionNone && (property.addedBy.id === user?.userId || isOwner) && !hasChosenProperty"
                           matTooltip="Remover propriedade"
                           (click)="removeProperty(property.propertyId)">
                     <i class="bi bi-x-square"></i>
                   </button>
                   <button class="btn btn-sm btn-info"
-                          *ngIf="isActionVoting && !hasVotedInProperty(property)"
+                          *ngIf="isActionVoting && !hasVotedInProperty(property) && !hasChosenProperty"
                           matTooltip="Votar na propriedade"
                           (click)="voteForProperty(property.propertyId)">
                     <i class="bi bi-check2-circle"></i>
                   </button>
                   <button class="btn btn-sm btn-danger"
-                          *ngIf="isActionVoting && hasVotedInProperty(property)"
+                          *ngIf="isActionVoting && hasVotedInProperty(property) && !hasChosenProperty"
                           matTooltip="Remover voto na propriedade"
                           (click)="removeVote(property.propertyId)">
                     <i class="bi bi-check2-circle"></i>
                   </button>
-                  <button class="btn btn-sm btn-success ms-2"
-                          *ngIf="isActionBooking && isOwner"
-                          matTooltip="Selecionar propriedade"
-                          (click)="chooseProperty(property)">
-                    <i class="bi bi-check2-circle"></i>
-                  </button>
                   <div class="flex-fill on-hover-pointer" [routerLink]="['/property',property.propertyId]"></div>
                   <span class="badge text-bg-info rounded p-2"
-                        *ngIf="isActionVoting">
+                        *ngIf="isActionVoting && !hasChosenProperty">
                     {{ numberOfPropertyVotes(property.propertyId) }}<i class="bi bi-person ms-1"></i>
                   </span>
                 </div>
@@ -166,19 +172,28 @@
         </div>
       </div>
     </div>
+    <div *ngIf="isActionBooking"
+         class="d-flex flex-column justify-content-center align-items-center mt-2 booking-info">
+      <div *ngIf="!isOwner" class="d-flex flex-column justify-content-center h-100 w-100 text-center bg-dark-subtle border border-3 rounded-3 border-dark">
+        <p class="fs-5 fw-bolder">Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</p>
+        <span class="fs-6 text-muted fw-bolder">Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como membro.</span>
+      </div>
+      <div>
 
+      </div>
+    </div>
     <!--  Botões em baixo da lista de propriedades e chat -->
     <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
       <div class="d-flex flex-row justify-content-around align-items-center">
-        <button type="button"
-                *ngIf="currentGroup && currentGroup.properties.length < 6 && currentGroup.groupAction === 'None'"
-                class="btn btn-md btn-success me-2"
-                (click)="showAddPropertyModal()">
-          Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>
-        </button>
+        <!--        <button type="button"-->
+        <!--                *ngIf="currentGroup && currentGroup.properties.length < 6 && currentGroup.groupAction === 'None'"-->
+        <!--                class="btn btn-md btn-success me-2"-->
+        <!--                (click)="showAddPropertyModal()">-->
+        <!--          Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>-->
+        <!--        </button>-->
         <div class="flex-fill">
           <div class="text-center text-bg-info h-100 w-100 rounded fs-5"
-               *ngIf="currentGroup && currentGroup.groupAction === 'Voting'">
+               *ngIf="isActionVoting && !hasChosenProperty">
             Votação em curso!
           </div>
         </div>

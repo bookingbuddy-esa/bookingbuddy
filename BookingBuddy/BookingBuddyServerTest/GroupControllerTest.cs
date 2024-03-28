@@ -153,7 +153,7 @@ public class GroupControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
 
         var result = await controller.DeleteGroup(group.GroupId);
-        Assert.IsType<UnauthorizedResult>(result);
+        Assert.IsType<ForbidResult>(result);
     }
 
     [Fact]
