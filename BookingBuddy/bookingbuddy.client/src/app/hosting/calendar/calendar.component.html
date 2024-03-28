@@ -21,7 +21,36 @@
         </div>
     </div>
     <div class="col-md-10 mb-4 p-5">
-        <h3 *ngIf="currentProperty" class="text-center"><strong>{{currentProperty.name}}</strong></h3>
-        <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
+      <h3 *ngIf="currentProperty" class="text-center"><strong>{{currentProperty.name}}</strong></h3>
+      <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
+
+      <div class="row mt-3">
+        <div class="col">
+          <h4>Dia atual</h4>
+        </div>
+        <div class="col">
+          <div class="colorlegend3">&nbsp;</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h4>Dias bloqueados</h4>
+        </div>
+        <div class="col-6">
+          <div class="colorlegend1">&nbsp;</div>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="col">
+          <h4>Dias com desconto</h4>
+        </div>
+        <div class="col">
+          <div class="colorlegend2">&nbsp;</div>
+        </div>
+      </div>
+
+
+
+
     </div>
 </div>
