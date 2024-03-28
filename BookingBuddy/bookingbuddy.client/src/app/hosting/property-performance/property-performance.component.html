@@ -1,18 +1,18 @@
-<div class="row mt-4 w-100">
-    <div class="col-md-2 d-flex flex-column mb-4">
-        <h4 class="text-center text-truncate">Propriedades</h4>
-        <div class="list-group list-group-flush overflow-auto p-4" style="max-height: 500px;">
-            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
-                <app-side-properties [property]="property"></app-side-properties>
-            </a>
-        </div>
+<div class="row w-100">
+  <div class="col-md-2 d-flex flex-column box-shadow min-vh-100">
+    <h4 class="text-center mt-4">Propriedades</h4>
+    <div class="list-group list-group-flush overflow-auto">
+      <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center rounded-3 mb-2 p-0" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
+        <app-homepage-property [property]="property"></app-homepage-property>
+      </a>
     </div>
-    <div class="col-md-10 mb-4">
+  </div>
+    <div class="col-md-10 mb-4 mt-4">
         <div *ngIf="submitting" class="h-100">
             <app-loader></app-loader>
         </div>
 
-        <h3 *ngIf="currentProperty" class="text-center"><strong>{{currentProperty.name}}</strong></h3>
+        <h3 *ngIf="currentProperty" class="text-center "><strong>{{currentProperty.name}}</strong></h3>
         <div class="d-flex flex-column justify-content-center align-items-center">
             <h3>Avaliação média</h3>
             <p><span class="mx-1" *ngIf="propertyRating">★</span>{{ propertyRating ?? "N/A" }}</p>

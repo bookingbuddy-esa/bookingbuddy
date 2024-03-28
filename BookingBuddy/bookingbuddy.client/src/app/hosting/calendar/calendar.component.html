@@ -11,16 +11,16 @@
     </div>
 </div>-->
 
-<div class="row mt-4">
-    <div class="col-md-2 d-flex flex-column mb-4">
-        <h4 class="text-center">Propriedades</h4>
-        <div class="list-group list-group-flush overflow-auto p-4" style="max-height: 500px;">
-            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
+<div class="row">
+    <div class="col-md-2 d-flex flex-column box-shadow min-vh-100">
+        <h4 class="text-center mt-4">Propriedades</h4>
+        <div class="list-group list-group-flush overflow-auto">
+            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center rounded-3 mb-2 p-0" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
                 <app-homepage-property [property]="property"></app-homepage-property>
             </a>
         </div>
     </div>
-    <div class="col-md-10 mb-4">
+    <div class="col-md-10 mb-4 p-5">
         <h3 *ngIf="currentProperty" class="text-center"><strong>{{currentProperty.name}}</strong></h3>
         <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
     </div>

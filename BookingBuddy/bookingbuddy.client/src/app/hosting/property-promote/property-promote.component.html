@@ -1,13 +1,13 @@
-<div class="row mt-4">
-    <div class="col-md-2 d-flex flex-column mb-4">
-        <h4 class="text-center text-truncate">Propriedades</h4>
-        <div class="list-group list-group-flush overflow-auto p-4" style="max-height: 500px;">
-            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
-                <app-homepage-property [property]="property"></app-homepage-property>
-            </a>
-        </div>
+<div class="row">
+  <div class="col-md-2 d-flex flex-column box-shadow min-vh-100">
+    <h4 class="text-center mt-4">Propriedades</h4>
+    <div class="list-group list-group-flush overflow-auto">
+      <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center rounded-3 mb-2 p-0" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
+        <app-homepage-property [property]="property"></app-homepage-property>
+      </a>
     </div>
-    <div class="col-md-10 mb-4 d-flex flex-column align-items-center mx-auto" *ngIf="!propertyPromote">
+  </div>
+    <div class="col-md-10 mb-4 d-flex flex-column align-items-center mx-auto mt-4" *ngIf="!propertyPromote">
         <form class="form" [formGroup]="propertyPromoteForm" (submit)="submitPromotion()">
             <div class="d-flex flex-column">
                 <h2>Promover propriedade</h2>
