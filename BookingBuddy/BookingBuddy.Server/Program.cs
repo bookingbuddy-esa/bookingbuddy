@@ -92,14 +92,14 @@ app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController pa
 
 // TODO: Deixar de usar o userId como parâmetro e passar a usar um token
 app.Map("/api/groups/ws",
-    async (HttpContext httpContext, GroupController groupController, string userId) =>
+    async (HttpContext httpContext, GroupController groupController, string userId, string? socketId) =>
     {
         try
         {
             if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(userId))
             {
                 var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-                await groupController.HandleWebSocketAsync(userId, webSocket);
+                await groupController.HandleWebSocketAsync(userId, socketId, webSocket);
             }
             else
             {

@@ -47,10 +47,11 @@ export class GroupService {
       }).pipe<boolean>((map((res: HttpResponse<any>) => res.ok)));
   }
 
-  public updateGroupAction(groupId: string, groupAction: string) {
+  public updateGroupAction(groupId: string, groupAction: string, socketId: string | undefined = undefined) {
     return this.http.put(`${environment.apiUrl}/api/groups/updateGroupAction`, {
         groupId: groupId,
-        groupAction: groupAction
+        groupAction: groupAction,
+        socketId: socketId
       },
       {
         withCredentials: true,
@@ -59,10 +60,11 @@ export class GroupService {
       }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
   }
 
-  public updateChosenProperty(groupId: string, propertyId: string) {
+  public updateChosenProperty(groupId: string, propertyId: string, socketId: string | undefined = undefined) {
     return this.http.put(`${environment.apiUrl}/api/groups/updateChosenProperty`, {
         groupId: groupId,
-        propertyId: propertyId
+        propertyId: propertyId,
+        socketId: socketId
       },
       {
         withCredentials: true,
@@ -81,10 +83,11 @@ export class GroupService {
     }));
   }
 
-  public removePropertyFromGroup(groupId: string, propertyId: string): Observable<boolean> {
+  public removePropertyFromGroup(groupId: string, propertyId: string, socketId: string | undefined = undefined) {
     return this.http.put(`${environment.apiUrl}/api/groups/removeProperty`, {
         groupId: groupId,
-        propertyId: propertyId
+        propertyId: propertyId,
+        socketId: socketId
       },
       {
         withCredentials: true,
@@ -94,20 +97,45 @@ export class GroupService {
     );
   }
 
-  public deleteGroup(groupId: string): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}/api/groups/delete/${groupId}`, {
+  public deleteGroup(groupId: string, socketId: string | undefined = undefined): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/api/groups/delete/${groupId}${socketId ? `?socketId=${socketId}` : ""}`, {
       withCredentials: true,
       observe: 'response',
       responseType: 'text'
-    }).pipe(
-      map((res: HttpResponse<string>) => res.ok)
-    );
+    }).pipe(map((res: HttpResponse<string>) => res.ok));
   }
 
-  public voteForProperty(groupId: string, propertyId: string) {
-    return this.http.post(`${environment.apiUrl}/api/groups/voteForProperty`, {
+  public addPropertyVote(groupId: string, propertyId: string, socketId: string | undefined = undefined) {
+    return this.http.put(`${environment.apiUrl}/api/groups/addPropertyVote`, {
         groupId: groupId,
         propertyId: propertyId,
+        socketId: socketId
+      },
+      {
+        withCredentials: true,
+        observe: 'response',
+        responseType: 'text'
+      }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
+  }
+
+  public updatePropertyVote(groupId: string, propertyId: string, socketId: string | undefined = undefined) {
+    return this.http.put(`${environment.apiUrl}/api/groups/updatePropertyVote`, {
+        groupId: groupId,
+        propertyId: propertyId,
+        socketId: socketId
+      },
+      {
+        withCredentials: true,
+        observe: 'response',
+        responseType: 'text'
+      }).pipe<boolean>(map((res: HttpResponse<any>) => res.ok));
+  }
+
+  public removePropertyVote(groupId: string, propertyId: string, socketId: string | undefined = undefined) {
+    return this.http.put(`${environment.apiUrl}/api/groups/removePropertyVote`, {
+        groupId: groupId,
+        propertyId: propertyId,
+        socketId: socketId
       },
       {
         withCredentials: true,

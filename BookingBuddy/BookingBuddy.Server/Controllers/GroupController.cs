@@ -23,6 +23,7 @@ namespace BookingBuddy.Server.Controllers
         private readonly IConfiguration _configuration;
         private static readonly WebSocketWrapper WebSocketWrapper = new();
         private static readonly Dictionary<string, List<WebSocket>> GroupSockets = new();
+        private static readonly Dictionary<string, WebSocket> Sockets = new();
 
         /// <summary>
         /// Construtor da classe PropertyController.
@@ -336,6 +337,8 @@ namespace BookingBuddy.Server.Controllers
                              .Where(gs => group.MembersId.Contains(gs.Key))
                              .SelectMany(gs => gs.Value))
                 {
+                    if (model.SocketId != null &&
+                        model.SocketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "GroupActionUpdated",
@@ -398,6 +401,8 @@ namespace BookingBuddy.Server.Controllers
                              .Where(gs => group.MembersId.Contains(gs.Key))
                              .SelectMany(gs => gs.Value))
                 {
+                    if (model.SocketId != null &&
+                        model.SocketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "ChosenPropertyUpdated",
@@ -569,6 +574,8 @@ namespace BookingBuddy.Server.Controllers
                              .Where(gs => group.MembersId.Contains(gs.Key))
                              .SelectMany(gs => gs.Value))
                 {
+                    if (model.SocketId != null &&
+                        model.SocketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "PropertyRemoved",
@@ -678,10 +685,11 @@ namespace BookingBuddy.Server.Controllers
         /// Remove um grupo de reserva.
         /// </summary>
         /// <param name="groupId">O ID do grupo a ser removido.</param>
+        /// <param name="socketId">(Opcional) O ID do WebSocket do cliente.</param>
         /// <returns>Rertorna o resultado da remoção do grupo.</returns>
         [HttpDelete("delete/{groupId}")]
         [Authorize]
-        public async Task<IActionResult> DeleteGroup(string groupId)
+        public async Task<IActionResult> DeleteGroup(string groupId, [FromQuery] string? socketId = null)
         {
             var group = await _context.Groups.FindAsync(groupId);
             if (group == null)
@@ -708,6 +716,7 @@ namespace BookingBuddy.Server.Controllers
                              .Where(gs => group.MembersId.Contains(gs.Key))
                              .SelectMany(gs => gs.Value))
                 {
+                    if (socketId != null && socketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "GroupDeleted",
@@ -731,9 +740,9 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="model">Modelo com o identificador do grupo e da propriedade a ser escolhida</param>
         /// <returns>Retorna o resultado da votação da propriedade do grupo.</returns>
-        [HttpPost("voteForProperty")]
+        [HttpPut("addPropertyVote")]
         [Authorize]
-        public async Task<IActionResult> VoteForProperty([FromBody] AddVoteModel model)
+        public async Task<IActionResult> AddPropertyVote([FromBody] VoteForPropertyModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -780,40 +789,32 @@ namespace BookingBuddy.Server.Controllers
                 votes.Add(uv);
             }
 
-            if (votes.Any(uv => uv.PropertyId == model.PropertyId && uv.ApplicationUserId == user.Id))
+            if (votes.Any(uv => uv.ApplicationUserId == user.Id))
             {
-                return BadRequest("A propriedade já foi votada.");
+                return BadRequest("O utilizador já votou.");
             }
 
-            UserVote? userVote;
-            if (votes.All(uv => uv.ApplicationUserId != user.Id))
+            var userVote = new UserVote
             {
-                userVote = new UserVote
-                {
-                    UserVoteId = Guid.NewGuid().ToString(),
-                    ApplicationUserId = user.Id,
-                    PropertyId = property.PropertyId
-                };
-                group.UserVoteIds.Add(userVote.UserVoteId);
-                _context.UserVote.Add(userVote);
-            }
-            else
-            {
-                userVote = votes.First(uv => uv.ApplicationUserId == user.Id);
-                userVote.PropertyId = model.PropertyId;
-            }
+                UserVoteId = Guid.NewGuid().ToString(),
+                ApplicationUserId = user.Id,
+                PropertyId = property.PropertyId
+            };
+            group.UserVoteIds.Add(userVote.UserVoteId);
+            _context.UserVote.Add(userVote);
 
             try
-
             {
                 await _context.SaveChangesAsync();
                 foreach (var socket in GroupSockets
                              .Where(gs => group.MembersId.Contains(gs.Key))
                              .SelectMany(gs => gs.Value))
                 {
+                    if (model.SocketId != null &&
+                        model.SocketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                         {
-                            Code = "UserVoted",
+                            Code = "UserVoteAdded",
                             Content = JsonSerializer.Serialize(new
                             {
                                 groupId = group.GroupId,
@@ -827,7 +828,7 @@ namespace BookingBuddy.Server.Controllers
                     );
                 }
 
-                return Ok("Voto adicionado com sucesso.");
+                return NoContent();
             }
             catch (Exception)
             {
@@ -835,28 +836,225 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Atualiza o voto de um utilizador numa propriedade de um grupo.
+        /// </summary>
+        /// <param name="model">Modelo com o identificador do grupo e da propriedade a ser escolhida</param>
+        /// <returns>Retorna o resultado da atualização do voto da propriedade do grupo.</returns>
+        [HttpPut("updatePropertyVote")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePropertyVote([FromBody] VoteForPropertyModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (!group.MembersId.Contains(user.Id))
+            {
+                return Forbid();
+            }
+
+            if (group.GroupAction != GroupAction.Voting)
+            {
+                return BadRequest("O grupo não está em votação.");
+            }
+
+            var property = await _context.Property.FindAsync(model.PropertyId);
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            var addedProperties = await _context.UserAddedProperty
+                .Where(uap => group.AddedPropertyIds.Contains(uap.UserAddedPropertyId))
+                .ToListAsync();
+
+            if (addedProperties.All(uap => uap.PropertyId != model.PropertyId))
+            {
+                return BadRequest("A propriedade não existe no grupo.");
+            }
+
+            List<UserVote> votes = [];
+            foreach (var userVoteId in group.UserVoteIds)
+            {
+                var uv = await _context.UserVote.FindAsync(userVoteId);
+                if (uv == null) continue;
+                votes.Add(uv);
+            }
+
+            if (votes.All(uv => uv.ApplicationUserId != user.Id))
+            {
+                return BadRequest("O utilizador ainda não votou.");
+            }
+
+            var userVote = votes.First(uv => uv.ApplicationUserId == user.Id);
+            userVote.PropertyId = property.PropertyId;
+            try
+            {
+                await _context.SaveChangesAsync();
+                foreach (var socket in GroupSockets
+                             .Where(gs => group.MembersId.Contains(gs.Key))
+                             .SelectMany(gs => gs.Value))
+                {
+                    if (model.SocketId != null &&
+                        model.SocketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                        {
+                            Code = "UserVoteUpdated",
+                            Content = JsonSerializer.Serialize(new
+                            {
+                                groupId = group.GroupId,
+                                vote = new ReturnVote
+                                {
+                                    UserId = userVote.ApplicationUserId,
+                                    PropertyId = userVote.PropertyId
+                                }
+                            })
+                        }
+                    );
+                }
+
+                return Ok("Voto atualizado com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        /// <summary>
+        /// Remove o voto de um utilizador numa propriedade de um grupo.
+        /// </summary>
+        /// <param name="model">Modelo com o identificador do grupo e da propriedade a ser escolhida</param>
+        /// <returns>Retorna o resultado da remoção do voto da propriedade do grupo.</returns>
+        [HttpPut("removePropertyVote")]
+        [Authorize]
+        public async Task<IActionResult> RemovePropertyVote([FromBody] VoteForPropertyModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var group = await _context.Groups.FindAsync(model.GroupId);
+            if (group == null)
+            {
+                return NotFound();
+            }
+
+            if (!group.MembersId.Contains(user.Id))
+            {
+                return Forbid();
+            }
+
+            if (group.GroupAction != GroupAction.Voting)
+            {
+                return BadRequest("O grupo não está em votação.");
+            }
+
+            var property = await _context.Property.FindAsync(model.PropertyId);
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            var addedProperties = await _context.UserAddedProperty
+                .Where(uap => group.AddedPropertyIds.Contains(uap.UserAddedPropertyId))
+                .ToListAsync();
+
+            if (addedProperties.All(uap => uap.PropertyId != model.PropertyId))
+            {
+                return BadRequest("A propriedade não existe no grupo.");
+            }
+
+            List<UserVote> votes = [];
+            foreach (var userVoteId in group.UserVoteIds)
+            {
+                var uv = await _context.UserVote.FindAsync(userVoteId);
+                if (uv == null) continue;
+                votes.Add(uv);
+            }
+
+            if (votes.All(uv => uv.ApplicationUserId != user.Id))
+            {
+                return BadRequest("O utilizador ainda não votou.");
+            }
+
+            var userVote = votes.First(uv => uv.ApplicationUserId == user.Id);
+            group.UserVoteIds.Remove(userVote.UserVoteId);
+            _context.UserVote.Remove(userVote);
+            try
+            {
+                await _context.SaveChangesAsync();
+                foreach (var socket in GroupSockets
+                             .Where(gs => group.MembersId.Contains(gs.Key))
+                             .SelectMany(gs => gs.Value))
+                {
+                    if (model.SocketId != null &&
+                        model.SocketId == Sockets.FirstOrDefault(s => s.Value == socket).Key) continue;
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                        {
+                            Code = "UserVoteRemoved",
+                            Content = JsonSerializer.Serialize(new
+                            {
+                                groupId = group.GroupId,
+                                vote = new ReturnVote
+                                {
+                                    UserId = userVote.ApplicationUserId,
+                                    PropertyId = userVote.PropertyId
+                                }
+                            })
+                        }
+                    );
+                }
+
+                return Ok("Voto removido com sucesso.");
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
 
         /// <summary>
         /// Manipula a comunicação WebSocket para um grupo específico.
         /// </summary>
         /// <param name="userId">O identificador do utilizador.</param>
+        /// <param name="socketId">O identificador do WebSocket.</param>
         /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
         /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         [NonAction]
-        public async Task HandleWebSocketAsync(string userId, WebSocket webSocket)
+        public async Task HandleWebSocketAsync(string userId, string? socketId, WebSocket webSocket)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) return;
 
+            socketId ??= Guid.NewGuid().ToString();
+            if (Sockets.ContainsKey(socketId)) return;
+
             WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
             {
-                if (GroupSockets.TryGetValue(userId, out var value))
+                if (GroupSockets.TryGetValue(userId, out var groupSockets))
                 {
-                    value.Add(webSocket);
+                    groupSockets.Add(webSocket);
                 }
                 else
                 {
                     GroupSockets.Add(userId, [webSocket]);
+                }
+
+                if (!Sockets.TryAdd(socketId, webSocket))
+                {
+                    Sockets[socketId] = webSocket;
                 }
 
                 return Task.CompletedTask;
@@ -867,6 +1065,8 @@ namespace BookingBuddy.Server.Controllers
                 {
                     value.Remove(webSocket);
                 }
+
+                Sockets.Remove(socketId);
 
                 return Task.CompletedTask;
             });
@@ -903,6 +1103,11 @@ namespace BookingBuddy.Server.Controllers
         /// O identificador da propriedade.
         /// </summary>
         public required string PropertyId { get; set; }
+
+        /// <summary>
+        /// (Opcional) O identificador do WebSocket do cliente.
+        /// </summary>
+        public string? SocketId { get; set; }
     }
 
     /// <summary>
@@ -919,12 +1124,17 @@ namespace BookingBuddy.Server.Controllers
         /// A ação do grupo.
         /// </summary>
         public required string GroupAction { get; set; }
+
+        /// <summary>
+        /// (Opcional) O identificador do WebSocket do cliente.
+        /// </summary>
+        public string? SocketId { get; set; }
     }
 
     /// <summary>
     /// Modelo que representa a adição de um voto.
     /// </summary>
-    public record AddVoteModel
+    public record VoteForPropertyModel
     {
         /// <summary>
         /// O identificador do grupo.
@@ -935,6 +1145,11 @@ namespace BookingBuddy.Server.Controllers
         /// O identificador da propriedade.
         /// </summary>
         public required string PropertyId { get; set; }
+
+        /// <summary>
+        /// (Opcional) O identificador do WebSocket do cliente.
+        /// </summary>
+        public string? SocketId { get; set; }
     }
 
     /// <summary>
@@ -959,6 +1174,11 @@ namespace BookingBuddy.Server.Controllers
         /// O identificador da propriedade.
         /// </summary>
         public required string PropertyId { get; set; }
+
+        /// <summary>
+        /// (Opcional) O identificador do WebSocket do cliente.
+        /// </summary>
+        public string? SocketId { get; set; }
     }
 
     /// <summary>
