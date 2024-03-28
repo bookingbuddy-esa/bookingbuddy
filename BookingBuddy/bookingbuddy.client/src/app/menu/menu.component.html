@@ -1,23 +1,22 @@
 <header>
   <nav class="navbar navbar-expand-sm navbar-toggleable-sm sticky-top navbar-light bg-white border-bottom box-shadow">
-    <div class="container-fluid mx-5 px-5">
-      <a class="navbar-brand" href="/">
+    <div class="container-fluid px-sm-5 px-0">
+      <a class="navbar-brand ms-sm-0 ms-4" href="/">
         <img src="../../assets/img/logo.png" width="64" height="64" alt="Página Inicial">
       </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse"
+      <button class="navbar-toggler me-4" type="button" data-toggle="collapse" data-target=".navbar-collapse"
               aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngClass]="{ show: isExpanded }">
-        <form class="d-flex mx-auto">
+        <form class="d-flex mx-sm-auto mx-3">
           <div class="input-group">
             <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
             <input type="search" class="form-control" placeholder="Procurar" aria-label="Procurar"
                    aria-describedby="basic-addon1">
           </div>
         </form>
-
-        <button *ngIf="signedIn" class="favoritesBtn" type="button" data-bs-toggle="offcanvas"
+        <button *ngIf="signedIn && !isExpanded" class="favoritesBtn" type="button" data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
           <i class="bi bi-bookmark-star text-warning h4"></i>
         </button>
@@ -28,6 +27,9 @@
             class="bi bi-box-arrow-right ms-2"></i></a>
           <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['profile']">{{ user?.name }}
             <i class="bi bi-person ms-2"></i></a>
+          <button *ngIf="signedIn" data-bs-target="#offcanvasNavbar" data-bs-toggle="offcanvas" aria-controls="offcanvasNavbar" class="list-group-item list-group-item-action">
+            Favoritos<i class="bi bi-bookmark-star ms-2"></i>
+          </button>
           <hr *ngIf="signedIn" class="dropdown-divider">
           <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['/groups']">Grupos<i
             class="bi bi-chat-square-heart ms-2"></i></a>
