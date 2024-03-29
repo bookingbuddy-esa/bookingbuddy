@@ -18,7 +18,7 @@
 }
 
 .booking-info-owner {
-  min-height: 40%;
+  min-height: 30%;
 }
 
 @media screen and (max-width: 768px) {
@@ -39,6 +39,9 @@
   }
 }
 
+.vertical-rule{
+  height: 90%;
+}
 
 .custom-scroll::-webkit-scrollbar {
   height: 8px;

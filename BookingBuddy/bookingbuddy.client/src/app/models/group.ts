@@ -1,36 +1,36 @@
 export interface Group {
-  "groupId": string,
-  "groupBookingId": string | null,
-  "groupOwner": {
-    "id": string,
-    "name": string,
+  groupId: string,
+  groupBookingId: string | null,
+  groupOwner: {
+    id: string,
+    name: string,
   },
-  "name": string,
-  "members": GroupMember[],
-  "properties": GroupProperty[],
-  "votes": GroupVote[],
-  "chosenProperty": GroupProperty | null,
-  "chatId": string
-  "groupAction": string
+  name: string,
+  members: GroupMember[],
+  properties: GroupProperty[],
+  votes: GroupVote[],
+  chosenProperty: GroupProperty | null,
+  chatId: string
+  groupAction: string
 }
 
 export interface GroupMember {
-  "id": string,
-  "name": string,
+  id: string,
+  name: string,
 }
 
 export interface GroupProperty {
-  "propertyId": string,
-  "name": string,
-  "pricePerNight": number,
-  "imagesUrl": string[],
-  "location": string,
-  "addedBy": GroupMember,
+  propertyId: string,
+  name: string,
+  pricePerNight: number,
+  imagesUrl: string[],
+  location: string,
+  addedBy: GroupMember,
 }
 
 export interface GroupVote {
-  "userId": string,
-  "propertyId": string,
+  userId: string,
+  propertyId: string,
 }
 
 export interface GroupCreate {

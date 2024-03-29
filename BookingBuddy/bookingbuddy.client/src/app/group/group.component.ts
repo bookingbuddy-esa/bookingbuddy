@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {GroupService} from './group.service';
@@ -8,9 +8,17 @@ import {Group, GroupAction, GroupActionHelper, GroupMember, GroupProperty} from 
 import {WebsocketMessage} from "../models/websocket-message";
 import {NgbActiveModal, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
-import {NgIf} from "@angular/common";
+import {KeyValue, NgIf} from "@angular/common";
 import {v4 as uuidv4} from 'uuid';
 import {group} from "@angular/animations";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {
+  DateFilterFn,
+  MatCalendarCellClassFunction,
+  MatDatepickerInputEvent,
+  MatDateRangeInput
+} from "@angular/material/datepicker";
+import {PropertyAdService, ReturnedDiscount} from "../property-ad/property-ad.service";
 
 @Component({
   selector: 'app-group',
@@ -25,12 +33,21 @@ export class GroupComponent implements OnInit, OnDestroy {
   protected router: Router = inject(Router);
   private groupService: GroupService = inject(GroupService);
   private modalService: NgbModal = inject(NgbModal);
+  private formBuilder: FormBuilder = inject(FormBuilder);
+  private propertyService: PropertyAdService = inject(PropertyAdService);
+
+  // Responsividade
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.currentWidth = event.target.innerWidth;
+  }
+  protected currentWidth: number = window.innerWidth;
 
   // Carregamento de dados
 
   protected global_loading: boolean = false;
   protected submitting: boolean = false;
-  protected submitting_invite: boolean = false;
 
   // Utilizador, grupos e reservas
 
@@ -48,6 +65,30 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   protected failed_invite: boolean = false;
   protected pendingGroup: Group | undefined;
+  protected invite_loading: boolean = false;
+
+  // Reservar propriedade
+  protected dates_loading: boolean = false;
+  private readonly MAX_FUTURE_YEARS = 1;
+  protected readonly defaultMaxDate: Date = (() => {
+    let date = new Date();
+    date.setFullYear(date.getFullYear() + this.MAX_FUTURE_YEARS);
+    return date;
+  })();
+  protected maxDate: Date = this.defaultMaxDate;
+  protected checkIn: Date | undefined;
+  protected checkOut: Date | undefined;
+  protected blockedDates: Date[] = [];
+  protected discounts: ReturnedDiscount[] = [];
+  protected bookPropertyForm: FormGroup;
+  protected pricesMap: Map<number, number> = new Map();
+
+  constructor() {
+    this.bookPropertyForm = this.formBuilder.group({
+      checkIn: [Validators.required],
+      checkOut: [Validators.required]
+    });
+  }
 
   ngOnInit(): void {
     this.global_loading = true;
@@ -91,7 +132,7 @@ export class GroupComponent implements OnInit, OnDestroy {
                 });
               modalRef.componentInstance.pendingGroup = this.pendingGroup;
               modalRef.componentInstance.failed_invite = this.failed_invite;
-              modalRef.componentInstance.submitting_invite = this.submitting_invite;
+              modalRef.componentInstance.submitting_invite = this.invite_loading;
               modalRef.componentInstance.onAccept = async () => {
                 await this.acceptInvite();
                 modalRef.close();
@@ -240,10 +281,10 @@ export class GroupComponent implements OnInit, OnDestroy {
   }
 
   private async acceptInvite() {
-    this.submitting_invite = true;
+    this.invite_loading = true;
     return this.groupService.addMemberToGroup(this.pendingGroup!.groupId).forEach(response => {
       if (response) {
-        this.submitting_invite = false;
+        this.invite_loading = false;
       }
     }).then(() => {
       this.global_loading = true;
@@ -310,6 +351,10 @@ export class GroupComponent implements OnInit, OnDestroy {
           return g;
         }
       });
+      if (GroupActionHelper.parseGroupAction(group.groupAction) === GroupAction.booking && group.groupOwner.id == this.user?.userId) {
+        this.loadBlockedDates();
+        this.loadDiscounts();
+      }
     }).catch(error => {
       console.error('Erro ao carregar grupo:', error);
     });
@@ -454,6 +499,146 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.updateGroupAction(GroupAction.booking);
   }
 
+  protected filterDates: DateFilterFn<any> = (date: Date | null) => {
+    if (!date) return false;
+    let today = new Date();
+    let dateIntervalValid: boolean = (() => {
+      let tomorrow = new Date(date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      let previousDate = new Date(date);
+      previousDate.setDate(previousDate.getDate() - 1);
+      return !((this.isSameDay(today, previousDate) && this.blockedDates.some(blockedDate => this.isSameDay(tomorrow, blockedDate)))
+        || (this.blockedDates.some(blockedDate => this.isSameDay(previousDate, blockedDate)) && this.blockedDates.some(blockedDate => this.isSameDay(tomorrow, blockedDate))));
+    })();
+    return date >= today && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate)) && dateIntervalValid;
+  }
+
+  protected isSameDay = (d1: Date, d2: Date): boolean => {
+    return d1.getDate() === d2.getDate() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getFullYear() === d2.getFullYear();
+  }
+
+  protected onDateChange($event: MatDatepickerInputEvent<Date>, type: 'checkIn' | 'checkOut') {
+    if ($event.value) {
+      if (type == 'checkIn') {
+        this.checkIn = $event.value;
+        this.pricesMap.clear();
+        this.maxDate = (() => {
+          if (this.checkIn) {
+            const nextBlockedDate = this.blockedDates.find(date => date > this.checkIn!);
+            if (nextBlockedDate) {
+              return this.maxDate = nextBlockedDate;
+            } else {
+              return this.maxDate = this.defaultMaxDate;
+            }
+          } else {
+            return this.maxDate = this.defaultMaxDate;
+          }
+        })();
+      } else {
+        this.checkOut = $event.value;
+        console.log(this.checkOut);
+      }
+    }
+  }
+
+  protected clearDates() {
+    this.checkIn = undefined;
+    this.checkOut = undefined;
+    this.bookPropertyForm.reset();
+    this.maxDate = this.defaultMaxDate;
+    this.pricesMap.clear()
+  }
+
+  protected async loadBlockedDates() {
+    if (this.currentGroup?.chosenProperty) {
+      await this.propertyService.getPropertyBlockedDates(this.currentGroup.chosenProperty.propertyId).forEach((blockedDates) => {
+        blockedDates.forEach(bd => {
+          const startDate = new Date(bd.start);
+          const endDate = new Date(bd.end);
+          const currentDate = new Date(startDate);
+          while (currentDate <= endDate) {
+            this.blockedDates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        });
+      }).catch(error => {
+        console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+      });
+    }
+  }
+
+  protected async loadDiscounts() {
+    if (this.currentGroup?.chosenProperty) {
+      await this.propertyService.getPropertyDiscounts(this.currentGroup.chosenProperty.propertyId).forEach((discounts) => {
+        discounts.forEach(discount => {
+          this.discounts.push({
+            discountId: discount.discountId,
+            propertyId: discount.propertyId,
+            discountAmount: discount.discountAmount,
+            startDate: new Date(discount.startDate),
+            endDate: new Date(discount.endDate)
+          });
+        });
+      }).catch(error => {
+          console.error('Erro ao carregar descontos:', error);
+        }
+      );
+    }
+  }
+
+  protected discountClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
+    return this.discountDates.some(date => this.isSameDay(date, cellDate)) ? 'discount-date-class' : '';
+  };
+
+  protected formatPrice(entry: KeyValue<number,number>): string {
+    return `${entry.key}€ x ${entry.value} noites - ${Math.round(((entry.key * entry.value) + Number.EPSILON) * 100) / 100}€`
+  }
+
+  protected totalDiscount() {
+    if (this.currentGroup?.chosenProperty && this.checkIn && this.checkOut) {
+      const pricePerNight = this.currentGroup?.chosenProperty?.pricePerNight;
+      const selectedDates: Date[] = [];
+      this.pricesMap = new Map();
+      if (this.currentGroup?.chosenProperty && this.checkIn && this.checkOut) {
+        const currentDate = new Date(this.checkIn);
+        while (currentDate < this.checkOut) {
+          selectedDates.push(new Date(currentDate));
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        selectedDates.forEach(selectedDate => {
+          const matchingDiscounts = this.discounts.filter(discount =>
+            selectedDate >= discount.startDate && selectedDate <= discount.endDate
+          );
+
+          if (matchingDiscounts.length > 0) {
+            matchingDiscounts.forEach(discount => {
+              const newPrice = (() => {
+                const discountMultiplier = 1 - discount.discountAmount / 100;
+                return Math.round(((pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
+              })()
+              const currentCount = this.pricesMap.get(newPrice) || 0;
+              this.pricesMap.set(newPrice, currentCount + 1);
+            });
+          } else {
+            const currentCount = this.pricesMap.get(pricePerNight as number) || 0;
+            this.pricesMap.set(pricePerNight as number, currentCount + 1);
+          }
+        });
+
+        let totalPrice = 0;
+        this.pricesMap.forEach((count, price) => {
+          const aux = count * price;
+          totalPrice += aux;
+        });
+        return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
+      }
+    }
+    return 0;
+  }
+
   // Propriedades auxiliares
 
   protected get isActionNone(): boolean {
@@ -478,6 +663,27 @@ export class GroupComponent implements OnInit, OnDestroy {
 
   protected get hasChosenProperty(): boolean {
     return this.currentGroup?.chosenProperty != undefined;
+  }
+
+  protected get chosenProperty(): GroupProperty | undefined {
+    return this.currentGroup?.chosenProperty ?? undefined;
+  }
+
+  protected get numberOfMembers(): number {
+    return this.currentGroup?.members.length ?? 0;
+  }
+
+  protected get discountDates(): Date[] {
+    let dates: Date[] = [];
+    this.discounts.forEach(discount => {
+      let startDate = new Date(discount.startDate);
+      let endDate = new Date(discount.endDate);
+      while (startDate <= endDate) {
+        dates.push(new Date(startDate));
+        startDate.setDate(startDate.getDate() + 1);
+      }
+    })
+    return dates;
   }
 
   protected set isActionNone(value: boolean) {
@@ -530,8 +736,6 @@ export class GroupComponent implements OnInit, OnDestroy {
       modalRef.close();
     }
   }
-
-  protected readonly group = group;
 }
 
 // Componentes auxiliares

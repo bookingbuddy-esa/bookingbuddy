@@ -126,7 +126,7 @@
            *ngIf="currentGroup && currentGroup.properties?.length !== 0 && (isActionNone || isActionVoting)">
         <div
           class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
-          <div class="col property" *ngFor="let property of currentGroup?.properties">
+          <div class="col" *ngFor="let property of currentGroup?.properties">
             <div class="card h-100 w-100"
                  [ngClass]="{
                  'border-success': isPropertyChosen(property.propertyId),
@@ -172,41 +172,91 @@
         </div>
       </div>
     </div>
-    <div *ngIf="isActionBooking"
-         class="d-flex flex-column justify-content-center align-items-center mt-2 booking-info">
-      <div *ngIf="!isOwner" class="d-flex flex-column justify-content-center h-100 w-100 text-center bg-dark-subtle border border-3 rounded-3 border-dark">
-        <p class="fs-5 fw-bolder">Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a reserva.</p>
-        <span class="fs-6 text-muted fw-bolder">Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como membro.</span>
-      </div>
-      <div>
-
-      </div>
+    <!--  Mensagem de espera pela reserva  -->
+    <div *ngIf="!isOwner && isActionBooking"
+         class="d-flex flex-column justify-content-center w-100 text-center bg-dark-subtle border border-3 rounded-3 border-dark booking-info">
+      <p class="fs-5 fw-bolder">Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a
+        reserva.</p>
+      <span class="fs-6 text-muted fw-bolder">Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como membro.</span>
     </div>
-    <!--  Botões em baixo da lista de propriedades e chat -->
-    <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
-      <div class="d-flex flex-row justify-content-around align-items-center">
-        <!--        <button type="button"-->
-        <!--                *ngIf="currentGroup && currentGroup.properties.length < 6 && currentGroup.groupAction === 'None'"-->
-        <!--                class="btn btn-md btn-success me-2"-->
-        <!--                (click)="showAddPropertyModal()">-->
-        <!--          Adicionar Propriedade<i class="bi bi-house-add-fill ms-2"></i>-->
-        <!--        </button>-->
-        <div class="flex-fill">
-          <div class="text-center text-bg-info h-100 w-100 rounded fs-5"
-               *ngIf="isActionVoting && !hasChosenProperty">
-            Votação em curso!
+    <!--  Informação da reserva  -->
+    <div *ngIf="isOwner && isActionBooking && chosenProperty"
+         class="row mt-2 w-100 booking-info-owner">
+      <div *ngIf="currentWidth >= 1500" class="col-3">
+        <div class="card h-100 w-100">
+          <img class="card-img object-fit-cover opacity-50 h-100 w-100"
+               [ngSrc]="chosenProperty!.imagesUrl[0]" fill priority
+               [ngClass]="{'rounded-0': isPropertyChosen(chosenProperty!.propertyId) || isPropertyVotedByUser(chosenProperty!.propertyId)}"
+               alt="Imagem da Propriedade">
+          <div class="card-img-overlay d-flex flex-column">
+            <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',chosenProperty.propertyId]">
+              <div class="card-title fw-bolder fs-5 text-truncate">{{ chosenProperty.name }}</div>
+              <div class="card-text text-truncate fw-bolder">{{ chosenProperty.pricePerNight }}€ / noite</div>
+            </div>
           </div>
         </div>
       </div>
-      <app-chat-new class="chat"></app-chat-new>
+      <div class="col-xxl-5 col-7">
+        <div class="d-flex flex-row h-100">
+          <div *ngIf="currentWidth >= 1500" class="vr vertical-rule align-self-center"></div>
+          <div class="h-100 w-100 d-flex flex-column">
+            <span class="text-center fs-4 fw-bolder">Selecionar Datas da reserva</span>
+            <form class="px-3 mt-4 flex-grow-1"
+                  [formGroup]="bookPropertyForm" (submit)="showAddPropertyModal()">
+              <mat-form-field class="w-100 flex-grow-1" (click)="picker.open()">
+                <mat-label>Selecione as datas</mat-label>
+                <mat-date-range-input [rangePicker]="picker" [dateFilter]="filterDates" [max]="maxDate">
+                  <input matStartDate placeholder="Check-In" formControlName="checkIn"
+                         (dateChange)="onDateChange($event,'checkIn')">
+                  <input matEndDate placeholder="Check-Out" formControlName="checkOut"
+                         (dateChange)="onDateChange($event,'checkOut')">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker-toggle matSuffix (click)="clearDates()">
+                  <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                </mat-datepicker-toggle>
+                <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
+              </mat-form-field>
+              <h6 class="text-muted text-center w-100 mb-3">Ainda não vai ser cobrado</h6>
+              <div class="mx-auto w-50 mt-2">
+                <button class="btn btn-success w-100 mx-auto">Reservar</button>
+              </div>
+            </form>
+          </div>
+          <div class="vr vertical-rule align-self-center"></div>
+        </div>
+      </div>
+      <div class="col-xxl-4 col-5">
+        <div *ngIf="checkIn && checkOut" class="d-flex flex-column align-content-center h-100 w-100">
+          <div class="text-center mb-3">
+            <span class="fs-4 fw-bolder ">Total da reserva</span>
+          </div>
+          <div>
+            <div *ngFor="let entry of pricesMap | keyvalue">
+              <h6 class="text-secondary mt-2"><u>{{ formatPrice(entry) }}</u></h6>
+            </div>
+          </div>
+          <hr *ngIf="pricesMap.size > 0">
+          <div class="mb-3 d-flex flex-row justify-content-between">
+            <span>Total </span>
+            <span>{{ totalDiscount() }}€</span>
+          </div>
+        </div>
+        <div class="d-flex h-100">
+          <span *ngIf="!checkIn || !checkOut" class="m-auto text-center">Selecione as datas para efetuar a reserva.</span>
+        </div>
+      </div>
+    </div>
+    <!--  Chat chat -->
+    <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
+      <app-chat-new class="chat h-50"></app-chat-new>
+    </div>
+    <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
+      <app-loader class="w-100"></app-loader>
     </div>
   </div>
 
-  <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
-    <app-loader class="w-100"></app-loader>
+  <div *ngIf="global_loading" class="m-auto">
+    <app-loader></app-loader>
   </div>
-</div>
-
-<div *ngIf="global_loading" class="m-auto">
-  <app-loader></app-loader>
 </div>

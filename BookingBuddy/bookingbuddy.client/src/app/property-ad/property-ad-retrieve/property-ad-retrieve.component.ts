@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Property } from '../../models/property';
-import { Discount } from '../../models/discount';
+import {Property} from '../../models/property';
 import { Injectable } from '@angular/core';
 import { AuthorizeService } from "../../auth/authorize.service";
 import { PropertyAdService } from '../property-ad.service';
@@ -18,6 +17,7 @@ import { GroupService } from '../../group/group.service';
 import { timeout } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
+import {Discount} from "../../models/discount";
 
 @Component({
   selector: 'app-property-ad-retrieve',
