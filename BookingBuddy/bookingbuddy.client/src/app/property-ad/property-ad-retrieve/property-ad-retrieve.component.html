@@ -107,7 +107,7 @@
                         <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="selectGroup(group)" [ngClass]="{'bg-success text-white': selected_group_list.includes(group)}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="fw-bold">{{group.name}}</div>
-                                <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>
+                                <span class="badge bg-success-medium rounded">{{group.members.length}}<i class="bi bi-person ms-1"></i></span>
                             </div>
                         </button>
                     </div>
