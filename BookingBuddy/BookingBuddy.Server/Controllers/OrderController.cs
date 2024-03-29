@@ -652,7 +652,7 @@ namespace BookingBuddy.Server.Controllers
     }
 
     /// <summary>
-    /// Classe que representa o modelo de um pedido de promoção de uma propriedade.
+    /// Modelo de um pedido de promoção de uma propriedade.
     /// </summary>
     /// <param name="PropertyId"></param>
     /// <param name="StartDate"></param>
@@ -668,7 +668,7 @@ namespace BookingBuddy.Server.Controllers
 
 
     /// <summary>
-    /// Classe que representa o modelo de um pedido de reserva de uma propriedade.
+    /// Modelo de um pedido de reserva de uma propriedade.
     /// </summary>
     /// <param name="PropertyId"></param>
     /// <param name="StartDate"></param>

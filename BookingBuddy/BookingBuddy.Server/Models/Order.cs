@@ -207,12 +207,12 @@ public enum OrderState
 }
 
 /// <summary>
-/// Extensão para o enum OrderState.
+/// Classe de extensão para o enumerado <see cref="OrderState"/>.
 /// </summary>
 public static class OrderStateExtension
 {
     /// <summary>
-    /// Obtém a string do estado da order.
+    /// Método que retorna o nome de um estado de uma order.
     /// </summary>
     /// <param name="state">Estado da order.</param>
     /// <returns>String do estado da order.</returns>
@@ -226,7 +226,7 @@ public static class OrderStateExtension
     };
     
     /// <summary>
-    /// Obtém a descrição do estado da order.
+    /// Método que retorna a descrição de um estado de uma order.
     /// </summary>
     /// <param name="state">Estado da order.</param>
     /// <returns>Descrição do estado da order.</returns>

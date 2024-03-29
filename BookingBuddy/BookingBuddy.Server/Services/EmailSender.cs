@@ -9,7 +9,7 @@ namespace BookingBuddy.Server.Services
     public abstract class EmailSender
     {
         /// <summary>
-        /// Envia um email de acordo com uma template.
+        /// Envia um email de acordo com uma template dinâmica do SendGrid.
         /// </summary>
         /// <param name="apiKey">Chave de API do SendGrid.</param>
         /// <param name="templateId">O identificador da template.</param>

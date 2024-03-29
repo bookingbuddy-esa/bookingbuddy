@@ -2,9 +2,9 @@
     <div class="col-12 d-flex flex-column justify-content-center align-items-center">
         <p class="h4">{{ property.name }}</p>
         <div class="d-flex flex-row gap-2">
-          <p class="h5">{{ property.location }}</p>
-          <div class=" my-2 vr"></div>
-          <p class="h5"><i class="bi bi-star-fill yellow"></i> 4.9</p>
+            <p class="h5">{{ property.location }}</p>
+            <div class=" my-2 vr"></div>
+            <p class="h5"><i class="bi bi-star-fill yellow"></i> 4.9</p>
         </div>
         <div id="carouselExampleControls" class="carousel mycarousel img-shorter" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -26,13 +26,17 @@
         <div class="d-flex mt-2 mb-2 align-items-center">
             <h5 class="m-0 flex-fill">Hospedado por <a [routerLink]="['/profile', property.applicationUserId]">{{ property.applicationUser?.name }}</a></h5>
             <button *ngIf="signedIn && !isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="addToFavorites()" title="Adicionar aos Favoritos">
-        <i class="bi bi-bookmark-star text-warning h3"></i>
-      </button>
+          <i class="bi bi-bookmark-star text-warning h3"></i>
+        </button>
             <button *ngIf="signedIn && isPropertyInFavorites" class="btn btn-link btn-favorito" (click)="removeFromFavorites()" title="Remover dos Favoritos">
-        <i class="bi bi-bookmark-star-fill text-warning h3"></i>
-      </button>
+          <i class="bi bi-bookmark-star-fill text-warning h3"></i>
+        </button>
         </div>
         <hr class="m-1" />
+        <p>
+            {{ property.maxGuestsNumber }} Hóspede<span *ngIf="property.maxGuestsNumber !== 1">s</span>
+            <strong> ·</strong> {{ property.roomsNumber }} Quarto<span *ngIf="property.roomsNumber !== 1">s</span>
+        </p>
         <p>{{ property.description }}</p>
         <div class="comodidades mt-5 mb-3 d-flex flex-column">
             <h5>Comodidades</h5>
@@ -47,7 +51,7 @@
         <form class="d-flex flex-column align-items-center mb-4" [formGroup]="reservarPropriedadeForm" (submit)="reservar($event)">
             <div class="d-flex flex-column justify-content-around gap-2">
                 <button type="button" class="btn btn-outline-success rounded-pill" [routerLink]="['/group-booking']" [queryParams]="{propertyId: property.propertyId}">Criar Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
-                <button type="button" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#addToGroupModal">Adicionar a Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
+                <button type="button" *ngIf="group_list.length > 0" class="btn btn-outline-info rounded-pill" data-bs-toggle="modal" data-bs-target="#addToGroupModal">Adicionar a Grupo de Reserva<i class="bi bi-person-fill-add ms-1"></i></button>
                 <h5 class="mt-4"><b>{{ property.pricePerNight }}€</b> noite</h5>
 
                 <mat-form-field (click)="picker.open()">
@@ -65,16 +69,11 @@
 
                 <div class="d-flex flex-row gap-3 mt-1 align-items-center">
                     <label for="hospedes">Hóspedes</label>
-                    <!-- TODO: número de hóspedes com base no que está na base de dados sobre a propriedade -->
                     <select name="hospedes" id="hospedes" class="form-select" formControlName="numberOfGuests">
-            <option value="1">1 hóspede</option>
-            <option value="2">2 hóspedes</option>
-            <option value="3">3 hóspedes</option>
-            <option value="4">4 hóspedes</option>
-            <option value="5">5 hóspedes</option>
-          </select>
+                      <option *ngFor="let number of guestNumbers()" [value]="number">{{ number }} hóspede{{ number !== 1 ? 's' : '' }}</option>
+                    </select>
                 </div>
-                <button class="btn btn-success mt-1">Reservar</button>
+                <button class="btn btn-success mt-1" [disabled]="reservarPropriedadeForm.invalid">Reservar</button>
                 <h6 class="text-secondary">Ainda não vai ser cobrado</h6>
                 <div class="precos mt-2">
                     <div *ngFor="let formattedString of formatPricesMap()">
@@ -101,37 +100,18 @@
                 <h5 class="modal-title" id="addToGroupModalLabel">Adicionar ao Grupo de Reserva</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-
-
-                <div>
-                    <div class="accordion" id="accordionGroups">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingOne">
-                                <button class="accordion-button collapsed shadow-sm" type="button" aria-expanded="false" aria-controls="collapseOne">
-                  Lista de Grupos
-                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionGroups">
-                                <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
-                                    <div class="list-group list-group-flush overflow-auto">
-                                        <hr class="m-0" />
-                                        <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
-                                        <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="selectGroup(group)" [ngClass]="{'bg-success text-white': selected_group_list.includes(group)}">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <div class="fw-bold">{{group.name}}</div>
-<!--                        <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>-->
-                      </div>
-                    </button>
-                                    </div>
-                                </div>
+            <div class="modal-body p-1">
+                <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
+                    <div class="list-group list-group-flush overflow-auto">
+                        <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
+                        <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="selectGroup(group)" [ngClass]="{'bg-success text-white': selected_group_list.includes(group)}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="fw-bold">{{group.name}}</div>
+                                <span class="badge bg-success-medium rounded">{{group.membersId.length}}<i class="bi bi-person ms-1"></i></span>
                             </div>
-                        </div>
+                        </button>
                     </div>
                 </div>
-
-
-
             </div>
             <div class="modal-footer">
                 <button type="button" #myModalClose class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>button_Prximo</name>
+   <tag></tag>
+   <elementGuidId>52b6f47d-1947-4338-b88d-4d72afecb63a</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>button.btn.btn-dark</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>(.//*[normalize-space(text()) and normalize-space(.)='Cancelar'])[1]/following::button[1]</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=button[name=&quot;Próximo&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>button</value>
+      <webElementGuid>22f8e1c0-5314-48c7-b1f1-9f4a44433d5f</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>btn btn-dark</value>
+      <webElementGuid>c81bf370-029b-4cfa-a310-de3fbc11e925</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>text</name>
+      <type>Main</type>
+      <value>Próximo</value>
+      <webElementGuid>4205eaae-d2fc-4033-958a-de8575e9fb3d</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/div[@class=&quot;container-fluid d-flex flex-grow-1&quot;]/app-group-create[1]/div[@class=&quot;d-flex h-100 w-100 flex-column align-items-center&quot;]/div[@class=&quot;d-flex flex-column w-100 align-items-center&quot;]/div[@class=&quot;d-flex flex-row h-100 w-100 align-items-center justify-content-between px-5 py-3&quot;]/button[@class=&quot;btn btn-dark&quot;]</value>
+      <webElementGuid>1051f8bd-55ae-4d06-ae4b-f81100a98cce</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Cancelar'])[1]/following::button[1]</value>
+      <webElementGuid>5d778500-424d-436d-a4f8-b101280f1369</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>(.//*[normalize-space(text()) and normalize-space(.)='Forneça o nome do grupo de reserva.'])[1]/following::button[2]</value>
+      <webElementGuid>ba3fd264-b648-4687-b9d9-6103f76c98be</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:neighbor</name>
+      <type>Main</type>
+      <value>//*/text()[normalize-space(.)='Próximo']/parent::*</value>
+      <webElementGuid>645eeb53-ba35-45b8-81a6-8a09d5cf239c</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//button[2]</value>
+      <webElementGuid>9ebe5d50-7a9b-4675-a897-5efae172c167</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//button[(text() = 'Próximo' or . = 'Próximo')]</value>
+      <webElementGuid>0ab083ce-05a8-44d7-980a-ec55dc7b95db</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

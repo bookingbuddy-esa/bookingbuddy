@@ -1,21 +1,11 @@
-:host {
-  display: flex;
-  width: inherit;
-  height: inherit;
-}
-
 .color {
-  color: black;
+    color: black;
 }
 
 .box-shadow {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .current-property {
-  border: 4px solid #198754;
-}
-
-.teste {
-  margin-left: 20px;
+    border: 4px solid #198754;
 }

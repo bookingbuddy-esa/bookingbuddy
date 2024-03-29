@@ -8,32 +8,32 @@ namespace BookingBuddy.Server.Models
     public class ApplicationUser : IdentityUser
     {
         /// <summary>
-        /// Propriedade que diz respeito ao nome do utilizador.
+        /// Nome do utilizador.
         /// </summary>
         [PersonalData]
         public string Name { get; set; }
 
             
         /// <summary>
-        /// Propriedade que diz respeito à descrição do utilizador.
+        /// Descrição de perfil do utilizador.
         /// </summary>
         [PersonalData]
         public string? Description { get; set; }
         
         /// <summary>
-        /// Propriedade que diz respeito ao url da imagem de perfil do utilizador.
+        /// URL da imagem de perfil do utilizador.
         /// </summary>
         [PersonalData]
         public string? PictureUrl { get; set; }
         
         
         /// <summary>
-        /// Propriedade que diz respeito ao identificador do fornecedor de login do utilizador.
+        /// Identificador do fornecedor de login do utilizador.
         /// </summary>
         public string ProviderId { get; set; }
         
         /// <summary>
-        /// Propriedade que diz respeito ao fornecedor de login do utilizador.
+        /// Propriedade de navegação do fornecedor de login do utilizador.
         /// </summary>
         public AspNetProvider? Provider { get; set; }
     }

@@ -270,6 +270,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
                 "Test Property",
                 "Test Description",
                 100,
+                5,
+                4,
                 "123 Test St",
                 new List<string>(),
                 []
@@ -291,6 +293,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
                 "Test Property",
                 "Test Description",
                 100,
+                5,
+                4,
                 "123 Test St",
                 new List<string>(),
                 []

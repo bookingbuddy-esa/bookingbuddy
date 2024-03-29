@@ -4,5 +4,17 @@
 
 .current-property {
   border: 4px solid #198754;
-  border-radius: 15px;
+}
+
+.colorlegend1 {
+  background: #ecb19f;
+}
+
+.colorlegend2 {
+  background: #800080;
+  
+}
+
+.colorlegend3 {
+  background: #e8f9c8;
 }

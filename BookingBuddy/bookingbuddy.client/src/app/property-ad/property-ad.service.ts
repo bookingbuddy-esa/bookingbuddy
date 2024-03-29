@@ -23,6 +23,8 @@ export class PropertyAdService {
       name: property.name,
       location: property.location,
       pricePerNight: property.pricePerNight,
+      maxGuestsNumber: property.maxGuestNumber,
+      roomsNumber:property.roomsNumber,
       description: property.description,
       imagesUrl: property.imagesUrl,
       amenities: property.amenities,

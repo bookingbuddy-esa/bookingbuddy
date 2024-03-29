@@ -1,43 +1,56 @@
-<div class="row flex-nowrap">
+<!--<div class="row flex-nowrap">
     <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
-      <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center ">
-        <h3 class="text-center">Propriedades</h3>
-          <app-homepage-property class="rounded-3 mb-4 " *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-homepage-property>
-      </div>
+        <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center ">
+            <h3 class="text-center">Propriedades</h3>
+            <app-homepage-property class="rounded-3 mb-4 " *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-homepage-property>
+        </div>
     </div>
     <div class="col py-3">
         <h3 *ngIf="currentProperty"><strong>{{currentProperty.name}}</strong> </h3>
         <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
     </div>
-</div>
-
-<!--<div class="row justify-content-center mt-5">
-    <div class="col-md-3 mb-5">
-        <div class="accordion" id="accordionExample">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                        Lista de Propriedades
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                    <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
-                        <div class="list-group list-group-flush overflow-auto">
-                            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="fw-bold">{{property.name}}</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-7 mb-5">
-        <h2 class="text-center">Conteúdo</h2>
-        <div class="d-flex">
-            <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
-        </div>
-    </div>
 </div>-->
+
+<div class="row">
+    <div class="col-md-2 d-flex flex-column box-shadow min-vh-100">
+        <h4 class="text-center mt-4">Propriedades</h4>
+        <div class="list-group list-group-flush overflow-auto">
+            <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center rounded-3 mb-2 p-0" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
+                <app-homepage-property [property]="property"></app-homepage-property>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-10 mb-4 p-5">
+      <h3 *ngIf="currentProperty" class="text-center"><strong>{{currentProperty.name}}</strong></h3>
+      <full-calendar class="fc-col-header-cell" [options]="calendarOptions"></full-calendar>
+
+      <div class="row mt-3">
+        <div class="col">
+          <h4>Dia atual</h4>
+        </div>
+        <div class="col">
+          <div class="colorlegend3">&nbsp;</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h4>Dias bloqueados</h4>
+        </div>
+        <div class="col-6">
+          <div class="colorlegend1">&nbsp;</div>
+        </div>
+      </div>
+      <div class="row ">
+        <div class="col">
+          <h4>Dias com desconto</h4>
+        </div>
+        <div class="col">
+          <div class="colorlegend2">&nbsp;</div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+</div>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>img</name>
+   <tag></tag>
+   <elementGuidId>e8b03f0f-0179-4789-98a4-adb9c61a8f54</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>CSS</key>
+         <value>img[alt=&quot;Página Inicial&quot;]</value>
+      </entry>
+      <entry>
+         <key>XPATH</key>
+         <value>//img[@alt='Página Inicial']</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <smartLocatorCollection>
+      <entry>
+         <key>SMART_LOCATOR</key>
+         <value>internal:role=link[name=&quot;Página Inicial&quot;i]</value>
+      </entry>
+   </smartLocatorCollection>
+   <smartLocatorEnabled>false</smartLocatorEnabled>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>img</value>
+      <webElementGuid>256a0441-e3d5-4634-9fb1-f3be07e6610c</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>src</name>
+      <type>Main</type>
+      <value>../../assets/img/logo.png</value>
+      <webElementGuid>722c6712-907c-4374-bd6b-b10726f5f37a</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>width</name>
+      <type>Main</type>
+      <value>64</value>
+      <webElementGuid>3750cdff-cdf8-43eb-99b0-aa879cbc7d71</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>height</name>
+      <type>Main</type>
+      <value>64</value>
+      <webElementGuid>fa554eea-e06e-4996-945d-0a7d846d8d2e</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>alt</name>
+      <type>Main</type>
+      <value>Página Inicial</value>
+      <webElementGuid>b0ca8499-2dae-4527-9112-eebad010fa7c</webElementGuid>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>/html[1]/body[1]/app-root[1]/main[@class=&quot;flex-grow-1 d-flex flex-column&quot;]/app-menu[@class=&quot;sticky-top&quot;]/header[1]/nav[@class=&quot;navbar navbar-expand-sm navbar-toggleable-sm sticky-top navbar-light bg-white border-bottom box-shadow&quot;]/div[@class=&quot;container-fluid mx-5 px-5&quot;]/a[@class=&quot;navbar-brand&quot;]/img[1]</value>
+      <webElementGuid>b8ad5b08-b422-44ce-994d-e14ae9708d9e</webElementGuid>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:img</name>
+      <type>Main</type>
+      <value>//img[@alt='Página Inicial']</value>
+      <webElementGuid>eca06b23-b4dc-4dd5-ad50-03e66ae738f6</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//img</value>
+      <webElementGuid>ca616f0f-cbc5-44ea-9304-b8ecd58ba84d</webElementGuid>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:customAttributes</name>
+      <type>Main</type>
+      <value>//img[@src = '../../assets/img/logo.png' and @alt = 'Página Inicial']</value>
+      <webElementGuid>5f9c0b2e-97ba-4e0d-8b02-6a8574a1fd12</webElementGuid>
+   </webElementXpaths>
+</WebElementEntity>

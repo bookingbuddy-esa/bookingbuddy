@@ -9,6 +9,8 @@ export interface Property {
   name: string;
   location: string;
   description: string;
+  maxGuestsNumber: number;
+  roomsNumber: number;
   pricePerNight: number;
   amenities?: Amenity[];
   amenityIds?: string[];
@@ -20,6 +22,8 @@ export interface PropertyCreate {
   location: string;
   description: string;
   pricePerNight: number;
+  maxGuestNumber: number;
+  roomsNumber: number;
   amenities: string[];
   imagesUrl: string[];
 }

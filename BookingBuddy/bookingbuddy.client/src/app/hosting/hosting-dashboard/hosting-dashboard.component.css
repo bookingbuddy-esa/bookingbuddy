@@ -2,5 +2,8 @@
     display: flex;
     height: inherit;
     width: inherit;
-    justify-content: center;
+}
+
+.tab-content-height {
+    height: 42px;
 }

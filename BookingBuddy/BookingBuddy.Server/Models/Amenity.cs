@@ -8,20 +8,20 @@ namespace BookingBuddy.Server.Models;
 public class Amenity
 {
     /// <summary>
-    /// Propriedade que diz respeito ao identificador de uma comodidade de uma propriedade física a anunciar.
+    /// Identificador de uma comodidade de uma propriedade física a anunciar.
     /// </summary>
     [Key]
     public required string AmenityId { get; set; }
 
     /// <summary>
-    /// Propriedade que diz respeito ao nome de uma comodidade de uma propriedade física a anunciar.
+    /// Nome de uma comodidade de uma propriedade física a anunciar.
     /// </summary>
     [Required(ErrorMessage = "O nome da comodidade é obrigatório")]
     [Display(Name = "Nome")]
     public required string Name { get; set; }
 
     /// <summary>
-    /// Propriedade que diz respeito à descrição de uma comodidade de uma propriedade física a anunciar.
+    /// Identificador de uma comodidade de uma propriedade física a anunciar.
     /// </summary>
     public string? DisplayName { get; set; }
 }
