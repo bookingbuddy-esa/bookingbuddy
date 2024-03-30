@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import { map } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {environment} from '../../environments/environment';
+import {map} from 'rxjs';
+import {GroupBookingOrder} from "../models/order";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrderService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
-  public createOrder(propertyId: string, startDate: Date, endDate: Date, paymentMethod: string, orderType: string, numberOfGuests?: number, phoneNumber?: string){ // orderType: promote, book
+  public createOrder(propertyId: string, startDate: Date, endDate: Date, paymentMethod: string, orderType: string, numberOfGuests?: number, phoneNumber?: string) { // orderType: promote, book
     return this.http.post(`${environment.apiUrl}/api/orders/${orderType}`, {
       propertyId: propertyId,
       startDate: startDate,
@@ -27,7 +29,13 @@ export class OrderService {
     }));
   }
 
-  public createBookingOrder(groupId: string, startDate: Date, endDate: Date){
+  public getOrder(orderId: string) {
+    return this.http.get<GroupBookingOrder>(`${environment.apiUrl}/api/orders/${orderId}`, {
+      withCredentials: true
+    });
+  }
+
+  public createGroupBookingOrder(groupId: string, startDate: Date, endDate: Date) {
     return this.http.post(`${environment.apiUrl}/api/orders/group-booking`, {
       groupId: groupId,
       startDate: startDate,
@@ -41,7 +49,7 @@ export class OrderService {
     }));
   }
 
-  public payGroupBooking(groupBookingId: string, paymentMethod: string, phoneNumber?: string){
+  public payGroupBooking(groupBookingId: string, paymentMethod: string, phoneNumber?: string) {
     return this.http.post(`${environment.apiUrl}/api/orders/group-booking/pay`, {
       groupBookingId: groupBookingId,
       paymentMethod: paymentMethod,
@@ -56,7 +64,7 @@ export class OrderService {
   }
 
   // TODO: remover -> apenas de teste para simular a confirmação do pagamento
-  public confirmOrder(orderId: string, paymentId: string){
+  public confirmOrder(orderId: string, paymentId: string) {
     var amount = 1.0
     var paymentDatetime = new Date().toLocaleString('pt-PT').replace(/(\d+)\/(\d+)\/(\d+), (\d+):(\d+):(\d+)/, '$1-$2-$3 $4:$5:$6')
 

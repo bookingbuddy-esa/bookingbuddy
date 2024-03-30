@@ -1074,18 +1074,29 @@ namespace BookingBuddy.Server.Controllers
             await WebSocketWrapper.HandleAsync(webSocket);
         }
 
-        [HttpGet("drop-all-websockets")]
-        public async Task<IActionResult> DropAllWebSockets()
+        /// <summary>
+        /// Notifica os membros de um grupo que a reserva foi paga.
+        /// </summary>
+        [NonAction]
+        public static async void NotifyGroupBookingPaid(Group group, string orderId)
         {
-            foreach (var socket in GroupSockets.SelectMany(groupSocket => groupSocket.Value))
-            {
-                await socket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure,
-                    "Server cleaning up sockets.",
-                    CancellationToken.None);
-            }
+            var memberSockets = GroupSockets
+                .Where(gs => group.MembersId.Contains(gs.Key))
+                .SelectMany(gs => gs.Value)
+                .ToList();
 
-            return Ok();
+            foreach (var socket in memberSockets)
+            {
+                await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                {
+                    Code = "GroupBookingOrderPaid",
+                    Content = JsonSerializer.Serialize(new
+                    {
+                        groupId = group.GroupId,
+                        orderId
+                    })
+                });
+            }
         }
     }
 

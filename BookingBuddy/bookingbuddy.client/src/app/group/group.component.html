@@ -73,60 +73,94 @@
   <div *ngIf="!submitting && !ws_loading" class="col-12 col-md-9 d-flex flex-column">
     <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
       <div class="d-flex flex-row align-items-center">
-        <span class="text-center fs-2 me-2"> {{ currentGroup.name }}</span>
+        <span class="text-center fs-2"> {{ currentGroup.name }}</span>
+        <div *ngIf="mdBreakpoint" class="vr mx-2 my-2"></div>
+        <span *ngIf="mdBreakpoint" class="badge text-center"
+              [matTooltip]="currentActionHelpText"
+              [ngClass]="{
+              'text-bg-secondary': isActionNone && !isCanceled,
+              'text-bg-info': isActionVoting && !isCanceled,
+              'text-bg-warning': isActionPaying && !isBookingPaid && !isCanceled,
+              'text-bg-dark': isActionBooking && !isCanceled,
+              'text-bg-success': isBookingPaid && !isCanceled,
+              'text-bg-danger': isCanceled
+              }">
+          {{ currentActionDescription }}
+        </span>
       </div>
-      <div class="d-flex flex-row mt-2 mb-2">
-        <button class="btn btn-sm btn-success me-2"
-                *ngIf="isActionNone && currentGroup.properties.length < 6"
+      <div class="btn-group btn-group-sm my-2">
+        <button class="btn btn-success px-2"
+                *ngIf="isActionNone && currentGroup.properties.length < 6 && !isCanceled"
                 (click)="showAddPropertyModal()"
                 matTooltip="Adicionar propriedade">
           <i class="bi bi-house-add-fill"></i>
         </button>
-        <button class="btn btn-sm btn-info me-2"
-                *ngIf="isOwner && currentGroup.groupAction === 'None' && currentGroup.properties.length > 0"
+        <button class="btn btn-info px-3"
+                *ngIf="isOwner && currentGroup.groupAction === 'None' && currentGroup.properties.length > 0 && !isCanceled"
                 (click)="startVoting()"
                 matTooltip="Iniciar votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
-        <button class="btn btn-sm btn-success me-2"
-                *ngIf="isOwner && isActionVoting && !hasChosenProperty"
+        <button class="btn btn-success px-3"
+                *ngIf="isOwner && isActionVoting && !hasChosenProperty && !isCanceled"
                 (click)="concludeVoting()"
                 matTooltip="Concluir votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
-        <button class="btn btn-sm btn-success me-2" *ngIf="isOwner && isActionVoting && hasChosenProperty"
+        <button class="btn btn-success px-3"
+                *ngIf="isOwner && hasChosenProperty && !isActionPaying && !isCanceled"
                 (click)="startBooking()"
-                matTooltip="Efetuar reserva">
+                matTooltip="Escolher datas">
+          <i class="bi bi-calendar-date"></i>
+        </button>
+        <button class="btn btn-success px-3"
+                *ngIf="isActionPaying && !hasPaid && !isCanceled"
+                (click)="payGroupBooking()"
+                matTooltip="Pagar reserva">
           <i class="bi bi-credit-card-fill"></i>
         </button>
-        <button class="btn btn-sm btn-secondary me-2"
+        <button class="btn btn-secondary px-3"
+                *ngIf="isActionNone && !isCanceled"
                 (click)="copyGroupLink()"
                 matTooltip="Copiar link de convite">
           <i class="bi bi-link"></i>
         </button>
-        <button class="btn btn-sm btn-danger"
+        <button class="btn btn-danger px-3"
                 *ngIf="isOwner" matTooltip="Apagar grupo"
                 (click)="showDeleteGroupModal()">
-          <i class="bi bi-trash"></i>
+          <i class="bi bi-trash-fill"></i>
         </button>
       </div>
     </div>
-
+    <div *ngIf="!mdBreakpoint && currentGroup" class="col mt-2 mb-1">
+      <span class="badge w-100 text-center"
+            [matTooltip]="currentActionHelpText"
+            [ngClass]="{
+              'text-bg-secondary': isActionNone && !isCanceled,
+              'text-bg-info': isActionVoting && !isCanceled,
+              'text-bg-warning': isActionPaying && !isBookingPaid && !isCanceled,
+              'text-bg-dark': isActionBooking && !isCanceled,
+              'text-bg-success': isBookingPaid && !isCanceled,
+              'text-bg-danger': isCanceled
+              }">
+          {{ currentActionDescription }}
+        </span>
+    </div>
     <div *ngIf="!currentGroup" class="text-center m-auto">
       <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
     </div>
 
     <!--  Lista de propriedades  -->
-    <div *ngIf="currentGroup && (isActionNone || isActionVoting)"
+    <div *ngIf="currentGroup"
          class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
       <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
         <span class="text-muted small">Não existem propriedades para este grupo.</span>
       </div>
       <div class="w-100 h-100"
-           *ngIf="currentGroup && currentGroup.properties?.length !== 0 && (isActionNone || isActionVoting)">
+           *ngIf="currentGroup && currentGroup.properties?.length !== 0">
         <div
           class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
-          <div class="col" *ngFor="let property of currentGroup?.properties">
+          <div class="col" *ngFor="let property of currentGroupProperties">
             <div class="card h-100 w-100"
                  [ngClass]="{
                  'border-success': isPropertyChosen(property.propertyId),
@@ -143,19 +177,19 @@
                 </div>
                 <div class="d-flex flex-row">
                   <button class="btn btn-sm btn-danger me-2"
-                          *ngIf="isActionNone && (property.addedBy.id === user?.userId || isOwner) && !hasChosenProperty"
+                          *ngIf="isActionNone && (property.addedBy.id === user?.userId || isOwner) && !hasChosenProperty && !isCanceled"
                           matTooltip="Remover propriedade"
                           (click)="removeProperty(property.propertyId)">
                     <i class="bi bi-x-square"></i>
                   </button>
                   <button class="btn btn-sm btn-info"
-                          *ngIf="isActionVoting && !hasVotedInProperty(property) && !hasChosenProperty"
+                          *ngIf="isActionVoting && !hasVotedInProperty(property) && !hasChosenProperty && !isCanceled"
                           matTooltip="Votar na propriedade"
                           (click)="voteForProperty(property.propertyId)">
                     <i class="bi bi-check2-circle"></i>
                   </button>
                   <button class="btn btn-sm btn-danger"
-                          *ngIf="isActionVoting && hasVotedInProperty(property) && !hasChosenProperty"
+                          *ngIf="isActionVoting && hasVotedInProperty(property) && !hasChosenProperty && !isCanceled"
                           matTooltip="Remover voto na propriedade"
                           (click)="removeVote(property.propertyId)">
                     <i class="bi bi-check2-circle"></i>
@@ -172,90 +206,14 @@
         </div>
       </div>
     </div>
-    <!--  Mensagem de espera pela reserva  -->
-    <div *ngIf="!isOwner && isActionBooking"
-         class="d-flex flex-column justify-content-center w-100 text-center bg-dark-subtle border border-3 rounded-3 border-dark booking-info">
-      <p class="fs-5 fw-bolder">Por favor, aguarde enquanto o líder do grupo determina a data para efetuar a
-        reserva.</p>
-      <span class="fs-6 text-muted fw-bolder">Uma vez concluída esta etapa, serão fornecidos os detalhes de pagamento pertinentes à sua parcela como membro.</span>
-    </div>
-    <!--  Informação da reserva  -->
-    <div *ngIf="isOwner && isActionBooking && chosenProperty"
-         class="row mt-2 w-100 booking-info-owner">
-      <div *ngIf="currentWidth >= 1500" class="col-3">
-        <div class="card h-100 w-100">
-          <img class="card-img object-fit-cover opacity-50 h-100 w-100"
-               [ngSrc]="chosenProperty!.imagesUrl[0]" fill priority
-               [ngClass]="{'rounded-0': isPropertyChosen(chosenProperty!.propertyId) || isPropertyVotedByUser(chosenProperty!.propertyId)}"
-               alt="Imagem da Propriedade">
-          <div class="card-img-overlay d-flex flex-column">
-            <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',chosenProperty.propertyId]">
-              <div class="card-title fw-bolder fs-5 text-truncate">{{ chosenProperty.name }}</div>
-              <div class="card-text text-truncate fw-bolder">{{ chosenProperty.pricePerNight }}€ / noite</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xxl-5 col-7">
-        <div class="d-flex flex-row h-100">
-          <div *ngIf="currentWidth >= 1500" class="vr vertical-rule align-self-center"></div>
-          <div class="h-100 w-100 d-flex flex-column">
-            <span class="text-center fs-4 fw-bolder">Selecionar Datas da reserva</span>
-            <form class="px-3 mt-4 flex-grow-1"
-                  [formGroup]="bookPropertyForm" (submit)="showAddPropertyModal()">
-              <mat-form-field class="w-100 flex-grow-1" (click)="picker.open()">
-                <mat-label>Selecione as datas</mat-label>
-                <mat-date-range-input [rangePicker]="picker" [dateFilter]="filterDates" [max]="maxDate">
-                  <input matStartDate placeholder="Check-In" formControlName="checkIn"
-                         (dateChange)="onDateChange($event,'checkIn')">
-                  <input matEndDate placeholder="Check-Out" formControlName="checkOut"
-                         (dateChange)="onDateChange($event,'checkOut')">
-                </mat-date-range-input>
-                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker-toggle matSuffix (click)="clearDates()">
-                  <mat-icon matDatepickerToggleIcon>clear</mat-icon>
-                </mat-datepicker-toggle>
-                <mat-date-range-picker [dateClass]="discountClass" #picker></mat-date-range-picker>
-              </mat-form-field>
-              <h6 class="text-muted text-center w-100 mb-3">Ainda não vai ser cobrado</h6>
-              <div class="mx-auto w-50 mt-2">
-                <button class="btn btn-success w-100 mx-auto">Reservar</button>
-              </div>
-            </form>
-          </div>
-          <div class="vr vertical-rule align-self-center"></div>
-        </div>
-      </div>
-      <div class="col-xxl-4 col-5">
-        <div *ngIf="checkIn && checkOut" class="d-flex flex-column align-content-center h-100 w-100">
-          <div class="text-center mb-3">
-            <span class="fs-4 fw-bolder ">Total da reserva</span>
-          </div>
-          <div>
-            <div *ngFor="let entry of pricesMap | keyvalue">
-              <h6 class="text-secondary mt-2"><u>{{ formatPrice(entry) }}</u></h6>
-            </div>
-          </div>
-          <hr *ngIf="pricesMap.size > 0">
-          <div class="mb-3 d-flex flex-row justify-content-between">
-            <span>Total </span>
-            <span>{{ totalDiscount() }}€</span>
-          </div>
-        </div>
-        <div class="d-flex h-100">
-          <span *ngIf="!checkIn || !checkOut" class="m-auto text-center">Selecione as datas para efetuar a reserva.</span>
-        </div>
-      </div>
-    </div>
     <!--  Chat chat -->
     <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
       <app-chat-new class="chat h-50"></app-chat-new>
     </div>
-    <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
-      <app-loader class="w-100"></app-loader>
-    </div>
   </div>
-
+  <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
+    <app-loader class="w-100"></app-loader>
+  </div>
   <div *ngIf="global_loading" class="m-auto">
     <app-loader></app-loader>
   </div>

@@ -31,16 +31,12 @@
   }
 
   .booking-info-owner {
-    min-height: 40vh;
+    min-height: 20vh;
   }
 
   .chat {
     height: 50vh;
   }
-}
-
-.vertical-rule{
-  height: 90%;
 }
 
 .custom-scroll::-webkit-scrollbar {

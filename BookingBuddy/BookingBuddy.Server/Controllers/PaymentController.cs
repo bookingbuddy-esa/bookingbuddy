@@ -21,7 +21,7 @@ namespace BookingBuddy.Server.Controllers
         private readonly IConfiguration _configuration;
         private static readonly WebSocketWrapper WebSocketWrapper = new();
         private static readonly Dictionary<string, List<WebSocket>> PaymentSockets = new();
-        
+
         /// <summary>
         /// Construtor da classe PaymentController.
         /// </summary>
@@ -132,6 +132,7 @@ namespace BookingBuddy.Server.Controllers
                     groupBookingOrder.PaidByIds.Add(groupPayment?.ApplicationUserId ?? "Unknown User");
                     if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
                     {
+                        GroupController.NotifyGroupBookingPaid(group, order.OrderId);
                         order.State = OrderState.Paid;
                         _context.BlockedDate.Add(blockDates);
                     }
@@ -154,8 +155,9 @@ namespace BookingBuddy.Server.Controllers
                             paymentId = requestId, // TODO: Adicionar mais campos relevantes
                             orderId,
                         }
-                    });                    
+                    });
                 }
+
                 return Ok();
             }
             catch (Exception ex)
@@ -305,7 +307,7 @@ namespace BookingBuddy.Server.Controllers
         public async Task HandleWebSocketAsync(string paymentId, WebSocket webSocket)
         {
             var payment = await _context.Payment.FindAsync(paymentId);
-            if(payment == null) return;
+            if (payment == null) return;
             WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
             {
                 if (PaymentSockets.TryGetValue(paymentId, out var value))
@@ -328,8 +330,8 @@ namespace BookingBuddy.Server.Controllers
 
                 return Task.CompletedTask;
             });
-            
-           await WebSocketWrapper.HandleAsync(webSocket);
+
+            await WebSocketWrapper.HandleAsync(webSocket);
         }
 
         /// <summary>

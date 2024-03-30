@@ -1,3 +1,5 @@
+import {GroupBookingOrder} from "./order";
+
 export interface Group {
   groupId: string,
   groupBookingId: string | null,
@@ -10,6 +12,7 @@ export interface Group {
   properties: GroupProperty[],
   votes: GroupVote[],
   chosenProperty: GroupProperty | null,
+  groupBookingOrder: GroupBookingOrder | null,
   chatId: string
   groupAction: string
 }
@@ -51,7 +54,7 @@ export class GroupActionHelper {
     return Object.keys(GroupAction).filter(k => typeof GroupAction[k as any] === "number")
   }
 
-  public static parseGroupAction(groupAction: string): GroupAction | null {
+  public static parse(groupAction: string): GroupAction | null {
     switch (groupAction) {
       case "None":
         return GroupAction.none;

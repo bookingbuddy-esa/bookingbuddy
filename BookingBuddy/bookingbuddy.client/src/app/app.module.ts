@@ -64,16 +64,16 @@ import {AboutComponent} from './about/about.component';
     FaqPageComponent, FooterComponent,
     ChatNewComponent, AboutComponent
   ],
-  imports: [
-    BrowserModule, HttpClientModule,
-    AppRoutingModule, FormsModule,
-    ReactiveFormsModule, AuthModule,
-    AuxiliaryModule, NgOptimizedImage,
-    HostingModule, GoogleMap, MapMarker,
-    MatIconModule, MatDatepickerModule,
-    MatFormFieldModule, MatInputModule,
-    MatNativeDateModule, PaymentComponent, MatTooltipModule, NgbModule
-  ],
+    imports: [
+        BrowserModule, HttpClientModule,
+        AppRoutingModule, FormsModule,
+        ReactiveFormsModule, AuthModule,
+        AuxiliaryModule, NgOptimizedImage,
+        HostingModule, GoogleMap, MapMarker,
+        MatIconModule, MatDatepickerModule,
+        MatFormFieldModule, MatInputModule,
+        MatNativeDateModule, PaymentComponent, MatTooltipModule, NgbModule
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: MAT_DATE_LOCALE, useValue: 'pt-Br'},

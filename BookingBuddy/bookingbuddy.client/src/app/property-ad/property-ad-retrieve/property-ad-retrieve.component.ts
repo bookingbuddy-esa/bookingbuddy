@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ChangeDetectorRef, Component, Injectable, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Property} from '../../models/property';
-import {Injectable} from '@angular/core';
 import {AuthorizeService} from "../../auth/authorize.service";
 import {PropertyAdService} from '../property-ad.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
@@ -9,14 +8,11 @@ import {AmenitiesHelper} from "../../models/amenity-enum";
 import {AppComponent} from '../../app.component';
 
 import {UserInfo} from "../../auth/authorize.dto";
-import {Router} from '@angular/router';
 import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
 import {OrderService} from '../../payment/order.service';
-import {Group} from '../../models/group';
+import {Group, GroupAction, GroupActionHelper} from '../../models/group';
 import {GroupService} from '../../group/group.service';
 import {timeout} from 'rxjs';
-import {ViewChild} from '@angular/core';
-import {ChangeDetectorRef} from '@angular/core';
 import {Discount} from "../../models/discount";
 
 @Component({
@@ -86,7 +82,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
           this.property = response as Property;
           this.loadDiscounts();
           this.loadBlockedDates();
-
         }
       }).catch(
       error => {
@@ -98,7 +93,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
   private loadUserGroups() {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
       this.group_list = groups;
-      this.group_list = this.group_list.filter(group => group.members.length <= this.property!.maxGuestsNumber && !group.properties.find(g => g.propertyId === this.property!.propertyId));
+      this.group_list = this.group_list.filter(
+        group => group.members.length <= this.property!.maxGuestsNumber
+          && !group.properties.find(g => g.propertyId === this.property!.propertyId)
+          && GroupActionHelper.parse(group.groupAction) === GroupAction.none);
       this.submitting = false;
     }).catch(error => {
       this.errors.push(error.error);

@@ -108,7 +108,7 @@ app.Map("/api/groups/ws",
         }
         catch
         {
-            httpContext.Response.StatusCode = 400;
+            // ignored
         }
     });
 
