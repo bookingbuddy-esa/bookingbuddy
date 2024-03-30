@@ -16,6 +16,8 @@ export class HomepageComponent implements OnInit {
   submitting: boolean = false;
   user: UserInfo | undefined;
   property_list: Property[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
 
   constructor(
     private authService: AuthorizeService,
@@ -44,6 +46,9 @@ export class HomepageComponent implements OnInit {
       response => {
         if (response) {
           this.property_list = response as Property[];
+          for(let i=0; i<5; i++){
+            this.property_list = this.property_list.concat(response as Property[]);
+          }
         }
       }).catch(
       error => {

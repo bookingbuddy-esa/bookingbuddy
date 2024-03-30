@@ -1,20 +1,18 @@
 <div *ngIf="!global_loading" class="row justify-content-center mt-4 w-100">
-  <!-- Coluna esquerda com os grupos e os membros -->
-  <div class="col-md-3 mb-5">
-    <div class="accordion mb-3" id="accordionGroups">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne1">
-          <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse"
-                  data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+    <!-- Coluna esquerda com os grupos e os membros -->
+    <div class="col-md-3 mb-5">
+        <div class="accordion mb-3" id="accordionGroups">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne1">
+                    <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
             Lista de Grupos
           </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-             data-bs-parent="#accordionGroups">
-          <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
-            <div class="list-group list-group-flush overflow-auto">
-              <div class="mx-auto p-2">
-                <span class="text-muted small">
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionGroups">
+                    <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
+                        <div class="list-group list-group-flush overflow-auto">
+                            <div class="mx-auto p-2">
+                                <span class="text-muted small">
                   Criar um grupo de reserva
                   <button type="button"
                           class="btn btn-outline-success btn-sm rounded-pill ms-2"
@@ -22,13 +20,10 @@
                     <i class="bi bi-person-fill-add"></i>
                   </button>
                 </span>
-              </div>
-              <hr class="m-0"/>
-              <span class="mx-auto p-2 fw-bold small"
-                    *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
-              <button *ngFor="let group of group_list" class="list-group-item list-group-item-action"
-                      (click)="chooseGroup(group.groupId)"
-                      [ngClass]="{'bg-success text-white': group === currentGroup}">
+                            </div>
+                            <hr class="m-0" />
+                            <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem grupos de reserva</span>
+                            <button *ngFor="let group of group_list" class="list-group-item list-group-item-action" (click)="chooseGroup(group.groupId)" [ngClass]="{'bg-success text-white': group === currentGroup}">
                 <div class="d-flex justify-content-between align-items-center">
                   <div class="fw-bold">{{ group.name }}</div>
                   <!--                  <span class="badge bg-success-medium rounded">{{ group.membersId.length }}<i-->
@@ -36,48 +31,40 @@
                 </div>
                 <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
               </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-    <div class="accordion" id="accordionMembers" *ngIf="currentGroup">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-          <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse"
-                  data-bs-target="#collapseOneMembers" aria-expanded="false" aria-controls="collapseOneMembers">
+        <div class="accordion" id="accordionMembers" *ngIf="currentGroup">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneMembers" aria-expanded="false" aria-controls="collapseOneMembers">
             Membros do Grupo
           </button>
-        </h2>
-        <div id="collapseOneMembers" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-             data-bs-parent="#accordionMembers">
-          <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
-            <div class="list-group list-group-flush overflow-auto">
-              <span class="mx-auto p-2 fw-bold small"
-                    *ngIf="group_list.length == 0">Não existem membros neste grupo.</span>
-              <button *ngFor="let member of currentGroup?.members!" class="list-group-item list-group-item-action">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div class="fw-bold">{{ member.name }}</div>
-                  <!--                  <i-->
-                  <!--                    class="ms-1 bi {{ member?.id === currentGroup.groupOwnerId ? 'bi-award-fill' : 'bi-person-fill' }}"></i>-->
+                </h2>
+                <div id="collapseOneMembers" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionMembers">
+                    <div class="overflow-auto accordion-body p-1 overflow-auto" style="max-height: 350px">
+                        <div class="list-group list-group-flush overflow-auto">
+                            <span class="mx-auto p-2 fw-bold small" *ngIf="group_list.length == 0">Não existem membros neste grupo.</span>
+                            <button *ngFor="let member of currentGroup?.members!" class="list-group-item list-group-item-action">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <div class="fw-bold"><a [routerLink]="['/profile', member.id]">{{ member.name }}</a></div>
+                              </div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <!--<span class="text-muted small text-truncate">{{group.lastMessage.member}}: {{group.lastMessage.message}}</span>-->
-              </button>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- Coluna direita que contém informação consoante a "Group Action" -->
-  <div *ngIf="!submitting && !ws_loading" class="col-12 col-md-9 d-flex flex-column">
-    <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
-      <div class="d-flex flex-row align-items-center">
-        <span class="text-center fs-2"> {{ currentGroup.name }}</span>
-        <div *ngIf="mdBreakpoint" class="vr mx-2 my-2"></div>
-        <span *ngIf="mdBreakpoint" class="badge text-center"
-              [matTooltip]="currentActionHelpText"
-              [ngClass]="{
+    <!-- Coluna direita que contém informação consoante a "Group Action" -->
+    <div *ngIf="!submitting && !ws_loading" class="col-12 col-md-9 d-flex flex-column">
+        <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
+            <div class="d-flex flex-row align-items-center">
+                <span class="text-center fs-2"> {{ currentGroup.name }}</span>
+                <div *ngIf="mdBreakpoint" class="vr mx-2 my-2"></div>
+                <span *ngIf="mdBreakpoint" class="badge text-center" [matTooltip]="currentActionHelpText" [ngClass]="{
               'text-bg-secondary': isActionNone && !isCanceled,
               'text-bg-info': isActionVoting && !isCanceled,
               'text-bg-warning': isActionPaying && !isBookingPaid && !isCanceled,
@@ -87,55 +74,33 @@
               }">
           {{ currentActionDescription }}
         </span>
-      </div>
-      <div class="btn-group btn-group-sm my-2">
-        <button class="btn btn-success px-3"
-                *ngIf="isActionNone && currentGroup.properties.length < 6 && !isCanceled"
-                (click)="showAddPropertyModal()"
-                matTooltip="Adicionar propriedade">
+            </div>
+            <div class="btn-group btn-group-sm my-2">
+                <button class="btn btn-success px-3" *ngIf="isActionNone && currentGroup.properties.length < 6 && !isCanceled" (click)="showAddPropertyModal()" matTooltip="Adicionar propriedade">
           <i class="bi bi-house-add-fill"></i>
         </button>
-        <button class="btn btn-info px-3"
-                *ngIf="isOwner && currentGroup.groupAction === 'None' && currentGroup.properties.length > 0 && !isCanceled"
-                (click)="startVoting()"
-                matTooltip="Iniciar votação">
+                <button class="btn btn-info px-3" *ngIf="isOwner && currentGroup.groupAction === 'None' && currentGroup.properties.length > 0 && !isCanceled" (click)="startVoting()" matTooltip="Iniciar votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
-        <button class="btn btn-success px-3"
-                *ngIf="isOwner && isActionVoting && !hasChosenProperty && !isCanceled"
-                (click)="concludeVoting()"
-                matTooltip="Concluir votação">
+                <button class="btn btn-success px-3" *ngIf="isOwner && isActionVoting && !hasChosenProperty && !isCanceled" (click)="concludeVoting()" matTooltip="Concluir votação">
           <i class="bi bi-chat-square-heart-fill"></i>
         </button>
-        <button class="btn btn-success px-3"
-                *ngIf="isOwner && hasChosenProperty && !isActionPaying && !isCanceled"
-                (click)="startBooking()"
-                matTooltip="Escolher datas">
+                <button class="btn btn-success px-3" *ngIf="isOwner && hasChosenProperty && !isActionPaying && !isCanceled" (click)="startBooking()" matTooltip="Escolher datas">
           <i class="bi bi-calendar-date"></i>
         </button>
-        <button class="btn btn-success px-3"
-                *ngIf="isActionPaying && !hasPaid && !isCanceled"
-                (click)="payGroupBooking()"
-                matTooltip="Pagar reserva">
+                <button class="btn btn-success px-3" *ngIf="isActionPaying && !hasPaid && !isCanceled" (click)="payGroupBooking()" matTooltip="Pagar reserva">
           <i class="bi bi-credit-card-fill"></i>
         </button>
-        <button class="btn btn-secondary px-3"
-                *ngIf="isActionNone && !isCanceled"
-                (click)="copyGroupLink()"
-                matTooltip="Copiar link de convite">
+                <button class="btn btn-secondary px-3" *ngIf="isActionNone && !isCanceled" (click)="copyGroupLink()" matTooltip="Copiar link de convite">
           <i class="bi bi-link"></i>
         </button>
-        <button class="btn btn-danger px-3"
-                *ngIf="isOwner" matTooltip="Apagar grupo"
-                (click)="showDeleteGroupModal()">
+                <button class="btn btn-danger px-3" *ngIf="isOwner" matTooltip="Apagar grupo" (click)="showDeleteGroupModal()">
           <i class="bi bi-trash-fill"></i>
         </button>
-      </div>
-    </div>
-    <div *ngIf="!mdBreakpoint && currentGroup" class="col mt-2 mb-1">
-      <span class="badge w-100 text-center"
-            [matTooltip]="currentActionHelpText"
-            [ngClass]="{
+            </div>
+        </div>
+        <div *ngIf="!mdBreakpoint && currentGroup" class="col mt-2 mb-1">
+            <span class="badge w-100 text-center" [matTooltip]="currentActionHelpText" [ngClass]="{
               'text-bg-secondary': isActionNone && !isCanceled,
               'text-bg-info': isActionVoting && !isCanceled,
               'text-bg-warning': isActionPaying && !isBookingPaid && !isCanceled,
@@ -145,76 +110,59 @@
               }">
           {{ currentActionDescription }}
         </span>
-    </div>
-    <div *ngIf="!currentGroup" class="text-center m-auto">
-      <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
-    </div>
+        </div>
+        <div *ngIf="!currentGroup" class="text-center m-auto">
+            <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
+        </div>
 
-    <!--  Lista de propriedades  -->
-    <div *ngIf="currentGroup"
-         class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
-      <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
-        <span class="text-muted small">Não existem propriedades para este grupo.</span>
-      </div>
-      <div class="w-100 h-100"
-           *ngIf="currentGroup && currentGroup.properties?.length !== 0">
-        <div
-          class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
-          <div class="col" *ngFor="let property of currentGroupProperties">
-            <div class="card h-100 w-100"
-                 [ngClass]="{
+        <!--  Lista de propriedades  -->
+        <div *ngIf="currentGroup" class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
+            <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
+                <span class="text-muted small">Não existem propriedades para este grupo.</span>
+            </div>
+            <div class="w-100 h-100" *ngIf="currentGroup && currentGroup.properties?.length !== 0">
+                <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-2 row-cols-1 g-2 flex-nowrap pb-1 overflow-x-auto custom-scroll h-100">
+                    <div class="col" *ngFor="let property of currentGroupProperties">
+                        <div class="card h-100 w-100" [ngClass]="{
                  'border-success': isPropertyChosen(property.propertyId),
                  'border-info': isPropertyVotedByUser(property.propertyId) && !currentGroup.chosenProperty,
                  'border-5 rounded': isPropertyVotedByUser(property.propertyId) || isPropertyChosen(property.propertyId)}">
-              <img class="card-img object-fit-cover opacity-50 h-100 w-100"
-                   [ngSrc]="property.imagesUrl[0]" fill priority
-                   [ngClass]="{'rounded-0': isPropertyChosen(property.propertyId) || isPropertyVotedByUser(property.propertyId)}"
-                   alt="Imagem da Propriedade">
-              <div class="card-img-overlay d-flex flex-column">
-                <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',property.propertyId]">
-                  <div class="card-title fw-bolder fs-5 text-truncate">{{ property.name }}</div>
-                  <div class="card-text text-truncate fw-bolder">{{ property.pricePerNight }}€ / noite</div>
-                </div>
-                <div class="d-flex flex-row">
-                  <button class="btn btn-sm btn-danger me-2"
-                          *ngIf="isActionNone && (property.addedBy.id === user?.userId || isOwner) && !hasChosenProperty && !isCanceled"
-                          matTooltip="Remover propriedade"
-                          (click)="removeProperty(property.propertyId)">
+                            <img class="card-img object-fit-cover opacity-50 h-100 w-100" [ngSrc]="property.imagesUrl[0]" fill priority [ngClass]="{'rounded-0': isPropertyChosen(property.propertyId) || isPropertyVotedByUser(property.propertyId)}" alt="Imagem da Propriedade">
+                            <div class="card-img-overlay d-flex flex-column gradient-overlay">
+                                <div class="on-hover-pointer flex-grow-1" [routerLink]="['/property',property.propertyId]">
+                                    <div class="card-title fw-bolder fs-5 text-truncate highlighted-text">{{ property.name }}</div>
+                                    <div class="card-text text-truncate fw-bolder highlighted-text">{{ property.pricePerNight }}€ / noite</div>
+                                </div>
+                                <div class="d-flex flex-row">
+                                    <button class="btn btn-sm btn-danger me-2" *ngIf="isActionNone && (property.addedBy.id === user?.userId || isOwner) && !hasChosenProperty && !isCanceled" matTooltip="Remover propriedade" (click)="removeProperty(property.propertyId)">
                     <i class="bi bi-x-square"></i>
                   </button>
-                  <button class="btn btn-sm btn-info"
-                          *ngIf="isActionVoting && !hasVotedInProperty(property) && !hasChosenProperty && !isCanceled"
-                          matTooltip="Votar na propriedade"
-                          (click)="voteForProperty(property.propertyId)">
+                                    <button class="btn btn-sm btn-info" *ngIf="isActionVoting && !hasVotedInProperty(property) && !hasChosenProperty && !isCanceled" matTooltip="Votar na propriedade" (click)="voteForProperty(property.propertyId)">
                     <i class="bi bi-check2-circle"></i>
                   </button>
-                  <button class="btn btn-sm btn-danger"
-                          *ngIf="isActionVoting && hasVotedInProperty(property) && !hasChosenProperty && !isCanceled"
-                          matTooltip="Remover voto na propriedade"
-                          (click)="removeVote(property.propertyId)">
+                                    <button class="btn btn-sm btn-danger" *ngIf="isActionVoting && hasVotedInProperty(property) && !hasChosenProperty && !isCanceled" matTooltip="Remover voto na propriedade" (click)="removeVote(property.propertyId)">
                     <i class="bi bi-check2-circle"></i>
                   </button>
-                  <div class="flex-fill on-hover-pointer" [routerLink]="['/property',property.propertyId]"></div>
-                  <span class="badge text-bg-info rounded p-2"
-                        *ngIf="isActionVoting && !hasChosenProperty">
+                                    <div class="flex-fill on-hover-pointer" [routerLink]="['/property',property.propertyId]"></div>
+                                    <span class="badge text-bg-info rounded p-2" *ngIf="isActionVoting && !hasChosenProperty">
                     {{ numberOfPropertyVotes(property.propertyId) }}<i class="bi bi-person ms-1"></i>
                   </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+        <!--  Chat chat -->
+        <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
+            <app-chat-new class="chat h-50"></app-chat-new>
+        </div>
     </div>
-    <!--  Chat chat -->
-    <div class="d-flex flex-column flex-grow-1" *ngIf="currentGroup">
-      <app-chat-new class="chat h-50"></app-chat-new>
+    <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
+        <app-loader class="w-100"></app-loader>
     </div>
-  </div>
-  <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
-    <app-loader class="w-100"></app-loader>
-  </div>
-  <div *ngIf="global_loading" class="m-auto">
-    <app-loader></app-loader>
-  </div>
+    <div *ngIf="global_loading" class="m-auto">
+        <app-loader></app-loader>
+    </div>
 </div>

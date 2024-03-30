@@ -365,6 +365,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     await this.router.navigate([], {queryParams: {groupId: groupId}});
     return this.groupService.getGroup(groupId).forEach(group => {
       this.currentGroup = group;
+      console.log(this.currentGroup)
       this.group_list = this.group_list.map(g => {
         if (g.groupId == group.groupId) {
           return group;
