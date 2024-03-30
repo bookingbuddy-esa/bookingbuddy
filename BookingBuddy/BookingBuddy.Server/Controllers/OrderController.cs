@@ -528,6 +528,8 @@ namespace BookingBuddy.Server.Controllers
                         members.Add(member!);
                     }
 
+                    GroupController.NotifyGroupBookingCreated(group, groupBookingOrder.OrderId);
+                    
                     return CreatedAtAction("GetOrder", new { orderId = groupBookingOrder.OrderId }, new
                     {
                         groupBookingOrder.OrderId,
@@ -558,6 +560,7 @@ namespace BookingBuddy.Server.Controllers
                         groupBookingOrder.StartDate,
                         groupBookingOrder.EndDate,
                         groupBookingOrder.TotalAmount,
+                        PaidBy = groupBookingOrder.PaidByIds,
                         State = groupBookingOrder.State.AsString()
                     });
                 }

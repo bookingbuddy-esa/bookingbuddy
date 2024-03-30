@@ -22,6 +22,7 @@ import {MatFormField, MatHint, MatLabel, MatSuffix} from "@angular/material/form
 import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {OrderService} from "../payment/order.service";
+import {co} from "@fullcalendar/core/internal-common";
 
 @Component({
   selector: 'app-group',
@@ -212,15 +213,6 @@ export class GroupComponent implements OnInit, OnDestroy {
           let content = JSON.parse(message.content) as { groupId: string, groupAction: string };
           if (this.currentGroup?.groupId == content.groupId) {
             this.currentGroup!.groupAction = content.groupAction;
-            if (GroupActionHelper.parse(content.groupAction) === GroupAction.paying) {
-              this.orderService.getOrder(this.currentGroup.groupBookingId!).forEach(order => {
-                if (this.currentGroup) {
-                  this.currentGroup.groupBookingOrder = order;
-                }
-              }).catch(error => {
-                console.error('Erro ao carregar order de grupo:', error);
-              });
-            }
           }
           break;
         }
@@ -268,10 +260,24 @@ export class GroupComponent implements OnInit, OnDestroy {
           }
           break;
         }
-        case 'GroupBookingOrderPaid': {
+        case 'GroupBookingOrderCreated': {
           let content = JSON.parse(message.content) as { groupId: string, orderId: string };
           console.log(content);
-          if(this.currentGroup?.groupId == content.groupId){
+          if (this.currentGroup?.groupId == content.groupId) {
+            this.orderService.getOrder(content.orderId).forEach(order => {
+              if (this.currentGroup) {
+                this.currentGroup.groupBookingOrder = order;
+                this.currentGroup.groupBookingId = order.orderId;
+              }
+            }).catch(error => {
+              console.error('Erro ao carregar order de grupo:', error);
+            });
+          }
+          break;
+        }
+        case 'GroupBookingOrderPaid': {
+          let content = JSON.parse(message.content) as { groupId: string, orderId: string };
+          if (this.currentGroup?.groupId == content.groupId) {
             this.currentGroup!.groupBookingOrder!.state = 'Paid';
           }
           break;
@@ -521,11 +527,11 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.showSelectDatesModal();
   }
 
-  protected payGroupBooking() {
+  protected async payGroupBooking() {
     if (!this.currentGroup) {
       return;
     }
-    this.router.navigate(['/transaction', 'group-booking'], {
+    await this.router.navigate(['/transaction', 'group-booking'], {
       queryParams: {
         groupBookingId: this.currentGroup.groupBookingId
       }
@@ -717,9 +723,12 @@ export class GroupComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.currentGroup = this.currentGroup;
     modalRef.componentInstance.discounts = this.discounts;
     modalRef.componentInstance.onAccept.forEach(async (dates: { checkIn: Date, checkOut: Date }) => {
-      this.orderService.createGroupBookingOrder(this.currentGroup!.groupId, dates.checkIn, dates.checkOut).forEach(response => {
-        if (response) {
+      this.orderService.createGroupBookingOrder(this.currentGroup!.groupId, dates.checkIn, dates.checkOut).forEach(order => {
+        if (order) {
+          this.currentGroup!.groupBookingOrder = order;
+          this.currentGroup!.groupBookingId = order.orderId;
           this.updateGroupAction(GroupAction.paying);
+          console.log(this.currentGroup);
         }
       }).then(() => {
         modalRef.close();

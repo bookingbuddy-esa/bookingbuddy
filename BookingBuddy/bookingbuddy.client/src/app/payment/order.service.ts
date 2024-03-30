@@ -45,7 +45,7 @@ export class OrderService {
       observe: 'response',
       responseType: 'json'
     }).pipe(map((res: any) => {
-      return res.body;
+      return res.body as GroupBookingOrder;
     }));
   }
 

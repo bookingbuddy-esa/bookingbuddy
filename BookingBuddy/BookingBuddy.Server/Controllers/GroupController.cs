@@ -1078,6 +1078,31 @@ namespace BookingBuddy.Server.Controllers
         /// Notifica os membros de um grupo que a reserva foi paga.
         /// </summary>
         [NonAction]
+        public static async void NotifyGroupBookingCreated(Group group, string orderId)
+        {
+            var memberSockets = GroupSockets
+                .Where(gs => group.MembersId.Contains(gs.Key))
+                .SelectMany(gs => gs.Value)
+                .ToList();
+
+            foreach (var socket in memberSockets)
+            {
+                await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                {
+                    Code = "GroupBookingOrderCreated",
+                    Content = JsonSerializer.Serialize(new
+                    {
+                        groupId = group.GroupId,
+                        orderId
+                    })
+                });
+            }
+        }
+
+        /// <summary>
+        /// Notifica os membros de um grupo que a reserva foi paga.
+        /// </summary>
+        [NonAction]
         public static async void NotifyGroupBookingPaid(Group group, string orderId)
         {
             var memberSockets = GroupSockets
