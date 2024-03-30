@@ -1189,7 +1189,7 @@ export class SelectDatesModal implements OnDestroy {
       const pricePerNight = this.currentGroup?.chosenProperty?.pricePerNight;
       const selectedDates: Date[] = [];
       const currentDate = new Date(this.checkIn!);
-      while (currentDate <= this.checkOut!) {
+      while (currentDate < this.checkOut!) {
         selectedDates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
       }
