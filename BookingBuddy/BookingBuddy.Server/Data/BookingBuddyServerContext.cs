@@ -106,16 +106,16 @@ namespace BookingBuddy.Server.Data
         ///  Propriedade que diz respeito às mensagens do chat.
         /// </summary>
         public DbSet<ChatMessage> ChatMessage { get; set; } = default!;
-
+        
         /// <summary>
-        /// Propriedade que diz respeito às mensagens de grupo.
+        /// Propriedade que diz respeito às propriedades adicionadas pelo utilizador.
         /// </summary>
-        public DbSet<GroupMessage> GroupMessage { get; init; } = default!;
-
+        public DbSet<UserAddedProperty> UserAddedProperty { get; set; } = default!;
+        
         /// <summary>
-        /// Propriedade que diz respeito às mensagens de grupo.
+        /// Propriedade que diz respeito aos votos dos utilizadores.
         /// </summary>
-        public DbSet<GroupVote> GroupVote { get; set; } = default!;
+        public DbSet<UserVote> UserVote { get; set; } = default!;
 
         /// <summary>
         /// Dados de inicialização da base de dados.
@@ -211,6 +211,75 @@ namespace BookingBuddy.Server.Data
             };
             userUser.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(userUser, "userBB123!");
 
+            var user2User = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "user 2",
+                UserName = "bookingbuddy.user2@bookingbuddy.com",
+                NormalizedUserName = "BOOKINGBUDDY.USER2@BOOKINGBUDDY.COM",
+                Email = "bookingbuddy.user2@bookingbuddy.com",
+                NormalizedEmail = "BOOKINGBUDDY.USER2@BOOKINGBUDDY.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                ProviderId = localProvider.AspNetProviderId,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de utilizador 2 (padrão) do BookingBuddy."
+            };
+            user2User.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user2User, "user2BB123!");
+
+            var user3User = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "user 3",
+                UserName = "bookingbuddy.user3@bookingbuddy.com",
+                NormalizedUserName = "BOOKINGBUDDY.USER3@BOOKINGBUDDY.COM",
+                Email = "bookingbuddy.user3@bookingbuddy.com",
+                NormalizedEmail = "BOOKINGBUDDY.USER3@BOOKINGBUDDY.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                ProviderId = localProvider.AspNetProviderId,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de utilizador 3 (padrão) do BookingBuddy."
+            };
+            user3User.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user3User, "user3BB123!");
+
+            var user4User = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "user 4",
+                UserName = "bookingbuddy.user4@bookingbuddy.com",
+                NormalizedUserName = "BOOKINGBUDDY.USER4@BOOKINGBUDDY.COM",
+                Email = "bookingbuddy.user4@bookingbuddy.com",
+                NormalizedEmail = "BOOKINGBUDDY.USER4@BOOKINGBUDDY.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                ProviderId = localProvider.AspNetProviderId,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de utilizador 4 (padrão) do BookingBuddy."
+            };
+            user4User.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user4User, "user4BB123!");
+
+            var user5User = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "user 5",
+                UserName = "bookingbuddy.user5@bookingbuddy.com",
+                NormalizedUserName = "BOOKINGBUDDY.USER5@BOOKINGBUDDY.COM",
+                Email = "bookingbuddy.user5@bookingbuddy.com",
+                NormalizedEmail = "BOOKINGBUDDY.USER5@BOOKINGBUDDY.COM",
+                EmailConfirmed = true,
+                LockoutEnabled = false,
+                ProviderId = localProvider.AspNetProviderId,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                Description = "Esta é descrição da conta de utilizador 5 (padrão) do BookingBuddy."
+            };
+            user5User.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(user5User, "user5BB123!");
+
+            
             var landlordUser = new ApplicationUser
             {
                 Id = Guid.NewGuid().ToString(),
@@ -250,6 +319,10 @@ namespace BookingBuddy.Server.Data
             builder.Entity<ApplicationUser>().HasData(
                 adminUser,
                 userUser,
+                user2User,
+                user3User,
+                user4User,
+                user5User,
                 landlordUser,
                 jMeterUser
             );
@@ -267,6 +340,26 @@ namespace BookingBuddy.Server.Data
                 },
                 new IdentityUserRole<string>
                 {
+                    RoleId = userRole.Id,
+                    UserId = user2User.Id
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = userRole.Id,
+                    UserId = user3User.Id
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = userRole.Id,
+                    UserId = user4User.Id
+                },
+                new IdentityUserRole<string>
+                {
+                    RoleId = userRole.Id,
+                    UserId = user5User.Id
+                },
+                new IdentityUserRole<string>
+                {
                     RoleId = landlordRole.Id,
                     UserId = landlordUser.Id
                 },
@@ -280,7 +373,7 @@ namespace BookingBuddy.Server.Data
             List<Amenity> amenities = [];
             amenities.AddRange(Enum.GetValues<AmenityEnum>().Select(amenity => new Amenity
             {
-                AmenityId = Guid.NewGuid().ToString(), Name = amenity.ToString(), DisplayName = amenity.GetAmenityName()
+                AmenityId = Guid.NewGuid().ToString(), Name = amenity.ToString(), DisplayName = amenity.GetDescription()
             }));
 
             builder.Entity<Amenity>().HasData(amenities);

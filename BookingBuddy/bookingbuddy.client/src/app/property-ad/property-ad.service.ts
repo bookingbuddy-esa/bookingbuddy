@@ -2,7 +2,8 @@ import {Injectable, Component} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject, catchError, map, of} from 'rxjs';
 import {environment} from "../../environments/environment";
-import {Property, PropertyCreate} from "../models/property";
+import { Property, PropertyCreate} from "../models/property";
+import {Block} from "@angular/compiler";
 
 
 @Injectable({
@@ -32,9 +33,9 @@ export class PropertyAdService {
       observe: 'response',
       responseType: 'text'
     })
-    .pipe<boolean>(map((res: HttpResponse<string>) => {
-      return res.ok;
-    }));
+      .pipe<boolean>(map((res: HttpResponse<string>) => {
+        return res.ok;
+      }));
   }
 
 
@@ -76,12 +77,12 @@ export class PropertyAdService {
     );
   }
 
-  public getPropertyBlockedDates(propertyId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/properties/blockedDates/${propertyId}`);
+  public getPropertyBlockedDates(propertyId: string){
+    return this.http.get<ReturnedBlockedDates[]>(`${environment.apiUrl}/api/properties/blockedDates/${propertyId}`);
   }
 
-  public getPropertyDiscounts(propertyId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/api/properties/discounts/${propertyId}`);
+  public getPropertyDiscounts(propertyId: string){
+    return this.http.get<ReturnedDiscount[]>(`${environment.apiUrl}/api/properties/discounts/${propertyId}`);
   }
 
   public isPropertyInFavorites(propertyId: string): Observable<boolean> {
@@ -89,5 +90,19 @@ export class PropertyAdService {
       withCredentials: true
     });
   }
+}
 
+export interface ReturnedDiscount {
+  discountId: string,
+  propertyId: string,
+  discountAmount: number,
+  startDate: Date,
+  endDate: Date,
+}
+
+export interface ReturnedBlockedDates {
+  id: string,
+  propertyId: string
+  start: string,
+  end: string,
 }

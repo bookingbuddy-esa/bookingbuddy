@@ -1,39 +1,59 @@
 :host {
-    display: flex;
-    height: inherit;
-    width: inherit;
-    justify-content: center;
+  display: flex;
+  height: inherit;
+  width: inherit;
+  justify-content: center;
 }
 
-.chat {
-    background-color: #ccd5cb;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.on-hover-pointer:hover {
+  cursor: pointer;
 }
 
-.chat p {
-    color: #3e5e38;
+.property-list {
+  min-height: 30%;
 }
 
-.chat input {
-    background-color: #ffffff;
-    border: 1px solid #82987e;
-    color: #5c7858;
+.booking-info {
+  min-height: 30%;
 }
 
-.chat button {
-    background-color: #82987e;
-    color: #ffffff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
+.booking-info-owner {
+  min-height: 30%;
 }
 
-.chat button:hover {
-    background-color: #718d73;
+@media screen and (max-width: 768px) {
+  .property-list {
+    min-height: 20vh;
+  }
+
+  .booking-info {
+    min-height: 20vh;
+  }
+
+  .booking-info-owner {
+    min-height: 20vh;
+  }
+
+  .chat {
+    height: 50vh;
+  }
 }
 
-.chat button:active {
-    background-color: #92a897;
+.custom-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #b2b2b2;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #5c7858;
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #198653;
 }

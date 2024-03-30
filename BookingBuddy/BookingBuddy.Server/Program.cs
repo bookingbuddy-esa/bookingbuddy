@@ -4,6 +4,7 @@ using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 using BookingBuddy.Server.Controllers;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +17,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-var azureSignalrConnectionString = builder.Configuration.GetConnectionString("AzureSignalR") ??
-                                   throw new InvalidOperationException(
-                                       "Connection string 'AzureSignalR' not found.");
-builder.Services.AddSignalR().AddAzureSignalR(options => { options.ConnectionString = azureSignalrConnectionString; });
-
 builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BookingBuddyServerContext") ??
                          throw new InvalidOperationException(
@@ -31,6 +27,7 @@ builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.None;
 });
+
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<BookingBuddyServerContext>()
@@ -68,42 +65,57 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
     app.UseSwaggerUI();
 }
 
-app.MapHub<ChatHubController>("/hubs/chat");
-
 app.UseWebSockets(new WebSocketOptions
 {
-    KeepAliveInterval = TimeSpan.FromSeconds(30)
+    AllowedOrigins = { builder.Configuration.GetSection("Front-End-Url").Value ?? "" }
 });
 
 app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string paymentId) =>
 {
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
+    try
     {
-        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+        if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(paymentId))
+        {
+            var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+            await paymentController.HandleWebSocketAsync(paymentId, webSocket);
+        }
+        else
+        {
+            throw new Exception("Invalid request.");
+        }
     }
-    else
-    {
-        httpContext.Response.StatusCode = 400;
-    }
-});
-
-app.Map("/api/groups/ws", async (HttpContext httpContext, GroupController groupController, string groupId) =>
-{
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(groupId))
-    {
-        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        await groupController.HandleWebSocketAsync(groupId, webSocket);
-    }
-    else
+    catch
     {
         httpContext.Response.StatusCode = 400;
     }
 });
 
+// TODO: Deixar de usar o userId como parâmetro e passar a usar um token
+app.Map("/api/groups/ws",
+    async (HttpContext httpContext, GroupController groupController, string userId, string? socketId) =>
+    {
+        try
+        {
+            if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(userId))
+            {
+                var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                await groupController.HandleWebSocketAsync(userId, socketId, webSocket);
+            }
+            else
+            {
+                throw new Exception("Invalid request.");
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    });
+
+// TODO: Deixar de usar o userId como parâmetro e passar a usar um token
 app.Map("/api/chat/ws", async (HttpContext httpContext, ChatController chatController, string chatId, string userId) =>
 {
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId))
+    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId) && !string.IsNullOrEmpty(userId))
     {
         var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
         await chatController.HandleWebSocketAsync(chatId, userId, webSocket);
