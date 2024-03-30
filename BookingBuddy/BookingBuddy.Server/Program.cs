@@ -70,7 +70,7 @@ app.UseWebSockets(new WebSocketOptions
     AllowedOrigins = { builder.Configuration.GetSection("Front-End-Url").Value ?? "" }
 });
 
-app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string paymentId) =>
+app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string? paymentId) =>
 {
     try
     {
@@ -86,20 +86,24 @@ app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController pa
     }
     catch
     {
-        httpContext.Response.StatusCode = 400;
+        if (!httpContext.Response.HasStarted)
+        {
+            httpContext.Response.StatusCode = 400;
+        }
     }
 });
 
 // TODO: Deixar de usar o userId como parâmetro e passar a usar um token
 app.Map("/api/groups/ws",
-    async (HttpContext httpContext, GroupController groupController, string userId, string? socketId) =>
+    async (HttpContext httpContext, GroupController groupController, string? socketId) =>
     {
         try
         {
-            if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(userId))
+            if (httpContext.WebSockets.IsWebSocketRequest)
             {
                 var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-                await groupController.HandleWebSocketAsync(userId, socketId, webSocket);
+                groupController.ControllerContext.HttpContext = httpContext;
+                await groupController.HandleWebSocketAsync(socketId, webSocket);
             }
             else
             {
@@ -108,7 +112,10 @@ app.Map("/api/groups/ws",
         }
         catch
         {
-            // ignored
+            if (!httpContext.Response.HasStarted)
+            {
+                httpContext.Response.StatusCode = 400;
+            }
         }
     });
 

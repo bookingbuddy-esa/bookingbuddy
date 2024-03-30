@@ -1033,9 +1033,9 @@ namespace BookingBuddy.Server.Controllers
         /// <param name="webSocket">O objeto WebSocket que será manipulado.</param>
         /// <returns>Uma tarefa que representa a operação assíncrona.</returns>
         [NonAction]
-        public async Task HandleWebSocketAsync(string userId, string? socketId, WebSocket webSocket)
+        public async Task HandleWebSocketAsync(string? socketId, WebSocket webSocket)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null) return;
 
             socketId ??= Guid.NewGuid().ToString();
@@ -1043,13 +1043,13 @@ namespace BookingBuddy.Server.Controllers
 
             WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
             {
-                if (GroupSockets.TryGetValue(userId, out var groupSockets))
+                if (GroupSockets.TryGetValue(user.Id, out var groupSockets))
                 {
                     groupSockets.Add(webSocket);
                 }
                 else
                 {
-                    GroupSockets.Add(userId, [webSocket]);
+                    GroupSockets.Add(user.Id, [webSocket]);
                 }
 
                 if (!Sockets.TryAdd(socketId, webSocket))
@@ -1061,7 +1061,7 @@ namespace BookingBuddy.Server.Controllers
             });
             WebSocketWrapper.AddOnCloseListener(webSocket, (_, _) =>
             {
-                if (GroupSockets.TryGetValue(userId, out var value))
+                if (GroupSockets.TryGetValue(user.Id, out var value))
                 {
                     value.Remove(webSocket);
                 }

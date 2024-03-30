@@ -158,7 +158,7 @@ export class GroupComponent implements OnInit, OnDestroy {
     let url = environment.apiUrl;
     url = url.replace('https', 'wss');
     let uuid = uuidv4();
-    let fullUrl = `${url}/api/groups/ws?socketId=${uuid}&userId=${this.user?.userId}`
+    let fullUrl = `${url}/api/groups/ws?socketId=${uuid}`
     this.ws = new WebSocket(fullUrl);
     this.ws_uuid = uuid;
     console.log(`[WebSocket] A estabelecer conexão...`);
@@ -262,7 +262,6 @@ export class GroupComponent implements OnInit, OnDestroy {
         }
         case 'GroupBookingOrderCreated': {
           let content = JSON.parse(message.content) as { groupId: string, orderId: string };
-          console.log(content);
           if (this.currentGroup?.groupId == content.groupId) {
             this.orderService.getOrder(content.orderId).forEach(order => {
               if (this.currentGroup) {
