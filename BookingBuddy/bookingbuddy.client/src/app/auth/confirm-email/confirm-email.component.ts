@@ -23,6 +23,9 @@ export class ConfirmEmailComponent implements OnInit {
         response => {
           if (response) {
             this.submitting = false;
+            setTimeout(() => {
+              this.router.navigate(["signin"]);
+            }, 5000);
           }
         }).catch(
         error => {

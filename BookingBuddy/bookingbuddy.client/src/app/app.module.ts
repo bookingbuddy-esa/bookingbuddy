@@ -13,7 +13,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { MenuComponent } from './menu/menu.component';
 import { AuxiliaryModule } from './auxiliary/auxiliary.module';
 import { HomepagePropertyComponent } from './homepage/homepage-property/homepage-property.component';
-import {NgOptimizedImage} from "@angular/common";
+import {DatePipe, NgOptimizedImage} from "@angular/common";
 import { PropertyAdCreateComponent } from './property-ad/property-ad-create/property-ad-create.component';
 import { HostingModule } from './hosting/hosting.module';
 import { PropertyAdRetrieveComponent } from './property-ad/property-ad-retrieve/property-ad-retrieve.component';
@@ -83,6 +83,7 @@ import { AboutComponent } from './about/about.component';
     { provide: MAT_DATE_LOCALE, useValue: 'pt-Br' },
     AuthGuard,
     AuthorizeService,
+    DatePipe,
     provideAnimationsAsync()
   ],
   bootstrap: [AppComponent]

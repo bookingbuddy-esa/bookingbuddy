@@ -18,18 +18,15 @@ export class FavoriteSidebarComponent {
   }
 
   ngOnInit(): void {
-    this.authService.isSignedIn().forEach(
-      isSignedIn => {
-        this.signedIn = isSignedIn;
-        if (isSignedIn) {
-          this.authService.user().forEach(user => this.user = user);
-        }
-      });
-    this.authService.user().forEach(async user => {
-      this.user = user;
-      this.loadFavorites();
+    this.authService.isSignedIn().forEach(isSignedIn => {
+      this.signedIn = isSignedIn;
+      if (isSignedIn) {
+        this.authService.user().forEach(user => {
+          this.user = user;
+          this.loadFavorites();
+        });
+      }
     });
-
   }
 
   loadFavorites() {

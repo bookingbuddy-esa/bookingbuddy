@@ -1,87 +1,71 @@
-<div *ngIf="!submitting && !registerSucceeded"
-     class="d-flex w-100 flex-column align-items-center justify-content-between">
-  <div></div>
-  <div class="d-flex flex-column align-items-center justify-content-center">
-    <div class="d-flex flex-column align-items-center w-100">
-      <div *ngIf="errors.length !== 0"
-           class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
-        <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close"
-                (click)="errors=[]"></button>
-        <div class="d-flex flex-column align-items-start">
-          <span *ngFor="let error of errors">{{ error }}</span>
+<div *ngIf="!submitting && !registerSucceeded" class="d-flex w-100 flex-column align-items-center justify-content-between">
+    <div></div>
+    <div class="d-flex flex-column align-items-center justify-content-center">
+        <div class="d-flex flex-column align-items-center w-100">
+            <div *ngIf="errors.length !== 0" class="alert alert-danger alert-dismissible d-flex w-100 align-items-center fade show mt-2" role="alert">
+                <button type="button" class="btn-close align-self-center" data-bs-dismiss="alert" aria-label="Close" (click)="errors=[]"></button>
+                <div class="d-flex flex-column align-items-start">
+                    <span *ngFor="let error of errors">{{ error }}</span>
+                </div>
+            </div>
+            <div class="p-3 page-title">Bem-vindo ao Booking Buddy!</div>
         </div>
-      </div>
-      <div class="p-3 page-title">Bem-vindo ao Booking Buddy!</div>
+        <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="registerForm" (submit)="register($event)" novalidate>
+            <div class="w-100 py-2">
+                <input type="text" class="form-control form-input p-2" id="name" placeholder="Insira o seu nome" name="name" formControlName="name" [ngClass]="{'is-valid':nameFormField?.valid && nameFormField?.dirty,'is-invalid':nameFormField?.invalid && nameFormField?.dirty}">
+                <div class="invalid-feedback">O nome é obrigatório!</div>
+            </div>
+            <div class="w-100 py-2">
+                <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail" name="email" formControlName="email" (select)="emailFailed=false" (click)="emailFailed=false" [ngClass]="{'is-valid':emailFormField?.valid && emailFormField?.dirty,'is-invalid':emailFormField?.invalid && emailFormField?.dirty || emailFailed}">
+                <div class="invalid-feedback">O email é inválido!</div>
+            </div>
+            <div class="w-100 py-2">
+                <input type="password" class="form-control form-input p-2" id="password" placeholder="Insira a sua palavra passe" name="password" formControlName="password" [ngClass]="{'is-valid':passwordFormField?.valid && passwordFormField?.dirty,'is-invalid':passwordFormField?.invalid && passwordFormField?.dirty}">
+                <div *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')" class="invalid-feedback">Pelo menos uma letra maiúscula.
+                </div>
+                <div *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')" class="invalid-feedback">Pelo menos uma letra minúscula.
+                </div>
+                <div *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')" class="invalid-feedback">Pelo menos um número.
+                </div>
+                <div *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')" class="invalid-feedback">Pelo menos um caractere especial.
+                </div>
+                <div *ngIf="!passwordFormField?.value?.match('.{6,}')" class="invalid-feedback">Pelo menos 6 caracteres.</div>
+            </div>
+            <div class="w-100 py-2">
+                <input type="password" class="form-control form-input p-2" id="confirmPassword" placeholder="Reescreva a palavra-passe" name="confirmPassword" formControlName="confirmPassword" [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty && confirmPasswordFormField?.value==passwordFormField?.value,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
+                <div class="invalid-feedback">As palavras-passe não coincidem.</div>
+            </div>
+            <button class="btn btn-register mt-4 w-100 p-2" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
+        </form>
+        <div class="d-flex my-auto flex-column align-items-center w-100">
+            <div class="other-registers py-2 w-100 d-flex flex-row align-items-center justify-content-center">
+                <hr class="flex-grow-1" />
+                <span class="mx-4">Ou criar conta com</span>
+                <hr class="flex-grow-1" />
+            </div>
+            <div class="d-flex flex-row align-items-center justify-content-center">
+                <div class="mx-4">
+                    <app-google></app-google>
+                </div>
+                <div class="mx-4">
+                    <app-microsoft></app-microsoft>
+                </div>
+            </div>
+        </div>
     </div>
-    <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="registerForm"
-          (submit)="register($event)" novalidate>
-      <div class="w-100 py-2">
-        <input type="text" class="form-control form-input p-2" id="name" placeholder="Insira o seu nome" name="name"
-               formControlName="name"
-               [ngClass]="{'is-valid':nameFormField?.valid && nameFormField?.dirty,'is-invalid':nameFormField?.invalid && nameFormField?.dirty}">
-        <div class="invalid-feedback">O nome é obrigatório!</div>
-      </div>
-      <div class="w-100 py-2">
-        <input type="email" class="form-control form-input p-2" id="email" placeholder="Insira o seu endereço de e-mail"
-               name="email" formControlName="email"
-               (select)="emailFailed=false"
-               (click)="emailFailed=false"
-               [ngClass]="{'is-valid':emailFormField?.valid && emailFormField?.dirty,'is-invalid':emailFormField?.invalid && emailFormField?.dirty || emailFailed}">
-        <div class="invalid-feedback">O email é inválido!</div>
-      </div>
-      <div class="w-100 py-2">
-        <input type="password" class="form-control form-input p-2" id="password" placeholder="Insira a sua palavra passe"
-               name="password" formControlName="password"
-               [ngClass]="{'is-valid':passwordFormField?.valid && passwordFormField?.dirty,'is-invalid':passwordFormField?.invalid && passwordFormField?.dirty}">
-        <div *ngIf="!passwordFormField?.value?.match('^(?=.*[A-Z])')" class="invalid-feedback">Pelo menos uma letra
-          maiúscula.
-        </div>
-        <div *ngIf="!passwordFormField?.value?.match('(?=.*[a-z])')" class="invalid-feedback">Pelo menos uma letra
-          minúscula.
-        </div>
-        <div *ngIf="!passwordFormField?.value?.match('(.*[0-9].*)')" class="invalid-feedback">Pelo menos um número.
-        </div>
-        <div *ngIf="!passwordFormField?.value?.match('(?=.*[!@#$%^&*])')" class="invalid-feedback">Pelo menos um
-          caractere especial.
-        </div>
-        <div *ngIf="!passwordFormField?.value?.match('.{6,}')" class="invalid-feedback">Pelo menos 6 caracteres.</div>
-      </div>
-      <div class="w-100 py-2">
-        <input type="password" class="form-control form-input p-2" id="confirmPassword"
-               placeholder="Reescreva a palavra-passe" name="confirmPassword" formControlName="confirmPassword"
-               [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty && confirmPasswordFormField?.value==passwordFormField?.value,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
-        <div class="invalid-feedback">As palavras-passe não coincidem.</div>
-      </div>
-      <button class="btn btn-register mt-4 w-100 p-2" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
-    </form>
-    <div class="d-flex my-auto flex-column align-items-center w-100">
-      <div class="other-registers py-2 w-100 d-flex flex-row align-items-center justify-content-center">
-        <hr class="flex-grow-1"/>
-        <span class="mx-4">Ou criar conta com</span>
-        <hr class="flex-grow-1"/>
-      </div>
-      <div class="d-flex flex-row align-items-center justify-content-center">
-        <div class="mx-4">
-          <app-google></app-google>
-        </div>
-        <div class="mx-4">
-          <app-microsoft></app-microsoft>
-        </div>
-      </div>
-    </div>
-  </div>
-  <span class="bottom-text mb-3">Já tem conta?  <button class="btn btn-link p-0" type="button" [routerLink]="['/signin']">Inicie sessão</button></span>
+    <!--<span class="bottom-text mb-3">Já tem conta?  <button class="btn btn-link p-0" type="button" [routerLink]="['/signin']">Inicie sessão</button></span>-->
+    <span class="bottom-text mb-3">Já tem conta? <strong><a href="/signin">Iniciar sessão</a></strong></span>
 </div>
 
-<div *ngIf="registerSucceeded && !submitting"
-     class="d-flex w-100 flex-column align-items-center justify-content-between">
-  <div class="d-flex w-50 my-5 flex-column align-items-center text-center">
-    <img class="p-4 mb-2" src="../assets/img/envelope.png" width="40%">
-    <p class="h2 fw-bolder">Estamos quase lá...</p>
-    <p class="h2 fw-bolder">Por favor, confirme o seu endereço de e-mail para ativar a sua conta.</p>
-  </div>
-  <span class="bottom-text mb-3">Não recebeu e-mail de confirmação? <button class="btn btn-link p-0" type="button"
-                                                                            (click)="resendEmail()">Clique aqui</button></span>
+<div *ngIf="registerSucceeded && !submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
+    <div class="d-flex w-50 my-5 flex-column align-items-center text-center">
+        <img class="p-4 mb-2" src="../assets/img/envelope.png" width="40%">
+        <p class="h2 fw-bolder">Estamos quase lá...</p>
+        <p class="h2 fw-bolder">Por favor, confirme o seu endereço de e-mail para ativar a sua conta.</p>
+    </div>
+    <span class="bottom-text mb-3">Não recebeu e-mail de confirmação? <strong><a class="pointer" (click)="resendEmail()">Clique aqui</a></strong></span>
+    <!--<span class="bottom-text mb-3">Não recebeu e-mail de confirmação? <button class="btn btn-link p-0" type="button"
+                                                                            (click)="resendEmail()">Clique aqui</button></span>-->
 </div>
 
 <app-loader *ngIf="submitting" class="m-auto"></app-loader>

@@ -7,6 +7,21 @@
     --bs-accordion-active-bg: #fff;
 }
 
+
+/*
+a:visited {
+    color: green;
+}
+
+a:hover {
+    color: rgb(0, 85, 0);
+}
+*/
+
+.pointer {
+    cursor: pointer;
+}
+
 :root {
     --fc-border-color: black;
     --fc-daygrid-event-dot-width: 5px;

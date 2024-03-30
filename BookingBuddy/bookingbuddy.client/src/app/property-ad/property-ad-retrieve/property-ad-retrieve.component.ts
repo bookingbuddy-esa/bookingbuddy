@@ -18,6 +18,7 @@ import { GroupService } from '../../group/group.service';
 import { timeout } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -52,7 +53,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   errors: string[] = [];
   selected_group_list: Group[] = [];
   @ViewChild('myModalClose') modalClose: any;
-  constructor(private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
+  constructor(private datePipe: DatePipe, private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
     this.reservarPropriedadeFailed = false;
     
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -190,7 +191,6 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
 
     const currentDate = new Date();
-
     return date >= currentDate && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
   };
 
@@ -382,14 +382,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
     }
   }
 
-
   public reservar(_: any) {
     this.reservarPropriedadeFailed = false;
-
     const numberOfGuests: number = this.reservarPropriedadeForm.get('numberOfGuests')?.value;
-    const checkInDate: Date = new Date(this.reservarPropriedadeForm.get('checkIn')?.value);
-    const checkOutDate: Date = new Date(this.reservarPropriedadeForm.get('checkOut')?.value);
-
+    const checkInDate: Date = this.reservarPropriedadeForm.get('checkIn')?.value;
+    const checkOutDate: Date = this.reservarPropriedadeForm.get('checkOut')?.value;
     console.log("Check-in: " + checkInDate);
     console.log("Check-out: " + checkOutDate);
 
@@ -397,8 +394,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
     this.router.navigate(['/transaction-handler'], { 
         queryParams: {
             propertyId: this.property?.propertyId,
-            startDate: checkInDate.toISOString().split('T')[0],
-            endDate: checkOutDate.toISOString().split('T')[0],
+            startDate: this.datePipe.transform(checkInDate, 'yyyy-MM-dd'),
+            endDate: this.datePipe.transform(checkOutDate, 'yyyy-MM-dd'),
             numberOfGuests: numberOfGuests,
             orderType: 'booking'
         }
