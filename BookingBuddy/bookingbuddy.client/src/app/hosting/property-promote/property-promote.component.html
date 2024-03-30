@@ -1,15 +1,49 @@
-<div class="row flex-nowrap">
-  <!-- Primeira coluna -->
-  <div class="col-2 px-sm-2 px-0 bg-white box-shadow">
-    <div class="d-flex flex-column align-items-center px-3 text-dark ">
+<div class="row">
+  <div class="col-md-2 d-flex flex-column box-shadow min-vh-100">
+    <h4 class="text-center mt-4">Propriedades</h4>
+    <div class="list-group list-group-flush overflow-auto">
+      <a *ngFor="let property of property_list" class="list-group-item list-group-item-action align-self-center rounded-3 mb-2 p-0" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty">
+        <app-homepage-property [property]="property"></app-homepage-property>
+      </a>
+    </div>
+  </div>
+    <div class="col-md-10 mb-4 d-flex flex-column align-items-center mx-auto mt-4" *ngIf="!propertyPromote">
+        <form class="form" [formGroup]="propertyPromoteForm" (submit)="submitPromotion()">
+            <div class="d-flex flex-column">
+                <h2>Promover propriedade</h2>
+
+                <div class="form-group mt-2">
+                    <label for="duration">Escolha a duração:</label>
+                    <select name="duration" id="duration" class="form-control" formControlName="duration">
+              <option value="week">1 Semana</option>
+              <option value="month">1 Mês</option>
+              <option value="year">1 Ano</option>
+            </select>
+                </div>
+
+                <button class="btn btn-success mt-4" type="submit">Promover</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-10 mb-4 d-flex flex-column align-items-center mx-auto" *ngIf="propertyPromote">
+        <app-payment [data]="propertyPromote" *ngIf="propertyPromote"></app-payment>
+    </div>
+</div>
+
+
+<!--
+  <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-white box-shadow">
+    <div class="d-flex flex-column align-items-center px-0 pt-2 text-dark min-vh-100 text-center">
       
-        <h5 class="custom-h4 text-sm mt-2 ">Propriedades</h5>
+        <h3>Propriedades</h3>
      
-      <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property" (click)="setCurrentProperty(property)" [class.current-property]="property === currentProperty"></app-side-properties>
+      <app-side-properties class="rounded-3 mb-4" *ngFor="let property of property_list" [property]="property"
+                           (click)="setCurrentProperty(property)"
+                           [class.current-property]="property === currentProperty"></app-side-properties>
     </div>
   </div>
 
-  <!-- Segunda coluna -->
   <div class="col-md-6 mt-5 d-flex flex-column align-items-center mx-auto" *ngIf="!propertyPromote">
     <form class="form" [formGroup]="propertyPromoteForm" (submit)="submitPromotion()">
       <div class="d-flex flex-column">
@@ -29,8 +63,7 @@
     </form>
   </div>
 
-  <!-- Terceira coluna -->
   <div class="col-md-6 mt-5 d-flex flex-column align-items-center mx-auto" *ngIf="propertyPromote">
     <app-payment [data]="propertyPromote" *ngIf="propertyPromote"></app-payment>
   </div>
-</div>
+-->

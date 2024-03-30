@@ -5,7 +5,6 @@ import {Router} from '@angular/router';
 import {Property} from '../models/property';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {FeedbackService} from "../auxiliary/feedback.service";
-import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-homepage',
@@ -19,13 +18,10 @@ export class HomepageComponent implements OnInit {
   property_list: Property[] = [];
 
   constructor(
-    private appComponent: AppComponent,
     private authService: AuthorizeService,
     private propertyService: PropertyAdService,
     private router: Router,
-    private FeedbackService: FeedbackService
-  ) {
-    this.appComponent.showChat = true;
+    private FeedbackService: FeedbackService) {
   }
 
   ngOnInit(): void {
@@ -42,7 +38,8 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
-
+    // TODO: Após atualizar o controlador de propriedades, o método recebe um número de propriedades a serem retornados
+    //  e um index onde a lista de propriedades deve começar
     this.propertyService.getProperties().forEach(
       response => {
         if (response) {

@@ -1,141 +1,286 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BookingBuddy.Server.Services;
 
 /// <summary>
 /// Serviço que encapsula a lógica de comunicação com WebSockets.
 /// </summary>
-/// <typeparam name="T">Tipo de objeto que será rastreado.</typeparam>
-public class WebSocketWrapper<T> where T : IPrimaryKey
+public class WebSocketWrapper
 {
-    private readonly Dictionary<string, WebSocket> _sockets = new();
-
-    private readonly Dictionary<T, List<WebSocket>> _trackingObject = new();
+    /// <summary>
+    /// Delegado que representa um evento de WebSocket, com argumentos.
+    /// </summary>
+    /// <typeparam name="TEventArgs">Tipo dos argumentos do evento.</typeparam>
+    public delegate Task WebSocketEventHandler<in TEventArgs>(object? sender, TEventArgs e);
 
     /// <summary>
-    /// Método que lida com a conexão de um WebSocket.
+    /// Delegado que representa um evento de WebSocket, sem argumentos.
     /// </summary>
-    /// <param name="objectToTrack">Objeto que será rastreado.</param>
-    /// <param name="socket">WebSocket que se conectou.</param>
-    /// <param name="onReceive">Função que será executada quando o WebSocket receber uma mensagem.</param>
-    public async Task HandleAsync(T? objectToTrack, WebSocket socket, Func<T, Task>? onReceive = null)
-    {
-        if (objectToTrack == null)
-        {
-            socket.Abort();
-            return;
-        }
+    public delegate Task WebSocketEventHandler(object? sender, WebSocketEventArgs e);
 
+    private readonly Dictionary<WebSocket, WebSocketEventHandler> _onConnectListeners = new();
+    private readonly Dictionary<WebSocket, WebSocketEventHandler> _onReceiveListeners = new();
+    private readonly Dictionary<WebSocket, WebSocketEventHandler<Exception>> _onErrorListeners = new();
+    private readonly Dictionary<WebSocket, WebSocketEventHandler> _onDisconnectListeners = new();
+    private readonly Dictionary<WebSocket, WebSocketEventHandler> _onCloseListeners = new();
+
+    /// <summary>
+    /// Lida com uma conexão WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket a ser tratado.</param>
+    public async Task HandleAsync(WebSocket socket)
+    {
+        await HandleAsync(this, socket);
+    }
+
+    /// <summary>
+    /// Lida com uma conexão WebSocket, especificando o remetente.
+    /// </summary>
+    /// <param name="sender">Remetente da conexão.</param>
+    /// <param name="socket">WebSocket a ser tratado.</param>
+    public async Task HandleAsync(object? sender, WebSocket socket)
+    {
         try
         {
-            var socketId = Guid.NewGuid().ToString();
-            _sockets.Add(socketId, socket);
-            var socketObjectPair =
-                _trackingObject.FirstOrDefault(to => to.Key.GetPrimaryKey() == objectToTrack.GetPrimaryKey());
-            if (socketObjectPair.Value != null)
+            _onConnectListeners.TryGetValue(socket, out var onConnect);
+            onConnect?.Invoke(sender, new WebSocketEventArgs
             {
-                socketObjectPair.Value.Add(socket);
-            }
-            else
-            {
-                _trackingObject.Add(objectToTrack, [socket]);
-            }
-
-            Console.WriteLine(
-                $"{objectToTrack.GetType().Name} WebSocket connected ({_sockets.Count - 1} -> {_sockets.Count}): {socketId}");
-            Console.WriteLine($"Tracking {objectToTrack.GetType().Name}: {objectToTrack.GetPrimaryKey()}");
+                Socket = socket
+            });
 
             var buffer = new byte[1024 * 4];
-
-            while (socket.State == WebSocketState.Open)
+            var jsonOptions = new JsonSerializerOptions
             {
-                var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), default);
-                if (onReceive != null && result.MessageType == WebSocketMessageType.Text)
+                UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+            };
+            var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            while (!result.CloseStatus.HasValue)
+            {
+                var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                try
                 {
-                    try
+                    var chatMessage = JsonSerializer.Deserialize<SocketMessage>(message, jsonOptions);
+                    if (chatMessage != null)
                     {
-                        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        var receivedObject = JsonSerializer.Deserialize<T>(message);
-                        if (receivedObject != null)
+                        _onReceiveListeners.TryGetValue(socket, out var onReceive);
+                        onReceive?.Invoke(sender, new WebSocketEventArgs
                         {
-                            await onReceive(receivedObject);
-                        }
-
-                        continue;
-                    }
-                    catch
-                    {
-                        Console.WriteLine($"{objectToTrack.GetType().Name} WebSocket ({socketId}) received an invalid message.");
+                            Socket = socket,
+                            Message = chatMessage.Content is JsonElement { ValueKind: JsonValueKind.String }
+                                ? new SocketMessage
+                                {
+                                    Code = chatMessage.Code,
+                                    Content = chatMessage.Content.GetString()
+                                }
+                                : chatMessage
+                        });
                     }
                 }
+                catch (Exception e)
+                {
+                    _onErrorListeners.TryGetValue(socket, out var onError);
+                    onError?.Invoke(sender, e);
+                }
 
-                if (result.MessageType != WebSocketMessageType.Close) continue;
-                await socket.CloseAsync(result.CloseStatus!.Value, result.CloseStatusDescription, default);
-                break;
+                result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
 
-            _sockets.Remove(socketId);
-            _trackingObject.Where(to => to.Value.Contains(socket)).ToList().ForEach(to => to.Value.Remove(socket));
-
-            Console.WriteLine(
-                $"{objectToTrack.GetType().Name} WebSocket disconnected ({_sockets.Count + 1} -> {_sockets.Count}): {socketId}");
+            _onDisconnectListeners.TryGetValue(socket, out var onDisconnect);
+            onDisconnect?.Invoke(sender, new WebSocketEventArgs
+            {
+                Socket = socket
+            });
+            await socket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+            _onCloseListeners.TryGetValue(socket, out var onClose);
+            onClose?.Invoke(sender, new WebSocketEventArgs
+            {
+                Socket = socket
+            });
         }
-        catch
+        catch (WebSocketException)
         {
-            await RemoveSocketAsync(socket);
+            _onCloseListeners.TryGetValue(socket, out var onClose);
+            onClose?.Invoke(sender, new WebSocketEventArgs
+            {
+                Socket = socket
+            });
         }
+        catch (Exception e)
+        {
+            _onErrorListeners.TryGetValue(socket, out var onError);
+            onError?.Invoke(sender, e);
+        }
+
+        ClearAllForSocket(socket);
     }
 
     /// <summary>
-    /// Método que notifica todos os WebSockets que se encontram a rastrear um objeto.
+    /// Envia uma mensagem para um WebSocket.
     /// </summary>
-    /// <param name="trackedObject">Objeto que se encontra a ser rastreado.</param>
-    public async Task NotifyAllAsync(T? trackedObject)
+    /// <param name="socket">WebSocket para o qual enviar a mensagem.</param>
+    /// <param name="message">Mensagem a enviar.</param>
+    public static async Task SendAsync(WebSocket socket, SocketMessage message)
     {
-        if (trackedObject == null) return;
-        var socketTracking =
-            _trackingObject.FirstOrDefault(sp => sp.Key.GetPrimaryKey() == trackedObject.GetPrimaryKey());
-        if(socketTracking.Value == null) return;
-        foreach (var socket in socketTracking.Value)
-        {
-            var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;
-            Console.WriteLine(
-                $"Notifying {trackedObject.GetType().Name} socket ({socketId}) with {trackedObject.GetType().Name}: {trackedObject.GetPrimaryKey()}");
-            await socket.SendAsync(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(trackedObject)),
-                WebSocketMessageType.Text, true, CancellationToken.None);
-        }
+        var buffer = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
+        await socket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
     }
 
-    private Task RemoveSocketAsync(WebSocket socket)
+    /// <summary>
+    /// Adiciona um ouvinte para o evento de conexão de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    /// <param name="listener">Ouvinte a ser adicionado.</param>
+    public void AddOnConnectListener(WebSocket socket, WebSocketEventHandler listener)
     {
-        var socketId = _sockets.FirstOrDefault(s => s.Value == socket).Key;
-        _sockets.Remove(socketId);
-        var socketObject = _trackingObject.FirstOrDefault(sp => sp.Value.Contains(socket));
-        if (socketObject.Value.Count == 1)
-        {
-            _trackingObject.Remove(socketObject.Key);
-        }
-        else
-        {
-            socketObject.Value.Remove(socket);
-        }
+        _onConnectListeners.Add(socket, listener);
+    }
 
-        Console.WriteLine(
-            $"{socketObject.Key.GetType().Name} WebSocket forced disconnect ({_sockets.Count + 1} -> {_sockets.Count}): {socketId}");
-        return Task.CompletedTask;
+    /// <summary>
+    /// Adiciona um ouvinte para o evento de receção de uma mensagem por um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    /// <param name="listener">Ouvinte a ser adicionado.</param>
+    public void AddOnReceiveListener(WebSocket socket, WebSocketEventHandler listener)
+    {
+        _onReceiveListeners.Add(socket, listener);
+    }
+
+    /// <summary>
+    /// Adiciona um ouvinte para o evento de erro de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    /// <param name="listener">Ouvinte a ser adicionado.</param>
+    public void AddOnErrorListener(WebSocket socket, WebSocketEventHandler<Exception> listener)
+    {
+        _onErrorListeners.Add(socket, listener);
+    }
+
+    /// <summary>
+    /// Adiciona um ouvinte para o evento de desconexão de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    /// <param name="listener">Ouvinte a ser adicionado.</param>
+    public void AddOnDisconnectListener(WebSocket socket, WebSocketEventHandler listener)
+    {
+        _onDisconnectListeners.Add(socket, listener);
+    }
+
+    /// <summary>
+    /// Adiciona um ouvinte para o evento de fecho de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    /// <param name="listener">Ouvinte a ser adicionado.</param>
+    public void AddOnCloseListener(WebSocket socket, WebSocketEventHandler listener)
+    {
+        _onCloseListeners.Add(socket, listener);
+    }
+
+    /// <summary>
+    /// Remove um ouvinte para o evento de conexão de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    public void RemoveOnConnectListener(WebSocket socket)
+    {
+        _onConnectListeners.Remove(socket);
+    }
+
+    /// <summary>
+    /// Remove um ouvinte para o evento de receção de uma mensagem por um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    public void RemoveOnReceiveListener(WebSocket socket)
+    {
+        _onReceiveListeners.Remove(socket);
+    }
+
+    /// <summary>
+    /// Remove um ouvinte para o evento de erro de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    public void RemoveOnErrorListener(WebSocket socket)
+    {
+        _onErrorListeners.Remove(socket);
+    }
+
+    /// <summary>
+    /// Remove um ouvinte para o evento de desconexão de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    public void RemoveOnDisconnectListener(WebSocket socket)
+    {
+        _onDisconnectListeners.Remove(socket);
+    }
+
+    /// <summary>
+    /// Remove um ouvinte para o evento de fecho de um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado ao evento.</param>
+    public void RemoveOnCloseListener(WebSocket socket)
+    {
+        _onCloseListeners.Remove(socket);
+    }
+
+    /// <summary>
+    /// Remove todos os ouvintes para um WebSocket.
+    /// </summary>
+    /// <param name="socket">WebSocket associado aos ouvintes.</param>
+    private void ClearAllForSocket(WebSocket socket)
+    {
+        _onConnectListeners.Remove(socket);
+        _onReceiveListeners.Remove(socket);
+        _onErrorListeners.Remove(socket);
+        _onDisconnectListeners.Remove(socket);
+        _onCloseListeners.Remove(socket);
     }
 }
 
 /// <summary>
-/// Interface que representa um objeto que possui uma chave primária.
+/// Representa uma mensagem de um WebSocket.
 /// </summary>
-public interface IPrimaryKey
+public class SocketMessage
 {
     /// <summary>
-    /// Método que retorna a chave primária do objeto.
+    /// Código da mensagem.
     /// </summary>
-    /// <returns>Chave primária do objeto.</returns>
-    public string GetPrimaryKey();
+    [JsonPropertyName("code")]
+    public required string Code { get; init; }
+
+    /// <summary>
+    /// Conteúdo da mensagem.
+    /// </summary>
+    [JsonPropertyName("content")]
+    public required dynamic Content { get; init; }
+}
+
+/// <summary>
+/// Representa os argumentos de um evento de WebSocket.
+/// </summary>
+public class WebSocketEventArgs : EventArgs
+{
+    /// <summary>
+    /// WebSocket associado ao evento.
+    /// </summary>
+    public required WebSocket Socket { get; init; }
+
+    /// <summary>
+    /// Mensagem associada ao evento.
+    /// </summary>
+    public SocketMessage? Message { get; init; }
+}
+
+/// <summary>
+/// Exceção lançada quando uma mensagem de WebSocket é inválida.
+/// </summary>
+public class InvalidSocketMessageException : Exception
+{
+    /// <summary>
+    /// Cria uma nova instância de <see cref="InvalidSocketMessageException"/>.
+    /// </summary>
+    /// <param name="message">Mensagem de erro.</param>
+    public InvalidSocketMessageException(string? message = null) : base(message)
+    {
+    }
 }

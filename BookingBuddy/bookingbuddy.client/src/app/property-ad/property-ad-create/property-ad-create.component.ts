@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
@@ -8,14 +8,14 @@ import {UserInfo} from "../../auth/authorize.dto";
 import {Property, PropertyCreate} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
-import {AppComponent} from '../../app.component';
+import {FooterService} from "../../auxiliary/footer.service";
 
 @Component({
   selector: 'app-property-ad-create',
   templateUrl: './property-ad-create.component.html',
   styleUrl: './property-ad-create.component.css'
 })
-export class PropertyAdCreateComponent implements OnInit {
+export class PropertyAdCreateComponent implements OnInit,OnDestroy {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
   protected errors: string[] = [];
@@ -42,12 +42,12 @@ export class PropertyAdCreateComponent implements OnInit {
   protected adInfo: AdInfo | undefined;
   protected isAdInfoValid: boolean = false;
 
-  constructor(private appComponent: AppComponent,
-              private authService: AuthorizeService,
+  constructor(private authService: AuthorizeService,
               private router: Router,
+              private footerService: FooterService,
               private propertyService: PropertyAdService) {
     this.errors = [];
-    this.appComponent.showChat = false;
+    this.footerService.hideFooter();
   }
 
   ngOnInit(): void {
@@ -57,6 +57,10 @@ export class PropertyAdCreateComponent implements OnInit {
     this.onStepChange().forEach(step => {
       this.currentStep = step;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.footerService.showFooter();
   }
 
   previousStep() {
@@ -141,6 +145,8 @@ export class PropertyAdCreateComponent implements OnInit {
         name: this.adInfo?.name ?? '',
         location: this.location?.address ?? '',
         pricePerNight: this.adInfo?.pricePerNight ?? 0,
+        maxGuestNumber: this.adInfo?.maxGuestsNumber ?? 0,
+        roomsNumber: this.adInfo?.roomsNumber ?? 0,
         description: this.adInfo?.description ?? '',
         imagesUrl: ["https://bookingbuddyrepository.blob.core.windows.net/images/propriedade-teste.png"],
         amenities: this.selectedAmenities,
@@ -163,6 +169,8 @@ export class PropertyAdCreateComponent implements OnInit {
           name: this.adInfo?.name ?? '',
           location: this.location?.address ?? '',
           pricePerNight: this.adInfo?.pricePerNight ?? 0,
+          maxGuestNumber: this.adInfo?.maxGuestsNumber ?? 0,
+          roomsNumber: this.adInfo?.roomsNumber ?? 0,
           description: this.adInfo?.description ?? '',
           imagesUrl: images,
           amenities: this.selectedAmenities,

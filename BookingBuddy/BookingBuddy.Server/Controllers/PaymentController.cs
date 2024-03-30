@@ -18,9 +18,9 @@ namespace BookingBuddy.Server.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
-        private static readonly WebSocketWrapper<Payment> WebSocketWrapper = new();
+        private static readonly WebSocketWrapper WebSocketWrapper = new();
+        private static readonly Dictionary<string, List<WebSocket>> PaymentSockets = new();
 
         /// <summary>
         /// Construtor da classe PaymentController.
@@ -32,18 +32,17 @@ namespace BookingBuddy.Server.Controllers
             IConfiguration configuration)
         {
             _context = context;
-            _userManager = userManager;
             _configuration = configuration;
         }
 
         /// <summary>
-        /// Método que retorna um pagamento.
+        /// Obtém os detalhes de um pagamento com base no identificador único do pagamento.
         /// </summary>
-        /// <param name="paymentId">Identificador do pagamento</param>
-        /// <returns>Retorna: 
-        /// - O pagamento, caso exista um pagamento com o identificador inserido.
-        /// - 400 Bad Request, caso o identificador inserido seja uma string nula ou vazia.
-        /// - 404 Not Found, caso não exista nenhum pagamento com o id inserido.
+        /// <param name="paymentId">O identificador único do pagamento.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) juntamente com os detalhes do pagamento, se encontrado.
+        /// Um código de estado 400 (Pedido Inválido) se o identificador do pagamento fornecido for inválido.
+        /// Um código de estado 404 (Não Encontrado) se o pagamento não for encontrado.
         /// </returns>
         [HttpGet("{paymentId}")]
         public async Task<IActionResult> GetPayment(string paymentId)
@@ -128,10 +127,12 @@ namespace BookingBuddy.Server.Controllers
 
                 if (order is GroupBookingOrder groupBookingOrder)
                 {
-                    groupBookingOrder.PaidByIds.Add(requestId);
                     var group = await _context.Groups.FindAsync(groupBookingOrder.GroupId);
+                    var groupPayment = _context.GroupOrderPayment.FirstOrDefault(p => p.PaymentId == requestId);
+                    groupBookingOrder.PaidByIds.Add(groupPayment?.ApplicationUserId ?? "Unknown User");
                     if (group != null && groupBookingOrder.PaidByIds.Count == group.MembersId.Count)
                     {
+                        GroupController.NotifyGroupBookingPaid(group, order.OrderId);
                         order.State = OrderState.Paid;
                         _context.BlockedDate.Add(blockDates);
                     }
@@ -142,7 +143,21 @@ namespace BookingBuddy.Server.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                await WebSocketWrapper.NotifyAllAsync(payment);
+                PaymentSockets.TryGetValue(requestId, out var sockets);
+                if (sockets == null) return Ok();
+                foreach (var socket in sockets)
+                {
+                    await WebSocketWrapper.SendAsync(socket, new SocketMessage
+                    {
+                        Code = "PaymentPaid",
+                        Content = new
+                        {
+                            paymentId = requestId, // TODO: Adicionar mais campos relevantes
+                            orderId,
+                        }
+                    });
+                }
+
                 return Ok();
             }
             catch (Exception ex)
@@ -283,11 +298,40 @@ namespace BookingBuddy.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Método que lida com a conexão de um WebSocket.
+        /// </summary>
+        /// <param name="paymentId">Identificador do pagamento.</param>
+        /// <param name="webSocket">WebSocket a ser tratado.</param>
         [NonAction]
         public async Task HandleWebSocketAsync(string paymentId, WebSocket webSocket)
         {
             var payment = await _context.Payment.FindAsync(paymentId);
-            await WebSocketWrapper.HandleAsync(payment, webSocket);
+            if (payment == null) return;
+            WebSocketWrapper.AddOnConnectListener(webSocket, (_, _) =>
+            {
+                if (PaymentSockets.TryGetValue(paymentId, out var value))
+                {
+                    value.Add(webSocket);
+                }
+                else
+                {
+                    PaymentSockets.Add(paymentId, [webSocket]);
+                }
+
+                return Task.CompletedTask;
+            });
+            WebSocketWrapper.AddOnCloseListener(webSocket, (_, _) =>
+            {
+                if (PaymentSockets.TryGetValue(paymentId, out var value))
+                {
+                    value.Remove(webSocket);
+                }
+
+                return Task.CompletedTask;
+            });
+
+            await WebSocketWrapper.HandleAsync(webSocket);
         }
 
         /// <summary>

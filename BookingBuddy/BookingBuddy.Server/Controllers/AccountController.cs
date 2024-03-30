@@ -31,14 +31,15 @@ namespace BookingBuddy.Server.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
 
         /// <summary>
-        /// Regista um utilizador e envia um e-mail de confirmação.
+        /// Regista um novo utilizador na plataforma.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// </remarks>
-        /// <param name="model">Modelo de registo de utilizador</param>
-        /// <param name="sendConfirmationEmail">Opção para enviar email de confirmação de conta</param>
-        /// <returns>Resposta do pedido de criar conta de utilizador, OK(200) se concluido com sucesso.</returns>
+        /// <param name="model">O modelo contendo os dados do utilizador a ser registado.</param>
+        /// <param name="sendConfirmationEmail">Indica se deve ser enviado um email de confirmação (opcional, padrão é verdadeiro).</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o utilizador for registado com sucesso.
+        /// Um código de estado 400 (Bad Request) se o email fornecido já estiver em uso.
+        /// Um código de estado 400 (Bad Request) se ocorrerem erros durante o registo do utilizador.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         [Route("register")]
@@ -57,7 +58,8 @@ namespace BookingBuddy.Server.Controllers
                 UserName = model.Email,
                 Email = model.Email,
                 Name = model.Name,
-                ProviderId = provider!.AspNetProviderId
+                ProviderId = provider!.AspNetProviderId,
+                Description = "",
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
@@ -81,16 +83,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Reenvia o email de confirmação da conta.
+        /// Reenvia o email de confirmação para um utilizador registado não confirmado.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// A conta do utilizador já deve ter sido criada previamente.
-        /// 
-        /// NOTA: A conta não se pode estar com o e-mail confirmado.
-        /// </remarks>
-        /// <param name="model">Modelo de reenvio de email</param>
-        /// <returns>Reenvia o email de confirmação da conta, OK(200) se concluido com sucesso.</returns>
+        /// <param name="model">O modelo contendo o email do utilizador para o qual deve ser reenviado o email de confirmação.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o email de confirmação for reenviado com sucesso.
+        /// Um código de estado 400 (Bad Request) se o utilizador não estiver registado ou o email já estiver confirmado.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -126,15 +125,14 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Confirma o email.
+        /// Confirma o email de um utilizador registado com base no token fornecido.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// 
-        /// NOTA: O utilizador tem de estar previamente registado na plataforma.
-        /// </remarks>
-        /// <param name="model">Modelo de confirmação de e-mail</param>
-        /// <returns>Resposta do pedido de confirmação de e-mail, OK(200) se concluido com sucesso.</returns>
+        /// <param name="model">O modelo contendo o identificador único do utilizador (UID) e o token de confirmação.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o email do utilizador for confirmado com sucesso.
+        /// Um código de estado 404 (Not Found) se o utilizador não estiver registado.
+        /// Um código de estado 400 (Bad Request) se ocorrerem erros durante a confirmação do email.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         [Route("confirmEmail")]
@@ -160,13 +158,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Verifica se o token de confirmação do e-mail é válido.
+        /// Verifica se o token de confirmação de email é válido para um utilizador registado.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// </remarks>
-        /// <param name="model">Modelo de confirmação de e-mail</param>
-        /// <returns>Resposta do pedido de verificar o token de confirmação de e-mail, OK(200) se concluido com sucesso.</returns>
+        /// <param name="model">O modelo contendo o identificador único do utilizador (UID) e o token de confirmação.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o token de confirmação for válido.
+        /// Um código de estado 400 (Bad Request) se o token de confirmação for inválido ou o utilizador não estiver registado.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -194,22 +192,21 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Login com um email e uma palavra-passe (conta de utilizador do site).
+        /// Autentica um utilizador com base nas credenciais fornecidas.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// </remarks>
+        /// <param name="model">O modelo contendo o email e a senha do utilizador.</param>
+        /// <param name="isPersistent">Indica se a sessão do utilizador deve ser persistente (opcional, padrão é verdadeiro).</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se as credenciais do utilizador forem válidas e a autenticação for bem-sucedida.
+        /// Um código de estado 400 (Bad Request) se o email do utilizador não estiver confirmado ou as credenciais forem inválidas.
+        /// </returns>
         /// <example>
-        ///    POST /api/login
-        /// 
-        ///    {
-        ///     "email": bookingbuddy.user@bookingbuddy.com,
-        ///     "password": userBB123!
-        ///    }
+        /// POST /api/login
+        /// {
+        ///     "email": "bookingbuddy.user@bookingbuddy.com",
+        ///     "password": "userBB123!"
+        /// }
         /// </example>
-        /// <param name="model">Modelo de login</param>
-        /// <param name="isPersistent">Opção que define se é guardada uma cookie de sessão</param>
-        /// <returns>Resposta do pedido de login, OK(200) se concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -252,10 +249,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Login com um fornecedor, neste caso, Microsoft e Google.
+        /// Autentica um utilizador usando um provedor de autenticação externo, como Google ou Microsoft.
         /// </summary>
-        /// <param name="model">Modelo de login com fornecedor</param>
-        /// <returns></returns>
+        /// <param name="model">O modelo contendo o token de autenticação do provedor.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se a autenticação for bem-sucedida.
+        /// Um código de estado 400 (Bad Request) se ocorrerem erros durante o processo de autenticação.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         [Route("loginProviders")]
@@ -286,7 +286,8 @@ namespace BookingBuddy.Server.Controllers
                     UserName = email,
                     Name = name,
                     EmailConfirmed = true,
-                    PictureUrl = photoUrl
+                    PictureUrl = photoUrl,
+                    Description = ""
                 };
                 var userCreateResult = await _userManager.CreateAsync(user);
                 if (!userCreateResult.Succeeded) return BadRequest(userCreateResult.Errors);
@@ -300,11 +301,13 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Login com uma conta Google.
+        /// Inicia o processo de autenticação usando o Google como provedor de autenticação externo.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// </remarks>
+        /// <param name="credential">O token de credencial fornecido pelo Google.</param>
+        /// <returns>
+        /// Um redirecionamento (código de estado 302) para a URL de autenticação no frontend.
+        /// Um código de estado 400 (Bad Request) se ocorrerem erros durante o processo.
+        /// </returns>
         /// <example>
         ///     POST /api/google
         ///     
@@ -315,28 +318,27 @@ namespace BookingBuddy.Server.Controllers
         ///         select_by=btn&amp;
         ///         g_csrf_token=b228...ab5
         /// </example>
-        /// <param name="model">Modelo de login com a Google</param>
-        /// <returns>Redireciona para o link fornecido, se o pedido for concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("google")]
-        public IActionResult GoogleLogin([FromForm] GoogleSignInModel model)
+        public IActionResult GoogleLogin([FromForm] string credential)
         {
-            var token = model.Credential;
             var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "GOOGLE");
             return Redirect(
-                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={token}");
+                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={credential}");
         }
 
         /// <summary>
-        /// Login com uma conta Microsoft.
+        /// Inicia o processo de autenticação usando a Microsoft como provedor de autenticação externo.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// </remarks>
+        /// <param name="id_token">O token de ID fornecido pela Microsoft.</param>
+        /// <returns>
+        /// Um redirecionamento (código de estado 302) para a URL de autenticação no frontend.
+        /// Um código de estado 400 (Bad Request) se ocorrerem erros durante o processo.
+        /// </returns>
         /// <example>
         ///     POST /api/microsoft
         ///     
@@ -345,40 +347,29 @@ namespace BookingBuddy.Server.Controllers
         ///         session_state=5d4...6ac
         ///       
         /// </example>
-        /// <param name="model">Modelo de login com a Microsoft</param>
-        /// <returns>Redireciona para o link fornecido, se o pedido for concluido com sucesso.</returns>
         [HttpPost]
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
         [ProducesResponseType(StatusCodes.Status302Found)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Route("microsoft")]
-        public IActionResult MicrosoftLogin([FromForm] MicrosoftSignInModel model)
+        // ReSharper disable once InconsistentNaming
+        public IActionResult MicrosoftLogin([FromForm] string id_token)
         {
-            var token = model.Id_token;
             var provider = context.AspNetProviders.FirstOrDefault(p => p.NormalizedName == "MICROSOFT");
             return Redirect(
-                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={token}");
+                $"{configuration.GetSection("Front-End-Url").Value}/signin?providerId={provider!.AspNetProviderId}&token={id_token}");
         }
 
         /// <summary>
-        /// Recuperação da password através de um email.
+        /// Inicia o processo de recuperação de palavra-passe para um utilizador com base no email fornecido.
+        /// É enviado um email com um link para dar reset à password para o email fornecido, se este estiver associado a um utilizador.
         /// </summary>
-        /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
-        /// 
-        /// NOTA: É enviado um email com um link para dar reset à password para o email fornecido, se este estiver associado a um utilizador.
-        /// </remarks>
-        /// <example>
-        ///     POST /api/forgotPassword
-        ///     
-        ///     {
-        ///        "email": bookingbuddy@bookingbuddy.com,
-        ///     } 
-        ///     
-        /// </example>
-        /// <param name="model">Modelo de recuperação de palavra-passe</param>
-        /// <returns>Resposta do pedido de recuperar a palavra-passe, OK(200) se concluido com sucesso.</returns>
+        /// <param name="model">Os dados necessários para iniciar o processo de recuperação de palavra-passe.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se o email de recuperação for enviado com sucesso.
+        /// Um código de estado 400 (Pedido Inválido) se ocorrerem erros durante o processo.
+        /// </returns>
         [HttpPost]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -405,7 +396,7 @@ namespace BookingBuddy.Server.Controllers
         /// Reset da password através de um token e do id do utilizador.
         /// </summary>
         /// <remarks>
-        /// Nenhum dos parâmetros pode ser null. 
+        /// Nenhum dos parâmetros pode ser nulo. 
         /// </remarks>
         /// <example>
         ///     POST /api/resetPassword
@@ -448,7 +439,7 @@ namespace BookingBuddy.Server.Controllers
         /// Verifica se o token de reset da palavra-passe é válido.
         /// </summary>
         /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
+        /// Nenhum dos parâmetros pode ser nulo.
         /// </remarks>
         /// <param name="model">Modelo de reset da palavra-passe</param>
         /// <returns>Resposta do pedido de verificar o token de reset da palavra-passe, OK(200) se concluido com sucesso.</returns>
@@ -517,7 +508,8 @@ namespace BookingBuddy.Server.Controllers
                     existingUser.Name,
                     existingUser.UserName!,
                     existingUser.Email!,
-                    existingUser.EmailConfirmed
+                    existingUser.EmailConfirmed,
+                    existingUser.Description
                 )
             );
         }
@@ -526,7 +518,7 @@ namespace BookingBuddy.Server.Controllers
         /// Alterar informação do utilizador autenticado.
         /// </summary>
         /// <remarks>
-        /// Nenhum dos parâmetros pode ser null.
+        /// Nenhum dos parâmetros pode ser nulo.
         /// 
         /// NOTA: É necessário estar autenticado para fazer este pedido.
         /// </remarks>
@@ -603,7 +595,7 @@ namespace BookingBuddy.Server.Controllers
         /// Mudar de palavra-passe.
         /// </summary>
         /// <remarks>
-        /// Nenhum dos parâmetros pode ser null. 
+        /// Nenhum dos parâmetros pode ser nulo. 
         /// 
         /// NOTA: É necessário estar autenticado para fazer este pedido.
         /// </remarks>
@@ -734,33 +726,11 @@ namespace BookingBuddy.Server.Controllers
     public record PasswordChangeModel(string NewPassword, string OldPassword);
 
     /// <summary>
-    /// Modelo de login com a Google.
-    /// </summary>
-    /// <param name="ClientId">Id do cliente</param>
-    /// <param name="Client_id">Id do cliente</param>
-    /// <param name="Credential">Credencial</param>
-    /// <param name="Select_by">Selecionado por</param>
-    /// <param name="G_csrf_token">Token CSRF</param>
-    public record GoogleSignInModel(
-        string ClientId,
-        string Client_id,
-        string Credential,
-        string Select_by,
-        string G_csrf_token);
-
-    /// <summary>
-    /// Modelo de login com a Microsoft.
-    /// </summary>
-    /// <param name="Id_token">Token de login</param>
-    /// <param name="Session_state">Estado da sessão</param>
-    public record MicrosoftSignInModel(string Id_token, string Session_state);
-
-    /// <summary>
     /// Modelo de informação do utilizador
     /// </summary>
     /// <param name="UserId">Id do utilizador</param>
     /// <param name="Provider">Nome do fornecedor</param>
-    /// <param name="Role">Tipo de utilizador</param>
+    /// <param name="Roles">Tipo de utilizador</param>
     /// <param name="Name">Nome do utilizador</param>
     /// <param name="UserName">Nome da conta do utilizador</param>
     /// <param name="Email">E-mail do utilizador</param>
@@ -772,5 +742,6 @@ namespace BookingBuddy.Server.Controllers
         string Name,
         string UserName,
         string Email,
-        bool IsEmailConfirmed);
+        bool IsEmailConfirmed,
+        string Description);
 }

@@ -90,7 +90,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.GetProperty(property!.PropertyId);
+        var result = await controller.GetProperty(property.PropertyId);
         Assert.NotNull(result);
     }
 
@@ -142,7 +142,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.GetMetrics(property!.PropertyId);
+        var result = await controller.GetMetrics(property.PropertyId);
         Assert.IsType<ForbidResult>(result);
     }
 
@@ -158,7 +158,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.GetMetrics(property!.PropertyId);
+        var result = await controller.GetMetrics(property.PropertyId);
         Assert.IsType<OkObjectResult>(result);
     }
 
@@ -171,7 +171,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.EditProperty(property!.PropertyId,
+        var result = await controller.EditProperty(property.PropertyId,
             new PropertyEditModel(
                 property.PropertyId,
                 property.Name,
@@ -218,7 +218,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.EditProperty(property!.PropertyId,
+        var result = await controller.EditProperty(property.PropertyId,
             new PropertyEditModel(
                 property.PropertyId,
                 property.Name,
@@ -243,7 +243,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.EditProperty(property!.PropertyId,
+        var result = await controller.EditProperty(property.PropertyId,
             new PropertyEditModel(
                 property.PropertyId,
                 property.Name,
@@ -270,6 +270,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
                 "Test Property",
                 "Test Description",
                 100,
+                5,
+                4,
                 "123 Test St",
                 new List<string>(),
                 []
@@ -291,6 +293,8 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
                 "Test Property",
                 "Test Description",
                 100,
+                5,
+                4,
                 "123 Test St",
                 new List<string>(),
                 []
@@ -307,7 +311,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.DeleteProperty(property!.PropertyId);
+        var result = await controller.DeleteProperty(property.PropertyId);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
@@ -335,7 +339,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.DeleteProperty(property!.PropertyId);
+        var result = await controller.DeleteProperty(property.PropertyId);
         Assert.IsType<ForbidResult>(result);
     }
 
@@ -351,7 +355,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.DeleteProperty(property!.PropertyId);
+        var result = await controller.DeleteProperty(property.PropertyId);
         Assert.IsType<NoContentResult>(result);
     }
 
@@ -905,7 +909,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.AddToFavorite(property!.PropertyId);
+        var result = await controller.AddToFavorite(property.PropertyId);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
@@ -934,7 +938,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.AddToFavorite(property!.PropertyId);
+        var result = await controller.AddToFavorite(property.PropertyId);
         Assert.IsType<OkObjectResult>(result);
     }
 
@@ -950,10 +954,10 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.AddToFavorite(property!.PropertyId);
+        var result = await controller.AddToFavorite(property.PropertyId);
         Assert.IsType<OkObjectResult>(result);
 
-        result = await controller.AddToFavorite(property!.PropertyId);
+        result = await controller.AddToFavorite(property.PropertyId);
         Assert.IsType<ConflictObjectResult>(result);
     }
 
@@ -966,7 +970,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController();
         Assert.NotNull(controller);
 
-        var result = await controller.RemoveFromFavorite(property!.PropertyId);
+        var result = await controller.RemoveFromFavorite(property.PropertyId);
         Assert.IsType<UnauthorizedResult>(result);
     }
 
@@ -995,7 +999,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.AddToFavorite(property!.PropertyId);
+        var result = await controller.AddToFavorite(property.PropertyId);
         Assert.IsType<OkObjectResult>(result);
     }
 
@@ -1011,7 +1015,7 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var result = await controller.RemoveFromFavorite(property!.PropertyId);
+        var result = await controller.RemoveFromFavorite(property.PropertyId);
         Assert.IsType<BadRequestObjectResult>(result);
     }
 
@@ -1040,10 +1044,10 @@ public class PropertyControllerTest : IClassFixture<ApplicationDbContextFixture>
         var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
-        var addToFavoriteResult = await controller.AddToFavorite(property!.PropertyId);
+        var addToFavoriteResult = await controller.AddToFavorite(property.PropertyId);
         Assert.IsType<OkObjectResult>(addToFavoriteResult);
 
-        addToFavoriteResult = await controller.AddToFavorite(property2!.PropertyId);
+        addToFavoriteResult = await controller.AddToFavorite(property2.PropertyId);
         Assert.IsType<OkObjectResult>(addToFavoriteResult);
 
         var result = await controller.GetUserFavorites(user.Id);

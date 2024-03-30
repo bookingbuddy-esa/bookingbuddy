@@ -49,8 +49,8 @@
       <div class="w-100 py-2">
         <input type="password" class="form-control form-input p-2" id="confirmPassword"
                placeholder="Reescreva a palavra-passe" name="confirmPassword" formControlName="confirmPassword"
-               [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
-        <div class="invalid-feedback">A palavra-passe é obrigatória!</div>
+               [ngClass]="{'is-valid':confirmPasswordFormField?.valid && confirmPasswordFormField?.dirty && confirmPasswordFormField?.value==passwordFormField?.value,'is-invalid':confirmPasswordFormField?.invalid && confirmPasswordFormField?.dirty}">
+        <div class="invalid-feedback">As palavras-passe não coincidem.</div>
       </div>
       <button class="btn btn-register mt-4 w-100 p-2" [disabled]="!registerForm.valid" type="submit">Criar conta</button>
     </form>

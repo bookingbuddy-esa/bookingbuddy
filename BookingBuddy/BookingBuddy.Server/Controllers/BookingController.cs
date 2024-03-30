@@ -1,5 +1,4 @@
-﻿using System.Text;
-using BookingBuddy.Server.Data;
+﻿using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,127 +7,100 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingBuddy.Server.Controllers
 {
+    /// <summary>
+    /// Controlador para as reservas.
+    /// </summary>
     [Route("api/bookings")]
     [ApiController]
     public class BookingController : ControllerBase
     {
         private readonly BookingBuddyServerContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// Construtor da classe BookingController.
         /// </summary>
         /// <param name="context">Contexto da base de dados</param>
         /// <param name="userManager">Gestor de utilizadores</param>
-        /// <param name="configuration">Configuração da aplicação</param>
-        public BookingController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager,
-            IConfiguration configuration)
+        public BookingController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
-            _configuration = configuration;
-        }
-
-
-        // create "dev" endpoint to create 5 bookings
-        /// <summary>
-        /// Criação de reservas
-        /// </summary>
-        /// <returns>Retorna o resultado da criação das reservas.</returns>
-        [HttpGet("dev")]
-        [Authorize]
-        public async Task<ActionResult> CreateBookings()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                // get random property id
-                var randomPropertyId = _context.Property.Select(p => p.PropertyId).OrderBy(p => Guid.NewGuid())
-                    .FirstOrDefault();
-
-                // create dev payment
-                var payment = new Payment
-                {
-                    PaymentId = "dev-" + Guid.NewGuid().ToString(),
-                    Method = "mbway",
-                    Amount = 100 + i * 10,
-                    Status = "Paid",
-                    CreatedAt = DateTime.Now
-                };
-                _context.Payment.Add(payment);
-                await _context.SaveChangesAsync();
-
-                // create dev order
-                var order = new BookingOrder
-                {
-                    OrderId = Guid.NewGuid().ToString(),
-                    PaymentId = payment.PaymentId,
-                    ApplicationUserId = user.Id,
-                    NumberOfGuests = i + 1,
-                    PropertyId = randomPropertyId,
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(i + 3),
-                    State = OrderState.Paid
-                };
-                _context.BookingOrder.Add(order);
-                await _context.SaveChangesAsync();
-            }
-
-            return Ok();
         }
 
         /// <summary>
-        /// Obtém as reservas do utilizador.
+        /// Obtém todas as reservas associadas ao utilizador autenticado.
+        /// Inclui tanto as reservas individuais como as reservas em grupo em que o utilizador é membro.
         /// </summary>
-        /// <returns>Retorna as reservas do utilizador.</returns>
-
+        /// <returns>
+        /// Um código de estado 200 (OK) com a lista de todas as reservas do utilizador.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// </returns>
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetBookings()
         {
             var user = await _userManager.GetUserAsync(User);
-
             if (user == null)
             {
                 return Unauthorized();
             }
 
-            var bookingOrders = await _context.BookingOrder
-                .Include(o => o.Payment)
-                .Include(o => o.ApplicationUser)
-                .Include(o => o.Property)
-                .Where(bo => bo.ApplicationUserId == user.Id)
-                .Select(bo => new
+            var individualBookings = _context.BookingOrder
+                .Include(booking => booking.Property)
+                .Include(booking => booking.Payment)
+                .Where(booking => booking.ApplicationUserId == user.Id)
+                .Select(booking => new
                 {
-                    bo.OrderId,
-                    applicationUser = new ReturnUser()
-                    {
-                        Id = bo.ApplicationUser!.Id,
-                        Name = bo.ApplicationUser.Name,
+                    orderId = booking.OrderId,
+                    propertyName = booking.Property!.Name,
+                    host =  new ReturnUser{
+                        Id = booking.Property.ApplicationUserId,
+                        Name = _userManager.FindByIdAsync(booking.Property.ApplicationUserId).Result!.Name
                     },
-                    bo.Property!.Name,
-                    host = bo.Property!.ApplicationUserId,
-                    checkIn = bo.StartDate,
-                    checkOut = bo.EndDate,
-                    bo.State,
-                    bo.Payment!.Amount,
-                    bo.NumberOfGuests,
-                }).ToListAsync();
+                    checkIn = booking.StartDate,
+                    checkOut = booking.EndDate,
+                    state = booking.State,
+                    totalAmount = booking.Payment!.Amount,
+                    numberOfGuests = booking.NumberOfGuests
+                })
+                .ToList();
 
-            return Ok(bookingOrders);
+            var groupBookings = _context.GroupBookingOrder
+                .Include(groupBooking => groupBooking.Property)
+                .Include(groupBooking => groupBooking.Group)
+                .Where(groupBooking => groupBooking.Group.MembersId.Contains(user.Id))
+                .Select(groupBooking => new
+                {
+                    orderId = groupBooking.OrderId,
+                    propertyName = groupBooking.Property.Name,
+                    host = new ReturnUser{
+                        Id = groupBooking.Property.ApplicationUserId,
+                        Name = _userManager.FindByIdAsync(groupBooking.Property.ApplicationUserId).Result!.Name
+                    },
+                    checkIn = groupBooking.StartDate,
+                    checkOut = groupBooking.EndDate,
+                    state = groupBooking.State,
+                    totalAmount = groupBooking.TotalAmount,
+                    numberOfGuests = groupBooking.Group.MembersId.Count
+                })
+                .ToList();
+
+            var allBookings = individualBookings.Cast<object>().Concat(groupBookings.Cast<object>());
+            return Ok(allBookings);
         }
 
+
         /// <summary>
-        /// Obtém as mensagens relacionadas a uma reserva específica.
+        /// Obtém todas as mensagens associadas a uma reserva específica.
         /// </summary>
-        /// <param name="bookingId">O ID da reserva para a qual as mensagens serão obtidas.</param>
-        /// <returns>Retorna as mensagens relacionadas à reserva.</returns>
+        /// <param name="bookingId">O identificador único da reserva.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) com a lista de mensagens associadas à reserva.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 404 (Não Encontrado) se a reserva não existir.
+        /// </returns>
+
         [HttpGet("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string bookingId)
@@ -162,7 +134,7 @@ namespace BookingBuddy.Server.Controllers
                 .OrderBy(m => m.SentAt)
                 .Select(m => new
                 {
-                    m.ApplicationUser.Name,
+                    m.ApplicationUser!.Name,
                     m.Message,
                     m.SentAt
                 }).ToListAsync();
@@ -171,12 +143,16 @@ namespace BookingBuddy.Server.Controllers
         }
 
         /// <summary>
-        /// Cria uma nova mensagem relacionada a uma reserva específica.
+        /// Cria uma nova mensagem para uma reserva especificada.
         /// </summary>
-        /// <param name="bookingId">O ID da reserva à qual a mensagem será adicionada.</param>
-        /// <param name="message">Os dados da nova mensagem a ser criada.</param>
-        /// <returns>Retorna o resultado da criação da mensagem.</returns>
-
+        /// <param name="bookingId">O identificador único da reserva.</param>
+        /// <param name="message">Os detalhes da nova mensagem.</param>
+        /// <returns>
+        /// Um código de estado 200 (OK) se a mensagem for criada com sucesso.
+        /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
+        /// Um código de estado 404 (Não Encontrado) se a reserva não for encontrada.
+        /// Um código de estado 400 (Pedido Inválido) se ocorrerem erros durante o processo.
+        /// </returns>
         [HttpPost("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> CreateMessage(string bookingId, [FromBody] NewBookingMessage message)
@@ -207,6 +183,7 @@ namespace BookingBuddy.Server.Controllers
             var newMessage = new BookingMessage
             {
                 BookingMessageId = Guid.NewGuid().ToString(),
+                BookingOrderId = bookingOrder.OrderId,
                 ApplicationUserId = user.Id,
                 Message = message.Message,
                 SentAt = DateTime.Now

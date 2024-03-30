@@ -23,10 +23,19 @@ namespace BookingBuddy.Server.Controllers
         /// Método que representa o endpoint de obtenção de uma order através do seu ID.
         /// </summary>
         /// <param name="orderId">Identificador da order</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação</returns>
         [HttpGet("{orderId}")]
+        [Authorize]
         public async Task<IActionResult> GetOrder(string orderId)
         {
+            var user = await userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
             var order = await context.Order.FindAsync(orderId);
 
             if (order == null)
@@ -34,10 +43,10 @@ namespace BookingBuddy.Server.Controllers
                 return NotFound();
             }
 
-            return order.Type.ToUpper() switch
+            var result = order.Type.ToUpper() switch
             {
-                "PROMOTION" => Ok(await context.PromotionOrder.FindAsync(orderId)),
-                "PROMOTE" => Ok(await context.PromoteOrder.Include(po => po.Payment)
+                "PROMOTION" => await context.PromotionOrder.FindAsync(orderId),
+                "PROMOTE" => await context.PromoteOrder.Include(po => po.Payment)
                     .Where(po => po.OrderId == orderId)
                     .Select(po => new
                     {
@@ -54,8 +63,8 @@ namespace BookingBuddy.Server.Controllers
                         po.EndDate,
                         State = po.State.AsString()
                     })
-                    .FirstOrDefaultAsync()),
-                "BOOKING" => Ok(await context.BookingOrder
+                    .FirstOrDefaultAsync(),
+                "BOOKING" => await context.BookingOrder
                     .Where(bo => bo.OrderId == orderId)
                     .Include(bo => bo.Payment)
                     .Include(bo => bo.ApplicationUser)
@@ -74,12 +83,14 @@ namespace BookingBuddy.Server.Controllers
                         bo.NumberOfGuests,
                         State = bo.State.AsString()
                     })
-                    .FirstOrDefaultAsync()),
+                    .FirstOrDefaultAsync(),
                 "GROUP-BOOKING" => await GetBookingOrder(),
                 _ => NotFound()
             };
 
-            async Task<IActionResult> GetBookingOrder()
+            return result == null ? NotFound() : (IActionResult)Ok(result);
+
+            async Task<dynamic> GetBookingOrder()
             {
                 var groupBookingOrder = await context.GroupBookingOrder
                     .Where(gbo => gbo.OrderId == orderId)
@@ -101,7 +112,7 @@ namespace BookingBuddy.Server.Controllers
                     paidBy.Add(user!);
                 }
 
-                return Ok(new
+                return new
                 {
                     groupBookingOrder.OrderId,
                     ApplicationUser = new
@@ -138,7 +149,7 @@ namespace BookingBuddy.Server.Controllers
                         u.Email
                     }).ToList(),
                     State = groupBookingOrder.State.AsString()
-                });
+                };
             }
         }
 
@@ -147,7 +158,14 @@ namespace BookingBuddy.Server.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <param name="createPayment">Especifica se deve ser criado um pagamento</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Retorna um IActionResult indicando o resultado da operação:
+        /// - 201 Created: Se o pedido foi criado com sucesso
+        /// - 400 Bad Request: Se as datas são inválidas
+        /// - 401 Unauthorized: Se o utilizador não está autenticado
+        /// - 404 Not Found: Se a propriedade não foi encontrada
+        /// - 500 Internal Server Error: Se ocorreu um erro ao criar o pedido
+        /// </returns>
         [HttpPost("promote")]
         [Authorize]
         public async Task<IActionResult> CreateOrderPromote([FromBody] PropertyPromoteModel model,
@@ -436,16 +454,18 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound("Grupo não encontrado");
                 }
 
-                if (group.ChoosenProperty.IsNullOrEmpty())
+                if (group.ChosenProperty.IsNullOrEmpty())
                 {
                     return BadRequest("Propriedade não escolhida");
                 }
 
-                var property = await context.Property.FindAsync(group.ChoosenProperty);
-                if (property == null)
+                var addedProperty = await context.UserAddedProperty.FindAsync(group.ChosenProperty);
+                if (addedProperty == null)
                 {
                     return NotFound("Propriedade não encontrada");
                 }
+
+                var property = await context.Property.FirstAsync(p => p.PropertyId == addedProperty.PropertyId);
 
                 if (model.StartDate > model.EndDate)
                 {
@@ -462,7 +482,7 @@ namespace BookingBuddy.Server.Controllers
 
                 foreach (var selectedDate in selectedDates)
                 {
-                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == group.ChoosenProperty)
+                    var matchingDiscount = await context.Discount.Where(d => d.PropertyId == group.ChosenProperty)
                         .Where(d => d.StartDate <= selectedDate && d.EndDate >= selectedDate)
                         .FirstOrDefaultAsync();
 
@@ -490,13 +510,15 @@ namespace BookingBuddy.Server.Controllers
                         OrderId = Guid.NewGuid().ToString(),
                         ApplicationUserId = user.Id,
                         GroupId = model.GroupId,
-                        PropertyId = group.ChoosenProperty!,
+                        PropertyId = property.PropertyId,
                         StartDate = model.StartDate,
                         EndDate = model.EndDate,
                         TotalAmount = reservationAmount,
                     };
                     context.GroupBookingOrder.Add(groupBookingOrder);
                     context.Order.Add(new Order { OrderId = groupBookingOrder.OrderId, Type = "Group-Booking" });
+
+                    group.GroupBookingId = groupBookingOrder.OrderId;
                     await context.SaveChangesAsync();
 
                     List<ApplicationUser> members = [];
@@ -506,6 +528,8 @@ namespace BookingBuddy.Server.Controllers
                         members.Add(member!);
                     }
 
+                    GroupController.NotifyGroupBookingCreated(group, groupBookingOrder.OrderId);
+                    
                     return CreatedAtAction("GetOrder", new { orderId = groupBookingOrder.OrderId }, new
                     {
                         groupBookingOrder.OrderId,
@@ -536,6 +560,7 @@ namespace BookingBuddy.Server.Controllers
                         groupBookingOrder.StartDate,
                         groupBookingOrder.EndDate,
                         groupBookingOrder.TotalAmount,
+                        PaidBy = groupBookingOrder.PaidByIds,
                         State = groupBookingOrder.State.AsString()
                     });
                 }
@@ -606,7 +631,14 @@ namespace BookingBuddy.Server.Controllers
                 await paymentController.CreatePayment(user, model.PaymentMethod, reservationAmount, model.PhoneNumber!);
 
             if (newPaymentResult is not { Value: { } newPayment }) return BadRequest();
-            groupBooking.PaymentIds.Add(newPayment.PaymentId);
+            var groupPayment = new GroupOrderPayment
+            {
+                GroupPaymentId = Guid.NewGuid().ToString(),
+                PaymentId = newPayment.PaymentId,
+                ApplicationUserId = user.Id,
+            };
+            context.GroupOrderPayment.Add(groupPayment);
+            groupBooking.GroupPaymentIds.Add(groupPayment.GroupPaymentId);
             await context.SaveChangesAsync();
             return Ok(newPayment);
         }
@@ -635,7 +667,7 @@ namespace BookingBuddy.Server.Controllers
     }
 
     /// <summary>
-    /// Classe que representa o modelo de um pedido de promoção de uma propriedade.
+    /// Modelo de um pedido de promoção de uma propriedade.
     /// </summary>
     /// <param name="PropertyId"></param>
     /// <param name="StartDate"></param>
@@ -651,7 +683,7 @@ namespace BookingBuddy.Server.Controllers
 
 
     /// <summary>
-    /// Classe que representa o modelo de um pedido de reserva de uma propriedade.
+    /// Modelo de um pedido de reserva de uma propriedade.
     /// </summary>
     /// <param name="PropertyId"></param>
     /// <param name="StartDate"></param>

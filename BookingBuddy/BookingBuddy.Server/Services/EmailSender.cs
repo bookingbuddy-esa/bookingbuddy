@@ -3,28 +3,27 @@ using SendGrid;
 
 namespace BookingBuddy.Server.Services
 {
-    public class EmailSender
+    /// <summary>
+    /// Classe que representa o envio de emails.
+    /// </summary>
+    public abstract class EmailSender
     {
-        /*public async Task SendEmail(string subject, string toEmail, string name, string message)
-        {
-            var apiKey = "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";
-            var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("bookingbuddy.bb@gmail.com", "BookingBuddy");
-            //var subject = "Sending with SendGrid is Fun";
-            var to = new EmailAddress(toEmail, name);
-            //var plainTextContent = "and easy to do anywhere, even with C#";
-            //var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
-            var response = await client.SendEmailAsync(msg);
-        }*/
-
-        public static async Task<Response> SendTemplateEmail(string apiKey, string templateId, string toEmail, string toName, object data)
+        /// <summary>
+        /// Envia um email de acordo com uma template dinâmica do SendGrid.
+        /// </summary>
+        /// <param name="apiKey">Chave de API do SendGrid.</param>
+        /// <param name="templateId">O identificador da template.</param>
+        /// <param name="toEmail">O email do destinatário.</param>
+        /// <param name="toName">O nome do destinatário.</param>
+        /// <param name="data">Os dados a serem enviados.</param>
+        public static async Task SendTemplateEmail(string apiKey, string templateId, string toEmail, string toName,
+            object data)
         {
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("bookingbuddy.bb@gmail.com", "BookingBuddy");
             var to = new EmailAddress(toEmail, toName);
             var msg = MailHelper.CreateSingleTemplateEmail(from, to, templateId, data);
-            return await client.SendEmailAsync(msg);
+            await client.SendEmailAsync(msg);
         }
     }
 }

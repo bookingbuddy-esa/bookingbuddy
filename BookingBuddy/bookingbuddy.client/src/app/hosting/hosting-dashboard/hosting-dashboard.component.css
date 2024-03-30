@@ -1,0 +1,9 @@
+:host {
+    display: flex;
+    height: inherit;
+    width: inherit;
+}
+
+.tab-content-height {
+    height: 42px;
+}

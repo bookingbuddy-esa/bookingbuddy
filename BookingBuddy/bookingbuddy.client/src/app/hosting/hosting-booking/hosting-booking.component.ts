@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AppComponent } from '../../app.component';
 import { HostingService } from '../hosting.service';
 import { BookingService } from '../../booking/booking.service';
 
@@ -15,8 +14,7 @@ export class HostingBookingComponent {
   selectedBooking: any;
   newMessage: string = "";
 
-  constructor(private appComponent: AppComponent, private hostingService: HostingService, private bookingService: BookingService) {
-    this.appComponent.showChat = false;
+  constructor(private hostingService: HostingService, private bookingService: BookingService) {
   }
 
   ngOnInit() {
@@ -34,12 +32,14 @@ export class HostingBookingComponent {
   }
 
   selectBooking(booking: any) {
+    console.log("Booking: ");
+    console.log(booking);
     this.selectedBooking = booking;
     this.getBookingMessages();
   }
 
   sendMessage() {
-    this.bookingService.sendBookingMessage(this.selectedBooking.bookingOrderId, this.newMessage).forEach(
+    this.bookingService.sendBookingMessage(this.selectedBooking.orderId, this.newMessage).forEach(
       response => {
         if (response) {
           this.newMessage = "";
@@ -53,7 +53,7 @@ export class HostingBookingComponent {
   }
 
   getBookingMessages() {
-    this.bookingService.getBookingMessages(this.selectedBooking.bookingOrderId).forEach(
+    this.bookingService.getBookingMessages(this.selectedBooking.orderId).forEach(
       response => {
         if (response) {
           this.messages = response as any[];

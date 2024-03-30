@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Property } from '../../models/property';
-import { Discount } from '../../models/discount';
-import { Injectable } from '@angular/core';
-import { AuthorizeService } from "../../auth/authorize.service";
-import { PropertyAdService } from '../property-ad.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {AmenitiesHelper} from "../../models/amenityEnum";
-import { AppComponent } from '../../app.component';
+import {ChangeDetectorRef, Component, Injectable, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Property} from '../../models/property';
+import {AuthorizeService} from "../../auth/authorize.service";
+import {PropertyAdService} from '../property-ad.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AmenitiesHelper} from "../../models/amenity-enum";
+import {AppComponent} from '../../app.component';
 
-import { UserInfo } from "../../auth/authorize.dto";
-import { Router } from '@angular/router';
-import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { PaymentService } from '../../payment/payment.service';
-
-
+import {UserInfo} from "../../auth/authorize.dto";
+import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {OrderService} from '../../payment/order.service';
+import {Group, GroupAction, GroupActionHelper} from '../../models/group';
+import {GroupService} from '../../group/group.service';
+import {timeout} from 'rxjs';
+import {Discount} from "../../models/discount";
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -43,13 +42,16 @@ export class PropertyAdRetrieveComponent implements OnInit {
   pricesMap: Map<number, number> = new Map<number, number>();
   protected readonly AmenitiesHelper = AmenitiesHelper;
   protected isLandlord: boolean = false;
-
+  group_list: Group[] = [];
   protected user: UserInfo | undefined;
+  submitting: boolean = false;
+  errors: string[] = [];
+  selected_group_list: Group[] = [];
+  @ViewChild('myModalClose') modalClose: any;
 
-  constructor(private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private paymentService: PaymentService, private router: Router) {
-    this.appComponent.showChat = true;
+  constructor(private cdref: ChangeDetectorRef, private groupService: GroupService, private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
     this.reservarPropriedadeFailed = false;
-    
+
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required],
@@ -66,6 +68,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
             if (user.roles.includes('landlord') || user.roles.includes('admin')) {
               this.isLandlord = true;
             }
+            this.loadUserGroups();
           });
         }
       });
@@ -81,10 +84,24 @@ export class PropertyAdRetrieveComponent implements OnInit {
           this.loadBlockedDates();
         }
       }).catch(
-        error => {
-          // TODO return error message
-        }
-    ); 
+      error => {
+        // TODO return error message
+      }
+    );
+  }
+
+  private loadUserGroups() {
+    this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
+      this.group_list = groups;
+      this.group_list = this.group_list.filter(
+        group => group.members.length <= this.property!.maxGuestsNumber
+          && !group.properties.find(g => g.propertyId === this.property!.propertyId)
+          && GroupActionHelper.parse(group.groupAction) === GroupAction.none);
+      this.submitting = false;
+    }).catch(error => {
+      this.errors.push(error.error);
+      this.submitting = false;
+    });
   }
 
   loadBlockedDates() {
@@ -107,10 +124,15 @@ export class PropertyAdRetrieveComponent implements OnInit {
             });
 
           }).catch(error => {
-            console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-          }
-        );
+          console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+        }
+      );
     }
+  }
+
+  guestNumbers(): number[] {
+    const maxGuests = this.property?.maxGuestsNumber || 1;
+    return Array.from({length: maxGuests}, (_, index) => index + 1);
   }
 
   loadDiscounts() {
@@ -143,9 +165,9 @@ export class PropertyAdRetrieveComponent implements OnInit {
             });
 
           }).catch(error => {
-            console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-          }
-          );
+          console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+        }
+      );
     }
   }
 
@@ -159,6 +181,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   dateFilter = (date: Date | null): boolean => {
     if (!date) {
+      return false;
+    }
+
+    if (this.checkInDate && this.isSameDay(this.checkInDate, date)) {
       return false;
     }
 
@@ -178,9 +204,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
     if (type === 'start' && event.value) {
       this.checkInDate = event.value;
       this.updateMaxDate();
-    } else if (event.value){        
+    } else if (event.value) {
       this.checkOutDate = event.value;
     }
+    this.cdref.detectChanges();
   }
 
   updateMaxDate(): void {
@@ -189,11 +216,22 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
       if (nextBlockedDate) {
         this.maxDate = nextBlockedDate;
-      } else {  
-        this.maxDate =this.calendarMaxDate;
+      } else {
+        this.maxDate = this.calendarMaxDate;
       }
     }
   }
+
+  public selectGroup(group: Group) {
+    const index = this.selected_group_list.indexOf(group);
+    if (!this.selected_group_list.includes(group)) {
+      this.selected_group_list.push(group);
+    } else {
+      this.selected_group_list.splice(index, 1);
+    }
+
+  }
+
 
   clearDates() {
     this.reservarPropriedadeForm.patchValue({
@@ -203,9 +241,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
     this.checkInDate = this.checkOutDate = undefined;
     this.maxDate = this.calendarMaxDate;
+    this.cdref.detectChanges();
   }
 
-  calcularDiferencaDias(): number {
+  /*calcularDiferencaDias(): number {
     const checkInDateString: string = this.reservarPropriedadeForm.get('checkIn')?.value;
     const checkOutDateString: string = this.reservarPropriedadeForm.get('checkOut')?.value;
     const checkInDate: Date = new Date(checkInDateString);
@@ -219,7 +258,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const diferencaDias: number = diferencaMilissegundos / (1000 * 60 * 60 * 24);
 
     return diferencaDias;
-  }
+  }*/
 
   addToFavorites() {
     if (this.property) {
@@ -229,10 +268,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
             this.isPropertyInFavorites = true;
           }
         }).catch(
-          error => {
-            console.error('Erro ao adicionar ao favoritos:', error);
-          }
-        );
+        error => {
+          console.error('Erro ao adicionar ao favoritos:', error);
+        }
+      );
     }
   }
 
@@ -244,10 +283,31 @@ export class PropertyAdRetrieveComponent implements OnInit {
             this.isPropertyInFavorites = false;
           }
         }).catch(
-          error => {
-            console.error('Erro ao adicionar ao favoritos:', error);
+        error => {
+          console.error('Erro ao adicionar ao favoritos:', error);
+        }
+      );
+    }
+  }
+
+  public addPropertyToGroup() {
+    if (this.property && this.selected_group_list.length > 0) {
+      const propertyId = this.property.propertyId;
+
+      this.selected_group_list.forEach(group => {
+
+        this.groupService.addPropertyToGroup(group.groupId, propertyId).forEach(response => {
+          if (response) {
+            //console.log(response);
           }
-        );
+        })
+      });
+
+
+      this.modalClose.nativeElement.click();
+
+      //   this.router.navigateByUrl('/groups?groupId=' + this.selected_group_list[0].groupId);
+      this.selected_group_list = [];
     }
   }
 
@@ -284,7 +344,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         const aux = count * price;
         totalPrice += aux;
       });
-      return Math.round(((totalPrice /*+ 25 + 20*/) + Number.EPSILON) * 100) / 100;
+      return Math.round(((totalPrice) + Number.EPSILON) * 100) / 100;
     }
 
     return 0;
@@ -292,7 +352,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   priceWithDiscount(discountAmount: number): number {
     if (this.property) {
-      const discountMultiplier = 1 - discountAmount / 100; 
+      const discountMultiplier = 1 - discountAmount / 100;
       return Math.round(((this.property.pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
     }
     return 0;
@@ -302,7 +362,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const formattedStrings: string[] = [];
 
     this.pricesMap.forEach((count, price) => {
-      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100)/ 100}€`);
+      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100) / 100}€`);
     });
 
     return formattedStrings;
@@ -314,7 +374,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         result => {
           this.isPropertyInFavorites = result;
         }).catch(
-          error => {
+        error => {
           console.error('Erro ao verificar se a propriedade está nos favoritos:', error);
         }
       );
@@ -333,14 +393,14 @@ export class PropertyAdRetrieveComponent implements OnInit {
     console.log("Check-out: " + checkOutDate);
 
     // TODO: verificar se datas sao validas antes de fazer a order
-    this.router.navigate(['/transaction-handler'], { 
-        queryParams: {
-            propertyId: this.property?.propertyId,
-            startDate: checkInDate.toISOString().split('T')[0],
-            endDate: checkOutDate.toISOString().split('T')[0],
-            numberOfGuests: numberOfGuests,
-            orderType: 'booking'
-        }
+    this.router.navigate(['/transaction-handler'], {
+      queryParams: {
+        propertyId: this.property?.propertyId,
+        startDate: checkInDate.toISOString().split('T')[0],
+        endDate: checkOutDate.toISOString().split('T')[0],
+        numberOfGuests: numberOfGuests,
+        orderType: 'booking'
+      }
     });
   }
 }

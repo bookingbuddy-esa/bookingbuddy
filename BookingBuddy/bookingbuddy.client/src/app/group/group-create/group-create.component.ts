@@ -1,22 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 
-import { BehaviorSubject, interval, map, Observable, of, Subject, timeout } from 'rxjs';
-import { GroupService } from '../group.service';
-import { AuthorizeService } from '../../auth/authorize.service';
-import { UserInfo } from "../../auth/authorize.dto";
-import { Group, GroupCreate } from "../../models/group";
-import { GroupName } from "./group-name-step/group-name-step.component";
-import { GroupMembers } from "./group-members-step/group-members-step.component";
-import { AppComponent } from '../../app.component';
-import { PropertyAdService } from '../../property-ad/property-ad.service';
+import {BehaviorSubject, interval, map, Observable, of, Subject, timeout} from 'rxjs';
+import {GroupService} from '../group.service';
+import {AuthorizeService} from '../../auth/authorize.service';
+import {UserInfo} from "../../auth/authorize.dto";
+import {Group, GroupCreate} from "../../models/group";
+import {GroupName} from "./group-name-step/group-name-step.component";
+import {GroupMembers} from "./group-members-step/group-members-step.component";
+
+import {PropertyAdService} from '../../property-ad/property-ad.service';
+import {FooterService} from "../../auxiliary/footer.service";
 
 @Component({
   selector: 'app-group-create',
   templateUrl: './group-create.component.html',
   styleUrl: './group-create.component.css'
 })
-export class GroupCreateComponent implements OnInit {
+export class GroupCreateComponent implements OnInit, OnDestroy {
   protected user: UserInfo | undefined;
   protected submitting: boolean = false;
   protected errors: string[] = [];
@@ -39,18 +40,17 @@ export class GroupCreateComponent implements OnInit {
   // Property
   protected propertyId: string = '';
 
-  constructor(private appComponent: AppComponent,
-    private propertyService: PropertyAdService,
-    private authService: AuthorizeService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private groupService: GroupService) {
+  constructor(private propertyService: PropertyAdService,
+              private authService: AuthorizeService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private footerService: FooterService,
+              private groupService: GroupService) {
     this.errors = [];
-    this.appComponent.showChat = false;
+    this.footerService.hideFooter();
   }
 
   ngOnInit(): void {
-
     this.authService.user().forEach(user => {
       this.user = user;
     });
@@ -71,6 +71,10 @@ export class GroupCreateComponent implements OnInit {
         );
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.footerService.showFooter();
   }
 
   previousStep() {
@@ -135,15 +139,19 @@ export class GroupCreateComponent implements OnInit {
       propertyId: this.propertyId,
       members: this.groupMembers?.members ?? []
     };
-      this.groupService.createGroup(newGroup).forEach(response => {
-        if (response) {
-          this.router.navigate(['groups'], { queryParams: { groupId: response.groupId } });
+    this.groupService.createGroup(newGroup).forEach(group => {
+        if (group) {
+          this.submitting = true;
+          this.router.navigate(['/groups'], {queryParams: {groupId: group.groupId}}).then(() => {
+              this.submitting = false;
+            }
+          );
         }
       }
-      ).catch(() => {
-        this.errors.push('Erro ao criar grupo.');
-        this.submitting = false;
-        return;
-      });
+    ).catch(() => {
+      this.errors.push('Erro ao criar grupo.');
+      this.submitting = false;
+      return;
+    });
   }
 }

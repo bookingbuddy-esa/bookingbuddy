@@ -161,7 +161,10 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void GetOrder_Returns_NotFound_When_Order_Not_Exist()
     {
-        var controller = CreateController();
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
+        Assert.NotNull(user);
+        
+        var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
         var result = await controller.GetOrder(Guid.NewGuid().ToString());
@@ -171,10 +174,13 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
     [Fact]
     public async void GetOrder_Returns_Order_When_Order_Exist()
     {
+        var user = await _userManager.UserManager.FindByEmailAsync("bookingbuddy.landlord@bookingbuddy.com");
+        Assert.NotNull(user);
+        
         var order = await CreateRandomOrder(typeof(PromoteOrder));
         Assert.NotNull(order);
 
-        var controller = CreateController();
+        var controller = CreateController(user.Id);
         Assert.NotNull(controller);
 
         var result = await controller.GetOrder(order.OrderId);
@@ -192,7 +198,7 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         if (order is PromoteOrder promoteOrder)
         {
             var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
-                promoteOrder!.PropertyId,
+                promoteOrder.PropertyId,
                 promoteOrder.StartDate,
                 promoteOrder.EndDate,
                 promoteOrder.Payment!.Method
@@ -221,7 +227,7 @@ public class OrderControllerTest : IClassFixture<ApplicationDbContextFixture>
         {
             var result = await controller.CreateOrderPromote(new PropertyPromoteModel(
                 Guid.NewGuid().ToString(),
-                promoteOrder!.StartDate,
+                promoteOrder.StartDate,
                 promoteOrder.EndDate,
                 promoteOrder.Payment!.Method
             ), false);

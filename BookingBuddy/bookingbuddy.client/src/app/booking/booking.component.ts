@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AppComponent } from '../app.component';
 import { BookingService } from './booking.service';
 
 @Component({
@@ -13,31 +12,30 @@ export class BookingComponent {
   selectedBooking: any;
   newMessage: string = "";
 
-  constructor(private appComponent: AppComponent, private bookingService: BookingService) {
-    this.appComponent.showChat = false;
+  constructor(private bookingService: BookingService) {
   }
 
   ngOnInit() {
-    this.bookingService.getBookings().forEach(
-      response => {
-        if (response) {
-          this.bookings = response as any[];
-          this.selectedBooking = this.bookings[0];
-        }
-      }).catch(
-        error => {
-          // TODO return error message
-        }
-    )
+    this.bookingService.getBookings().forEach( response => {
+      if (response) {
+        this.bookings = response as any[];
+        console.log("BAOS");
+        console.log(this.bookings);
+        this.selectedBooking = this.bookings[0];
+      }
+    }).catch(error => {
+      // TODO return error message
+    })
   }
 
   selectBooking(booking: any) {
     this.selectedBooking = booking;
+    
     this.getBookingMessages();
   }
 
   sendMessage() {
-    this.bookingService.sendBookingMessage(this.selectedBooking.bookingOrderId, this.newMessage).forEach(
+    this.bookingService.sendBookingMessage(this.selectedBooking.orderId, this.newMessage).forEach(
       response => {
         if (response) {
           this.newMessage = "";
@@ -51,7 +49,7 @@ export class BookingComponent {
   }
 
   getBookingMessages() {
-    this.bookingService.getBookingMessages(this.selectedBooking.bookingOrderId).forEach(
+    this.bookingService.getBookingMessages(this.selectedBooking.orderId).forEach(
       response => {
         if (response) {
           console.log("Recebi mensagens: " + response)

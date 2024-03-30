@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import { AmenitiesHelper } from '../../../../models/amenityEnum';
+import { AmenitiesHelper } from '../../../../models/amenity-enum';
 
 @Component({
   selector: 'app-amenity',

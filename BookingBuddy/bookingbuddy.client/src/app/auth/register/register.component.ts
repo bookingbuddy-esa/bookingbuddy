@@ -36,6 +36,9 @@ export class RegisterComponent implements OnInit {
           validators: [Validators.required]
         })
       });
+    this.confirmPasswordFormField?.valueChanges.forEach(value => {
+      this.confirmPasswordFormField?.setErrors(value !== this.passwordFormField?.value ? {mismatch: true} : null);
+    });
   }
 
   get nameFormField() {
@@ -65,12 +68,6 @@ export class RegisterComponent implements OnInit {
     const name = this.registerForm.get('name')?.value;
     const userName = this.registerForm.get('email')?.value;
     const password = this.registerForm.get('password')?.value;
-    const confirmPassword = this.registerForm.get('confirmPassword')?.value;
-    if (password !== confirmPassword) {
-      this.registerFailed = true;
-      this.errors.push('As palavras-passe não coincidem.');
-      return;
-    }
     this.authService.register(name, userName, password).forEach(
       response => {
         if (response) {

@@ -8,23 +8,23 @@ namespace BookingBuddy.Server.Models
     public class BlockedDate
     {
         /// <summary>
-        /// Propriedade que diz respeito ao identificador das datas bloqueadas de uma propriedade.
+        /// Identificador das datas bloqueadas de uma propriedade.
         /// </summary>
         [Key]
         public int Id { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito à data de incio.
+        /// Data de incio do bloqueio.
         /// </summary>
         public String Start { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito à data final.
+        /// Data de fim do bloqueio.
         /// </summary>
         public String End { get; set; }
 
         /// <summary>
-        /// Propriedade que diz respeito ao identificador da propriedade das dadas bloqueadas.
+        /// Identificador da propriedade referente às datas bloqueadas.
         /// </summary>
         public String PropertyId {  get; set; }
     }

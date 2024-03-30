@@ -1,0 +1,31 @@
+<div class="dashboard w-100">
+    <ul class="nav nav-tabs mt-4">
+        <li class="nav-item">
+            <a class="nav-link active" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar" type="button" role="tab" aria-controls="calendar" aria-selected="true">Calendário<i class="bi bi-calendar-date ms-2"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab" aria-controls="stats" aria-selected="false">Estatísticas<i class="bi bi-graph-up ms-2"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="hosting-booking-tab" data-bs-toggle="tab" data-bs-target="#hosting-booking" type="button" role="tab" aria-controls="hosting-booking" aria-selected="false">Reservas de Hóspedes<i class="bi bi-journal-check ms-2"></i></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="hosting-promote-tab" data-bs-toggle="tab" data-bs-target="#hosting-promote" type="button" role="tab" aria-controls="hosting-promote" aria-selected="false">Promover Propriedade<i class="bi bi-arrow-up-circle ms-2"></i></a>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="calendar" role="tabpanel" aria-labelledby="calendar-tab">
+            <app-calendar></app-calendar>
+        </div>
+        <div class="tab-pane fade" id="stats" role="tabpanel" aria-labelledby="stats-tab">
+            <app-property-performance></app-property-performance>
+        </div>
+        <div class="tab-pane fade" id="hosting-booking" role="tabpanel" aria-labelledby="hosting-booking-tab">
+            <app-hosting-booking></app-hosting-booking>
+        </div>
+        <div class="tab-pane fade" id="hosting-promote" role="tabpanel" aria-labelledby="hosting-promote-tab">
+            <app-property-promote></app-property-promote>
+        </div>
+    </div>
+</div>
