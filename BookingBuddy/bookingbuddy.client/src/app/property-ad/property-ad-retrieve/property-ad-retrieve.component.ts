@@ -1,24 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Property } from '../../models/property';
-import { Discount } from '../../models/discount';
-import { Injectable } from '@angular/core';
-import { AuthorizeService } from "../../auth/authorize.service";
-import { PropertyAdService } from '../property-ad.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {AmenitiesHelper} from "../../models/amenityEnum";
-import { AppComponent } from '../../app.component';
+import {ChangeDetectorRef, Component, Injectable, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Property} from '../../models/property';
+import {AuthorizeService} from "../../auth/authorize.service";
+import {PropertyAdService} from '../property-ad.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AmenitiesHelper} from "../../models/amenity-enum";
+import {AppComponent} from '../../app.component';
 
-import { UserInfo } from "../../auth/authorize.dto";
-import { Router } from '@angular/router';
-import { MatCalendarCellClassFunction, MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { OrderService } from '../../payment/order.service';
-import { Group } from '../../models/group';
-import { GroupService } from '../../group/group.service';
-import { timeout } from 'rxjs';
-import { ViewChild } from '@angular/core';
-import { ChangeDetectorRef } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import {UserInfo} from "../../auth/authorize.dto";
+import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {OrderService} from '../../payment/order.service';
+import {Group, GroupAction, GroupActionHelper} from '../../models/group';
+import {GroupService} from '../../group/group.service';
+import {timeout} from 'rxjs';
+import {Discount} from "../../models/discount";
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -55,7 +51,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
   @ViewChild('myModalClose') modalClose: any;
   constructor(private datePipe: DatePipe, private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
     this.reservarPropriedadeFailed = false;
-    
+
     this.reservarPropriedadeForm = this.formBuilder.group({
       checkIn: ['', Validators.required],
       checkOut: ['', Validators.required],
@@ -86,19 +82,21 @@ export class PropertyAdRetrieveComponent implements OnInit {
           this.property = response as Property;
           this.loadDiscounts();
           this.loadBlockedDates();
-
         }
       }).catch(
-        error => {
-          // TODO return error message
-        }
-    ); 
+      error => {
+        // TODO return error message
+      }
+    );
   }
 
   private loadUserGroups() {
     this.groupService.getGroupsByUserId(this.user!.userId).pipe(timeout(10000)).forEach(groups => {
       this.group_list = groups;
-      this.group_list = this.group_list.filter(group => group.membersId.length <= this.property!.maxGuestsNumber && !group.propertiesId.includes(this.property!.propertyId));
+      this.group_list = this.group_list.filter(
+        group => group.members.length <= this.property!.maxGuestsNumber
+          && !group.properties.find(g => g.propertyId === this.property!.propertyId)
+          && GroupActionHelper.parse(group.groupAction) === GroupAction.none);
       this.submitting = false;
     }).catch(error => {
       this.errors.push(error.error);
@@ -126,15 +124,15 @@ export class PropertyAdRetrieveComponent implements OnInit {
             });
 
           }).catch(error => {
-            console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-          }
-        );
+          console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+        }
+      );
     }
   }
 
   guestNumbers(): number[] {
-    const maxGuests = this.property?.maxGuestsNumber || 1; 
-    return Array.from({ length: maxGuests }, (_, index) => index + 1);
+    const maxGuests = this.property?.maxGuestsNumber || 1;
+    return Array.from({length: maxGuests}, (_, index) => index + 1);
   }
 
   loadDiscounts() {
@@ -167,9 +165,9 @@ export class PropertyAdRetrieveComponent implements OnInit {
             });
 
           }).catch(error => {
-            console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-          }
-          );
+          console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+        }
+      );
     }
   }
 
@@ -205,7 +203,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     if (type === 'start' && event.value) {
       this.checkInDate = event.value;
       this.updateMaxDate();
-    } else if (event.value){        
+    } else if (event.value) {
       this.checkOutDate = event.value;
     }
     this.cdref.detectChanges();
@@ -217,8 +215,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
       if (nextBlockedDate) {
         this.maxDate = nextBlockedDate;
-      } else {  
-        this.maxDate =this.calendarMaxDate;
+      } else {
+        this.maxDate = this.calendarMaxDate;
       }
     }
   }
@@ -230,7 +228,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     } else {
       this.selected_group_list.splice(index, 1);
     }
-    
+
   }
 
 
@@ -269,10 +267,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
             this.isPropertyInFavorites = true;
           }
         }).catch(
-          error => {
-            console.error('Erro ao adicionar ao favoritos:', error);
-          }
-        );
+        error => {
+          console.error('Erro ao adicionar ao favoritos:', error);
+        }
+      );
     }
   }
 
@@ -284,10 +282,10 @@ export class PropertyAdRetrieveComponent implements OnInit {
             this.isPropertyInFavorites = false;
           }
         }).catch(
-          error => {
-            console.error('Erro ao adicionar ao favoritos:', error);
-          }
-        );
+        error => {
+          console.error('Erro ao adicionar ao favoritos:', error);
+        }
+      );
     }
   }
 
@@ -307,7 +305,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
       this.modalClose.nativeElement.click();
 
-   //   this.router.navigateByUrl('/groups?groupId=' + this.selected_group_list[0].groupId);
+      //   this.router.navigateByUrl('/groups?groupId=' + this.selected_group_list[0].groupId);
       this.selected_group_list = [];
     }
   }
@@ -353,7 +351,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   priceWithDiscount(discountAmount: number): number {
     if (this.property) {
-      const discountMultiplier = 1 - discountAmount / 100; 
+      const discountMultiplier = 1 - discountAmount / 100;
       return Math.round(((this.property.pricePerNight * discountMultiplier) + Number.EPSILON) * 100) / 100
     }
     return 0;
@@ -363,7 +361,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
     const formattedStrings: string[] = [];
 
     this.pricesMap.forEach((count, price) => {
-      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100)/ 100}€`);
+      formattedStrings.push(`${price}€ x ${count} noites - ${Math.round(((price * count) + Number.EPSILON) * 100) / 100}€`);
     });
 
     return formattedStrings;
@@ -375,7 +373,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
         result => {
           this.isPropertyInFavorites = result;
         }).catch(
-          error => {
+        error => {
           console.error('Erro ao verificar se a propriedade está nos favoritos:', error);
         }
       );

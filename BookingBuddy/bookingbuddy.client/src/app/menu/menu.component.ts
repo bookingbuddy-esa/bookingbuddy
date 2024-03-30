@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, HostListener, inject} from '@angular/core';
 import {AuthorizeService} from "../auth/authorize.service";
 import {Router} from "@angular/router";
 import {UserInfo} from "../auth/authorize.dto";
@@ -12,15 +12,13 @@ export class MenuComponent implements OnInit {
   protected signedIn: boolean = false;
   protected user: UserInfo | undefined;
   protected isLandlord: boolean = false;
+  protected isExpanded = false;
+  private authService: AuthorizeService = inject(AuthorizeService);
+  private router: Router = inject(Router);
 
-  resize: ResizeObserver = new ResizeObserver(() => {
-    if(window.innerWidth > 768 && this.isExpanded) {
-      this.isExpanded = false;
-    }
-  });
-
-  constructor(private authService: AuthorizeService, private router: Router) {
-    this.resize.observe(document.body);
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isExpanded = event.target.innerWidth <= 576 && this.isExpanded;
   }
 
   ngOnInit(): void {
@@ -49,7 +47,14 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  isExpanded = false;
+  public async updateUserInfo() {
+    return this.authService.user().forEach(user => {
+      this.user = user
+      if (user.roles.includes('landlord') || user.roles.includes('admin')) {
+        this.isLandlord = true;
+      }
+    });
+  }
 
   collapse() {
     this.isExpanded = false;
