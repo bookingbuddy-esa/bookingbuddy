@@ -1,7 +1,24 @@
 :host {
-  width: inherit;
-  display: flex;
-  flex-grow: 1;
+  width: 100%;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #b2b2b2;
+  border-radius: 10px;
+  margin: 5px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #5c7858;
+  border-radius: 10px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #198653;
 }
 
 .chat {
