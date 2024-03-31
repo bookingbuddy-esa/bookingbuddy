@@ -16,8 +16,10 @@ export class HomepageComponent implements OnInit {
   submitting: boolean = false;
   user: UserInfo | undefined;
   property_list: Property[] = [];
-  currentPage: number = 1;
+  numberOfPages: number = 1;
+  startIndex: number = 0;
   itemsPerPage: number = 10;
+  numberOfProperties: number = 0;
 
   constructor(
     private authService: AuthorizeService,
@@ -40,20 +42,68 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
-    // TODO: Após atualizar o controlador de propriedades, o método recebe um número de propriedades a serem retornados
-    //  e um index onde a lista de propriedades deve começar
-    this.propertyService.getProperties().forEach(
-      response => {
+    
+    this.submitting = true;
+    this.countProperties().then(() => this.loadProperties());
+  }
+
+  countProperties() {
+    return new Promise<void>((resolve, reject) => {
+      this.propertyService.getPropertiesCount().forEach(response => {
         if (response) {
-          this.property_list = response as Property[];
-          for(let i=0; i<5; i++){
-            this.property_list = this.property_list.concat(response as Property[]);
-          }
+          this.numberOfProperties = response as number;
+          this.numberOfPages = Math.ceil(this.numberOfProperties / this.itemsPerPage);
+          resolve();
+        } else {
+          reject("Error fetching properties count");
         }
-      }).catch(
-      error => {
-        //this.errors.push("TODO");
+      });
+    });
+  }
+  
+  loadProperties() {
+    console.log("A carregar: " + this.itemsPerPage + " propriedades a partir do índice " + this.startIndex)
+    this.propertyService.getProperties(this.itemsPerPage, this.startIndex).subscribe(response => {
+      if (response) {
+        this.property_list = response as Property[];
+        this.submitting = false;
       }
-    );
+    });
+  }
+
+  updateItemsPerPage(value: number) {
+    this.itemsPerPage = value;
+    this.countProperties().then(() => this.loadProperties());
+  }
+
+  setPage(page: number) {
+    if(page < 1 || page > this.numberOfPages || this.startIndex === page - 1) {
+      return;
+    }
+
+    this.startIndex = page - 1;
+    this.loadProperties();
+  }
+
+  previousPage() {
+    if (this.startIndex > 0) {
+      console.log("Previous page -> " + this.startIndex)
+      this.startIndex -= 1;
+      console.log("Depois: " + this.startIndex)
+      this.loadProperties();
+    }
+  }
+
+  nextPage() {
+    if (this.startIndex < this.numberOfPages - 1) {
+      console.log("Next page -> " + this.startIndex)
+      this.startIndex += 1;
+      console.log("Depois: " + this.startIndex)
+      this.loadProperties();
+    }
+  }
+
+  getPages(): number[] {
+    return Array.from({ length: this.numberOfPages }, (_, i) => i + 1);
   }
 }
