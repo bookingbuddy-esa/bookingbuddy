@@ -3,3 +3,7 @@
     height: inherit;
     width: inherit;
 }*/
+
+:host {
+  width: 100%;
+}

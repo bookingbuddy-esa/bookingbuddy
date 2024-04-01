@@ -18,7 +18,7 @@ export class HomepageComponent implements OnInit {
   property_list: Property[] = [];
   numberOfPages: number = 1;
   startIndex: number = 0;
-  itemsPerPage: number = 5;
+  itemsPerPage: number = 100;
   numberOfProperties: number = 0;
 
   constructor(
@@ -42,8 +42,8 @@ export class HomepageComponent implements OnInit {
         this.authService.user().forEach(user => this.user = user);
       }
     });
-    
-    //this.submitting = true;
+
+    this.submitting = true;
     this.countProperties().then(() => this.loadProperties());
   }
 
@@ -60,7 +60,7 @@ export class HomepageComponent implements OnInit {
       });
     });
   }
-  
+
   loadProperties() {
     console.log("A carregar: " + this.itemsPerPage + " propriedades a partir do índice " + this.startIndex)
     this.propertyService.getProperties(this.itemsPerPage, this.startIndex).subscribe(response => {
