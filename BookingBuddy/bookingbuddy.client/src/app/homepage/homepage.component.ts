@@ -18,7 +18,7 @@ export class HomepageComponent implements OnInit {
   property_list: Property[] = [];
   numberOfPages: number = 1;
   startIndex: number = 0;
-  itemsPerPage: number = 10;
+  itemsPerPage: number = 5;
   numberOfProperties: number = 0;
 
   constructor(
@@ -43,7 +43,7 @@ export class HomepageComponent implements OnInit {
       }
     });
     
-    this.submitting = true;
+    //this.submitting = true;
     this.countProperties().then(() => this.loadProperties());
   }
 

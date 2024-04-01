@@ -18,9 +18,6 @@ export class LogoutComponent implements OnInit {
       response => {
         if (response) {
           this.submitting = false;
-          setTimeout(() => {
-            this.router.navigate([""])
-          }, 5000);
         }
       }).catch(
       error => {

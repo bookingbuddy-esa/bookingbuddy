@@ -12,7 +12,8 @@
         </div>
         <form class="d-flex mb-3 w-100 flex-column align-items-center" [formGroup]="registerForm" (submit)="register($event)" novalidate>
             <div class="w-100 py-2">
-                <input type="text" class="form-control form-input p-2" id="name" placeholder="Insira o seu nome" name="name" formControlName="name" [ngClass]="{'is-valid':nameFormField?.valid && nameFormField?.dirty,'is-invalid':nameFormField?.invalid && nameFormField?.dirty}">
+                <input type="text" class="form-control form-input p-2" id="name" placeholder="Insira o seu nome" name="name" formControlName="name" [ngClass]="{'is-valid':nameFormField?.valid && nameFormField?.dirty,'is-invalid':nameFormField?.invalid && nameFormField?.dirty}"
+                    maxlength="30">
                 <div class="invalid-feedback">O nome é obrigatório!</div>
             </div>
             <div class="w-100 py-2">

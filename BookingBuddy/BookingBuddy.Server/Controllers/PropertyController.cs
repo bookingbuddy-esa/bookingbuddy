@@ -34,6 +34,7 @@ namespace BookingBuddy.Server.Controllers
             _configuration = configuration;
         }
 
+        // TODO: apagar depois
         // create a test dev endpoint to create 50 properties random
         [HttpGet("createTestProperties")]
         [Authorize]
@@ -70,6 +71,10 @@ namespace BookingBuddy.Server.Controllers
             return Ok("Properties created successfully");
         }
 
+        /// <summary>
+        /// Método que retorna o número total de propriedades existentes na base de dados.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("count")]
         [AllowAnonymous]
         public async Task<IActionResult> GetPropertiesCount()
