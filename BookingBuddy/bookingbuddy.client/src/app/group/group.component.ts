@@ -84,11 +84,6 @@ export class GroupComponent implements OnInit, OnDestroy {
   protected pendingGroup: Group | undefined;
   protected invite_loading: boolean = false;
 
-  // Reservar propriedade
-  protected dates_loading: boolean = false;
-  private blockedDates: Date[] = [];
-  private discounts: ReturnedDiscount[] = [];
-
   ngOnInit(): void {
     this.global_loading = true;
     this.authService.user().forEach(async user => {
@@ -372,10 +367,6 @@ export class GroupComponent implements OnInit, OnDestroy {
           return g;
         }
       });
-      if (GroupActionHelper.parse(group.groupAction) === GroupAction.booking && group.groupOwner.id == this.user?.userId) {
-        this.loadBlockedDates();
-        this.loadDiscounts();
-      }
       if (GroupActionHelper.parse(group.groupAction) === GroupAction.paying) {
         this.orderService.getOrder(group.groupBookingId!).forEach(order => {
           group.groupBookingOrder = order;
@@ -537,35 +528,6 @@ export class GroupComponent implements OnInit, OnDestroy {
     });
   }
 
-  protected async loadBlockedDates() {
-    if (this.currentGroup?.chosenProperty) {
-      await this.propertyService.getPropertyBlockedDates(this.currentGroup.chosenProperty.propertyId).forEach((blockedDates) => {
-        blockedDates.forEach(bd => {
-          const startDate = new Date(bd.start);
-          const endDate = new Date(bd.end);
-          const currentDate = new Date(startDate);
-          while (currentDate <= endDate) {
-            this.blockedDates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
-          }
-        });
-      }).catch(error => {
-        console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
-      });
-    }
-  }
-
-  protected async loadDiscounts() {
-    if (this.currentGroup?.chosenProperty) {
-      await this.propertyService.getPropertyDiscounts(this.currentGroup.chosenProperty.propertyId).forEach((discounts) => {
-        this.discounts = discounts;
-      }).catch(error => {
-          console.error('Erro ao carregar descontos:', error);
-        }
-      );
-    }
-  }
-
   // Propriedades auxiliares
 
   protected get isActionNone(): boolean {
@@ -718,9 +680,7 @@ export class GroupComponent implements OnInit, OnDestroy {
         animation: true,
         centered: true,
       });
-    modalRef.componentInstance.blockedDates = this.blockedDates;
     modalRef.componentInstance.currentGroup = this.currentGroup;
-    modalRef.componentInstance.discounts = this.discounts;
     modalRef.componentInstance.onAccept.forEach(async (dates: { checkIn: Date, checkOut: Date }) => {
       this.orderService.createGroupBookingOrder(this.currentGroup!.groupId, dates.checkIn, dates.checkOut).forEach(order => {
         if (order) {
@@ -994,11 +954,12 @@ export class ConcludeVoteFailedModal {
   standalone: true,
   template: `
     <div class="modal-header" aria-labelledby="selectDateModalLabel">
-      <h5 class="modal-title" id="selectDateModalLabel">Selecionar data da reserva</h5>
+      <h5 *ngIf="!dates_load_error" class="modal-title" id="selectDateModalLabel">Selecionar data da reserva</h5>
+      <h5 *ngIf="dates_load_error" class="modal-title" id="selectDateModalLabel">Não foi possível carregar as datas</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
     </div>
     <div class="modal-body">
-      <div *ngIf="!submitting">
+      <div *ngIf="!dates_load_error &&(!submitting || !dates_loading)">
         <div class="w-100 my-2">
           <mat-form-field class="w-100 d-flex" (click)="picker.open()" appearance="fill" [formGroup]="bookPropertyForm">
             <mat-label>Selecione as datas</mat-label>
@@ -1025,15 +986,17 @@ export class ConcludeVoteFailedModal {
           </div>
         </div>
       </div>
-      <app-loader class="m-3" *ngIf="submitting"></app-loader>
+      <app-loader class="m-3" *ngIf="!dates_load_error &&(submitting || dates_loading)"></app-loader>
+      <span *ngIf="dates_load_error" class="text-center">Ocorreu um erro ao carregar as datas.</span>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
-      <button type="button" class="btn btn-success" aria-label="Reservar"
+      <button *ngIf="!dates_load_error" type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
+      <button *ngIf="!dates_load_error" type="button" class="btn btn-success" aria-label="Reservar"
               [disabled]="isDisabled"
               (click)="onAccept.emit({checkIn : checkInDate ,checkOut: checkOutDate})">
         Reservar
       </button>
+      <button *ngIf="dates_load_error" type="button" class="btn btn-danger" aria-label="Close" (click)="onClose()">Fechar</button>
     </div>
   `,
   imports: [
@@ -1060,8 +1023,9 @@ export class ConcludeVoteFailedModal {
     AuxiliaryModule
   ]
 })
-export class SelectDatesModal implements OnDestroy {
+export class SelectDatesModal implements OnInit, OnDestroy {
   private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  private propertyService: PropertyAdService = inject(PropertyAdService);
   protected onAccept: EventEmitter<{ checkIn: Date, checkOut: Date }> = new EventEmitter();
   protected defaultMaxDate: Date = (() => {
     let date = new Date();
@@ -1075,6 +1039,8 @@ export class SelectDatesModal implements OnDestroy {
   protected blockedDates: Date[] = [];
   private currentGroup: Group | undefined;
   private discounts: ReturnedDiscount[] = [];
+  protected dates_loading: boolean = false;
+  protected dates_load_error: boolean = false;
   protected bookPropertyForm: FormGroup;
   protected submitting: boolean = false;
 
@@ -1085,6 +1051,26 @@ export class SelectDatesModal implements OnDestroy {
     });
   }
 
+
+  ngOnInit(): void {
+    this.dates_loading = true;
+    this.loadBlockedDates()
+      .then(() => {
+        this.loadDiscounts().then(() => {
+          this.dates_loading = false;
+        }).catch(error => {
+          this.dates_loading = false;
+          this.dates_load_error = true;
+          console.error('Erro ao carregar descontos:', error);
+        });
+      }).catch(error => {
+      this.dates_loading = false;
+      this.dates_load_error = true;
+      console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+    });
+  }
+
+
   ngOnDestroy(): void {
     this.clearDates();
   }
@@ -1092,6 +1078,35 @@ export class SelectDatesModal implements OnDestroy {
   protected onClose: Function = () => {
     this.clearDates();
     this.activeModal.dismiss();
+  }
+
+  protected async loadBlockedDates() {
+    if (this.currentGroup?.chosenProperty) {
+      await this.propertyService.getPropertyBlockedDates(this.currentGroup.chosenProperty.propertyId).forEach((blockedDates) => {
+        blockedDates.forEach(bd => {
+          const startDate = new Date(bd.start);
+          const endDate = new Date(bd.end);
+          const currentDate = new Date(startDate);
+          while (currentDate <= endDate) {
+            this.blockedDates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        });
+      }).catch(error => {
+        console.error('Erro ao carregar intervalos de datas bloqueadas:', error);
+      });
+    }
+  }
+
+  protected async loadDiscounts() {
+    if (this.currentGroup?.chosenProperty) {
+      await this.propertyService.getPropertyDiscounts(this.currentGroup.chosenProperty.propertyId).forEach((discounts) => {
+        this.discounts = discounts;
+      }).catch(error => {
+          console.error('Erro ao carregar descontos:', error);
+        }
+      );
+    }
   }
 
   protected get discountDates(): Date[] {
