@@ -55,10 +55,10 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'bookingbuddy'
+          app-name: 'booking-buddy'
           slot-name: 'Production'
           package: ./BookingBuddy/bookingbuddy.client/dist/bookingbuddy.client/browser
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_9C56BA61DD824CEEB399083F1B2943AA }}
+          publish-profile: ${{ secrets.CLIENT_PUBLISH_PROFILE }}
 
   BookingBuddyServer-build:
     runs-on: ubuntu-latest
@@ -101,7 +101,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'bookingbuddy-api-server'
+          app-name: 'booking-buddy-api'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2BF1F679F3904871A985DEC393437A5F }}
+          publish-profile: ${{ secrets.API_PUBLISH_PROFILE }}

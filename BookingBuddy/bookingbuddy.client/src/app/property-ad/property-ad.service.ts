@@ -40,8 +40,7 @@ export class PropertyAdService {
       withCredentials: true,
       observe: 'response',
       responseType: 'text'
-    })
-      .pipe<boolean>(map((res: HttpResponse<string>) => {
+    }).pipe<boolean>(map((res: HttpResponse<string>) => {
         return res.ok;
       }));
   }

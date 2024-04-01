@@ -13,6 +13,8 @@
 - [X] Limpar branches  
 - [X] Responsaveis pela documentação, testes, manual tecnico  
 - [X] Tabela da tecnologia - adicionar o compodoc  
+- [ ] Rever os BPDS especialmente da Gestão de Acessos e Grupos de viagem, colocar as business rules, validação email, passwords, ...
+
 
 
 
