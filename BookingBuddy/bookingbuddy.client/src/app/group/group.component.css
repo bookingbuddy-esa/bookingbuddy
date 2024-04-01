@@ -21,6 +21,11 @@
     min-height: 30%;
 }
 
+.chat {
+  height: 50%;
+  max-height: 500px;
+}
+
 @media screen and (max-width: 768px) {
     .property-list {
         min-height: 20vh;

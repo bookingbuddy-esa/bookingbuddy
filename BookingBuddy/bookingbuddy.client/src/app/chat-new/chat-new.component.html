@@ -1,14 +1,47 @@
-<div class="chat d-flex flex-column w-100 my-3">
-  <h3>Chat com o grupo</h3>
-  <div class="w-100 mt-3 px-3 overflow-y-auto" style="max-height: 300px;">
-    <p><strong>User 1:</strong> Olá mundo!</p>
-    <p><strong>User 2:</strong> Olá mundo!</p>
-    <p><strong>User 3:</strong> Olá mundo!</p>
+<div class="chat h-100 w-100 d-flex flex-column">
+  <h3 class="mb-0">{{ chatTitle }}</h3>
+  <hr class="mb-0">
+  <div *ngIf="!loading || ws_loading" #messages
+       class="flex-grow-1 row row-cols-1 overflow-y-auto custom-scroll px-2 pb-2"
+       (scroll)="onScroll($event)">
+    <div class="w-100 col">
+      <span class="fw-bolder"
+            *ngIf="chat && chat.lastMessages && chat.lastMessages.length === 0">
+        Ainda não existem mensagens neste chat
+      </span>
+      <div *ngIf="message_loading" class="d-flex flex-row w-100 justify-content-center mt-2">
+        <div class="spinner-grow spinner-grow-sm mx-1" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm mx-1" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="spinner-grow spinner-grow-sm mx-1" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <div class="mt-2 text-wrap w-100" *ngFor="let message of chat?.lastMessages" style="word-break: break-all">
+        <span class="fw-bolder d-block">
+          {{ message.user.name }}
+          <span class="text-muted" style="font-size: 0.7rem">
+            {{ formatMessageDate(message.sentAt) }}
+          </span>
+        </span>
+        <span class="d-block">{{ message.content }}</span>
+      </div>
+    </div>
   </div>
-
-  <div class="input-group mt-auto">
-    <input type="text" class="form-control" placeholder="Escreva a sua mensagem ">
-    <button class="btn btn-outline-secondary" type="button">Enviar</button>
+  <app-loader *ngIf="loading || ws_loading"></app-loader>
+  <div *ngIf="newMessages" class="d-flex w-100 text-bg-success my-1 rounded-2 px-2"
+       style="font-size: 0.8rem; cursor: pointer"
+       (click)="updateChat(chatId!)">
+    <span>Novas Mensagens</span><span class="flex-fill"></span><i class="bi bi-arrow-90deg-right"></i>
+  </div>
+  <div class="input-group">
+    <input type="text" class="form-control" [formControl]="messageControl" placeholder="Escreva a sua mensagem"
+           (keydown.enter)="sendMessage()">
+    <button class="btn btn-outline-secondary" (click)="sendMessage()" [disabled]="!messageControl.valid" type="button">
+      Enviar
+    </button>
   </div>
 </div>
-
