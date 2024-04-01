@@ -139,7 +139,6 @@ export class ChatNewComponent implements OnInit, AfterViewChecked, OnChanges {
 
   protected get isScrollAtBottom(): boolean {
     if (this.messages) {
-      console.log(this.messages.nativeElement.scrollHeight, this.messages.nativeElement.clientHeight, this.messages.nativeElement.scrollTop);
       return Math.abs(this.messages.nativeElement.scrollHeight - this.messages.nativeElement.clientHeight - this.messages.nativeElement.scrollTop) <= 1;
     }
     return false;
@@ -171,7 +170,6 @@ export class ChatNewComponent implements OnInit, AfterViewChecked, OnChanges {
       let limit = 10;
       return this.chatService.getMessages(this.chatId, offset, limit).forEach(messages => {
         messages.reverse();
-        console.log(messages);
         if (messages.length === 0) {
           this.noMoreMessages = true;
         } else {
@@ -192,7 +190,6 @@ export class ChatNewComponent implements OnInit, AfterViewChecked, OnChanges {
     if (scrollTop === 0) {
       this.loadMoreMessages().then(() => {
         element.scroll(0, element.scrollHeight - distanceFromBottom)
-        console.log(element.scrollHeight - scrollTop, element.clientHeight, element.scrollHeight);
       });
     }
   }
