@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {Property} from '../models/property';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {FeedbackService} from "../auxiliary/feedback.service";
+import {timeout} from "rxjs";
 
 @Component({
   selector: 'app-homepage',
@@ -44,7 +45,7 @@ export class HomepageComponent implements OnInit {
     });
 
     this.submitting = true;
-    this.countProperties().then(() => this.loadProperties());
+    this.loadProperties();
   }
 
   countProperties() {
@@ -62,12 +63,16 @@ export class HomepageComponent implements OnInit {
   }
 
   loadProperties() {
-    console.log("A carregar: " + this.itemsPerPage + " propriedades a partir do índice " + this.startIndex)
-    this.propertyService.getProperties(this.itemsPerPage, this.startIndex).subscribe(response => {
-      if (response) {
-        this.property_list = response as Property[];
-        this.submitting = false;
-      }
+    this.propertyService.getProperties(this.itemsPerPage, this.startIndex)
+      .pipe(timeout(10000))
+      .forEach(response => {
+        if (response) {
+          this.property_list = response as Property[];
+          this.submitting = false;
+        }
+      }).catch(error => {
+      this.submitting = false;
+      console.error("Erro ao carregar propriedades: " + error);
     });
   }
 
@@ -77,7 +82,7 @@ export class HomepageComponent implements OnInit {
   }
 
   setPage(page: number) {
-    if(page < 1 || page > this.numberOfPages || this.startIndex === page - 1) {
+    if (page < 1 || page > this.numberOfPages || this.startIndex === page - 1) {
       return;
     }
 
@@ -104,6 +109,6 @@ export class HomepageComponent implements OnInit {
   }
 
   getPages(): number[] {
-    return Array.from({ length: this.numberOfPages }, (_, i) => i + 1);
+    return Array.from({length: this.numberOfPages}, (_, i) => i + 1);
   }
 }
