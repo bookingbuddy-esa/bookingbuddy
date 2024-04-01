@@ -48,7 +48,7 @@ namespace BookingBuddy.Server.Controllers
                     return Unauthorized();
                 }
 
-                var individualBookings = _context.BookingOrder
+                var individualBookings = await _context.BookingOrder
                     .Include(booking => booking.Property)
                     .Include(booking => booking.Payment)
                     .Where(booking => booking.ApplicationUserId == user.Id)
@@ -69,9 +69,9 @@ namespace BookingBuddy.Server.Controllers
                         totalAmount = booking.Payment != null ? booking.Payment.Amount : 0,
                         numberOfGuests = booking.NumberOfGuests
                     })
-                    .ToList();
+                    .ToListAsync();
 
-                var groupBookings = _context.GroupBookingOrder
+                var groupBookings = await _context.GroupBookingOrder
                     .Include(groupBooking => groupBooking.Property)
                     .Include(groupBooking => groupBooking.Group)
                     .Where(groupBooking => groupBooking.Group != null && groupBooking.Group.MembersId.Contains(user.Id))
@@ -94,7 +94,7 @@ namespace BookingBuddy.Server.Controllers
                         totalAmount = groupBooking.TotalAmount,
                         numberOfGuests = groupBooking.Group != null ? groupBooking.Group.MembersId.Count : 0
                     })
-                    .ToList();
+                    .ToListAsync();
 
                 List<dynamic> bookings = [];
                 bookings.AddRange(individualBookings);
