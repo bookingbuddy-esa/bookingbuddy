@@ -37,7 +37,7 @@
             {{ property.maxGuestsNumber }} Hóspede<span *ngIf="property.maxGuestsNumber !== 1">s</span>
             <strong> ·</strong> {{ property.roomsNumber }} Quarto<span *ngIf="property.roomsNumber !== 1">s</span>
         </p>
-        <p>{{ property.description }}</p>
+        <p class="text-break">{{ property.description }}</p>
         <div class="comodidades mt-5 mb-3 d-flex flex-column">
             <h5>Comodidades</h5>
             <div *ngFor="let amenity of property.amenities" class="d-inline-flex">

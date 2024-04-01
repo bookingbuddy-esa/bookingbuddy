@@ -67,7 +67,7 @@ if (true) // TODO: Atualizar condição para "app.Environment.IsDevelopment()"
 
 app.UseWebSockets(new WebSocketOptions
 {
-    AllowedOrigins = { builder.Configuration.GetSection("Front-End-Url").Value ?? "" }
+    //AllowedOrigins = { builder.Configuration.GetSection("Front-End-Url").Value ?? "" }
 });
 
 app.Map("/api/payments/ws", async (HttpContext httpContext, PaymentController paymentController, string? paymentId) =>
@@ -120,18 +120,30 @@ app.Map("/api/groups/ws",
     });
 
 // TODO: Deixar de usar o userId como parâmetro e passar a usar um token
-app.Map("/api/chat/ws", async (HttpContext httpContext, ChatController chatController, string chatId, string userId) =>
-{
-    if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId) && !string.IsNullOrEmpty(userId))
+app.Map("/api/chat/ws",
+    async (HttpContext httpContext, ChatController chatController, string? chatId) =>
     {
-        var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
-        await chatController.HandleWebSocketAsync(chatId, userId, webSocket);
-    }
-    else
-    {
-        httpContext.Response.StatusCode = 400;
-    }
-});
+        try
+        {
+            if (httpContext.WebSockets.IsWebSocketRequest && !string.IsNullOrEmpty(chatId))
+            {
+                var webSocket = await httpContext.WebSockets.AcceptWebSocketAsync();
+                chatController.ControllerContext.HttpContext = httpContext;
+                await chatController.HandleWebSocketAsync(chatId, webSocket);
+            }
+            else
+            {
+                throw new Exception("Invalid request.");
+            }
+        }
+        catch
+        {
+            if (!httpContext.Response.HasStarted)
+            {
+                httpContext.Response.StatusCode = 400;
+            }
+        }
+    });
 
 
 app.UseCors("CorsPolicy");

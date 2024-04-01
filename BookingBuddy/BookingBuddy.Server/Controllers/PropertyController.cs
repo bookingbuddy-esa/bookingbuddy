@@ -34,16 +34,65 @@ namespace BookingBuddy.Server.Controllers
             _configuration = configuration;
         }
 
+        // TODO: apagar depois
+        // create a test dev endpoint to create 50 properties random
+        [HttpGet("createTestProperties")]
+        [Authorize]
+        public async Task<IActionResult> CreateTestProperties()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if(user == null)
+            {
+                return Unauthorized();
+            }
+
+            var amenities = await _context.Amenity.ToListAsync();
+            var random = new Random();
+            for(int i=0; i<50; i++){
+                var property = new Property
+                {
+                    PropertyId = Guid.NewGuid().ToString(),
+                    ApplicationUserId = user.Id,
+                    Name = "Property " + i,
+                    Description = "Description " + i,
+                    PricePerNight = random.Next(50, 200),
+                    MaxGuestsNumber = random.Next(1, 10),
+                    RoomsNumber = random.Next(1, 5),
+                    Location = "Location " + i,
+                    AmenityIds = amenities.Select(a => a.AmenityId).ToList(),
+                    ImagesUrl = new List<string> { "https://via.placeholder.com/150" },
+                    Clicks = 0
+                };
+
+                _context.Property.Add(property);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok("Properties created successfully");
+        }
+
+        /// <summary>
+        /// Método que retorna o número total de propriedades existentes na base de dados.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("count")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPropertiesCount()
+        {
+            var properties = await _context.Property.ToListAsync();
+            return Ok(properties.Count);
+        }
+
         /// <summary>
         /// Método que retorna uma lista das propriedades existentes na base de dados, com paginação aplicada.
-        /// A paginação começa na página fornecida (startIndex) e retorna um número específico de propriedades (numberOfProperties).
+        /// A paginação começa na página fornecida (startIndex) e retorna um número específico de propriedades (itemsPerPage).
         /// </summary>
-        /// <param name="numberOfProperties">Número de propriedades a pesquisar</param>
+        /// <param name="itemsPerPage">Número de propriedades a pesquisar</param>
         /// <param name="startIndex">Número da página</param>
         /// <returns>Uma lista das propriedades na página especificada. Se não houver propriedades, retorna uma lista vazia.</returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProperties([FromQuery] int numberOfProperties = 50,[FromQuery] int startIndex = 0)
+        public async Task<IActionResult> GetProperties([FromQuery] int itemsPerPage = 50,[FromQuery] int startIndex = 0)
         {
             var properties = await _context.Property.ToListAsync();
             foreach (var property in properties)
@@ -81,7 +130,7 @@ namespace BookingBuddy.Server.Controllers
                 .OrderByDescending(property => property.Clicks)
                 .ToList();
 
-            var orderedProperties = promotedProperties.Concat(otherProperties).Skip(startIndex).Take(numberOfProperties).ToList();
+            var orderedProperties = promotedProperties.Concat(otherProperties).Skip(startIndex).Take(itemsPerPage).ToList();
 
             return Ok(orderedProperties);
         }

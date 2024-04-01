@@ -3,7 +3,6 @@
     height: 100%;
 }
 
-
 :host {
     display: flex;
     height: inherit;
@@ -11,8 +10,10 @@
 }
 
 .yellow {
-  color: #eaac16;
+    color: #eaac16;
 }
+
+
 /*
 
 .img-shorter {
@@ -46,3 +47,18 @@ hr {
   margin-top: 10px; 
   font-weight: bold; 
 }*/
+
+
+/* TODO: mudar as cores */
+
+a:link {
+    color: darkgreen;
+}
+
+a:visited {
+    color: green;
+}
+
+a:hover {
+    color: darkgreen;
+}

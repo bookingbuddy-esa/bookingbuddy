@@ -1,59 +1,71 @@
 :host {
-  display: flex;
-  height: inherit;
-  width: inherit;
-  justify-content: center;
+    display: flex;
+    height: inherit;
+    width: inherit;
+    justify-content: center;
 }
 
 .on-hover-pointer:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .property-list {
-  min-height: 30%;
+    min-height: 30%;
 }
 
 .booking-info {
-  min-height: 30%;
+    min-height: 30%;
 }
 
 .booking-info-owner {
-  min-height: 30%;
+    min-height: 30%;
+}
+
+.chat {
+  height: 50%;
+  max-height: 500px;
 }
 
 @media screen and (max-width: 768px) {
-  .property-list {
-    min-height: 20vh;
-  }
-
-  .booking-info {
-    min-height: 20vh;
-  }
-
-  .booking-info-owner {
-    min-height: 20vh;
-  }
-
-  .chat {
-    height: 50vh;
-  }
+    .property-list {
+        min-height: 20vh;
+    }
+    .booking-info {
+        min-height: 20vh;
+    }
+    .booking-info-owner {
+        min-height: 20vh;
+    }
+    .chat {
+        height: 50vh;
+    }
 }
 
 .custom-scroll::-webkit-scrollbar {
-  height: 8px;
+    height: 8px;
 }
 
 .custom-scroll::-webkit-scrollbar-track {
-  background: #b2b2b2;
-  border-radius: 10px;
-  margin: 5px;
+    background: #b2b2b2;
+    border-radius: 10px;
+    margin: 5px;
 }
 
 .custom-scroll::-webkit-scrollbar-thumb {
-  background: #5c7858;
-  border-radius: 10px;
+    background: #5c7858;
+    border-radius: 10px;
 }
 
 .custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: #198653;
+    background: #198653;
+}
+
+.gradient-overlay {
+    /*background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.5));*/
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(255, 255, 255, 0.6));
+}
+
+.highlighted-text {
+    color: black;
+    text-shadow: 0px 3px 6px rgba(255, 255, 255, 0.8);
 }

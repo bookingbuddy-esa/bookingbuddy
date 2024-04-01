@@ -7,3 +7,22 @@
 .tab-content-height {
     height: 42px;
 }
+
+
+/* TODO: mudar as cores */
+
+a:link {
+    color: darkgreen !important;
+}
+
+a:visited {
+    color: green !important;
+}
+
+a:hover {
+    color: rgb(0, 137, 0) !important
+}
+
+.nav-link {
+    color: darkgreen !important;
+}

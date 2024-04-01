@@ -18,6 +18,14 @@ export class PropertyAdService {
     return this.http.get(`${environment.apiUrl}/api/properties/${propertyId}`);
   }
 
+  public getProperties(itemsPerPage: number, startIndex: number) {
+    return this.http.get(`${environment.apiUrl}/api/properties?itemsPerPage=${itemsPerPage}&startIndex=${startIndex}`);
+  }
+
+  public getPropertiesCount(){
+    return this.http.get(`${environment.apiUrl}/api/properties/count`);
+  }
+
   public createPropertyAd(property: PropertyCreate) {
     return this.http.post(`${environment.apiUrl}/api/properties/create`, {
       name: property.name,
@@ -36,11 +44,6 @@ export class PropertyAdService {
     .pipe<boolean>(map((res: HttpResponse<string>) => {
       return res.ok;
     }));
-  }
-
-
-  public getProperties() {
-    return this.http.get(`${environment.apiUrl}/api/properties/`);
   }
 
   public uploadImages(images: File[]): Observable<string[]> {

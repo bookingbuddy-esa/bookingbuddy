@@ -5,7 +5,7 @@ import {GroupService} from './group.service';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
 import {Group, GroupAction, GroupActionHelper, GroupMember, GroupProperty} from '../models/group';
-import {WebsocketMessage} from "../models/websocket-message";
+import {WebSocketMessage} from "../models/web-socket-message";
 import {NgbActiveModal, NgbDatepicker, NgbDatepickerModule, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {AuxiliaryModule} from "../auxiliary/auxiliary.module";
 import {KeyValue, KeyValuePipe, NgForOf, NgIf} from "@angular/common";
@@ -171,7 +171,7 @@ export class GroupComponent implements OnInit, OnDestroy {
       console.error(`[WebSocket] Erro de conexão: ${ev}`);
     }
     this.ws.onmessage = (event) => {
-      let message = JSON.parse(event.data) as WebsocketMessage;
+      let message = JSON.parse(event.data) as WebSocketMessage;
       switch (message.code) {
         case 'PropertyRemoved': {
           let content = JSON.parse(message.content) as { groupId: string, propertyId: string }
@@ -727,7 +727,6 @@ export class GroupComponent implements OnInit, OnDestroy {
           this.currentGroup!.groupBookingOrder = order;
           this.currentGroup!.groupBookingId = order.orderId;
           this.updateGroupAction(GroupAction.paying);
-          console.log(this.currentGroup);
         }
       }).then(() => {
         modalRef.close();
@@ -759,15 +758,15 @@ export class GroupComponent implements OnInit, OnDestroy {
       <app-loader class="m-3" *ngIf="submitting_invite"></app-loader>
     </div>
     <div *ngIf="!submitting_invite" class="modal-footer">
-      <button *ngIf="!failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+      <button *ngIf="!failed_invite" type="button" class="btn btn-danger"
               (click)="onClose()">
         Rejeitar
       </button>
-      <button *ngIf="!failed_invite" type="button" class="btn btn-success"
+      <button *ngIf="!failed_invite" type="button" class="btn btn-success" ngbAutofocus
               (click)="onAccept()">
         Aceitar
       </button>
-      <button *ngIf="failed_invite" type="button" class="btn btn-danger" data-bs-dismiss="modal"
+      <button *ngIf="failed_invite" type="button" class="btn btn-danger"
               (click)="onClose()">
         Fechar
       </button>
@@ -1188,7 +1187,7 @@ export class SelectDatesModal implements OnDestroy {
       const pricePerNight = this.currentGroup?.chosenProperty?.pricePerNight;
       const selectedDates: Date[] = [];
       const currentDate = new Date(this.checkIn!);
-      while (currentDate <= this.checkOut!) {
+      while (currentDate < this.checkOut!) {
         selectedDates.push(new Date(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
       }

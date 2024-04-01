@@ -1,11 +1,11 @@
 <div *ngIf="!submitting" class="d-flex w-100 flex-column align-items-center justify-content-between">
-  <div class="d-flex w-50 my-5 flex-column align-items-center text-center">
-    <img class="p-4 mb-2" src="../assets/img/certo.png" width="40%">
-    <p class="h2 fw-bolder">O seu endereço de e-mail foi confirmado com sucesso.</p>
-    <p class="h2 fw-bolder">A sua conta está pronta para uso.</p>
-    <p class="h2 mt-4 fw-bolder">Agradecemos por escolher o Booking Buddy.</p>
-  </div>
-  <span class="bottom-text mb-3">Clique aqui para ser redirecionado para a página de <button class="btn btn-link p-0" type="button" [routerLink]="['/signin']">Iniciar sessão</button></span>
+    <div class="d-flex w-50 my-5 flex-column align-items-center text-center">
+        <img class="p-4 mb-2" src="../assets/img/certo.png" width="40%">
+        <p class="h2 fw-bolder">O seu endereço de e-mail foi confirmado com sucesso.</p>
+        <p class="h2 fw-bolder">A sua conta está pronta para uso.</p>
+        <p class="h2 mt-4 fw-bolder">Agradecemos por escolher o Booking Buddy.</p>
+    </div>
+    <span class="bottom-text mb-3"><strong><a href="/signin">Clique aqui para ser redirecionado para a página de Iniciar sessão</a></strong></span>
 </div>
 
 <app-loader *ngIf="submitting" class="m-auto"></app-loader>

@@ -2,6 +2,7 @@
 using BookingBuddy.Server.Data;
 using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,22 +15,11 @@ namespace BookingBuddy.Server.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/chat")]
-public class ChatController : ControllerBase
+public class ChatController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
+    : ControllerBase
 {
     private static readonly WebSocketWrapper WebSocketWrapper = new();
-    private readonly BookingBuddyServerContext _context;
-    private readonly UserManager<ApplicationUser> _userManager;
     private static readonly Dictionary<string, List<WebSocket>> ChatSockets = new();
-    private static readonly Dictionary<WebSocket, ApplicationUser> UserSockets = new();
-
-    /// <summary>
-    /// Classe que representa o controlador de chat.
-    /// </summary>
-    public ChatController(BookingBuddyServerContext context, UserManager<ApplicationUser> userManager)
-    {
-        _context = context;
-        _userManager = userManager;
-    }
 
     /// <summary>
     /// Cria um novo chat com o nome especificado.
@@ -51,10 +41,10 @@ public class ChatController : ControllerBase
             ChatId = Guid.NewGuid().ToString(),
             Name = name,
         };
-        _context.Chat.Add(chat);
+        context.Chat.Add(chat);
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch
         {
@@ -81,7 +71,7 @@ public class ChatController : ControllerBase
     [Route("{chatId}")]
     public async Task<IActionResult> GetChat(string chatId)
     {
-        var chat = await _context.Chat.FirstOrDefaultAsync(c => c.ChatId == chatId);
+        var chat = await context.Chat.FirstOrDefaultAsync(c => c.ChatId == chatId);
         if (chat == null)
         {
             return NotFound();
@@ -89,25 +79,25 @@ public class ChatController : ControllerBase
 
         return Ok(new
         {
-            chat.ChatId,
-            chat.Name,
-            LastMessages = await _context.ChatMessage
+            chatId = chat.ChatId,
+            name = chat.Name,
+            lastMessages = await context.ChatMessage
                 .Include(m => m.ApplicationUser)
                 .Where(m => chat.MessageIds.Contains(m.MessageId))
                 .Select(m => new
                 {
-                    m.MessageId,
-                    ApplicationUser = m.ApplicationUser != null
+                    messageId = m.MessageId,
+                    user = m.ApplicationUser != null
                         ? new
                         {
                             m.ApplicationUser.Id,
                             m.ApplicationUser.Name,
                         }
                         : null,
-                    m.Content,
-                    m.SentAt
+                    content = m.Content,
+                    sentAt = m.SentAt
                 })
-                .OrderByDescending(m => m.SentAt)
+                .OrderByDescending(m => m.sentAt)
                 .Take(10)
                 .ToListAsync()
         });
@@ -117,8 +107,8 @@ public class ChatController : ControllerBase
     /// Obtém as mensagens de um chat específico, com a opção de especificar o número de mensagens e o índice de início.
     /// </summary>
     /// <param name="chatId">O identificador único do chat.</param>
-    /// <param name="numberOfMessages">O número de mensagens a serem retornadas. O padrão é 10.</param>
-    /// <param name="startIndex">O índice de início das mensagens a serem retornadas. O padrão é 0.</param>
+    /// <param name="limit">O número de mensagens a serem retornadas. O padrão é 10.</param>
+    /// <param name="offset">O índice de início das mensagens a serem retornadas. O padrão é 0.</param>
     /// <returns>
     /// Uma lista de mensagens do chat, com a opção de especificar o número de mensagens e o índice de início, se for bem-sucedido.
     /// Um código de estado 200 (OK) se as mensagens do chat forem obtidas com sucesso.
@@ -126,34 +116,33 @@ public class ChatController : ControllerBase
     /// </returns>
     [HttpGet]
     [Route("messages/{chatId}")]
-    public async Task<IActionResult> GetChatMessages(string chatId, [FromQuery] int numberOfMessages = 10,
-        [FromQuery] int startIndex = 0)
+    public async Task<IActionResult> GetChatMessages(string chatId, [FromQuery] int offset = 0, [FromQuery] int limit = 10)
     {
-        var chat = await _context.Chat.FindAsync(chatId);
+        var chat = await context.Chat.FindAsync(chatId);
         if (chat == null)
         {
             return NotFound();
         }
 
-        return Ok(await _context.ChatMessage
+        return Ok(await context.ChatMessage
             .Include(m => m.ApplicationUser)
             .Where(m => chat.MessageIds.Contains(m.MessageId))
+            .OrderByDescending(m => m.SentAt)
+            .Skip(offset)
+            .Take(limit)
             .Select(m => new
             {
-                m.MessageId,
-                ApplicationUser = m.ApplicationUser != null
+                messageId = m.MessageId,
+                user = m.ApplicationUser != null
                     ? new
                     {
                         m.ApplicationUser.Id,
                         m.ApplicationUser.Name,
                     }
                     : null,
-                m.Content,
-                m.SentAt
+                content = m.Content,
+                sentAt = m.SentAt
             })
-            .OrderByDescending(m => m.SentAt)
-            .Skip(startIndex)
-            .Take(10)
             .ToListAsync());
     }
 
@@ -161,32 +150,35 @@ public class ChatController : ControllerBase
     /// Método que lida com a conexão de um WebSocket.
     /// </summary>
     /// <param name="chatId">Identificador único do chat.</param>
-    /// <param name="userId">Identificador único do utilizador.</param>
     /// <param name="webSocket">WebSocket a ser tratado.</param>
     [NonAction]
-    public async Task HandleWebSocketAsync(string chatId, string userId, WebSocket webSocket)
+    [Authorize]
+    public async Task HandleWebSocketAsync(string chatId, WebSocket webSocket)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.GetUserAsync(User);
         if (user == null) return;
         WebSocketWrapper.AddOnConnectListener(webSocket, async (_, _) =>
         {
-            UserSockets.Add(webSocket, user);
-            if (ChatSockets.TryGetValue(chatId, out var value))
+            if (ChatSockets.TryGetValue(chatId, out var sockets))
             {
-                foreach (var socket in value)
+                foreach (var socket in sockets.Where(socket => socket != webSocket))
                 {
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
                     {
                         Code = "UserConnected",
                         Content = new
                         {
-                            user.Id,
-                            user.Name,
+                            chatId,
+                            user = new
+                            {
+                                user.Id,
+                                user.Name
+                            }
                         }
                     });
                 }
 
-                value.Add(webSocket);
+                sockets.Add(webSocket);
             }
             else
             {
@@ -196,19 +188,19 @@ public class ChatController : ControllerBase
         WebSocketWrapper.AddOnReceiveListener(webSocket, async (_, message) =>
         {
             if (message.Message == null) return;
-            var msg = _context.ChatMessage.Add(new ChatMessage
+            var chat = await context.Chat.FindAsync(chatId);
+            if (chat == null) return;
+            var msg = context.ChatMessage.Add(new ChatMessage
             {
                 MessageId = Guid.NewGuid().ToString(),
                 ApplicationUserId = user.Id,
                 Content = message.Message.Content,
                 SentAt = DateTime.Now
             }).Entity;
-            var chat = await _context.Chat.FindAsync(chatId);
-            if (chat == null) return;
             chat.MessageIds.Add(msg.MessageId);
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch
             {
@@ -217,23 +209,21 @@ public class ChatController : ControllerBase
 
             if (ChatSockets.TryGetValue(chatId, out var value))
             {
-                foreach (var socket in value.Where(socket => socket != message.Socket))
+                foreach (var socket in value)
                 {
-                    UserSockets.TryGetValue(socket, out var applicationUser);
-                    if (applicationUser == null) return;
                     var userMessage = new SocketMessage
                     {
-                        Code = "Message",
+                        Code = "UserMessage",
                         Content = new
                         {
-                            MessageId = Guid.NewGuid().ToString(),
-                            ApplicationUser = new
+                            messageId = msg.MessageId,
+                            user = new
                             {
-                                applicationUser.Id,
-                                applicationUser.Name,
+                                id = user.Id,
+                                name = user.Name,
                             },
-                            message.Message.Content,
-                            SentAt = DateTime.Now,
+                            content = msg.Content,
+                            sentAt = msg.SentAt
                         }
                     };
                     await WebSocketWrapper.SendAsync(socket, userMessage);
@@ -245,9 +235,6 @@ public class ChatController : ControllerBase
             if (ChatSockets.TryGetValue(chatId, out var value))
             {
                 value.Remove(webSocket);
-                UserSockets.TryGetValue(webSocket, out var applicationUser);
-                UserSockets.Remove(webSocket);
-                if (applicationUser == null) return;
                 foreach (var socket in value)
                 {
                     await WebSocketWrapper.SendAsync(socket, new SocketMessage
@@ -255,8 +242,8 @@ public class ChatController : ControllerBase
                         Code = "UserDisconnected",
                         Content = new
                         {
-                            applicationUser.Id,
-                            applicationUser.Name,
+                            user.Id,
+                            user.Name,
                         }
                     });
                 }

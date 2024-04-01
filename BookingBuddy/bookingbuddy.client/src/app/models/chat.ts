@@ -6,7 +6,7 @@ export interface Chat {
 
 export interface Message {
   messageId: string,
-  applicationUser: { id: string, name: string },
+  user: { id: string, name: string },
   content: string,
-  "sentAt": Date
+  sentAt: Date
 }

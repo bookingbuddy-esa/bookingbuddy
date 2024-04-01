@@ -1,8 +1,8 @@
 <header>
   <nav class="navbar navbar-expand-sm navbar-toggleable-sm sticky-top navbar-light bg-white border-bottom box-shadow">
     <div class="container-fluid px-sm-5 px-0">
-      <a class="navbar-brand ms-sm-0 ms-4" href="/">
-        <img src="../../assets/img/logo.png" width="64" height="64" alt="Página Inicial">
+      <a class="navbar-brand ms-sm-0 ms-4 d-flex" href="/">
+        <img ngSrc="../../assets/img/logo.png" width="64" height="64" alt="Página Inicial" priority>
       </a>
       <button class="navbar-toggler me-4" type="button" data-toggle="collapse" data-target=".navbar-collapse"
               aria-label="Toggle navigation" [attr.aria-expanded]="isExpanded" (click)="toggle()">
@@ -21,28 +21,45 @@
           <i class="bi bi-bookmark-star text-warning h4"></i>
         </button>
         <ul class="list-group list-group-flush text-center mt-2 mb-2" *ngIf="isExpanded">
-          <a *ngIf="!signedIn" class="list-group-item list-group-item-action" [routerLink]="['register']">Registar<i
-            class="bi bi-person-add ms-2"></i></a>
-          <a *ngIf="!signedIn" class="list-group-item list-group-item-action" [routerLink]="['signin']">Iniciar Sessão<i
-            class="bi bi-box-arrow-right ms-2"></i></a>
-          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['profile']">{{ user?.name }}
-            <i class="bi bi-person ms-2"></i></a>
-          <button *ngIf="signedIn" data-bs-target="#offcanvasNavbar" data-bs-toggle="offcanvas" aria-controls="offcanvasNavbar" class="list-group-item list-group-item-action">
+          <a *ngIf="!signedIn" class="list-group-item list-group-item-action" [routerLink]="['register']"
+             (click)="collapse()">
+            Registar<i class="bi bi-person-add ms-2"></i>
+          </a>
+          <a *ngIf="!signedIn" class="list-group-item list-group-item-action" [routerLink]="['signin']"
+             (click)="collapse()">
+            Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i>
+          </a>
+          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['profile']"
+             (click)="collapse()">
+            {{ user?.name }}<i class="bi bi-person ms-2"></i>
+          </a>
+          <button *ngIf="signedIn" data-bs-target="#offcanvasNavbar" data-bs-toggle="offcanvas"
+                  aria-controls="offcanvasNavbar" class="list-group-item list-group-item-action" (click)="collapse()">
             Favoritos<i class="bi bi-bookmark-star ms-2"></i>
           </button>
           <hr *ngIf="signedIn" class="dropdown-divider">
-          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['/groups']">Grupos<i
-            class="bi bi-chat-square-heart ms-2"></i></a>
-          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['hosting/create']">Criar
-            Anúncio<i class="bi bi-house-add ms-2"></i></a>
-          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['bookings']">Reservas
-            Pessoais<i class="bi bi-journals ms-2"></i></a>
+          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['/groups']"
+             (click)="collapse()">
+            Grupos<i class="bi bi-chat-square-heart ms-2"></i>
+          </a>
+          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['hosting/create']"
+             (click)="collapse()">
+            Criar Anúncio<i class="bi bi-house-add ms-2"></i>
+          </a>
+          <a *ngIf="signedIn" class="list-group-item list-group-item-action" [routerLink]="['bookings']"
+             (click)="collapse()">
+            Reservas Pessoais<i class="bi bi-journals ms-2"></i>
+          </a>
           <hr *ngIf="signedIn && isLandlord" class="dropdown-divider">
-          <a *ngIf="signedIn && isLandlord" class="list-group-item list-group-item-action" [routerLink]="['hosting']">Área
-            do Proprietário<i class="bi bi-houses ms-2"></i></a>
+          <a *ngIf="signedIn && isLandlord" class="list-group-item list-group-item-action" [routerLink]="['hosting']"
+             (click)="collapse()">
+            Área do Proprietário<i class="bi bi-houses ms-2"></i>
+          </a>
           <hr *ngIf="signedIn" class="dropdown-divider">
-          <button *ngIf="signedIn" class="btn p-1 list-group-item-action logout rounded-0" (click)="signOut()">Logout<i
-            class="bi bi-door-open ms-2"></i></button>
+          <button *ngIf="signedIn" class="btn p-1 list-group-item-action logout rounded-0" [routerLink]="['logout']"
+                  (click)="collapse()">
+            Logout<i class="bi bi-door-open ms-2"></i>
+          </button>
         </ul>
 
         <ul class="navbar-nav" *ngIf="!isExpanded">
@@ -52,29 +69,47 @@
               <i class="bi bi-list"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end text-center" aria-labelledby="navbarDarkDropdownMenuLink">
-              <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['register']">Registar<i
-                class="bi bi-person-add ms-2"></i></a></li>
-              <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">Iniciar Sessão<i
-                class="bi bi-box-arrow-right ms-2"></i></a></li>
-              <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item"
-                                                                  [routerLink]="['profile']">{{ user?.name }}<i
-                class="bi bi-person ms-2"></i></a></li>
+              <li *ngIf="!signedIn">
+                <a class="dropdown-item" [routerLink]="['register']">
+                  Registar<i class="bi bi-person-add ms-2"></i>
+                </a>
+              </li>
+              <li *ngIf="!signedIn"><a class="dropdown-item" [routerLink]="['signin']">
+                Iniciar Sessão<i class="bi bi-box-arrow-right ms-2"></i>
+              </a>
+              </li>
+              <li *ngIf="signedIn" class="mx-auto text-center">
+                <a class="dropdown-item btn-success" [routerLink]="['profile']">
+                  {{ user?.name }}<i class="bi bi-person ms-2"></i>
+                </a>
+              </li>
               <hr *ngIf="signedIn" class="dropdown-divider">
-              <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['/groups']">Grupos<i
-                class="bi bi-chat-square-heart ms-2"></i></a></li>
-              <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item"
-                                                                  [routerLink]="['hosting/create']">Criar Anúncio<i
-                class="bi bi-house-add ms-2"></i></a></li>
-              <li *ngIf="signedIn" class="mx-auto text-center"><a class="dropdown-item" [routerLink]="['bookings']">Reservas
-                Pessoais<i class="bi bi-journals ms-2"></i></a></li>
+              <li *ngIf="signedIn" class="mx-auto text-center">
+                <a class="dropdown-item" [routerLink]="['/groups']">
+                  Grupos<i class="bi bi-chat-square-heart ms-2"></i>
+                </a>
+              </li>
+              <li *ngIf="signedIn" class="mx-auto text-center">
+                <a class="dropdown-item" [routerLink]="['hosting/create']">
+                  Criar Anúncio<i class="bi bi-house-add ms-2"></i>
+                </a>
+              </li>
+              <li *ngIf="signedIn" class="mx-auto text-center">
+                <a class="dropdown-item" [routerLink]="['bookings']">
+                  Reservas Pessoais<i class="bi bi-journals ms-2"></i>
+                </a>
+              </li>
               <hr *ngIf="signedIn && isLandlord" class="dropdown-divider">
-              <li *ngIf="signedIn && isLandlord" class="mx-auto text-center"><a class="dropdown-item"
-                                                                                [routerLink]="['hosting']">Área do
-                Proprietário<i class="bi bi-houses ms-2"></i></a></li>
+              <li *ngIf="signedIn && isLandlord" class="mx-auto text-center">
+                <a class="dropdown-item" [routerLink]="['hosting']">
+                  Área do Proprietário<i class="bi bi-houses ms-2"></i>
+                </a>
+              </li>
               <hr *ngIf="signedIn" class="dropdown-divider">
               <li *ngIf="signedIn">
-                <button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">Logout<i
-                  class="bi bi-door-open ms-2"></i></button>
+                <button class="btn btn-link p-1 dropdown-item logout" (click)="signOut()">
+                  Logout<i class="bi bi-door-open ms-2"></i>
+                </button>
               </li>
             </ul>
           </li>
