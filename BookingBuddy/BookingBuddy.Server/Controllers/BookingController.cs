@@ -40,54 +40,71 @@ namespace BookingBuddy.Server.Controllers
         [Authorize]
         public async Task<IActionResult> GetBookings()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            try
             {
-                return Unauthorized();
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                var individualBookings = _context.BookingOrder
+                    .Include(booking => booking.Property)
+                    .Include(booking => booking.Payment)
+                    .Where(booking => booking.ApplicationUserId == user.Id)
+                    .Select(booking => new
+                    {
+                        orderId = booking.OrderId,
+                        propertyName = booking.Property != null ? booking.Property.Name : "Desconhecido",
+                        host = new ReturnUser
+                        {
+                            Id = booking.Property != null ? booking.Property.ApplicationUserId : "Desconhecido",
+                            Name = booking.Property != null
+                                ? _context.Users.First(u => u.Id == booking.Property.ApplicationUserId).Name
+                                : "Desconhecido"
+                        },
+                        checkIn = booking.StartDate,
+                        checkOut = booking.EndDate,
+                        state = booking.State,
+                        totalAmount = booking.Payment != null ? booking.Payment.Amount : 0,
+                        numberOfGuests = booking.NumberOfGuests
+                    })
+                    .ToList();
+
+                var groupBookings = _context.GroupBookingOrder
+                    .Include(groupBooking => groupBooking.Property)
+                    .Include(groupBooking => groupBooking.Group)
+                    .Where(groupBooking => groupBooking.Group != null && groupBooking.Group.MembersId.Contains(user.Id))
+                    .Select(groupBooking => new
+                    {
+                        orderId = groupBooking.OrderId,
+                        propertyName = groupBooking.Property != null ? groupBooking.Property.Name : "Desconhecido",
+                        host = new ReturnUser
+                        {
+                            Id = groupBooking.Property != null
+                                ? groupBooking.Property.ApplicationUserId
+                                : "Desconhecido",
+                            Name = groupBooking.Property != null
+                                ? _context.Users.First(u => u.Id == groupBooking.Property.ApplicationUserId).Name
+                                : "Desconhecido"
+                        },
+                        checkIn = groupBooking.StartDate,
+                        checkOut = groupBooking.EndDate,
+                        state = groupBooking.State,
+                        totalAmount = groupBooking.TotalAmount,
+                        numberOfGuests = groupBooking.Group != null ? groupBooking.Group.MembersId.Count : 0
+                    })
+                    .ToList();
+
+                List<dynamic> bookings = [];
+                bookings.AddRange(individualBookings);
+                bookings.AddRange(groupBookings);
+                return Ok(bookings);
             }
-
-            var individualBookings = _context.BookingOrder
-                .Include(booking => booking.Property)
-                .Include(booking => booking.Payment)
-                .Where(booking => booking.ApplicationUserId == user.Id)
-                .Select(booking => new
-                {
-                    orderId = booking.OrderId,
-                    propertyName = booking.Property!.Name,
-                    host =  new ReturnUser{
-                        Id = booking.Property.ApplicationUserId,
-                        Name = _userManager.FindByIdAsync(booking.Property.ApplicationUserId).Result!.Name
-                    },
-                    checkIn = booking.StartDate,
-                    checkOut = booking.EndDate,
-                    state = booking.State,
-                    totalAmount = booking.Payment!.Amount,
-                    numberOfGuests = booking.NumberOfGuests
-                })
-                .ToList();
-
-            var groupBookings = _context.GroupBookingOrder
-                .Include(groupBooking => groupBooking.Property)
-                .Include(groupBooking => groupBooking.Group)
-                .Where(groupBooking => groupBooking.Group.MembersId.Contains(user.Id))
-                .Select(groupBooking => new
-                {
-                    orderId = groupBooking.OrderId,
-                    propertyName = groupBooking.Property.Name,
-                    host = new ReturnUser{
-                        Id = groupBooking.Property.ApplicationUserId,
-                        Name = _userManager.FindByIdAsync(groupBooking.Property.ApplicationUserId).Result!.Name
-                    },
-                    checkIn = groupBooking.StartDate,
-                    checkOut = groupBooking.EndDate,
-                    state = groupBooking.State,
-                    totalAmount = groupBooking.TotalAmount,
-                    numberOfGuests = groupBooking.Group.MembersId.Count
-                })
-                .ToList();
-
-            var allBookings = individualBookings.Cast<object>().Concat(groupBookings.Cast<object>());
-            return Ok(allBookings);
+            catch(Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
 
@@ -100,7 +117,6 @@ namespace BookingBuddy.Server.Controllers
         /// Um código de estado 401 (Não Autorizado) se o utilizador não estiver autenticado.
         /// Um código de estado 404 (Não Encontrado) se a reserva não existir.
         /// </returns>
-
         [HttpGet("{bookingId}/messages")]
         [Authorize]
         public async Task<IActionResult> GetMessages(string bookingId)
