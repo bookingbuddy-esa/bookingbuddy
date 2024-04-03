@@ -10,6 +10,7 @@
     <SpaProxyServerUrl>https://localhost:4200</SpaProxyServerUrl>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile></DocumentationFile>
+    <UserSecretsId>e85f29f7-3f5b-49d7-9d1e-d3f87b739408</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

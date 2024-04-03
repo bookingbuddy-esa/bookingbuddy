@@ -761,15 +761,15 @@ namespace BookingBuddy.Server.Controllers
                         .Select(f => f.ApplicationUserId)
                         .ToListAsync();
 
-                    IEnumerable<ApplicationUser> userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
+                    var userListIdsFavorite = await GetUserListIdFavorites(userIdsFavorites);
 
 
                     foreach (var user in userListIdsFavorite)
                     {
                         var propertyLink =
-                            $"{_configuration.GetSection("Front-End-Url").Value!}/property/" + inputModel.PropertyId;
+                            $"{_configuration["ClientUrl"]}/property/" + inputModel.PropertyId;
 
-                        await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                        await EmailSender.SendTemplateEmail(_configuration["MailAPIKey"] ?? "",
                             "d-14f3e58637f14d9d9cfb8da43a1dad7f", user.Email!, user.Name,
                             new { propertyLink });
                     }
