@@ -25,7 +25,7 @@ builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
 builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
 {
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.Cookie.SameSite = SameSiteMode.Strict;
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.HttpOnly = true;
 });
 
