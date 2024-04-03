@@ -12,14 +12,14 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4.1.1
-      
+
       - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v4.0.0
         with:
           dotnet-version: '8.0.x'
       
       - name: Test server
-        run: dotnet test BookingBuddy/BookingBuddyServerTest
+        run: dotnet test BookingBuddy/BookingBuddyServerTest -c Release
   
   test-client:
     runs-on: ubuntu-latest

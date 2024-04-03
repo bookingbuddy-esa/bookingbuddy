@@ -703,6 +703,26 @@ namespace BookingBuddy.Server.Controllers
             }
 
             _context.Groups.Remove(group);
+            if (group.ChatId != null)
+            {
+                var chat = _context.Chat.First(c => c.ChatId == group.ChatId);
+                _context.Chat.Remove(chat);
+            }
+
+            if (group.GroupBookingId != null)
+            {
+                var booking = _context.GroupBookingOrder.First(gb => gb.OrderId == group.GroupBookingId);
+                _context.GroupBookingOrder.Remove(booking);
+
+                var start = booking.StartDate.ToString("yyyy-MMMM-dd");
+                var end = booking.EndDate.ToString("yyyy-MMMM-dd");
+
+                var blockedDates = _context.BlockedDate
+                    .Where(bd => bd.Start == start && bd.End == end && bd.PropertyId == booking.PropertyId)
+                    .ToList();
+                _context.BlockedDate.RemoveRange(blockedDates);
+            }
+
             try
             {
                 await _context.SaveChangesAsync();
