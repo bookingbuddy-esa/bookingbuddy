@@ -26,7 +26,7 @@ namespace BookingBuddy.Server.Models
         /// Lista de identificadores das comodidades da propriedade.
         /// </summary>
         [JsonPropertyName("amenityIds")]
-        public List<string>? AmenityIds { get; set; }
+        public List<string> AmenityIds { get; set; } = [];
 
         /// <summary>
         /// Nome da propriedade física a anunciar.

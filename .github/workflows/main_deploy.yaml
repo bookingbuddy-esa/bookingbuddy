@@ -118,7 +118,6 @@ jobs:
           name: server-app
           path: ./BookingBuddy/BookingBuddy.Server/release.zip
 
-
   deploy_server:
     runs-on: ubuntu-latest
     needs: build_server
