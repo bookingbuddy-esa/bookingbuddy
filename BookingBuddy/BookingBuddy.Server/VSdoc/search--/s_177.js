@@ -1,1 +1,1 @@
-search_result['177']=["topic_0000000000000069.html","BookingBuddy.Server.Models Namespace",""];
+search_result['177']=["topic_0000000000000058.html","PropertyController.IsPropertyInFavorites Method","Método que verifica se uma propriedade está na lista de favoritos do utilizador autenticado."];

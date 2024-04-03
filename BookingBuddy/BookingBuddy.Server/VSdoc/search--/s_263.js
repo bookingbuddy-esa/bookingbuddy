@@ -1,1 +1,1 @@
-search_result['263']=["topic_00000000000000A0_props--.html","Order Properties",""];
+search_result['263']=["topic_0000000000000081.html","ApplicationUser.ProviderId Property","Propriedade que diz respeito ao identificador do fornecedor de login do utilizador."];

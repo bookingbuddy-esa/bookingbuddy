@@ -1,1 +1,1 @@
-search_result['16']=["topic_000000000000000B.html","AccountController.ResetPassword Method","Reset da password através de um token e do id do utilizador."];
+search_result['16']=["topic_0000000000000009.html","AccountController.MicrosoftLogin Method","Inicia o processo de autenticação usando a Microsoft como provedor de autenticação externo."];

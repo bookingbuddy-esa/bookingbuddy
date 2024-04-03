@@ -1,1 +1,1 @@
-search_result['300']=["topic_00000000000000B5.html","BookingOrder.BookingOrderId Property",""];
+search_result['300']=["topic_0000000000000092.html","ApplicationUser.ProviderId Property","Identificador do fornecedor de login do utilizador."];

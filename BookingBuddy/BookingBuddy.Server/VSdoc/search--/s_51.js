@@ -1,1 +1,1 @@
-search_result['51']=["topic_000000000000001D_vars--.html","UserInfo Fields",""];
+search_result['51']=["topic_000000000000001B.html","GroupController Class","Controlador para os grupos."];

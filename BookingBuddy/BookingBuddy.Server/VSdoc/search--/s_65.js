@@ -1,1 +1,1 @@
-search_result['65']=["topic_0000000000000025_attached_props--.html","PaymentController Attached Properties",""];
+search_result['65']=["topic_000000000000001F.html","GroupController.GetGroupsByUserId Method","Método que obtém os grupos de um utilizador."];

@@ -1,1 +1,1 @@
-search_result['254']=["topic_000000000000009B.html","Favorite.FavoriteId Property",""];
+search_result['254']=["topic_000000000000007D.html","Amenity.DisplayName Property","Identificador de uma comodidade de uma propriedade física a anunciar."];

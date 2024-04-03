@@ -1,1 +1,1 @@
-search_result['227']=["topic_000000000000008C_methods--.html","BookingMessage Methods",""];
+search_result['227']=["topic_0000000000000071.html","BookingBuddyServerContext.UserAddedProperty Property","Propriedade que diz respeito às propriedades adicionadas pelo utilizador."];

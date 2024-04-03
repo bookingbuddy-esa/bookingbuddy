@@ -1,1 +1,1 @@
-search_result['389']=["topic_00000000000000F0.html","PortugueseIdentityErrorDescriber.PasswordRequiresUpper Method",""];
+search_result['389']=["topic_00000000000000B4.html","Discount.PropertyId Property","Identificador da propriedade com desconto."];

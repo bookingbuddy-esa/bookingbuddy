@@ -1,1 +1,1 @@
-search_result['178']=["topic_000000000000006A.html","Amenity Class","Classe que representa as comodidades de uma propriedade física na plataforma."];
+search_result['178']=["topic_0000000000000059.html","UploadController Class","Controller para enviar ficheiros para o armazenamento Azure."];

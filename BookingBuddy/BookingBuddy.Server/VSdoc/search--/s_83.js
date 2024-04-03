@@ -1,1 +1,1 @@
-search_result['83']=["topic_000000000000002E.html","PaymentResponse.requestId Property","Representa o identificador do pedido."];
+search_result['83']=["topic_0000000000000027.html","GroupController.AddPropertyVote Method","Vota numa propriedade de um grupo."];

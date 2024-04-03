@@ -1,1 +1,1 @@
-search_result['241']=["topic_0000000000000093_vars--.html","Discount Fields",""];
+search_result['241']=["topic_000000000000007A.html","Amenity Class","Classe que representa as comodidades de uma propriedade física na plataforma."];

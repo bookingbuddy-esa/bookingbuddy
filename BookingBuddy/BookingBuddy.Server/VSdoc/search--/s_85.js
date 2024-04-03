@@ -1,1 +1,1 @@
-search_result['85']=["topic_0000000000000030.html","PropertyController Class","Classe que representa o controlador de gestão de propriedades."];
+search_result['85']=["topic_0000000000000029.html","GroupController.RemovePropertyVote Method","Remove o voto de um utilizador numa propriedade de um grupo."];

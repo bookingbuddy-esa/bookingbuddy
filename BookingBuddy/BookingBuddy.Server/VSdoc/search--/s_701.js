@@ -1,0 +1,1 @@
+search_result['701']=["topic_000000000000015D.html","InvalidSocketMessageException Constructor","Cria uma nova instância de InvalidSocketMessageException."];

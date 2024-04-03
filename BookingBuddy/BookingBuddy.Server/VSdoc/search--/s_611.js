@@ -1,0 +1,1 @@
+search_result['611']=["topic_0000000000000128.html","Rating Class","Classe que representa uma avaliação relativamente a uma reserva."];

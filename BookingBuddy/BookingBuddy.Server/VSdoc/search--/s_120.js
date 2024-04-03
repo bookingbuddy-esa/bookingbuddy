@@ -1,1 +1,1 @@
-search_result['120']=["topic_0000000000000048_attached_props--.html","BookingBuddyServerContext Attached Properties",""];
+search_result['120']=["topic_0000000000000038.html","PaymentController.HandleWebSocketAsync Method","Método que lida com a conexão de um WebSocket."];

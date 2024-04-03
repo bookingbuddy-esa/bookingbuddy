@@ -1,1 +1,1 @@
-search_result['324']=["topic_00000000000000C3.html","Property.PropertyId Property","Propriedade que diz respeito ao identificador da propriedade física a anunciar."];
+search_result['324']=["topic_000000000000009A_attached_props--.html","Favorite Attached Properties",""];

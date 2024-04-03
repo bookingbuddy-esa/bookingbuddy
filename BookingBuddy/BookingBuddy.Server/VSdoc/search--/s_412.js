@@ -1,0 +1,1 @@
+search_result['412']=["topic_00000000000000BC.html","Group Class","Classe que representa os Grupos de Reserva."];

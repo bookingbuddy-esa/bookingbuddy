@@ -1,1 +1,1 @@
-search_result['84']=["topic_000000000000002F.html","PaymentResponse.payment_datetime Property","Representa a data e a hora do pagamento."];
+search_result['84']=["topic_0000000000000028.html","GroupController.UpdatePropertyVote Method","Atualiza o voto de um utilizador numa propriedade de um grupo."];

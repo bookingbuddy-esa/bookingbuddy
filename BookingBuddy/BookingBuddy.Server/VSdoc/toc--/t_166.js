@@ -1,1 +1,1 @@
-c['166']=[['167',"DiscountAmount Property","topic_0000000000000095.html",0],['168',"DiscountId Property","topic_0000000000000094.html",0],['169',"EndDate Property","topic_0000000000000097.html",0],['170',"PropertyId Property","topic_0000000000000098.html",0],['171',"StartDate Property","topic_0000000000000096.html",0]];
+c['166']=[['167',"Properties","topic_000000000000009D_props--.html",1]];

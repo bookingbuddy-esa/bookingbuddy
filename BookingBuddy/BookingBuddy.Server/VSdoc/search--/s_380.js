@@ -1,1 +1,1 @@
-search_result['380']=["topic_00000000000000E7.html","PortugueseIdentityErrorDescriber.DuplicateRoleName Method",""];
+search_result['380']=["topic_00000000000000B0.html","Discount.DiscountId Property","Identificador do desconto de uma propriedade."];

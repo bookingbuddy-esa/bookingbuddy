@@ -1,1 +1,1 @@
-search_result['298']=["topic_00000000000000B4_props--.html","BookingOrder Properties",""];
+search_result['298']=["topic_0000000000000090.html","ApplicationUser.Description Property","Descrição de perfil do utilizador."];

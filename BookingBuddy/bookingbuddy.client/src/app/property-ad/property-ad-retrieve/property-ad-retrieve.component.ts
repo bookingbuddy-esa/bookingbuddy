@@ -8,7 +8,7 @@ import {AmenitiesHelper} from "../../models/amenity-enum";
 import {AppComponent} from '../../app.component';
 
 import {UserInfo} from "../../auth/authorize.dto";
-import {MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
+import {DateFilterFn, MatCalendarCellClassFunction, MatDatepickerInputEvent} from '@angular/material/datepicker';
 import {OrderService} from '../../payment/order.service';
 import {Group, GroupAction, GroupActionHelper} from '../../models/group';
 import {GroupService} from '../../group/group.service';
@@ -179,18 +179,20 @@ export class PropertyAdRetrieveComponent implements OnInit {
     return '';
   };
 
-  dateFilter = (date: Date | null): boolean => {
-    if (!date) {
-      return false;
-    }
 
-    if (this.checkInDate && this.isSameDay(this.checkInDate, date)) {
-      return false;
-    }
-
-    const currentDate = new Date();
-    return date >= currentDate && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate));
-  };
+  protected filterDates: DateFilterFn<any> = (date: Date | null) => {
+    if (!date) return false;
+    let today = new Date();
+    let dateIntervalValid: boolean = (() => {
+      let tomorrow = new Date(date);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      let previousDate = new Date(date);
+      previousDate.setDate(previousDate.getDate() - 1);
+      return !((this.isSameDay(today, previousDate) && this.blockedDates.some(blockedDate => this.isSameDay(tomorrow, blockedDate)))
+        || (this.blockedDates.some(blockedDate => this.isSameDay(previousDate, blockedDate)) && this.blockedDates.some(blockedDate => this.isSameDay(tomorrow, blockedDate))));
+    })();
+    return date >= today && !this.blockedDates.some(blockedDate => this.isSameDay(date, blockedDate)) && dateIntervalValid;
+  }
 
 
   private isSameDay(date1: Date, date2: Date): boolean {

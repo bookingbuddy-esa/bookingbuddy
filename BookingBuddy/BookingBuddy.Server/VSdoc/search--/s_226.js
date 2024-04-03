@@ -1,1 +1,1 @@
-search_result['226']=["topic_000000000000008C_events--.html","BookingMessage Events",""];
+search_result['226']=["topic_0000000000000070.html","BookingBuddyServerContext.ChatMessage Property","Propriedade que diz respeito às mensagens do chat."];

@@ -89,8 +89,8 @@ namespace BookingBuddy.Server.Controllers
                     var member = await _userManager.FindByEmailAsync(email);
                     if (member == null) continue;
                     var groupReservationLink =
-                        $"{_configuration.GetSection("Front-End-Url").Value!}/groups?groupId={group.GroupId}";
-                    await EmailSender.SendTemplateEmail(_configuration.GetSection("MailAPIKey").Value!,
+                        $"{_configuration["ClientUrl"]}/groups?groupId={group.GroupId}";
+                    await EmailSender.SendTemplateEmail(_configuration["MailAPIKey"] ?? "",
                         "d-d42dbf24249347e98a2e869043c21b26", email, member.Name,
                         new { groupReservationLink });
                 }

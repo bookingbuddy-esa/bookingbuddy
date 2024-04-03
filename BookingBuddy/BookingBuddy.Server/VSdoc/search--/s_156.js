@@ -1,1 +1,1 @@
-search_result['156']=["topic_000000000000005E.html","Ratings.Up Method",""];
+search_result['156']=["topic_0000000000000048.html","PropertyController.GetProperty Method","Método que retorna os detalhes de uma propriedade com base no identificador fornecido."];

@@ -1,0 +1,1 @@
+search_result['589']=["topic_0000000000000117.html","Property.ApplicationUserId Property","Identificador do proprietário da propriedade."];

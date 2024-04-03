@@ -1,1 +1,1 @@
-search_result['262']=["topic_00000000000000A0_methods--.html","Order Methods",""];
+search_result['262']=["topic_0000000000000080.html","ApplicationUser.PictureUrl Property","Propriedade que diz respeito ao url da imagem de perfil do utilizador."];

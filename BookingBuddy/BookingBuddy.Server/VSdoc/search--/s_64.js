@@ -1,1 +1,1 @@
-search_result['64']=["topic_0000000000000025.html","PaymentController Class","Classe que representa o controlador de gestão de pagamentos."];
+search_result['64']=["topic_000000000000001E.html","GroupController.GetGroup Method","Método que retorna um grupo que contenha o id passado por parâmetro.\r\nCaso não exista retorna que não foi encontrado."];

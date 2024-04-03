@@ -120,6 +120,6 @@
       <add key="VBdocman_fileNamingConvention"><![CDATA[1]]></add>
     </SettingsGroup>
     <add key="VBdocman_BookingBuddy.Server"><![CDATA[default]]></add>
-    <add key="VBdocman_BookingBuddyTest"><![CDATA[default]]></add>
+    <add key="VBdocman_BookingBuddyServerTest"><![CDATA[default]]></add>
   </appSettings>
 </configuration>

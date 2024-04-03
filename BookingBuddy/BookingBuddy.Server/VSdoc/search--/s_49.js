@@ -1,1 +1,1 @@
-search_result['49']=["topic_000000000000001D_methods--.html","UserInfo Methods",""];
+search_result['49']=["topic_0000000000000019.html","ChatController.GetChatMessages Method","Obtém as mensagens de um chat específico, com a opção de especificar o número de mensagens e o índice de início."];

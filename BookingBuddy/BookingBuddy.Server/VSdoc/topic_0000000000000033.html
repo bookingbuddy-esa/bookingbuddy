@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>PropertyController.GetProperty Method</title>
+	<title>PaymentController Class</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">PropertyController.GetProperty Method</h1>
+		<h1 class="title">PaymentController Class</h1>
         
 		<div class="metadata">
         Namespace:
@@ -89,8 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Método que retorna uma propriedade que contenha o id passado por parâmetro.
-Caso não exista retorna que não foi encontrada.</summary-info>
+        <summary-info>Classe que representa o controlador de gestão de pagamentos.</summary-info>
 
 
 
@@ -140,7 +139,7 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;HttpGet(&quot;{propertyId}&quot;)&gt; _&nbsp;<br />Public Function GetProperty( _&nbsp;<br />   ByVal <i>propertyId</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actionresult-1">ActionResult</a>(Of <a target="_top" href="topic_00000000000000C2.html" onclick="this.target='';return true;">Property</a>))</pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;Route(&quot;api/payments&quot;)&gt; _&nbsp;<br />&lt;ApiController()&gt; _&nbsp;<br />Public Class PaymentController&nbsp;<br />    Inherits <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -179,7 +178,7 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[HttpGet(&quot;{propertyId}&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actionresult-1">ActionResult</a>&lt;<a target="_top" href="topic_00000000000000C2.html" onclick="this.target='';return true;">Property</a>&gt;&gt; GetProperty(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>propertyId</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[Route(&quot;api/payments&quot;)]&nbsp;<br />[ApiController()]&nbsp;<br />public class PaymentController : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -219,7 +218,7 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[HttpGet(&quot;{propertyId}&quot;)]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actionresult-1">ActionResult</a>&lt;<a target="_top" href="topic_00000000000000C2.html" onclick="this.target='';return true;">Property</a>^&gt;^&gt;^ GetProperty(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ <i>propertyId</i>&nbsp;<br />) </pre>			
+					<pre xml:space="preserve" class="brush: cpp">[Route(&quot;api/payments&quot;)]&nbsp;<br />[ApiController()]&nbsp;<br />public ref class PaymentController : public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft::aspnetcore::mvc::controllerbase">ControllerBase</a>^</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -258,7 +257,7 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">JScript does not support generic types and methods.</pre>			
+					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   Route(&quot;api/payments&quot;)&nbsp;<br />   ApiController()&nbsp;<br />class PaymentController&nbsp;<br />   extends <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -269,30 +268,6 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 	</div>
 
 
-<h4 class="subHeading">
-	Parameters</h4><dl paramName="propertyId" class="parameterList">
-	<dt>
-		<span class="parameter">
-			propertyId
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
-	</dd>
-</dl>
-<p>
-	Identificador da propriedade 
-</p>
-
-<p />
-
-	<h4 class="subHeading">
-		Return Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.actionresult-1">ActionResult</a>&lt;<a target="_top" href="topic_00000000000000C2.html" onclick="this.target='';return true;">Property</a>&gt;&gt; 
-		<p>
-		A propriedade, caso exista, não encontrada, caso contrário 
-	</p>
-	
 
 
 
@@ -309,6 +284,280 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 
 	</div>
 </div>
+
+
+
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Constructors</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="ConstructorsSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+	
+			<tr class="
+	
+	
+	">
+	  <td>
+    <img alt="Public constructor" title="Public constructor" src="msdn2019/pubmethod.png"></img>
+
+	
+	    
+	  </td>
+	  <td>
+	    <a href="topic_0000000000000034.html">PaymentController(BookingBuddyServerContext, UserManager&lt;ApplicationUser&gt;, IConfiguration)</a>
+
+	  </td>
+	  <td>
+	
+	Construtor da classe PaymentController.
+	
+		</td>
+	</tr>
+	
+
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
+
+
+
+
+
+
+
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Methods</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="MethodsSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+
+
+	<tr class="
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000037.html">CreatePayment(ApplicationUser, string, decimal, string)</a>
+
+	</td>
+	<td>
+
+Método que representa o endpoint de criação de um pagamento.
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000035.html">GetPayment(string)</a>
+
+	</td>
+	<td>
+
+Obtém os detalhes de um pagamento com base no identificador único do pagamento.
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000038.html">HandleWebSocketAsync(string, WebSocket)</a>
+
+	</td>
+	<td>
+
+Método que lida com a conexão de um WebSocket.
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000036.html">Webhook(PaymentResponse)</a>
+
+	</td>
+	<td>
+
+Método que representa o endpoint de webhook para notificações de pagamentos.
+
+	</td>
+</tr>
+
+
+
+
+
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Classes</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="ClassSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+<!-- Classes -->
+	<tr class="
+	
+	
+	">
+	  <td>
+    <img alt="Public class" title="Public class" src="msdn2019/pubclass.png"></img>
+
+
+    
+	  </td>
+	  <td>
+	    <a href="topic_0000000000000039.html">PaymentResponse</a>
+	  </td>
+	  <td>
+
+Classe interna para representar uma resposta de um pagamento.
+
+		</td>
+	</tr>
+
+<!-- Classes End -->
+
+<!-- Standard Modules -->
+
+<!-- Standard Modules End -->
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
+
+
+
+
 
 
 
@@ -372,6 +621,7 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 	</div>					
 </div>
 
+
 <div class="section_container">
 	<div class="section_heading">
 		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">See Also</a></span>
@@ -380,14 +630,10 @@ Caso não exista retorna que não foi encontrada.</summary-info>
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000030.html">PropertyController Class</a><br />
+	<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
 
 
-
-<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
-
-
-			
+	
 
 		</div>
 	</div>					

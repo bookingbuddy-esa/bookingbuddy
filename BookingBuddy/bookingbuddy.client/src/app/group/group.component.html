@@ -66,9 +66,10 @@
       </div>
     </div>
   </div>
+
   <!-- Coluna direita que contém informação consoante a "Group Action" -->
-  <div *ngIf="!submitting && !ws_loading" class="col-12 col-md-9 d-flex flex-column">
-    <div *ngIf="currentGroup" class="d-flex flex-row justify-content-between">
+  <div *ngIf="!submitting && !ws_loading && currentGroup" class="col-12 col-md-9 d-flex flex-column">
+    <div class="d-flex flex-row justify-content-between">
       <div class="d-flex flex-row align-items-center">
         <span class="text-center fs-2"> {{ currentGroup.name }}</span>
         <div *ngIf="mdBreakpoint" class="vr mx-2 my-2"></div>
@@ -114,7 +115,7 @@
         </button>
       </div>
     </div>
-    <div *ngIf="!mdBreakpoint && currentGroup" class="col mt-2 mb-1">
+    <div *ngIf="!mdBreakpoint" class="col mt-2 mb-1">
             <span class="badge w-100 text-center" [matTooltip]="currentActionHelpText" [ngClass]="{
               'text-bg-secondary': isActionNone && !isCanceled,
               'text-bg-info': isActionVoting && !isCanceled,
@@ -126,12 +127,9 @@
           {{ currentActionDescription }}
         </span>
     </div>
-    <div *ngIf="!currentGroup" class="text-center m-auto">
-      <h5>Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
-    </div>
 
     <!--  Lista de propriedades  -->
-    <div *ngIf="currentGroup" class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
+    <div class="d-flex flex-column justify-content-center align-items-center mt-2 property-list">
       <div *ngIf="currentGroup?.properties?.length == 0" class="mx-auto p-2">
         <span class="text-muted small">Não existem propriedades para este grupo.</span>
       </div>
@@ -184,16 +182,23 @@
     <!--  Chat chat -->
     <div class="chat flex-grow-1 mt-1 mb-3">
       <app-chat-new class="h-100"
-        *ngIf="currentGroup"
                     [chatTitle]="'Chat com o grupo'"
                     [chatId]="currentGroup.chatId"
                     [user]="user">
       </app-chat-new>
     </div>
-    <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
-      <app-loader class="w-100"></app-loader>
-    </div>
-    <div *ngIf="global_loading" class="m-auto">
-      <app-loader></app-loader>
-    </div>
   </div>
+
+  <!-- Coluna direita que aparece quando não há grupo selecionado -->
+  <div *ngIf="!submitting && !ws_loading && !currentGroup" class="text-center col-12 col-md-9 d-flex flex-column h-100">
+    <h5 class="m-auto">Selecione um grupo na barra lateral ou crie um novo grupo de reserva!</h5>
+  </div>
+  <!-- Coluna direita que aparece quando está a carregar -->
+  <div *ngIf="submitting || ws_loading" class="col-12 col-md-9 d-flex flex-column h-100">
+    <app-loader class="w-100"></app-loader>
+  </div>
+</div>
+
+<div *ngIf="global_loading" class="m-auto">
+  <app-loader></app-loader>
+</div>

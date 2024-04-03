@@ -1,1 +1,1 @@
-search_result['196']=["topic_000000000000007E_attached_props--.html","ApplicationUser Attached Properties",""];
+search_result['196']=["topic_0000000000000061.html","BookingBuddyServerContext.BlockedDate Property","Propriedade que diz respeito às datas bloqueadas de uma propriedade."];

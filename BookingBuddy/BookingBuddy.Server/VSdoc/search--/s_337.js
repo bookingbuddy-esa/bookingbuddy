@@ -1,1 +1,1 @@
-search_result['337']=["topic_00000000000000D0.html","ReturnUser Class",""];
+search_result['337']=["topic_000000000000009E.html","BookingMessage.BookingMessageId Property","Identificador da mensagem."];

@@ -1,1 +1,1 @@
-search_result['168']=["topic_0000000000000065.html","Discount Class",""];
+search_result['168']=["topic_000000000000004F.html","PropertyController.BlockDates Method","Método que bloqueia um intervalo de datas para uma propriedade específica."];

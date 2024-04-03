@@ -1,0 +1,1 @@
+search_result['396']=["topic_00000000000000B6.html","Favorite Class","Classe que representa um favorito (de uma propriedade)."];

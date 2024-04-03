@@ -1,0 +1,1 @@
+search_result['485']=["topic_00000000000000DD.html","GroupActionExtension.GetDescription Method","Método que retorna a descrição de uma ação de grupo."];

@@ -1,1 +1,1 @@
-search_result['356']=["topic_00000000000000D9.html","BookingBuddy.Server.Services Namespace",""];
+search_result['356']=["topic_00000000000000A7.html","Chat.MessageIds Property","Lista de identificadores de mensagens."];

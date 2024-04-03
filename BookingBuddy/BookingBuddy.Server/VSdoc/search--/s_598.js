@@ -1,0 +1,1 @@
+search_result['598']=["topic_0000000000000120.html","Property.ImagesUrl Property","Lista de URLs de imagens da propriedade física a anunciar."];

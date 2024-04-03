@@ -1,1 +1,1 @@
-search_result['166']=["topic_0000000000000063.html","Favorite.Down Method",""];
+search_result['166']=["topic_000000000000004D.html","PropertyController.GetPropertiesByUserId Method","Método que retorna todas as propriedades associadas a um utilizador com base no identificador fornecido."];

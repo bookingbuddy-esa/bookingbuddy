@@ -1,1 +1,1 @@
-search_result['354']=["topic_00000000000000D7.html","Rating.Value Property",""];
+search_result['354']=["topic_00000000000000A5.html","Chat.ChatId Property","Identificador do chat."];

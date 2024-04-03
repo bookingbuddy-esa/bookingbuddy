@@ -1,0 +1,1 @@
+c['193']=[['194',"DiscountAmount Property","topic_00000000000000B1.html",0],['195',"DiscountId Property","topic_00000000000000B0.html",0],['196',"EndDate Property","topic_00000000000000B3.html",0],['197',"PropertyId Property","topic_00000000000000B4.html",0],['198',"StartDate Property","topic_00000000000000B2.html",0]];

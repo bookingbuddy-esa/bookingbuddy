@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>BookingBuddyServerContext.BookingMessage Property</title>
+	<title>PropertyController.ApplyDiscount Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">BookingBuddyServerContext.BookingMessage Property</h1>
+		<h1 class="title">PropertyController.ApplyDiscount Method</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_0000000000000047.html">BookingBuddy.Server.Data</a>
+<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers</a>
 
 
 
@@ -89,6 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
+        <summary-info>Método que aplica um desconto a uma propriedade e, opcionalmente, notifica os utilizadores favoritos sobre o desconto.</summary-info>
 
 
 
@@ -138,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Property BookingMessage() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>(Of <a target="_top" href="topic_000000000000008C.html" onclick="this.target='';return true;">BookingMessage</a>)</pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;Authorize()&gt; _&nbsp;<br />&lt;HttpPost(&quot;createDiscount&quot;)&gt; _&nbsp;<br />Public Function ApplyDiscount( _&nbsp;<br />   &lt;FromBody()&gt; _&nbsp;<br />   ByVal <i>inputModel</i> As <a target="_top" href=".html" onclick="this.target='';return true;">DiscountInputModel</a>, _&nbsp;<br />   Optional ByVal <i>sendEmail</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean">Boolean</a> = true _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000008C.html" onclick="this.target='';return true;">BookingMessage</a>&gt; BookingMessage {get; set;}</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[Authorize()]&nbsp;<br />[HttpPost(&quot;createDiscount&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; ApplyDiscount(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">DiscountInputModel</a> <i>inputModel</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean">bool</a> <i>sendEmail</i> = true&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">public: &nbsp;<br />property <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000008C.html" onclick="this.target='';return true;">BookingMessage</a>^&gt;^ BookingMessage {&nbsp;<br /> <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000008C.html" onclick="this.target='';return true;">BookingMessage</a>^&gt;^ get( );&nbsp;<br /> void set(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000008C.html" onclick="this.target='';return true;">BookingMessage</a>^&gt;^ value&nbsp;<br /> );&nbsp;<br />}</pre>			
+					<pre xml:space="preserve" class="brush: cpp">[Authorize()]&nbsp;<br />[HttpPost(&quot;createDiscount&quot;)]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ ApplyDiscount(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">DiscountInputModel</a>^ <i>inputModel</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean">bool</a> <i>sendEmail</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -267,10 +268,46 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="inputModel" class="parameterList">
+	<dt>
+		<span class="parameter">
+			inputModel
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href=".html" onclick="this.target='';return true;">DiscountInputModel</a> 
+	</dd>
+</dl>
+<p>
+	O modelo contendo as informações do desconto a ser aplicado. 
+</p>
+<dl paramName="sendEmail" class="parameterList">
+	<dt>
+		<span class="parameter">
+			sendEmail
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.boolean">bool</a> 
+	</dd>
+</dl>
+<p>
+	Indica se deve ser enviada uma notificação por email aos utilizadores favoritos, por padrão é enviado email. 
+</p>
+
+<p />
 
 	<h4 class="subHeading">
-		Property Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000008C.html" onclick="this.target='';return true;">BookingMessage</a>&gt; 
+		Return Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
+		<p>
+		Um código de estado 200 (OK) e uma mensagem de sucesso se o desconto for aplicado com êxito.
+Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para aplicar o desconto à propriedade.
+Retorna 404 (Not Found) se a propriedade não for encontrada para o identificador fornecido.
+Retorna 400 (Bad Request) se ocorrer um erro ao aplicar o desconto. 
+	</p>
 	
 
 
@@ -359,11 +396,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000048.html">BookingBuddyServerContext Class</a><br />
+			<a href="topic_0000000000000043.html">PropertyController Class</a><br />
 
 
 
-<a href="topic_0000000000000047.html">BookingBuddy.Server.Data Namespace</a><br />
+<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
 
 
 			

@@ -1,1 +1,1 @@
-search_result['176']=["topic_0000000000000068.html","Discount.BuildTargetModel Method",""];
+search_result['176']=["topic_0000000000000057.html","PropertyController.GetUserFavorites Method","Método que retorna as propriedades favoritas de um utilizador com base no identificador do utilizador fornecido."];

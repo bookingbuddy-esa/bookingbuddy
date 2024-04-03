@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>Ratings Class</title>
+	<title>BookingBuddyServerContext Class</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">Ratings Class</h1>
+		<h1 class="title">BookingBuddyServerContext Class</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_0000000000000058.html">BookingBuddy.Server.Migrations</a>
+<a href="topic_000000000000005C.html">BookingBuddy.Server.Data</a>
 
 
 
@@ -89,6 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
+        <summary-info>Classe que representa o contexto da base de dados da aplicação.</summary-info>
 
 
 
@@ -138,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;DbContext(typeof(BookingBuddyServerContext))&gt; _&nbsp;<br />&lt;Migration(&quot;20240221210835_Ratings&quot;)&gt; _&nbsp;<br />Public Class Ratings&nbsp;<br />    Inherits <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.migrations.migration">Migration</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Class BookingBuddyServerContext&nbsp;<br />    Inherits <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.entityframeworkcore.identitydbcontext-1">IdentityDbContext</a>(Of <a target="_top" href="topic_000000000000008E.html" onclick="this.target='';return true;">ApplicationUser</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[DbContext(typeof(BookingBuddyServerContext))]&nbsp;<br />[Migration(&quot;20240221210835_Ratings&quot;)]&nbsp;<br />public class Ratings : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.migrations.migration">Migration</a></pre>			
+					<pre xml:space="preserve" class="brush: csharp">public class BookingBuddyServerContext : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.entityframeworkcore.identitydbcontext-1">IdentityDbContext</a>&lt;<a target="_top" href="topic_000000000000008E.html" onclick="this.target='';return true;">ApplicationUser</a>&gt;</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[DbContext(typeof(BookingBuddyServerContext))]&nbsp;<br />[Migration(&quot;20240221210835_Ratings&quot;)]&nbsp;<br />public ref class Ratings : public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft::entityframeworkcore::migrations::migration">Migration</a>^</pre>			
+					<pre xml:space="preserve" class="brush: cpp">public ref class BookingBuddyServerContext : public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft::aspnetcore::identity::entityframeworkcore::identitydbcontext-1">IdentityDbContext</a>&lt;<a target="_top" href="topic_000000000000008E.html" onclick="this.target='';return true;">ApplicationUser</a>^&gt;^</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -256,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   DbContext(typeof(BookingBuddyServerContext))&nbsp;<br />   Migration(&quot;20240221210835_Ratings&quot;)&nbsp;<br />class Ratings&nbsp;<br />   extends <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.migrations.migration">Migration</a></pre>			
+					<pre xml:space="preserve" class="brush: js">JScript does not support generic types and methods.</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -287,6 +288,537 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Properties</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="PropertiesSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000006D.html">Amenity</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às comodidades.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000005E.html">AspNetProviders</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito ao fornecedor de login.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000061.html">BlockedDate</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às datas bloqueadas de uma propriedade.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000006B.html">BookingMessage</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às mensagens de reserva.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000068.html">BookingOrder</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às reservas.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000006F.html">Chat</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito ao chat.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000070.html">ChatMessage</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às mensagens do chat.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000062.html">Discount</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito aos descontos de uma propriedade.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000063.html">Favorites</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito a lista de favoritos de um utilizador.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000069.html">GroupBookingOrder</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às reservas de grupo.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000006A.html">GroupOrderPayment</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às mensagens de reserva.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000064.html">Groups</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito aos grupos de viagem.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000065.html">Order</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às orders.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000006C.html">Payment</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito aos pagamentos.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000067.html">PromoteOrder</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às orders de promover uma propriedade.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000066.html">PromotionOrder</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às orders de promoção.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000060.html">Property</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito à propriedade física.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000005F.html">PropertyAmenity</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito à comodidade da propriedade física.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000006E.html">Rating</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às avaliações.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000071.html">UserAddedProperty</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito às propriedades adicionadas pelo utilizador.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_0000000000000072.html">UserVote</a>
+
+	</td>
+	<td>
+
+Propriedade que diz respeito aos votos dos utilizadores.
+
+	</td>
+</tr>
+	
+
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
 
 
 
@@ -328,74 +860,12 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
     
 	</td>
 	<td>
-	<a href="topic_0000000000000060.html">BuildTargetModel(ModelBuilder)</a>
+	<a href="topic_0000000000000073.html">OnModelCreating(ModelBuilder)</a>
 
 	</td>
 	<td>
 
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
-
-    
-	  
-
-
-    
-	</td>
-	<td>
-	<a href="topic_000000000000005F.html">Down(MigrationBuilder)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
-
-    
-	  
-
-
-    
-	</td>
-	<td>
-	<a href="topic_000000000000005E.html">Up(MigrationBuilder)</a>
-
-	</td>
-	<td>
-
-
+Dados de inicialização da base de dados.
 
 	</td>
 </tr>
@@ -413,8 +883,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	</div>					
 </div>
-
-
 
 
 
@@ -514,7 +982,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-	<a href="topic_0000000000000058.html">BookingBuddy.Server.Migrations Namespace</a><br />
+	<a href="topic_000000000000005C.html">BookingBuddy.Server.Data Namespace</a><br />
 
 
 	

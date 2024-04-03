@@ -1,1 +1,1 @@
-search_result['170']=["topic_0000000000000065_events--.html","Discount Events",""];
+search_result['170']=["topic_0000000000000051.html","PropertyController.GetAssociatedBookings Method","Método que retorna as reservas associadas às propriedades do utilizador autenticado."];

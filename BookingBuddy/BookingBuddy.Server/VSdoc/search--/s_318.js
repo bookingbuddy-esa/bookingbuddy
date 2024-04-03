@@ -1,1 +1,1 @@
-search_result['318']=["topic_00000000000000C2.html","Property Class","Classe que representa uma propriedade física a anunciar na plataforma."];
+search_result['318']=["topic_0000000000000098_events--.html","BlockedDate Events",""];

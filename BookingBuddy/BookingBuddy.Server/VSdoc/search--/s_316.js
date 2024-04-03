@@ -1,1 +1,1 @@
-search_result['316']=["topic_00000000000000C0.html","Payment.Status Property",""];
+search_result['316']=["topic_0000000000000098.html","BlockedDate Class","Classe que representa as datas bloquedas de uma propriedade."];

@@ -1,1 +1,1 @@
-search_result['386']=["topic_00000000000000ED.html","PortugueseIdentityErrorDescriber.PasswordRequiresNonAlphanumeric Method",""];
+search_result['386']=["topic_00000000000000B1.html","Discount.DiscountAmount Property","Valor do desconto (entre 0 e 100)."];

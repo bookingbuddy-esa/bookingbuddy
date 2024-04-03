@@ -1,0 +1,1 @@
+search_result['695']=["topic_000000000000015C.html","InvalidSocketMessageException Class","Exceção lançada quando uma mensagem de WebSocket é inválida."];

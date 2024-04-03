@@ -1,1 +1,1 @@
-search_result['187']=["topic_000000000000006E.html","AmenityEnum Enumeration",""];
+search_result['187']=["topic_000000000000005D.html","BookingBuddyServerContext Class","Classe que representa o contexto da base de dados da aplicação."];

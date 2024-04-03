@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Login com um fornecedor.</summary-info>
+        <summary-info>Autentica um utilizador usando um provedor de autenticação externo, como Google ou Microsoft.</summary-info>
 
 
 
@@ -280,7 +280,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Modelo de login com fornecedor 
+	O modelo contendo o token de autenticação do provedor. 
 </p>
 
 <p />
@@ -288,6 +288,10 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	<h4 class="subHeading">
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
+		<p>
+		Um código de estado 200 (OK) se a autenticação for bem-sucedida.
+Um código de estado 400 (Bad Request) se ocorrerem erros durante o processo de autenticação. 
+	</p>
 	
 
 

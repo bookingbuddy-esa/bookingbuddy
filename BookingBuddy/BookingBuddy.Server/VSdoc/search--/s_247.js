@@ -1,1 +1,1 @@
-search_result['247']=["topic_0000000000000099.html","List\u0026lt;System.Implicit Conversion (Discount to List) Operator",""];
+search_result['247']=["topic_000000000000007B.html","Amenity.AmenityId Property","Identificador de uma comodidade de uma propriedade física a anunciar."];

@@ -1,1 +1,1 @@
-search_result['50']=["topic_000000000000001D_props--.html","UserInfo Properties",""];
+search_result['50']=["topic_000000000000001A.html","ChatController.HandleWebSocketAsync Method","Método que lida com a conexão de um WebSocket."];

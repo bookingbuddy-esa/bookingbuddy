@@ -1,0 +1,1 @@
+search_result['423']=["topic_00000000000000C2.html","Group.UserVoteIds Property","Propriedade que diz respeito aos identificadores dos votos dos utilizadores."];

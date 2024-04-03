@@ -1,1 +1,1 @@
-search_result['221']=["topic_0000000000000089.html","BlockedDate.Start Property","Propriedade que diz respeito à data de incio."];
+search_result['221']=["topic_000000000000006B.html","BookingBuddyServerContext.BookingMessage Property","Propriedade que diz respeito às mensagens de reserva."];

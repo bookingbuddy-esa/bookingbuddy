@@ -1,0 +1,1 @@
+search_result['603']=["topic_0000000000000125.html","ReturnUser Class","Classe que representa informações reduzidas do utilizador (apenas o seu nome e identificador)."];

@@ -1,1 +1,1 @@
-search_result['45']=["topic_000000000000001C.html","ChatHubController.OnDisconnectedAsync Method",""];
+search_result['45']=["topic_0000000000000017_methods--.html","ChatHubController Methods",""];

@@ -1,1 +1,1 @@
-search_result['212']=["topic_0000000000000085.html","AspNetProvider.Name Property","Nome do fornecedor de login."];
+search_result['212']=["topic_0000000000000067.html","BookingBuddyServerContext.PromoteOrder Property","Propriedade que diz respeito às orders de promover uma propriedade."];

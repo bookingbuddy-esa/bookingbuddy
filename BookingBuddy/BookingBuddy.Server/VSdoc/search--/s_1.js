@@ -1,1 +1,1 @@
-search_result['1']=["topic_0000000000000001.html","AccountController Class","Classe que representa o controlador de gestão de contas."];
+search_result['1']=["search--.html","Search",""];

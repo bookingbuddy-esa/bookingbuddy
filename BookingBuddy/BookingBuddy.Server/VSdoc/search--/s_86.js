@@ -1,1 +1,1 @@
-search_result['86']=["topic_0000000000000030_attached_props--.html","PropertyController Attached Properties",""];
+search_result['86']=["topic_000000000000002A.html","GroupController.HandleWebSocketAsync Method","Manipula a comunicação WebSocket para um grupo específico."];

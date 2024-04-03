@@ -82,7 +82,7 @@ namespace BookingBuddy.Server.Controllers
             var requestId = paymentResponse.requestId;
             var paymentDatetime = paymentResponse.payment_datetime;
 
-            if (key != _configuration.GetSection("PhishingKey").Value!)
+            if (key != _configuration["PhishingKey"])
             {
                 return Unauthorized();
             }
@@ -196,7 +196,7 @@ namespace BookingBuddy.Server.Controllers
                 {
                     requestData = new
                     {
-                        mbWayKey = _configuration.GetSection("MbWayKey").Value!,
+                        mbWayKey = _configuration["MbWayKey"],
                         orderId = Guid.NewGuid().ToString(),
                         amount = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
                         mobileNumber = phoneNumber,
@@ -221,7 +221,7 @@ namespace BookingBuddy.Server.Controllers
                 {
                     requestData = new
                     {
-                        mbKey = _configuration.GetSection("MbKey").Value!,
+                        mbKey = _configuration["MbKey"],
                         orderId = Guid.NewGuid().ToString(),
                         amount = amount.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
                         description = "Pagamento de teste - Booking Buddy",

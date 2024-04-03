@@ -1,1 +1,1 @@
-search_result['154']=["topic_000000000000005D_props--.html","Ratings Properties",""];
+search_result['154']=["topic_0000000000000046.html","PropertyController.GetPropertiesCount Method","Método que retorna o número total de propriedades existentes na base de dados."];

@@ -1,1 +1,1 @@
-search_result['203']=["topic_0000000000000081.html","ApplicationUser.ProviderId Property","Propriedade que diz respeito ao identificador do fornecedor de login do utilizador."];
+search_result['203']=["topic_0000000000000063.html","BookingBuddyServerContext.Favorites Property","Propriedade que diz respeito a lista de favoritos de um utilizador."];

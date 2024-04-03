@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Regista um utilizador e envia um e-mail de confirmação.</summary-info>
+        <summary-info>Regista um novo utilizador na plataforma.</summary-info>
 
 
 
@@ -280,7 +280,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Modelo de registo de utilizador 
+	O modelo contendo os dados do utilizador a ser registado. 
 </p>
 <dl paramName="sendConfirmationEmail" class="parameterList">
 	<dt>
@@ -293,7 +293,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Opção para enviar email de confirmação de conta 
+	Indica se deve ser enviado um email de confirmação (opcional, padrão é verdadeiro). 
 </p>
 
 <p />
@@ -302,7 +302,9 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
 		<p>
-		Resposta do pedido de criar conta de utilizador, OK(200) se concluido com sucesso. 
+		Um código de estado 200 (OK) se o utilizador for registado com sucesso.
+Um código de estado 400 (Bad Request) se o email fornecido já estiver em uso.
+Um código de estado 400 (Bad Request) se ocorrerem erros durante o registo do utilizador. 
 	</p>
 	
 
@@ -326,16 +328,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			Nenhum dos parâmetros pode ser null.
-	</div>					
-</div>
 
 
 
