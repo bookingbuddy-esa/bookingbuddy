@@ -1,1 +1,1 @@
-search_result['26']=["topic_0000000000000011_events--.html","BookingController Events",""];
+search_result['26']=["topic_0000000000000011.html","BookingController Class","Controlador para as reservas."];

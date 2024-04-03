@@ -1,1 +1,1 @@
-search_result['335']=["topic_00000000000000CE.html","Property.Discounts Property","Propriedade que diz respeito aos descontos da propriedade física a anunciar."];
+search_result['335']=["topic_000000000000009D_props--.html","BookingMessage Properties",""];

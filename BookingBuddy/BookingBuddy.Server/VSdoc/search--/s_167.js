@@ -1,1 +1,1 @@
-search_result['167']=["topic_0000000000000064.html","Favorite.BuildTargetModel Method",""];
+search_result['167']=["topic_000000000000004E.html","PropertyController.GetPropertyBlockedDates Method","Método que retorna as datas bloqueadas de uma propriedade com base no identificador fornecido."];

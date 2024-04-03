@@ -1,1 +1,1 @@
-search_result['128']=["topic_000000000000004C.html","BookingBuddyServerContext.BlockedDate Property","Propriedade que diz respeito às datas bloqueadas de uma propriedade."];
+search_result['128']=["topic_000000000000003B.html","PaymentResponse.orderId Property","Representa o identificador da reserva."];

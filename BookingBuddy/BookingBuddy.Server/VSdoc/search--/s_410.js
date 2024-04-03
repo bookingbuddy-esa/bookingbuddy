@@ -1,0 +1,1 @@
+search_result['410']=["topic_00000000000000BA.html","Favorite.ApplicationUser Property","Utilizador que adicionou a propriedade aos favoritos (propriedade de navegação)."];

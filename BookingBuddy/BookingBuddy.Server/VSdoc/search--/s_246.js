@@ -1,1 +1,1 @@
-search_result['246']=["topic_0000000000000098.html","Discount.PropertyId Property","Propriedade que diz respeito ao identificador da propriedade do desconto."];
+search_result['246']=["topic_000000000000007A_vars--.html","Amenity Fields",""];

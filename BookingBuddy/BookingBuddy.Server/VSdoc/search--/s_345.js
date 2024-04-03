@@ -1,1 +1,1 @@
-search_result['345']=["topic_00000000000000D3.html","Rating Class",""];
+search_result['345']=["topic_00000000000000A1.html","BookingMessage.ApplicationUser Property","Utilizador que enviou a mensagem."];

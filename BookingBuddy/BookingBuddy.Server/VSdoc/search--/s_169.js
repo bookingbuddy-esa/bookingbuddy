@@ -1,1 +1,1 @@
-search_result['169']=["topic_0000000000000065_attached_props--.html","Discount Attached Properties",""];
+search_result['169']=["topic_0000000000000050.html","PropertyController.UnblockDates Method","Método que desbloqueia uma data previamente bloqueada para uma propriedade."];

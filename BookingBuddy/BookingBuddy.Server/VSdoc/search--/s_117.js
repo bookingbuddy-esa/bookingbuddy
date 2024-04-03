@@ -1,1 +1,1 @@
-search_result['117']=["topic_0000000000000046.html","UploadController.UploadFiles Method","escrever"];
+search_result['117']=["topic_0000000000000035.html","PaymentController.GetPayment Method","Obtém os detalhes de um pagamento com base no identificador único do pagamento."];

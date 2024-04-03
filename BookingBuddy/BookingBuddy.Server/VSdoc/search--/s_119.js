@@ -1,1 +1,1 @@
-search_result['119']=["topic_0000000000000048.html","BookingBuddyServerContext Class","Classe que representa o contexto da base de dados da aplicação."];
+search_result['119']=["topic_0000000000000037.html","PaymentController.CreatePayment Method","Método que representa o endpoint de criação de um pagamento."];

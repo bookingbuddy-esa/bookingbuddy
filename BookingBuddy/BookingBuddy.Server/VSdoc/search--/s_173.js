@@ -1,1 +1,1 @@
-search_result['173']=["topic_0000000000000065_vars--.html","Discount Fields",""];
+search_result['173']=["topic_0000000000000054.html","PropertyController.RemoveDiscount Method","Método que remove um desconto de uma propriedade com base no identificador do desconto."];

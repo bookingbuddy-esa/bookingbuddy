@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>OrderController Constructor</title>
+	<title>GroupController.UpdateChosenProperty Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">OrderController Constructor</h1>
+		<h1 class="title">GroupController.UpdateChosenProperty Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -89,6 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
+        <summary-info>Método que atualiza a propriedade escolhida de um grupo.</summary-info>
 
 
 
@@ -138,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Sub New( _&nbsp;<br />   ByVal <i>context</i> As <a target="_top" href="topic_0000000000000048.html" onclick="this.target='';return true;">BookingBuddyServerContext</a>, _&nbsp;<br />   ByVal <i>userManager</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.usermanager-1">UserManager</a>(Of <a target="_top" href="topic_000000000000007E.html" onclick="this.target='';return true;">ApplicationUser</a>), _&nbsp;<br />   ByVal <i>paymentController</i> As <a target="_top" href="topic_0000000000000025.html" onclick="this.target='';return true;">PaymentController</a> _&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;HttpPut(&quot;updateChosenProperty&quot;)&gt; _&nbsp;<br />&lt;Authorize()&gt; _&nbsp;<br />Public Function UpdateChosenProperty( _&nbsp;<br />   &lt;FromBody()&gt; _&nbsp;<br />   ByVal <i>model</i> As <a target="_top" href=".html" onclick="this.target='';return true;">UpdateChosenPropertyModel</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public OrderController(&nbsp;<br />   <a target="_top" href="topic_0000000000000048.html" onclick="this.target='';return true;">BookingBuddyServerContext</a> <i>context</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.usermanager-1">UserManager</a>&lt;<a target="_top" href="topic_000000000000007E.html" onclick="this.target='';return true;">ApplicationUser</a>&gt; <i>userManager</i>,&nbsp;<br />   <a target="_top" href="topic_0000000000000025.html" onclick="this.target='';return true;">PaymentController</a> <i>paymentController</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[HttpPut(&quot;updateChosenProperty&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; UpdateChosenProperty(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">UpdateChosenPropertyModel</a> <i>model</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">public: &nbsp;<br />OrderController(&nbsp;<br />   <a target="_top" href="topic_0000000000000048.html" onclick="this.target='';return true;">BookingBuddyServerContext</a>^ <i>context</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.usermanager-1">UserManager</a>&lt;<a target="_top" href="topic_000000000000007E.html" onclick="this.target='';return true;">ApplicationUser</a>^&gt;^ <i>userManager</i>,&nbsp;<br />   <a target="_top" href="topic_0000000000000025.html" onclick="this.target='';return true;">PaymentController</a>^ <i>paymentController</i>&nbsp;<br />) </pre>			
+					<pre xml:space="preserve" class="brush: cpp">[HttpPut(&quot;updateChosenProperty&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ UpdateChosenProperty(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">UpdateChosenPropertyModel</a>^ <i>model</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -268,48 +269,29 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 <h4 class="subHeading">
-	Parameters</h4><dl paramName="context" class="parameterList">
+	Parameters</h4><dl paramName="model" class="parameterList">
 	<dt>
 		<span class="parameter">
-			context
+			model
 		</span>
 	</dt>
 	<dd>
-		<a target="_top" href="topic_0000000000000048.html" onclick="this.target='';return true;">BookingBuddyServerContext</a> 
+		<a target="_top" href=".html" onclick="this.target='';return true;">UpdateChosenPropertyModel</a> 
 	</dd>
 </dl>
 <p>
-	 
-</p>
-<dl paramName="userManager" class="parameterList">
-	<dt>
-		<span class="parameter">
-			userManager
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.identity.usermanager-1">UserManager</a>&lt;<a target="_top" href="topic_000000000000007E.html" onclick="this.target='';return true;">ApplicationUser</a>&gt; 
-	</dd>
-</dl>
-<p>
-	 
-</p>
-<dl paramName="paymentController" class="parameterList">
-	<dt>
-		<span class="parameter">
-			paymentController
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="topic_0000000000000025.html" onclick="this.target='';return true;">PaymentController</a> 
-	</dd>
-</dl>
-<p>
-	 
+	Modelo com o identificador do grupo e da propriedade a ser escolhida 
 </p>
 
 <p />
 
+	<h4 class="subHeading">
+		Return Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
+		<p>
+		Retorna o resultado da atualização da propriedade escolhida do grupo. 
+	</p>
+	
 
 
 
@@ -397,7 +379,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000020.html">OrderController Class</a><br />
+			<a href="topic_000000000000001B.html">GroupController Class</a><br />
 
 
 

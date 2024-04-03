@@ -1,0 +1,1 @@
+c['70']=[['71',"CreatePayment Method","topic_0000000000000037.html",0],['72',"GetPayment Method","topic_0000000000000035.html",0],['73',"HandleWebSocketAsync Method","topic_0000000000000038.html",0],['74',"Webhook Method","topic_0000000000000036.html",0]];

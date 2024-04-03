@@ -1,0 +1,1 @@
+search_result['618']=["topic_000000000000012A.html","Rating.PropertyId Property","Identificador da propriedade associada à avaliação."];

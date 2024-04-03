@@ -1,1 +1,1 @@
-search_result['132']=["topic_0000000000000050.html","BookingBuddyServerContext.PromotionOrder Property",""];
+search_result['132']=["topic_000000000000003F.html","ProfileController Class","Classe que representa o controlador de gestão de perfil."];

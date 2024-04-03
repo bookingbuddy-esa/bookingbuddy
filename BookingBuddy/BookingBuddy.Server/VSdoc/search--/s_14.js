@@ -1,1 +1,1 @@
-search_result['14']=["topic_0000000000000009.html","AccountController.MicrosoftLogin Method","Login com uma conta Microsoft."];
+search_result['14']=["topic_0000000000000007.html","AccountController.LoginProviders Method","Autentica um utilizador usando um provedor de autenticação externo, como Google ou Microsoft."];

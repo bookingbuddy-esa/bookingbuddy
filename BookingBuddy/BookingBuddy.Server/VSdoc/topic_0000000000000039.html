@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>PropertyController.GetPropertyBlockedDates Method</title>
+	<title>PaymentResponse Class</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">PropertyController.GetPropertyBlockedDates Method</h1>
+		<h1 class="title">PaymentResponse Class</h1>
         
 		<div class="metadata">
         Namespace:
@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Método que obtém as datas bloqueadas de uma propriedade.</summary-info>
+        <summary-info>Classe interna para representar uma resposta de um pagamento.</summary-info>
 
 
 
@@ -139,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;HttpGet(&quot;blockedDates/{propertyId}&quot;)&gt; _&nbsp;<br />&lt;AllowAnonymous()&gt; _&nbsp;<br />Public Function GetPropertyBlockedDates( _&nbsp;<br />   ByVal <i>propertyId</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Class PaymentResponse</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -178,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[HttpGet(&quot;blockedDates/{propertyId}&quot;)]&nbsp;<br />[AllowAnonymous()]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; GetPropertyBlockedDates(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>propertyId</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public class PaymentResponse</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -218,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[HttpGet(&quot;blockedDates/{propertyId}&quot;)]&nbsp;<br />[AllowAnonymous()]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ GetPropertyBlockedDates(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ <i>propertyId</i>&nbsp;<br />) </pre>			
+					<pre xml:space="preserve" class="brush: cpp">public ref class PaymentResponse </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -257,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">JScript does not support generic types and methods.</pre>			
+					<pre xml:space="preserve" class="brush: js">public class PaymentResponse</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -268,30 +268,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
-<h4 class="subHeading">
-	Parameters</h4><dl paramName="propertyId" class="parameterList">
-	<dt>
-		<span class="parameter">
-			propertyId
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
-	</dd>
-</dl>
-<p>
-	Identificador da propriedade 
-</p>
-
-<p />
-
-	<h4 class="subHeading">
-		Return Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
-		<p>
-		Lista com as datas bloqueadas de uma propriedade, caso exista, ou não encontrada, caso contrário 
-	</p>
-	
 
 
 
@@ -312,11 +288,431 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Properties</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="PropertiesSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000003C.html">amount</a>
+
+	</td>
+	<td>
+
+Representa a quantia monetária.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000003A.html">key</a>
+
+	</td>
+	<td>
+
+Representa a chave.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000003B.html">orderId</a>
+
+	</td>
+	<td>
+
+Representa o identificador da reserva.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000003E.html">payment_datetime</a>
+
+	</td>
+	<td>
+
+Representa a data e a hora do pagamento.
+
+	</td>
+</tr>
+	
+
+
+	
+		<tr class="
+
+
+">
+	<td>
+<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a href="topic_000000000000003D.html">requestId</a>
+
+	</td>
+	<td>
+
+Representa o identificador do pedido.
+
+	</td>
+</tr>
+	
+
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
 
 
 
 
 
+
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Methods</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="MethodsSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+
+
+	<tr class="
+inheritedMember 
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.equals">Equals(Object)</a>
+
+	</td>
+	<td>
+
+Determines whether the specified object is equal to the current object.
+(inherited from <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>).
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+inheritedMember 
+
+
+">
+	<td>
+   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
+
+    
+	  
+
+
+    
+	</td>
+	<td>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.finalize">Finalize</a>
+
+	</td>
+	<td>
+
+Allows an object to try to free resources and perform other cleanup operations before it is reclaimed by garbage collection.
+(inherited from <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>).
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+inheritedMember 
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.gethashcode">GetHashCode</a>
+
+	</td>
+	<td>
+
+Serves as the default hash function.
+(inherited from <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>).
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+inheritedMember 
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.gettype">GetType</a>
+
+	</td>
+	<td>
+
+Gets the <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.type">Type</a> of the current instance.
+(inherited from <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>).
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+inheritedMember 
+
+
+">
+	<td>
+   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
+
+    
+	  
+
+
+    
+	</td>
+	<td>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.memberwiseclone">MemberwiseClone</a>
+
+	</td>
+	<td>
+
+Creates a shallow copy of the current <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>.
+(inherited from <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>).
+
+	</td>
+</tr>
+
+
+
+
+
+
+
+
+	<tr class="
+inheritedMember 
+
+
+">
+	<td>
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
+
+
+    
+	</td>
+	<td>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object.tostring">ToString</a>
+
+	</td>
+	<td>
+
+Returns a string that represents the current object.
+(inherited from <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">Object</a>).
+
+	</td>
+</tr>
+
+
+
+
+
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+<!-- Classes -->
+
+<!-- Classes End -->
+
+<!-- Standard Modules -->
+
+<!-- Standard Modules End -->
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Inheritance Hierarchy</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+<div id="inheritanceHierarchySection" class="section">
+
+<div style="padding-left:0em;"><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.object">System.Object</a>
+</div>
+
+
+
+<div style="padding-left:1em;">BookingBuddy.Server.Controllers.PaymentController.PaymentResponse</div>
+
+				
+</div>
+</div>
 
 
 
@@ -371,6 +767,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>					
 </div>
 
+
 <div class="section_container">
 	<div class="section_heading">
 		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">See Also</a></span>
@@ -379,14 +776,10 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000030.html">PropertyController Class</a><br />
+	<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
 
 
-
-<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
-
-
-			
+	
 
 		</div>
 	</div>					

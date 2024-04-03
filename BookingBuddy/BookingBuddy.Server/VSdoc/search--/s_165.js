@@ -1,1 +1,1 @@
-search_result['165']=["topic_0000000000000062.html","Favorite.Up Method",""];
+search_result['165']=["topic_000000000000004C.html","PropertyController.DeleteProperty Method","Método que elimina uma propriedade da base de dados com base no identificador fornecido."];

@@ -1,1 +1,1 @@
-search_result['48']=["topic_000000000000001D_events--.html","UserInfo Events",""];
+search_result['48']=["topic_0000000000000018.html","ChatController.GetChat Method","Obtém informações sobre um chat específico, incluindo os últimos 10 mensagens enviadas."];

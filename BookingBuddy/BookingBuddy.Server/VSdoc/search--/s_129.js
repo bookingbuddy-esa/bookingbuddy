@@ -1,1 +1,1 @@
-search_result['129']=["topic_000000000000004D.html","BookingBuddyServerContext.Discount Property","Propriedade que diz respeito aos descontos de uma propriedade."];
+search_result['129']=["topic_000000000000003C.html","PaymentResponse.amount Property","Representa a quantia monetária."];

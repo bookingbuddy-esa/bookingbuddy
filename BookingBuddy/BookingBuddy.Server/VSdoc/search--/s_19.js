@@ -1,1 +1,1 @@
-search_result['19']=["topic_000000000000000D_overloads--.html","AccountController.ManageInfo Method","Obter informação do utilizador autenticado."];
+search_result['19']=["topic_000000000000000C.html","AccountController.CheckResetPasswordToken Method","Verifica se o token de reset da palavra-passe é válido."];

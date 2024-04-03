@@ -1,1 +1,1 @@
-search_result['220']=["topic_0000000000000088.html","BlockedDate.Id Property","Propriedade que diz respeito ao identificador das datas bloqueadas de uma propriedade."];
+search_result['220']=["topic_000000000000006A_vars--.html","Amenity Fields",""];

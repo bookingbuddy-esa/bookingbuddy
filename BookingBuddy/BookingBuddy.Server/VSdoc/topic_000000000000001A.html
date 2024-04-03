@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>ChatHubController.SendMessage Method</title>
+	<title>ChatController.HandleWebSocketAsync Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">ChatHubController.SendMessage Method</h1>
+		<h1 class="title">ChatController.HandleWebSocketAsync Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -89,6 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
+        <summary-info>Método que lida com a conexão de um WebSocket.</summary-info>
 
 
 
@@ -138,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Function SendMessage( _&nbsp;<br />   ByVal <i>message</i> As <a target="_top" href=".html" onclick="this.target='';return true;">NewMessage</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;NonAction()&gt; _&nbsp;<br />&lt;Authorize()&gt; _&nbsp;<br />Public Function HandleWebSocketAsync( _&nbsp;<br />   ByVal <i>chatId</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>, _&nbsp;<br />   ByVal <i>webSocket</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.websocket">WebSocket</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a> SendMessage(&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">NewMessage</a> <i>message</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[NonAction()]&nbsp;<br />[Authorize()]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a> HandleWebSocketAsync(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>chatId</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.websocket">WebSocket</a> <i>webSocket</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a>^ SendMessage(&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">NewMessage</a>^ <i>message</i>&nbsp;<br />) </pre>			
+					<pre xml:space="preserve" class="brush: cpp">[NonAction()]&nbsp;<br />[Authorize()]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a>^ HandleWebSocketAsync(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ <i>chatId</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.websocket">WebSocket</a>^ <i>webSocket</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -256,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public function SendMessage(&nbsp;<br />    <i>message</i> : <a target="_top" href=".html" onclick="this.target='';return true;">NewMessage</a>&nbsp;<br />) : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a>;</pre>			
+					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   NonAction()&nbsp;<br />   Authorize()&nbsp;<br />function HandleWebSocketAsync(&nbsp;<br />    <i>chatId</i> : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>,&nbsp;<br />    <i>webSocket</i> : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.websocket">WebSocket</a>&nbsp;<br />) : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task">Task</a>;</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -268,18 +269,31 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 <h4 class="subHeading">
-	Parameters</h4><dl paramName="message" class="parameterList">
+	Parameters</h4><dl paramName="chatId" class="parameterList">
 	<dt>
 		<span class="parameter">
-			message
+			chatId
 		</span>
 	</dt>
 	<dd>
-		<a target="_top" href=".html" onclick="this.target='';return true;">NewMessage</a> 
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
 	</dd>
 </dl>
 <p>
-	 
+	Identificador único do chat. 
+</p>
+<dl paramName="webSocket" class="parameterList">
+	<dt>
+		<span class="parameter">
+			webSocket
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.websocket">WebSocket</a> 
+	</dd>
+</dl>
+<p>
+	WebSocket a ser tratado. 
 </p>
 
 <p />
@@ -375,7 +389,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000017.html">ChatHubController Class</a><br />
+			<a href="topic_0000000000000016.html">ChatController Class</a><br />
 
 
 

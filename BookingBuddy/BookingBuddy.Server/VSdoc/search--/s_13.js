@@ -1,1 +1,1 @@
-search_result['13']=["topic_0000000000000008.html","AccountController.GoogleLogin Method","Login com uma conta Google."];
+search_result['13']=["topic_0000000000000006.html","AccountController.Login Method","Autentica um utilizador com base nas credenciais fornecidas."];

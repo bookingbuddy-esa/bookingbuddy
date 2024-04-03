@@ -1,0 +1,1 @@
+search_result['662']=["topic_0000000000000147.html","WebSocketEventHandler\u0026lt;TEventArgs\u0026gt; Delegate","Delegado que representa um evento de WebSocket, com argumentos."];

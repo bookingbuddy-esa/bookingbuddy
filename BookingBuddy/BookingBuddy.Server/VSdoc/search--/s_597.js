@@ -1,0 +1,1 @@
+search_result['597']=["topic_000000000000011F.html","Property.Location Property","Localização da propriedade física a anunciar."];

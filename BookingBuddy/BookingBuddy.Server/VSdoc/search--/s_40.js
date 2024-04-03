@@ -1,1 +1,1 @@
-search_result['40']=["topic_0000000000000017_vars--.html","ChatHubController Fields",""];
+search_result['40']=["topic_0000000000000016_props--.html","ChatController Properties",""];

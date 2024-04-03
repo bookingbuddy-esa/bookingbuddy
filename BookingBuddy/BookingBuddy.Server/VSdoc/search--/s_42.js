@@ -1,1 +1,1 @@
-search_result['42']=["topic_0000000000000019.html","ChatHubController.LeaveGroup Method",""];
+search_result['42']=["topic_0000000000000017.html","ChatController.CreateChat Method","Cria um novo chat com o nome especificado."];

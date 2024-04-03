@@ -1,1 +1,1 @@
-search_result['35']=["topic_0000000000000017.html","ChatHubController Class",""];
+search_result['35']=["topic_0000000000000015.html","BookingController.CreateMessage Method","Cria uma nova mensagem para uma reserva especificada."];

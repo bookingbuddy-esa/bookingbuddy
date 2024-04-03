@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>Property.Name Property</title>
+	<title>Group.AddedProperties Property</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">Property.Name Property</h1>
+		<h1 class="title">Group.AddedProperties Property</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_0000000000000069.html">BookingBuddy.Server.Models</a>
+<a href="topic_0000000000000079.html">BookingBuddy.Server.Models</a>
 
 
 
@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Propriedade que diz respeito ao nome da propriedade física a anunciar.</summary-info>
+        <summary-info>Propriedade que diz respeito às propriedades adicionadas ao grupo.</summary-info>
 
 
 
@@ -139,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;Required(ErrorMessage = &quot;O nome da propriedade é obrigatório&quot;)&gt; _&nbsp;<br />&lt;Display(Name = &quot;Nome&quot;)&gt; _&nbsp;<br />Public Property Name() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;JsonPropertyName(&quot;addedProperties&quot;)&gt; _&nbsp;<br />Public Property AddedProperties() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>(Of <a target="_top" href="topic_00000000000000CB.html" onclick="this.target='';return true;">UserAddedProperty</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -178,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[Required(ErrorMessage = &quot;O nome da propriedade é obrigatório&quot;)]&nbsp;<br />[Display(Name = &quot;Nome&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> Name {get; set;}</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[JsonPropertyName(&quot;addedProperties&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_00000000000000CB.html" onclick="this.target='';return true;">UserAddedProperty</a>&gt; AddedProperties {get; set;}</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -218,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[Required(ErrorMessage = &quot;O nome da propriedade é obrigatório&quot;)]&nbsp;<br />[Display(Name = &quot;Nome&quot;)]&nbsp;<br />public: &nbsp;<br />property <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ Name {&nbsp;<br /> <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ get( );&nbsp;<br /> void set(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ value&nbsp;<br /> );&nbsp;<br />}</pre>			
+					<pre xml:space="preserve" class="brush: cpp">[JsonPropertyName(&quot;addedProperties&quot;)]&nbsp;<br />public: &nbsp;<br />property <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_00000000000000CB.html" onclick="this.target='';return true;">UserAddedProperty</a>^&gt;^ AddedProperties {&nbsp;<br /> <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_00000000000000CB.html" onclick="this.target='';return true;">UserAddedProperty</a>^&gt;^ get( );&nbsp;<br /> void set(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_00000000000000CB.html" onclick="this.target='';return true;">UserAddedProperty</a>^&gt;^ value&nbsp;<br /> );&nbsp;<br />}</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -257,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   Required(ErrorMessage = &quot;O nome da propriedade é obrigatório&quot;)&nbsp;<br />   Display(Name = &quot;Nome&quot;)&nbsp;<br />function get Name() : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>;&nbsp;<br />public &nbsp;<br />   Required(ErrorMessage = &quot;O nome da propriedade é obrigatório&quot;)&nbsp;<br />   Display(Name = &quot;Nome&quot;)&nbsp;<br />function set Name(value : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>);</pre>			
+					<pre xml:space="preserve" class="brush: js">JScript does not support generic types and methods.</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -271,7 +271,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<h4 class="subHeading">
 		Property Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_00000000000000CB.html" onclick="this.target='';return true;">UserAddedProperty</a>&gt; 
 	
 
 
@@ -360,11 +360,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_00000000000000C2.html">Property Class</a><br />
+			<a href="topic_00000000000000BC.html">Group Class</a><br />
 
 
 
-<a href="topic_0000000000000069.html">BookingBuddy.Server.Models Namespace</a><br />
+<a href="topic_0000000000000079.html">BookingBuddy.Server.Models Namespace</a><br />
 
 
 			

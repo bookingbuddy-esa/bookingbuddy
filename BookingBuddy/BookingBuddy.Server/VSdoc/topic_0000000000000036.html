@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>PropertyController.CreateProperty Method</title>
+	<title>PaymentController.Webhook Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">PropertyController.CreateProperty Method</h1>
+		<h1 class="title">PaymentController.Webhook Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Método que adiciona uma nova propriedade na base de dados da aplicação.</summary-info>
+        <summary-info>Método que representa o endpoint de webhook para notificações de pagamentos.</summary-info>
 
 
 
@@ -139,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;HttpPost(&quot;create&quot;)&gt; _&nbsp;<br />&lt;Authorize()&gt; _&nbsp;<br />Public Function CreateProperty( _&nbsp;<br />   &lt;FromBody()&gt; _&nbsp;<br />   ByVal <i>model</i> As <a target="_top" href=".html" onclick="this.target='';return true;">PropertyCreateModel</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;HttpGet(&quot;webhook&quot;)&gt; _&nbsp;<br />Public Function Webhook( _&nbsp;<br />   &lt;FromQuery()&gt; _&nbsp;<br />   ByVal <i>paymentResponse</i> As <a target="_top" href="topic_0000000000000039.html" onclick="this.target='';return true;">PaymentResponse</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -178,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[HttpPost(&quot;create&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; CreateProperty(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">PropertyCreateModel</a> <i>model</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[HttpGet(&quot;webhook&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; Webhook(&nbsp;<br />   [FromQuery()]&nbsp;<br />   <a target="_top" href="topic_0000000000000039.html" onclick="this.target='';return true;">PaymentResponse</a> <i>paymentResponse</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -218,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[HttpPost(&quot;create&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ CreateProperty(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">PropertyCreateModel</a>^ <i>model</i>&nbsp;<br />) </pre>			
+					<pre xml:space="preserve" class="brush: cpp">[HttpGet(&quot;webhook&quot;)]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ Webhook(&nbsp;<br />   [FromQuery()]&nbsp;<br />   <a target="_top" href="topic_0000000000000039.html" onclick="this.target='';return true;">PaymentResponse</a>^ <i>paymentResponse</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -269,18 +269,18 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 <h4 class="subHeading">
-	Parameters</h4><dl paramName="model" class="parameterList">
+	Parameters</h4><dl paramName="paymentResponse" class="parameterList">
 	<dt>
 		<span class="parameter">
-			model
+			paymentResponse
 		</span>
 	</dt>
 	<dd>
-		<a target="_top" href=".html" onclick="this.target='';return true;">PropertyCreateModel</a> 
+		<a target="_top" href="topic_0000000000000039.html" onclick="this.target='';return true;">PaymentResponse</a> 
 	</dd>
 </dl>
 <p>
-	Modelo de criação de uma propriedade 
+	 
 </p>
 
 <p />
@@ -289,7 +289,12 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
 		<p>
-		A propriedade criada, um conflito, caso já exista uma propriedade com o mesmo identificador, ou uma exceção caso contrário 
+		Retorna:
+200 Ok, se o pagamento para promover uma propriedade for efetuado com sucesso
+401 Unauthorized, se a chave não for a correta
+400 Bad Request, se os dados da resposta do pagamento estiverem incompletos ou inválidos
+404 Not Found, se não houver nenhum pagamento com o identificador da resposta do pagamento
+500 Status Code, caso ocorra alguma exceção 
 	</p>
 	
 
@@ -379,7 +384,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000030.html">PropertyController Class</a><br />
+			<a href="topic_0000000000000033.html">PaymentController Class</a><br />
 
 
 

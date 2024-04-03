@@ -1,0 +1,1 @@
+search_result['437']=["topic_00000000000000CB.html","UserAddedProperty Class","Classe que representa as propriedades adicionadas por um utilizador a um grupo."];

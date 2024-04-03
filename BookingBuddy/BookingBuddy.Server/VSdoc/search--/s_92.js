@@ -1,1 +1,1 @@
-search_result['92']=["topic_0000000000000032.html","PropertyController.GetProperties Method","Método que retorna uma lista com todas as propriedades."];
+search_result['92']=["topic_000000000000002B.html","GroupController.NotifyGroupBookingCreated Method","Notifica os membros de um grupo que a reserva foi paga."];

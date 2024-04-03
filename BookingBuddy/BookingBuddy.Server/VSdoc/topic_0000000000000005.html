@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Verifica se o token de confirmação do e-mail é válido.</summary-info>
+        <summary-info>Verifica se o token de confirmação de email é válido para um utilizador registado.</summary-info>
 
 
 
@@ -280,7 +280,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Modelo de confirmação de e-mail 
+	O modelo contendo o identificador único do utilizador (UID) e o token de confirmação. 
 </p>
 
 <p />
@@ -289,7 +289,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
 		<p>
-		Resposta do pedido de verificar o token de confirmação de e-mail, OK(200) se concluido com sucesso. 
+		Um código de estado 200 (OK) se o token de confirmação for válido.
+Um código de estado 400 (Bad Request) se o token de confirmação for inválido ou o utilizador não estiver registado. 
 	</p>
 	
 
@@ -313,16 +314,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			Nenhum dos parâmetros pode ser null.
-	</div>					
-</div>
 
 
 

@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>Initial Class</title>
+	<title>UploadController Class</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">Initial Class</h1>
+		<h1 class="title">UploadController Class</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_0000000000000058.html">BookingBuddy.Server.Migrations</a>
+<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers</a>
 
 
 
@@ -89,6 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
+        <summary-info>Controller para enviar ficheiros para o armazenamento Azure.</summary-info>
 
 
 
@@ -138,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;DbContext(typeof(BookingBuddyServerContext))&gt; _&nbsp;<br />&lt;Migration(&quot;20240219161800_Initial&quot;)&gt; _&nbsp;<br />Public Class Initial&nbsp;<br />    Inherits <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.migrations.migration">Migration</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;Route(&quot;api/upload&quot;)&gt; _&nbsp;<br />&lt;ApiController()&gt; _&nbsp;<br />Public Class UploadController&nbsp;<br />    Inherits <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[DbContext(typeof(BookingBuddyServerContext))]&nbsp;<br />[Migration(&quot;20240219161800_Initial&quot;)]&nbsp;<br />public class Initial : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.migrations.migration">Migration</a></pre>			
+					<pre xml:space="preserve" class="brush: csharp">[Route(&quot;api/upload&quot;)]&nbsp;<br />[ApiController()]&nbsp;<br />public class UploadController : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[DbContext(typeof(BookingBuddyServerContext))]&nbsp;<br />[Migration(&quot;20240219161800_Initial&quot;)]&nbsp;<br />public ref class Initial : public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft::entityframeworkcore::migrations::migration">Migration</a>^</pre>			
+					<pre xml:space="preserve" class="brush: cpp">[Route(&quot;api/upload&quot;)]&nbsp;<br />[ApiController()]&nbsp;<br />public ref class UploadController : public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft::aspnetcore::mvc::controllerbase">ControllerBase</a>^</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -256,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   DbContext(typeof(BookingBuddyServerContext))&nbsp;<br />   Migration(&quot;20240219161800_Initial&quot;)&nbsp;<br />class Initial&nbsp;<br />   extends <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.migrations.migration">Migration</a></pre>			
+					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   Route(&quot;api/upload&quot;)&nbsp;<br />   ApiController()&nbsp;<br />class UploadController&nbsp;<br />   extends <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -286,6 +287,57 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Constructors</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="ConstructorsSection" class="section">	
+  <table class="memberListTable">
+    <tr>
+      <th></th>
+      <th>
+        Name
+      </th>
+      <th>
+        Description
+      </th>
+    </tr>
+
+
+	
+			<tr class="
+	
+	
+	">
+	  <td>
+    <img alt="Public constructor" title="Public constructor" src="msdn2019/pubmethod.png"></img>
+
+	
+	    
+	  </td>
+	  <td>
+	    <a href="topic_000000000000005A.html">UploadController(IConfiguration)</a>
+
+	  </td>
+	  <td>
+	
+	Construtor para o controller de upload.
+	
+		</td>
+	</tr>
+	
+
+
+  </table>
+
+  <a href="#mainBody">
+    Top
+  </a>
+
+	</div>					
+</div>
 
 
 
@@ -319,83 +371,18 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 ">
 	<td>
-   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
-
-    
-	  
+<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
 
 
     
 	</td>
 	<td>
-	<a href="topic_000000000000005C.html">BuildTargetModel(ModelBuilder)</a>
+	<a href="topic_000000000000005B.html">UploadFiles()</a>
 
 	</td>
 	<td>
 
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
-
-    
-	  
-
-
-    
-	</td>
-	<td>
-	<a href="topic_000000000000005B.html">Down(MigrationBuilder)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-   <img alt="Protected method" title="Protected method" src="msdn2019/protmethod.png"></img>
-
-    
-	  
-
-
-    
-	</td>
-	<td>
-	<a href="topic_000000000000005A.html">Up(MigrationBuilder)</a>
-
-	</td>
-	<td>
-
-
+Faz o upload de ficheiros para o armazenamento de blobs.
 
 	</td>
 </tr>
@@ -413,8 +400,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	</div>					
 </div>
-
-
 
 
 
@@ -514,7 +499,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-	<a href="topic_0000000000000058.html">BookingBuddy.Server.Migrations Namespace</a><br />
+	<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
 
 
 	

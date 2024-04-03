@@ -1,1 +1,1 @@
-search_result['36']=["topic_0000000000000017_attached_props--.html","ChatHubController Attached Properties",""];
+search_result['36']=["topic_0000000000000016.html","ChatController Class","Classe que representa o controlador de chat."];

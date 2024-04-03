@@ -1,0 +1,1 @@
+search_result['672']=["topic_000000000000014F.html","WebSocketWrapper.AddOnDisconnectListener Method","Adiciona um ouvinte para o evento de desconexão de um WebSocket."];

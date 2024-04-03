@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>BookingBuddyServerContext.PropertyAmenity Property</title>
+	<title>PropertyController.EditProperty Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">BookingBuddyServerContext.PropertyAmenity Property</h1>
+		<h1 class="title">PropertyController.EditProperty Method</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_0000000000000047.html">BookingBuddy.Server.Data</a>
+<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers</a>
 
 
 
@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Propriedade que diz respeito à comodidade da propriedade física.</summary-info>
+        <summary-info>Método que permite editar uma propriedade existente.</summary-info>
 
 
 
@@ -139,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Property PropertyAmenity() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>(Of <a target="_top" href="topic_000000000000006A.html" onclick="this.target='';return true;">Amenity</a>)</pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;HttpPut(&quot;edit/{propertyId}&quot;)&gt; _&nbsp;<br />&lt;Authorize()&gt; _&nbsp;<br />Public Function EditProperty( _&nbsp;<br />   ByVal <i>propertyId</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>, _&nbsp;<br />   &lt;FromBody()&gt; _&nbsp;<br />   ByVal <i>model</i> As <a target="_top" href=".html" onclick="this.target='';return true;">PropertyEditModel</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -178,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000006A.html" onclick="this.target='';return true;">Amenity</a>&gt; PropertyAmenity {get; set;}</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[HttpPut(&quot;edit/{propertyId}&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; EditProperty(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>propertyId</i>,&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">PropertyEditModel</a> <i>model</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -218,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">public: &nbsp;<br />property <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000006A.html" onclick="this.target='';return true;">Amenity</a>^&gt;^ PropertyAmenity {&nbsp;<br /> <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000006A.html" onclick="this.target='';return true;">Amenity</a>^&gt;^ get( );&nbsp;<br /> void set(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000006A.html" onclick="this.target='';return true;">Amenity</a>^&gt;^ value&nbsp;<br /> );&nbsp;<br />}</pre>			
+					<pre xml:space="preserve" class="brush: cpp">[HttpPut(&quot;edit/{propertyId}&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ EditProperty(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ <i>propertyId</i>,&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">PropertyEditModel</a>^ <i>model</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -268,10 +268,46 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="propertyId" class="parameterList">
+	<dt>
+		<span class="parameter">
+			propertyId
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
+	</dd>
+</dl>
+<p>
+	O identificador único da propriedade a ser editada. 
+</p>
+<dl paramName="model" class="parameterList">
+	<dt>
+		<span class="parameter">
+			model
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href=".html" onclick="this.target='';return true;">PropertyEditModel</a> 
+	</dd>
+</dl>
+<p>
+	O modelo contendo as informações atualizadas da propriedade. 
+</p>
+
+<p />
 
 	<h4 class="subHeading">
-		Property Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbset-1">DbSet</a>&lt;<a target="_top" href="topic_000000000000006A.html" onclick="this.target='';return true;">Amenity</a>&gt; 
+		Return Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
+		<p>
+		Um código de estado 204 (No Content) se a edição for bem-sucedida.
+Retorna 401 (Unauthorized) se o utilizador não estiver autenticado.
+Retorna 403 (Forbid) se o utilizador autenticado não tiver permissão para editar a propriedade.
+Retorna 404 (Not Found) se a propriedade não for encontrada na base de dados.
+Retorna 400 (Bad Request) se o identificador da propriedade no modelo não corresponder ao identificador fornecido. 
+	</p>
 	
 
 
@@ -360,11 +396,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000048.html">BookingBuddyServerContext Class</a><br />
+			<a href="topic_0000000000000043.html">PropertyController Class</a><br />
 
 
 
-<a href="topic_0000000000000047.html">BookingBuddy.Server.Data Namespace</a><br />
+<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
 
 
 			

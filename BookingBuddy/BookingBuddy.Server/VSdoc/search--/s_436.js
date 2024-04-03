@@ -1,0 +1,1 @@
+search_result['436']=["topic_00000000000000CA.html","Group.GroupBookingId Property","Propriedade que diz respeito ao identificador da reserva de grupo."];

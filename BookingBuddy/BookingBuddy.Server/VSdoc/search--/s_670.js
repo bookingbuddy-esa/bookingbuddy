@@ -1,0 +1,1 @@
+search_result['670']=["topic_000000000000014D.html","WebSocketWrapper.AddOnReceiveListener Method","Adiciona um ouvinte para o evento de receção de uma mensagem por um WebSocket."];

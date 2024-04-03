@@ -1,1 +1,1 @@
-search_result['76']=["topic_000000000000002A_events--.html","PaymentResponse Events",""];
+search_result['76']=["topic_0000000000000025.html","GroupController.LeaveGroup Method","Remove um utilizador do grupo de reserva."];

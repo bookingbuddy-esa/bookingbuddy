@@ -152,7 +152,7 @@ Mudar de palavra-passe.
 	</td>
 	<td>
 
-Verifica se o token de confirmação do e-mail é válido.
+Verifica se o token de confirmação de email é válido para um utilizador registado.
 
 	</td>
 </tr>
@@ -208,7 +208,7 @@ Verifica se o token de reset da palavra-passe é válido.
 	</td>
 	<td>
 
-Confirma o email.
+Confirma o email de um utilizador registado com base no token fornecido.
 
 	</td>
 </tr>
@@ -236,7 +236,8 @@ Confirma o email.
 	</td>
 	<td>
 
-Recuperação da password através de um email.
+Inicia o processo de recuperação de palavra-passe para um utilizador com base no email fornecido.
+É enviado um email com um link para dar reset à password para o email fornecido, se este estiver associado a um utilizador.
 
 	</td>
 </tr>
@@ -259,12 +260,12 @@ Recuperação da password através de um email.
     
 	</td>
 	<td>
-	<a href="topic_0000000000000008.html">GoogleLogin(GoogleSignInModel)</a>
+	<a href="topic_0000000000000008.html">GoogleLogin(string)</a>
 
 	</td>
 	<td>
 
-Login com uma conta Google.
+Inicia o processo de autenticação usando o Google como provedor de autenticação externo.
 
 	</td>
 </tr>
@@ -292,7 +293,7 @@ Login com uma conta Google.
 	</td>
 	<td>
 
-Login com um email e uma palavra-passe.
+Autentica um utilizador com base nas credenciais fornecidas.
 
 	</td>
 </tr>
@@ -320,7 +321,7 @@ Login com um email e uma palavra-passe.
 	</td>
 	<td>
 
-Login com um fornecedor.
+Autentica um utilizador usando um provedor de autenticação externo, como Google ou Microsoft.
 
 	</td>
 </tr>
@@ -419,12 +420,12 @@ Alterar informação do utilizador autenticado.
     
 	</td>
 	<td>
-	<a href="topic_0000000000000009.html">MicrosoftLogin(MicrosoftSignInModel)</a>
+	<a href="topic_0000000000000009.html">MicrosoftLogin(string)</a>
 
 	</td>
 	<td>
 
-Login com uma conta Microsoft.
+Inicia o processo de autenticação usando a Microsoft como provedor de autenticação externo.
 
 	</td>
 </tr>
@@ -452,7 +453,7 @@ Login com uma conta Microsoft.
 	</td>
 	<td>
 
-Regista um utilizador e envia um e-mail de confirmação.
+Regista um novo utilizador na plataforma.
 
 	</td>
 </tr>
@@ -480,7 +481,7 @@ Regista um utilizador e envia um e-mail de confirmação.
 	</td>
 	<td>
 
-Reenvia o email de confirmação da conta.
+Reenvia o email de confirmação para um utilizador registado não confirmado.
 
 	</td>
 </tr>

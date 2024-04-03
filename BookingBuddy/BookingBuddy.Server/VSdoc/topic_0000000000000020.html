@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>OrderController Class</title>
+	<title>GroupController.UpdateGroupAction Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">OrderController Class</h1>
+		<h1 class="title">GroupController.UpdateGroupAction Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Classe que representa o controlador de gestão de orders.</summary-info>
+        <summary-info>Método que atualiza a ação de um grupo.</summary-info>
 
 
 
@@ -139,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;Route(&quot;api/orders&quot;)&gt; _&nbsp;<br />&lt;ApiController()&gt; _&nbsp;<br />Public Class OrderController&nbsp;<br />    Inherits <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;HttpPut(&quot;updateGroupAction&quot;)&gt; _&nbsp;<br />&lt;Authorize()&gt; _&nbsp;<br />Public Function UpdateGroupAction( _&nbsp;<br />   &lt;FromBody()&gt; _&nbsp;<br />   ByVal <i>model</i> As <a target="_top" href=".html" onclick="this.target='';return true;">UpdateGroupActionModel</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>(Of <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -178,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[Route(&quot;api/orders&quot;)]&nbsp;<br />[ApiController()]&nbsp;<br />public class OrderController : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
+					<pre xml:space="preserve" class="brush: csharp">[HttpPut(&quot;updateGroupAction&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; UpdateGroupAction(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">UpdateGroupActionModel</a> <i>model</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -218,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[Route(&quot;api/orders&quot;)]&nbsp;<br />[ApiController()]&nbsp;<br />public ref class OrderController : public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft::aspnetcore::mvc::controllerbase">ControllerBase</a>^</pre>			
+					<pre xml:space="preserve" class="brush: cpp">[HttpPut(&quot;updateGroupAction&quot;)]&nbsp;<br />[Authorize()]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^&gt;^ UpdateGroupAction(&nbsp;<br />   [FromBody()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">UpdateGroupActionModel</a>^ <i>model</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -257,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   Route(&quot;api/orders&quot;)&nbsp;<br />   ApiController()&nbsp;<br />class OrderController&nbsp;<br />   extends <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.controllerbase">ControllerBase</a></pre>			
+					<pre xml:space="preserve" class="brush: js">JScript does not support generic types and methods.</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -268,6 +268,30 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="model" class="parameterList">
+	<dt>
+		<span class="parameter">
+			model
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href=".html" onclick="this.target='';return true;">UpdateGroupActionModel</a> 
+	</dd>
+</dl>
+<p>
+	Modelo com o identificador do grupo e a ação a ser atualizada 
+</p>
+
+<p />
+
+	<h4 class="subHeading">
+		Return Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
+		<p>
+		Retorna o resultado da atualização da ação do grupo. 
+	</p>
+	
 
 
 
@@ -284,207 +308,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	</div>
 </div>
-
-
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Constructors</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="ConstructorsSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-	
-			<tr class="
-	
-	
-	">
-	  <td>
-    <img alt="Public constructor" title="Public constructor" src="msdn2019/pubmethod.png"></img>
-
-	
-	    
-	  </td>
-	  <td>
-	    <a href="topic_0000000000000021.html">OrderController(BookingBuddyServerContext, UserManager&lt;ApplicationUser&gt;, PaymentController)</a>
-
-	  </td>
-	  <td>
-	
-	
-	
-		</td>
-	</tr>
-	
-
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-
-
-
-
-
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Methods</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="MethodsSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-
-
-    
-	</td>
-	<td>
-	<a href="topic_0000000000000024.html">CreateOrderBooking(PropertyBookingModel, bool)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-
-
-    
-	</td>
-	<td>
-	<a href="topic_0000000000000023.html">CreateOrderPromote(PropertyPromoteModel, bool)</a>
-
-	</td>
-	<td>
-
-Método que representa o endpoint de criação de um pedido de promover uma propriedade.
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-
-
-    
-	</td>
-	<td>
-	<a href="topic_0000000000000022.html">GetOrder(string)</a>
-
-	</td>
-	<td>
-
-Método que representa o endpoint de obtenção de uma order através do seu ID.
-
-	</td>
-</tr>
-
-
-
-
-
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-<!-- Classes -->
-
-<!-- Classes End -->
-
-<!-- Standard Modules -->
-
-<!-- Standard Modules End -->
-
-  
-
-
-
 
 
 
@@ -548,7 +371,6 @@ Método que representa o endpoint de obtenção de uma order através do seu ID.
 	</div>					
 </div>
 
-
 <div class="section_container">
 	<div class="section_heading">
 		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">See Also</a></span>
@@ -557,10 +379,14 @@ Método que representa o endpoint de obtenção de uma order através do seu ID.
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-	<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
+			<a href="topic_000000000000001B.html">GroupController Class</a><br />
 
 
-	
+
+<a href="topic_0000000000000000.html">BookingBuddy.Server.Controllers Namespace</a><br />
+
+
+			
 
 		</div>
 	</div>					

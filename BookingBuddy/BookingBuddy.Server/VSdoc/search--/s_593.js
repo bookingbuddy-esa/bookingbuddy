@@ -1,0 +1,1 @@
+search_result['593']=["topic_000000000000011B.html","Property.PricePerNight Property","Preço por noite da propriedade física a anunciar."];

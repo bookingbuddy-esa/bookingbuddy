@@ -1,1 +1,1 @@
-c['25']=[['26',"CreateBookings Method","topic_0000000000000013.html",0],['27',"CreateMessage Method","topic_0000000000000016.html",0],['28',"GetBookings Method","topic_0000000000000014.html",0],['29',"GetMessages Method","topic_0000000000000015.html",0]];
+c['25']=[['26',"CreateMessage Method","topic_0000000000000015.html",0],['27',"GetBookings Method","topic_0000000000000013.html",0],['28',"GetMessages Method","topic_0000000000000014.html",0]];

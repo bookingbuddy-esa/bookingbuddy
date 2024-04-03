@@ -1,1 +1,1 @@
-search_result['228']=["topic_000000000000008C_props--.html","BookingMessage Properties",""];
+search_result['228']=["topic_0000000000000072.html","BookingBuddyServerContext.UserVote Property","Propriedade que diz respeito aos votos dos utilizadores."];

@@ -1,0 +1,1 @@
+search_result['595']=["topic_000000000000011D.html","Property.RoomsNumber Property","Propriedade que diz respeito ao numero de hóspedes da propriedade física a anunciar."];

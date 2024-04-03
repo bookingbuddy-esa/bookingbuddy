@@ -1,0 +1,1 @@
+search_result['619']=["topic_000000000000012B.html","Rating.ApplicationUserId Property","Identificador do utilizador que fez a avaliação."];

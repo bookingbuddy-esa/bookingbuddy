@@ -89,7 +89,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Recuperação da password através de um email.</summary-info>
+        <summary-info>Inicia o processo de recuperação de palavra-passe para um utilizador com base no email fornecido.
+É enviado um email com um link para dar reset à password para o email fornecido, se este estiver associado a um utilizador.</summary-info>
 
 
 
@@ -280,7 +281,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Modelo de recuperação de palavra-passe 
+	Os dados necessários para iniciar o processo de recuperação de palavra-passe. 
 </p>
 
 <p />
@@ -289,7 +290,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
 		<p>
-		Resposta do pedido de recuperar a palavra-passe, OK(200) se concluido com sucesso. 
+		Um código de estado 200 (OK) se o email de recuperação for enviado com sucesso.
+Um código de estado 400 (Pedido Inválido) se ocorrerem erros durante o processo. 
 	</p>
 	
 
@@ -313,34 +315,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			Nenhum dos parâmetros pode ser null.
-
-NOTA: É enviado um email com um link para dar reset à password para o email fornecido, se este estiver associado a um utilizador.
-	</div>					
-</div>
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Example</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="codeExampleSection" class="section">	
-POST /api/forgotPassword
-
-    {
-       &quot;email&quot;: bookingbuddy@bookingbuddy.com,
-    }										
-	</div>					
-</div>
 
 
 
