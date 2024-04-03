@@ -234,10 +234,11 @@ namespace BookingBuddy.Server.Controllers
                 else
                 {
                     var result = await signInManager.PasswordSignInAsync(user, model.Password, true, false);
-                    if (result.Succeeded)
-                    {
-                        return Ok();
-                    }
+                    if (!result.Succeeded)
+                        return BadRequest(new[]
+                            { new IdentityError { Code = "InvalidLogin", Description = "Credenciais inválidas." } });
+                    var headers = Response.Headers.SetCookie;
+                    return Ok(headers.ToString());
                 }
             }
 

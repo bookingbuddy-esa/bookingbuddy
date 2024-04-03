@@ -26,11 +26,20 @@ export class AuthorizeService {
     }, {
       withCredentials: true,
       observe: 'response',
-      responseType: 'text'
+      responseType: 'text',
+      headers: {
+        'Content-Type': 'application/json',
+      }
     }).pipe<boolean>(map((res: HttpResponse<string>) => {
-        this._authStateChanged.next(res.ok);
-        return res.ok;
-      }));
+      this._authStateChanged.next(res.ok);
+      let cookie = res.body as string;
+      if (location.hostname !== 'localhost') {
+        cookie += '; domain=azurewebsites.net'
+      }
+      console.log(cookie)
+      document.cookie = cookie;
+      return res.ok;
+    }));
   }
 
   public signInWithProviders(providerId: string, token: string) {
