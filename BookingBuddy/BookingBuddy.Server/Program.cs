@@ -26,6 +26,7 @@ builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
 {
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.HttpOnly = true;
 });
 
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
