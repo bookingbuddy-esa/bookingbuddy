@@ -1,0 +1,144 @@
+name: Deployment Workflow
+on:
+    push:
+      branches:
+        - main
+    workflow_dispatch:
+
+jobs:
+  build_client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BookingBuddy/bookingbuddy.client
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version: '20.x'
+
+      - name: Set up client environment
+        run: >
+          echo 
+          '{
+            "apiUrl": "${{ vars.API_URL }}",
+            "googleClientId": "${{ secrets.GOOGLE_CLIENT_ID }}",
+            "microsoftClientId": "${{ secrets.MICROSOFT_CLIENT_ID }}",
+            "microsoftTenantId": "${{ secrets.MICROSOFT_TENANT_ID }}"
+          }'
+          > ./src/environments/environment.json
+
+      - name: Install dependencies
+        run: npm install
+          
+      - name: Build client
+        run: npm run build --if-present
+
+      - name: Zip artifact for deployment
+        working-directory: BookingBuddy/bookingbuddy.client/dist/bookingbuddy.client/browser
+        run: zip ../release.zip . -r
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: client-app
+          path: ./BookingBuddy/bookingbuddy.client/dist/bookingbuddy.client/release.zip
+  
+  deploy_client:
+    runs-on: ubuntu-latest
+    needs: build_client
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    steps:
+      - name: Download artifact from build
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: client-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
+      - name: Deploy client
+        id: deploy-to-webapp
+        uses: Azure/webapps-deploy@v3.0.0
+        with:
+          app-name: 'booking-buddy'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.CLIENT_PUBLISH_PROFILE }}
+
+  build_server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BookingBuddy/BookingBuddy.Server
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: '8.x'
+      
+      - name: Set up server environment
+        run: >
+          echo 
+          '{
+            "Logging": {
+                "LogLevel": {
+                    "Default": "Information",
+                    "Microsoft.AspNetCore": "Warning"
+                }
+            },
+            "AllowedHosts": "*",
+            "ConnectionStrings": {
+                "BookingBuddyServerContext": "${{ secrets.AZURE_SQL_SERVER_CONNECTION }}",
+                "AzureStorageAccount": "${{ secrets.AZURE_STORAGE_ACCOUNTS_CONNECTION }}",
+            },
+            "MailAPIKey": "${{ secrets.SENDGRID_API_KEY }}",
+            "ClientUrl": "${{ vars.CLIENT_URL }}",
+            "MbKey": "${{ secrets.ITHENPAY_MB_KEY }}",
+            "MbWayKey": "${{ secrets.ITHENPAY_MBWAY_KEY }}",
+            "PhishingKey": "${{ secrets.ITHENPAY_PHISHING_KEY }}",
+          }'
+          > ./appsettings.json
+
+      - name: Publish server
+        run: dotnet publish -c Release -o ./publish --no-dependencies
+     
+      - name: Zip artifact for deployment
+        working-directory: BookingBuddy/BookingBuddy.Server/publish
+        run: zip ../release.zip . -r
+
+      - name: Upload artifact for deployment
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: server-app
+          path: ./BookingBuddy/BookingBuddy.Server/release.zip
+
+
+  deploy_server:
+    runs-on: ubuntu-latest
+    needs: build_server
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4.1.4
+        with:
+          name: server-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+      
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3.0.0
+        with:
+          app-name: 'booking-buddy-api'
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.API_PUBLISH_PROFILE }}
