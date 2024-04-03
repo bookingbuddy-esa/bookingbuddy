@@ -1,0 +1,1 @@
+search_result['623']=["topic_000000000000012F.html","EmailSender Class","Classe que representa o envio de emails."];

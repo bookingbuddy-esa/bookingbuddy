@@ -1,1 +1,1 @@
-search_result['284']=["topic_00000000000000AF.html","PromotionOrder.Discount Property",""];
+search_result['284']=["topic_000000000000008C.html","AmenityExtension Class","Classe de extensão para a enumeração de comodidades."];

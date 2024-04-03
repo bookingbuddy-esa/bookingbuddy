@@ -1,1 +1,1 @@
-search_result['105']=["topic_000000000000003F.html","PropertyController.RemoveDiscount Method","Método que remove um desconto de uma propriedade."];
+search_result['105']=["topic_0000000000000030_methods--.html","PropertyController Methods",""];

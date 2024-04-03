@@ -1,1 +1,1 @@
-search_result['352']=["topic_00000000000000D5.html","Rating.PropertyId Property",""];
+search_result['352']=["topic_00000000000000A4_props--.html","Chat Properties",""];

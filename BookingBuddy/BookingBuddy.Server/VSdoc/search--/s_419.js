@@ -1,0 +1,1 @@
+search_result['419']=["topic_00000000000000BE.html","Group.GroupOwnerId Property","Propriedade que diz respeito ao identificador do dono do grupo."];

@@ -1,1 +1,1 @@
-search_result['0']=["topic_0000000000000000.html","BookingBuddy.Server.Controllers Namespace",""];
+search_result['0']=["index.html","Default page",""];

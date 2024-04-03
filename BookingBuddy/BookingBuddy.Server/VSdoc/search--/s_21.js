@@ -1,1 +1,1 @@
-search_result['21']=["topic_000000000000000E_overloads--.html","AccountController.ManageInfo Method","Alterar informação do utilizador autenticado."];
+search_result['21']=["topic_000000000000000D_overloads--.html","AccountController.ManageInfo Method","Obter informação do utilizador autenticado."];

@@ -1,1 +1,1 @@
-search_result['290']=["topic_00000000000000B0_vars--.html","PromoteOrder Fields",""];
+search_result['290']=["topic_000000000000008D.html","AmenityExtension.GetDescription Method","Método que retorna o nome de uma comodidade."];

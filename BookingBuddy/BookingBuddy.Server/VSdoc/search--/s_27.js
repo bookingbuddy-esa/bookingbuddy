@@ -1,1 +1,1 @@
-search_result['27']=["topic_0000000000000011_methods--.html","BookingController Methods",""];
+search_result['27']=["topic_0000000000000011_attached_props--.html","BookingController Attached Properties",""];

@@ -1,1 +1,1 @@
-search_result['280']=["topic_00000000000000AB_vars--.html","PromotionOrder Fields",""];
+search_result['280']=["topic_0000000000000088.html","BlockedDate.Id Property","Propriedade que diz respeito ao identificador das datas bloqueadas de uma propriedade."];

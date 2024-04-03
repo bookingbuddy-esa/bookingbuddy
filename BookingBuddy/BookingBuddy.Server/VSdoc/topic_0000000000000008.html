@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Login com uma conta Google.</summary-info>
+        <summary-info>Inicia o processo de autenticação usando o Google como provedor de autenticação externo.</summary-info>
 
 
 
@@ -139,7 +139,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">&lt;HttpPost()&gt; _&nbsp;<br />&lt;AllowAnonymous()&gt; _&nbsp;<br />&lt;Consumes(&quot;application/x-www-form-urlencoded&quot;)&gt; _&nbsp;<br />&lt;ProducesResponseType(StatusCodes.Status302Found)&gt; _&nbsp;<br />&lt;ProducesResponseType(StatusCodes.Status400BadRequest)&gt; _&nbsp;<br />&lt;Route(&quot;google&quot;)&gt; _&nbsp;<br />Public Function GoogleLogin( _&nbsp;<br />   &lt;FromForm()&gt; _&nbsp;<br />   ByVal <i>model</i> As <a target="_top" href=".html" onclick="this.target='';return true;">GoogleSignInModel</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">&lt;HttpPost()&gt; _&nbsp;<br />&lt;AllowAnonymous()&gt; _&nbsp;<br />&lt;Consumes(&quot;application/x-www-form-urlencoded&quot;)&gt; _&nbsp;<br />&lt;ProducesResponseType(StatusCodes.Status302Found)&gt; _&nbsp;<br />&lt;ProducesResponseType(StatusCodes.Status400BadRequest)&gt; _&nbsp;<br />&lt;Route(&quot;google&quot;)&gt; _&nbsp;<br />Public Function GoogleLogin( _&nbsp;<br />   &lt;FromForm()&gt; _&nbsp;<br />   ByVal <i>credential</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -178,7 +178,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">[HttpPost()]&nbsp;<br />[AllowAnonymous()]&nbsp;<br />[Consumes(&quot;application/x-www-form-urlencoded&quot;)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status302Found)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status400BadRequest)]&nbsp;<br />[Route(&quot;google&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a> GoogleLogin(&nbsp;<br />   [FromForm()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">GoogleSignInModel</a> <i>model</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">[HttpPost()]&nbsp;<br />[AllowAnonymous()]&nbsp;<br />[Consumes(&quot;application/x-www-form-urlencoded&quot;)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status302Found)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status400BadRequest)]&nbsp;<br />[Route(&quot;google&quot;)]&nbsp;<br />public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a> GoogleLogin(&nbsp;<br />   [FromForm()]&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>credential</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -218,7 +218,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">[HttpPost()]&nbsp;<br />[AllowAnonymous()]&nbsp;<br />[Consumes(&quot;application/x-www-form-urlencoded&quot;)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status302Found)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status400BadRequest)]&nbsp;<br />[Route(&quot;google&quot;)]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^ GoogleLogin(&nbsp;<br />   [FromForm()]&nbsp;<br />   <a target="_top" href=".html" onclick="this.target='';return true;">GoogleSignInModel</a>^ <i>model</i>&nbsp;<br />) </pre>			
+					<pre xml:space="preserve" class="brush: cpp">[HttpPost()]&nbsp;<br />[AllowAnonymous()]&nbsp;<br />[Consumes(&quot;application/x-www-form-urlencoded&quot;)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status302Found)]&nbsp;<br />[ProducesResponseType(StatusCodes.Status400BadRequest)]&nbsp;<br />[Route(&quot;google&quot;)]&nbsp;<br />public: &nbsp;<br /><a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>^ GoogleLogin(&nbsp;<br />   [FromForm()]&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ <i>credential</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -257,7 +257,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   HttpPost()&nbsp;<br />   AllowAnonymous()&nbsp;<br />   Consumes(&quot;application/x-www-form-urlencoded&quot;)&nbsp;<br />   ProducesResponseType(StatusCodes.Status302Found)&nbsp;<br />   ProducesResponseType(StatusCodes.Status400BadRequest)&nbsp;<br />   Route(&quot;google&quot;)&nbsp;<br />function GoogleLogin(&nbsp;<br />   FromForm()&nbsp;<br />    <i>model</i> : <a target="_top" href=".html" onclick="this.target='';return true;">GoogleSignInModel</a>&nbsp;<br />) : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>;</pre>			
+					<pre xml:space="preserve" class="brush: js">public &nbsp;<br />   HttpPost()&nbsp;<br />   AllowAnonymous()&nbsp;<br />   Consumes(&quot;application/x-www-form-urlencoded&quot;)&nbsp;<br />   ProducesResponseType(StatusCodes.Status302Found)&nbsp;<br />   ProducesResponseType(StatusCodes.Status400BadRequest)&nbsp;<br />   Route(&quot;google&quot;)&nbsp;<br />function GoogleLogin(&nbsp;<br />   FromForm()&nbsp;<br />    <i>credential</i> : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>&nbsp;<br />) : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>;</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -269,18 +269,18 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 <h4 class="subHeading">
-	Parameters</h4><dl paramName="model" class="parameterList">
+	Parameters</h4><dl paramName="credential" class="parameterList">
 	<dt>
 		<span class="parameter">
-			model
+			credential
 		</span>
 	</dt>
 	<dd>
-		<a target="_top" href=".html" onclick="this.target='';return true;">GoogleSignInModel</a> 
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
 	</dd>
 </dl>
 <p>
-	Modelo de login com a Google 
+	O token de credencial fornecido pelo Google. 
 </p>
 
 <p />
@@ -289,7 +289,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a> 
 		<p>
-		Redireciona para o link fornecido, se o pedido for concluido com sucesso. 
+		Um redirecionamento (código de estado 302) para a URL de autenticação no frontend.
+Um código de estado 400 (Bad Request) se ocorrerem erros durante o processo. 
 	</p>
 	
 
@@ -313,16 +314,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			Nenhum dos parâmetros pode ser null.
-	</div>					
-</div>
 
 
 <div class="section_container">

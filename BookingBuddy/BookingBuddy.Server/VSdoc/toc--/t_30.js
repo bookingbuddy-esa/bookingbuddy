@@ -1,1 +1,1 @@
-c['30']=[['31',"Methods","topic_0000000000000017_methods--.html",1]];
+c['30']=[['31',"CreateChat Method","topic_0000000000000017.html",0],['32',"GetChat Method","topic_0000000000000018.html",0],['33',"GetChatMessages Method","topic_0000000000000019.html",0],['34',"HandleWebSocketAsync Method","topic_000000000000001A.html",0]];

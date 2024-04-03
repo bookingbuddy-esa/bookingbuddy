@@ -1,1 +1,1 @@
-search_result['215']=["topic_0000000000000087_attached_props--.html","BlockedDate Attached Properties",""];
+search_result['215']=["topic_000000000000006A.html","BookingBuddyServerContext.GroupOrderPayment Property","Propriedade que diz respeito às mensagens de reserva."];

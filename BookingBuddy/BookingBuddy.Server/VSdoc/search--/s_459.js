@@ -1,0 +1,1 @@
+search_result['459']=["topic_00000000000000D2.html","UserVote.UserVoteId Property","Propriedade que diz respeito ao identificador do voto de um utilizador numa propriedade."];

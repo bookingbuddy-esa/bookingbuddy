@@ -1,0 +1,1 @@
+search_result['446']=["topic_00000000000000CF.html","UserAddedProperty.ApplicationUser Property","Propriedade que diz respeito ao utilizador que adicionou a propriedade ao grupo."];

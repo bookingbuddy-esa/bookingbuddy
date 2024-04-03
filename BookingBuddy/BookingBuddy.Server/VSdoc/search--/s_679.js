@@ -1,0 +1,1 @@
+search_result['679']=["topic_0000000000000156.html","SocketMessage Class","Representa uma mensagem de um WebSocket."];

@@ -1,1 +1,1 @@
-c['135']=[['136',"Name Property","topic_000000000000007F.html",0],['137',"PictureUrl Property","topic_0000000000000080.html",0],['138',"Provider Property","topic_0000000000000082.html",0],['139',"ProviderId Property","topic_0000000000000081.html",0]];
+c['135']=[['136',"BuildTargetModel Method","topic_0000000000000078.html",0],['137',"Down Method","topic_0000000000000077.html",0],['138',"Up Method","topic_0000000000000076.html",0]];

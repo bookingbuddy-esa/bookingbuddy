@@ -1,0 +1,1 @@
+search_result['602']=["topic_0000000000000124.html","Property.Clicks Property","Número de cliques que a propriedade física a anunciar teve."];

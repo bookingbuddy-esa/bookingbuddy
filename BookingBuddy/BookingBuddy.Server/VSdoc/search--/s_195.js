@@ -1,1 +1,1 @@
-search_result['195']=["topic_000000000000007E.html","ApplicationUser Class","Classe que representa um utilizador da plataforma."];
+search_result['195']=["topic_0000000000000060.html","BookingBuddyServerContext.Property Property","Propriedade que diz respeito à propriedade física."];

@@ -1,1 +1,1 @@
-search_result['291']=["topic_00000000000000B1.html","PromoteOrder.PromoteOrderId Property",""];
+search_result['291']=["topic_000000000000008E.html","ApplicationUser Class","Classe que representa um utilizador da plataforma."];

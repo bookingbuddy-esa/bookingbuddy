@@ -1,1 +1,1 @@
-search_result['155']=["topic_000000000000005D_vars--.html","Ratings Fields",""];
+search_result['155']=["topic_0000000000000047.html","PropertyController.GetProperties Method","Método que retorna uma lista das propriedades existentes na base de dados, com paginação aplicada.\r\nA paginação começa na página fornecida (startIndex) e retorna um número específico de propriedades (..."];

@@ -1,1 +1,1 @@
-search_result['15']=["topic_000000000000000A.html","AccountController.ForgotPassword Method","Recuperação da password através de um email."];
+search_result['15']=["topic_0000000000000008.html","AccountController.GoogleLogin Method","Inicia o processo de autenticação usando o Google como provedor de autenticação externo."];

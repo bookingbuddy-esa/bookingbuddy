@@ -1,1 +1,1 @@
-search_result['193']=["topic_000000000000007C_vars--.html","AmenityExtension Fields",""];
+search_result['193']=["topic_000000000000005E.html","BookingBuddyServerContext.AspNetProviders Property","Propriedade que diz respeito ao fornecedor de login."];

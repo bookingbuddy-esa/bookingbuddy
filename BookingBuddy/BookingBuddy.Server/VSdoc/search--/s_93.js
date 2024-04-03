@@ -1,1 +1,1 @@
-search_result['93']=["topic_0000000000000033.html","PropertyController.GetProperty Method","Método que retorna uma propriedade que contenha o id passado por parâmetro.\r\nCaso não exista retorna que não foi encontrada."];
+search_result['93']=["topic_000000000000002C.html","GroupController.NotifyGroupBookingPaid Method","Notifica os membros de um grupo que a reserva foi paga."];

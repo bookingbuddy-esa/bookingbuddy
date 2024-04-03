@@ -1,1 +1,1 @@
-search_result['374']=["topic_00000000000000E1.html","PortugueseIdentityErrorDescriber.LoginAlreadyAssociated Method",""];
+search_result['374']=["topic_00000000000000AF.html","Discount Class","Classe que representa um desconto."];

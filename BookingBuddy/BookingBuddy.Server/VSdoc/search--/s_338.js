@@ -1,1 +1,1 @@
-search_result['338']=["topic_00000000000000D0_attached_props--.html","ReturnUser Attached Properties",""];
+search_result['338']=["topic_000000000000009F.html","BookingMessage.BookingOrderId Property","Identificador da reserva."];

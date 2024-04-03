@@ -1,1 +1,1 @@
-search_result['33']=["topic_0000000000000015.html","BookingController.GetMessages Method",""];
+search_result['33']=["topic_0000000000000013.html","BookingController.GetBookings Method","Obtém todas as reservas associadas ao utilizador autenticado.\r\nInclui tanto as reservas individuais como as reservas em grupo em que o utilizador é membro."];

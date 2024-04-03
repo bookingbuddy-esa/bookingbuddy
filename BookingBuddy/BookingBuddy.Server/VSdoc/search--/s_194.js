@@ -1,1 +1,1 @@
-search_result['194']=["topic_000000000000007D.html","AmenityExtension.GetAmenityName Method",""];
+search_result['194']=["topic_000000000000005F.html","BookingBuddyServerContext.PropertyAmenity Property","Propriedade que diz respeito à comodidade da propriedade física."];

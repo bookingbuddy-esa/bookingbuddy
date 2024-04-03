@@ -1,1 +1,1 @@
-search_result['248']=["topic_000000000000009A.html","Favorite Class",""];
+search_result['248']=["topic_000000000000007C.html","Amenity.Name Property","Nome de uma comodidade de uma propriedade física a anunciar."];

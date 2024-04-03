@@ -1,1 +1,1 @@
-search_result['304']=["topic_00000000000000B9.html","Payment Class","Classe que representa um pagamento."];
+search_result['304']=["topic_0000000000000093_methods--.html","Discount Methods",""];

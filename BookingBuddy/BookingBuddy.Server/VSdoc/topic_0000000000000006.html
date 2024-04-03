@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Login com um email e uma palavra-passe.</summary-info>
+        <summary-info>Autentica um utilizador com base nas credenciais fornecidas.</summary-info>
 
 
 
@@ -280,7 +280,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Modelo de login 
+	O modelo contendo o email e a senha do utilizador. 
 </p>
 <dl paramName="isPersistent" class="parameterList">
 	<dt>
@@ -293,7 +293,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Opção que define se é guardada uma cookie de sessão 
+	Indica se a sessão do utilizador deve ser persistente (opcional, padrão é verdadeiro). 
 </p>
 
 <p />
@@ -302,7 +302,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
 		<p>
-		Resposta do pedido de login, OK(200) se concluido com sucesso. 
+		Um código de estado 200 (OK) se as credenciais do utilizador forem válidas e a autenticação for bem-sucedida.
+Um código de estado 400 (Bad Request) se o email do utilizador não estiver confirmado ou as credenciais forem inválidas. 
 	</p>
 	
 
@@ -326,16 +327,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			Nenhum dos parâmetros pode ser null.
-	</div>					
-</div>
 
 
 <div class="section_container">
@@ -346,11 +337,10 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="codeExampleSection" class="section">	
 POST /api/login
-
-   {
-    &quot;email&quot;: bookingbuddy.user@bookingbuddy.com,
-    &quot;password&quot;: userBB123!
-   }										
+{
+    &quot;email&quot;: &quot;bookingbuddy.user@bookingbuddy.com&quot;,
+    &quot;password&quot;: &quot;userBB123!&quot;
+}										
 	</div>					
 </div>
 

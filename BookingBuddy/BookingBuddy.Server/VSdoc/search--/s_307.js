@@ -1,1 +1,1 @@
-search_result['307']=["topic_00000000000000B9_methods--.html","Payment Methods",""];
+search_result['307']=["topic_0000000000000094.html","AspNetProvider Class","Classe que representa um fornecedor de login."];

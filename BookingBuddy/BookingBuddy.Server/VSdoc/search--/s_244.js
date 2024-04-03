@@ -1,1 +1,1 @@
-search_result['244']=["topic_0000000000000096.html","Discount.StartDate Property","Propriedade que diz respeito à data de incio."];
+search_result['244']=["topic_000000000000007A_methods--.html","Amenity Methods",""];

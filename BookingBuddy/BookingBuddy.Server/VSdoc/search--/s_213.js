@@ -1,1 +1,1 @@
-search_result['213']=["topic_0000000000000086.html","AspNetProvider.NormalizedName Property","Nome normalizado do fornecedor de login."];
+search_result['213']=["topic_0000000000000068.html","BookingBuddyServerContext.BookingOrder Property","Propriedade que diz respeito às reservas."];

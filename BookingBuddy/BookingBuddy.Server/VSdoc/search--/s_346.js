@@ -1,1 +1,1 @@
-search_result['346']=["topic_00000000000000D3_attached_props--.html","Rating Attached Properties",""];
+search_result['346']=["topic_00000000000000A2.html","BookingMessage.Message Property","Conteúdo da mensagem."];

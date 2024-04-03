@@ -89,7 +89,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
        
        
-        <summary-info>Reenvia o email de confirmação da conta.</summary-info>
+        <summary-info>Reenvia o email de confirmação para um utilizador registado não confirmado.</summary-info>
 
 
 
@@ -280,7 +280,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Modelo de reenvio de email 
+	O modelo contendo o email do utilizador para o qual deve ser reenviado o email de confirmação. 
 </p>
 
 <p />
@@ -289,7 +289,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		Return Value</h4>
 	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.iactionresult">IActionResult</a>&gt; 
 		<p>
-		Reenvia o email de confirmação da conta, OK(200) se concluido com sucesso. 
+		Um código de estado 200 (OK) se o email de confirmação for reenviado com sucesso.
+Um código de estado 400 (Bad Request) se o utilizador não estiver registado ou o email já estiver confirmado. 
 	</p>
 	
 
@@ -313,19 +314,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			Nenhum dos parâmetros pode ser null.
-A conta do utilizador já deve ter sido criada previamente.
-
-NOTA: A conta não se pode estar com o e-mail confirmado.
-	</div>					
-</div>
 
 
 

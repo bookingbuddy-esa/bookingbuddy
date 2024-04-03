@@ -1,1 +1,1 @@
-search_result['82']=["topic_000000000000002D.html","PaymentResponse.amount Property","Representa a quantia monetária."];
+search_result['82']=["topic_0000000000000026.html","GroupController.DeleteGroup Method","Remove um grupo de reserva."];

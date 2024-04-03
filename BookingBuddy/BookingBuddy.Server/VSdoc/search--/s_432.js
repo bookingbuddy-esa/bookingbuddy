@@ -1,0 +1,1 @@
+search_result['432']=["topic_00000000000000C6.html","Group.AddedProperties Property","Propriedade que diz respeito às propriedades adicionadas ao grupo."];

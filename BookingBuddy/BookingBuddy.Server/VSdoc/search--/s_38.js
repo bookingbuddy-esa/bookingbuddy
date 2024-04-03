@@ -1,1 +1,1 @@
-search_result['38']=["topic_0000000000000017_methods--.html","ChatHubController Methods",""];
+search_result['38']=["topic_0000000000000016_events--.html","ChatController Events",""];

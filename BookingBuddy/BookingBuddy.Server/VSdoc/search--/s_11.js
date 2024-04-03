@@ -1,1 +1,1 @@
-search_result['11']=["topic_0000000000000006.html","AccountController.Login Method","Login com um email e uma palavra-passe."];
+search_result['11']=["topic_0000000000000004.html","AccountController.ConfirmEmail Method","Confirma o email de um utilizador registado com base no token fornecido."];

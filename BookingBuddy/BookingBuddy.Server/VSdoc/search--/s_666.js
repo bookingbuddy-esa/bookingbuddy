@@ -1,0 +1,1 @@
+search_result['666']=["topic_000000000000014A.html","WebSocketWrapper.HandleAsync (Object, WebSocket) Method","Lida com uma conexão WebSocket, especificando o remetente."];

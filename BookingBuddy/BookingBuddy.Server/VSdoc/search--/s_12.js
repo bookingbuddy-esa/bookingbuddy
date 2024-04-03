@@ -1,1 +1,1 @@
-search_result['12']=["topic_0000000000000007.html","AccountController.LoginProviders Method","Login com um fornecedor."];
+search_result['12']=["topic_0000000000000005.html","AccountController.CheckConfirmationToken Method","Verifica se o token de confirmação de email é válido para um utilizador registado."];
