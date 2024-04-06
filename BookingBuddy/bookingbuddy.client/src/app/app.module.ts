@@ -12,7 +12,6 @@ import {AuthorizeService} from './auth/authorize.service';
 import {HomepageComponent} from './homepage/homepage.component';
 import {MenuComponent} from './menu/menu.component';
 import {AuxiliaryModule} from './auxiliary/auxiliary.module';
-import {HomepagePropertyComponent} from './homepage/homepage-property/homepage-property.component';
 import {DatePipe, NgOptimizedImage} from "@angular/common";
 import {PropertyAdCreateComponent} from './property-ad/property-ad-create/property-ad-create.component';
 import {HostingModule} from './hosting/hosting.module';
@@ -50,8 +49,7 @@ import {AboutComponent} from './about/about.component';
 
 @NgModule({
   declarations: [
-    AppComponent, HomepageComponent,
-    MenuComponent, HomepagePropertyComponent,
+    AppComponent, HomepageComponent, MenuComponent,
     PropertyAdCreateComponent, PropertyAdRetrieveComponent,
     LocationStepComponent, InitialStepComponent,
     AmenitiesStepComponent, AmenityComponent,

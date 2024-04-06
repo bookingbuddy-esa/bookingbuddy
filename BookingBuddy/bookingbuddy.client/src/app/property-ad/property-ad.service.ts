@@ -57,27 +57,6 @@ export class PropertyAdService {
       }));
   }
 
-  addToFavorites(propertyId: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/api/properties/favorites/add/${propertyId}`, {
-      propertyId
-    }, {
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'text'
-    }).pipe<boolean>(map((res: HttpResponse<string>) => {
-      return res.ok;
-    }));
-  }
-
-  removeFromFavorites(propertyId: string): Observable<any> {
-    return this.http.delete(`${environment.apiUrl}/api/properties/favorites/remove/${propertyId}`, {
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'text'
-    }).pipe(
-      map((res: HttpResponse<string>) => res.ok)
-    );
-  }
 
   public getPropertyBlockedDates(propertyId: string){
     return this.http.get<ReturnedBlockedDates[]>(`${environment.apiUrl}/api/properties/blockedDates/${propertyId}`);
