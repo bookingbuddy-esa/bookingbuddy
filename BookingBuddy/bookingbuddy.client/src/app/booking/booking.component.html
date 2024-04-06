@@ -71,6 +71,12 @@
                     Esta reserva ainda não se encontra paga por todos os membros do grupo.
                 </div>
 
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-warning px-3 me-3" *ngIf="canRate" matTooltip="Classificar reserva" (click)="showRatingModal()">
+                        <i class="bi bi-star-half"></i>
+                    </button>
+                </div>
+
                 <h2>Propriedade: {{selectedBooking.propertyName}}</h2>
                 <p>Host: {{selectedBooking.host.name}}</p>
                 <p>Data de Check-In: {{formatDate(selectedBooking.checkIn)}}</p>

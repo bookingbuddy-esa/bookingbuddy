@@ -48,6 +48,8 @@ namespace BookingBuddy.Server.Controllers
                     return Unauthorized();
                 }
 
+                // ir a tabela "Rating" e ir buscar o rating de cada reserva based on OrderId
+
                 var individualBookings = await _context.BookingOrder
                     .Include(booking => booking.Property)
                     .Include(booking => booking.Payment)
