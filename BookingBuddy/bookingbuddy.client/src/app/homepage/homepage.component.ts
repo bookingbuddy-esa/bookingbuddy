@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
-import {Router} from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {Property} from '../models/property';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {FeedbackService} from "../auxiliary/feedback.service";
@@ -26,7 +26,11 @@ export class HomepageComponent implements OnInit {
     private authService: AuthorizeService,
     private propertyService: PropertyAdService,
     private router: Router,
+    private route: ActivatedRoute,
     private FeedbackService: FeedbackService) {
+    route.queryParams.subscribe(() => {
+      this.loadProperties();
+    });
   }
 
   ngOnInit(): void {
@@ -56,18 +60,35 @@ export class HomepageComponent implements OnInit {
   }
 
   loadProperties() {
-    this.propertyService.getProperties(this.itemsPerPage, this.startIndex)
-      .pipe(timeout(10000))
-      .forEach(response => {
-        if (response) {
-          //this.property_list = this.generateRandomProperties(50);
-          this.property_list = response as Property[];
+    
+    var search = this.route.snapshot.queryParams['search'];
+
+    if (search) {
+      this.propertyService.getPropertiesSearch(search, this.itemsPerPage, this.startIndex)
+        .pipe(timeout(10000))
+        .forEach(response => {
+          if (response) {
+            this.property_list = response as Property[];
+            this.submitting = false;
+          }
+        }).catch(error => {
           this.submitting = false;
-        }
-      }).catch(error => {
-      this.submitting = false;
-      console.error("Erro ao carregar propriedades: " + error);
-    });
+          console.error("Erro ao carregar propriedades: " + error);
+        });
+    } else {
+      this.propertyService.getProperties(this.itemsPerPage, this.startIndex)
+        .pipe(timeout(10000))
+        .forEach(response => {
+          if (response) {
+            //this.property_list = this.generateRandomProperties(50);
+            this.property_list = response as Property[];
+            this.submitting = false;
+          }
+        }).catch(error => {
+          this.submitting = false;
+          console.error("Erro ao carregar propriedades: " + error);
+        });
+    }
   }
 
   updateItemsPerPage(value: number) {

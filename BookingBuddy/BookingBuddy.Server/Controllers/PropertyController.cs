@@ -135,6 +135,57 @@ namespace BookingBuddy.Server.Controllers
             return Ok(orderedProperties);
         }
 
+
+        [HttpGet("search")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetPropertiesBySearch([FromQuery] string search, [FromQuery] int itemsPerPage = 50, [FromQuery] int startIndex = 0)
+        {
+
+            var properties = await _context.Property
+                .Where(p => p.Location.Contains(search) || p.Name.Contains(search)) 
+                .ToListAsync();
+            foreach (var property in properties)
+            {
+                List<Amenity> amenities = [];
+                property.AmenityIds?.ForEach(amenityId =>
+                {
+                    var amenity = _context.Amenity.FirstOrDefault(a => a.AmenityId == amenityId);
+                    if (amenity != null)
+                    {
+                        amenities.Add(amenity);
+                    }
+                });
+                property.Amenities = amenities;
+                var user = await _userManager.FindByIdAsync(property.ApplicationUserId);
+                property.ApplicationUser = new ReturnUser
+                {
+                    Id = user!.Id,
+                    Name = user.Name
+                };
+            }
+
+            var propertyIds = properties.Select(p => p.PropertyId).ToList();
+
+            var promotedPropertyIds = await _context.PromoteOrder
+                .Where(order => order.EndDate > DateTime.Now && order.State == OrderState.Paid && propertyIds.Contains(order.PropertyId))
+                .Select(order => order.PropertyId)
+                .ToListAsync();
+
+            var promotedProperties = await _context.Property
+                .Where(property => promotedPropertyIds.Contains(property.PropertyId))
+                .OrderByDescending(property => property.Clicks)
+                .ToListAsync();
+
+            var otherProperties = properties
+                .Except(promotedProperties)
+                .OrderByDescending(property => property.Clicks)
+                .ToList();
+
+            var orderedProperties = promotedProperties.Concat(otherProperties).Skip(startIndex).Take(itemsPerPage).ToList();
+
+            return Ok(properties);
+        }
+
         /// <summary>
         /// Método que retorna os detalhes de uma propriedade com base no identificador fornecido.
         /// </summary>
