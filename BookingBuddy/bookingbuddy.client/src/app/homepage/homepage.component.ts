@@ -37,13 +37,6 @@ export class HomepageComponent implements OnInit {
       }
     });
 
-    this.authService.onStateChanged().forEach(isSignedIn => {
-      this.signedIn = isSignedIn;
-      if (isSignedIn) {
-        this.authService.user().forEach(user => this.user = user);
-      }
-    });
-
     this.submitting = true;
     this.loadProperties();
   }
@@ -193,7 +186,7 @@ export class HomepageComponent implements OnInit {
     "https://a0.muscache.com/im/pictures/miso/Hosting-53875868/original/e87df14d-26b0-48d6-a221-5146cd27aa88.jpeg?im_w=720"
   ];
 
-  
+
   getRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
