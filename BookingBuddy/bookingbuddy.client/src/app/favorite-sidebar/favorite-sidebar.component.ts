@@ -27,6 +27,10 @@ export class FavoriteSidebarComponent {
         });
       }
     });
+
+    this.favoriteService.propertyAdded$.subscribe(() => {
+      this.loadFavorites();
+    });
   }
 
   loadFavorites() {

@@ -2,7 +2,8 @@ import {ChangeDetectorRef, Component, Injectable, OnInit, ViewChild} from '@angu
 import {ActivatedRoute, Router} from '@angular/router';
 import {Property} from '../../models/property';
 import {AuthorizeService} from "../../auth/authorize.service";
-import {PropertyAdService} from '../property-ad.service';
+import { PropertyAdService } from '../property-ad.service';
+import {FavoriteService} from '../../favorite-sidebar/favorite.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AmenitiesHelper} from "../../models/amenity-enum";
 import {AppComponent} from '../../app.component';
@@ -49,7 +50,8 @@ export class PropertyAdRetrieveComponent implements OnInit {
   errors: string[] = [];
   selected_group_list: Group[] = [];
   @ViewChild('myModalClose') modalClose: any;
-  constructor(private datePipe: DatePipe, private cdref: ChangeDetectorRef,private groupService: GroupService,private appComponent: AppComponent, private propertyService: PropertyAdService, private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router) {
+  constructor(private datePipe: DatePipe, private cdref: ChangeDetectorRef, private groupService: GroupService, private appComponent: AppComponent, private propertyService: PropertyAdService,
+    private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router, private favoriteService: FavoriteService) {
     this.reservarPropriedadeFailed = false;
 
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -263,7 +265,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   addToFavorites() {
     if (this.property) {
-      this.propertyService.addToFavorites(this.property?.propertyId).forEach(
+      this.favoriteService.addToFavorites(this.property?.propertyId).forEach(
         response => {
           if (response) {
             this.isPropertyInFavorites = true;
@@ -278,7 +280,7 @@ export class PropertyAdRetrieveComponent implements OnInit {
 
   removeFromFavorites() {
     if (this.property) {
-      this.propertyService.removeFromFavorites(this.property?.propertyId).forEach(
+      this.favoriteService.removeFromFavorites(this.property?.propertyId).forEach(
         response => {
           if (response) {
             this.isPropertyInFavorites = false;

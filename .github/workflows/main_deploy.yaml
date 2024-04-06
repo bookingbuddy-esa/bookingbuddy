@@ -99,9 +99,9 @@ jobs:
             },
             "MailAPIKey": "${{ secrets.SENDGRID_API_KEY }}",
             "ClientUrl": "${{ vars.CLIENT_URL }}",
-            "MbKey": "${{ secrets.ITHENPAY_MB_KEY }}",
-            "MbWayKey": "${{ secrets.ITHENPAY_MBWAY_KEY }}",
-            "PhishingKey": "${{ secrets.ITHENPAY_PHISHING_KEY }}",
+            "MbKey": "${{ secrets.IFTHENPAY_MB_KEY }}",
+            "MbWayKey": "${{ secrets.IFTHENPAY_MBWAY_KEY }}",
+            "PhishingKey": "${{ secrets.IFTHENPAY_PHISHING_KEY }}",
           }'
           > ./appsettings.json
 

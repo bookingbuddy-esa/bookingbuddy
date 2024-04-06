@@ -1,9 +1,4 @@
-/*:host {
-    display: flex;
-    height: inherit;
-    width: inherit;
-}*/
-
 :host {
   width: 100%;
+  min-height: 100%;
 }

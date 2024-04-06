@@ -365,6 +365,11 @@ namespace BookingBuddy.Server.Controllers
                 return Unauthorized();
             }
 
+            if (model.RoomsNumber > 100 || model.MaxGuestsNumber > 50)
+            {
+                return BadRequest();
+            }
+
             List<Amenity> amenities = [];
 
             model.Amenities?.ForEach(amenityName =>
