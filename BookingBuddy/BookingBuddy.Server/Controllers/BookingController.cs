@@ -69,7 +69,8 @@ namespace BookingBuddy.Server.Controllers
                         checkOut = booking.EndDate,
                         state = booking.State,
                         totalAmount = booking.Payment != null ? booking.Payment.Amount : 0,
-                        numberOfGuests = booking.NumberOfGuests
+                        numberOfGuests = booking.NumberOfGuests,
+                        rating = _context.Rating.Where(r => r.PropertyId == booking.PropertyId && r.ApplicationUserId == user.Id).Select(r => r.Value).FirstOrDefault()
                     })
                     .ToListAsync();
 
@@ -95,7 +96,9 @@ namespace BookingBuddy.Server.Controllers
                         checkOut = groupBooking.EndDate,
                         state = groupBooking.State,
                         totalAmount = groupBooking.TotalAmount,
-                        numberOfGuests = groupBooking.Group != null ? groupBooking.Group.MembersId.Count : 0
+                        numberOfGuests = groupBooking.Group != null ? groupBooking.Group.MembersId.Count : 0,
+                        rating = _context.Rating.Where(r => r.PropertyId == groupBooking.PropertyId && r.ApplicationUserId == user.Id).Select(r => r.Value).FirstOrDefault(),
+                        isGroupOwner = groupBooking.Group != null && groupBooking.Group.GroupOwnerId == user.Id
                     })
                     .ToListAsync();
 

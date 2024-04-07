@@ -62,3 +62,9 @@ a:visited {
 a:hover {
     color: darkgreen;
 }
+
+.white-button:hover {
+    --bs-btn-color: #fff !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-active-color: #fff !important;
+}
