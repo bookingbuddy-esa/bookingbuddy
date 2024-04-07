@@ -123,7 +123,7 @@ namespace BookingBuddy.Server.Controllers
 
 
         /// <summary>
-        /// Método que retorna um grupo que contenha o id passado por parâmetro.
+        /// Método que retorna um grupo que contenha o identificador único de grupo passado por parâmetro.
         /// Caso não exista retorna que não foi encontrado.
         /// </summary>
         /// <param name="groupId">Identificador do grupo</param>
@@ -432,8 +432,8 @@ namespace BookingBuddy.Server.Controllers
         /// <summary>
         /// Adiciona uma propriedade a um grupo existente.
         /// </summary>
-        /// <param name="groupId">O ID do grupo ao qual a propriedade será adicionada.</param>
-        /// <param name="propertyId">O ID da propriedade a ser adicionada.</param>
+        /// <param name="groupId">O identificador único do grupo ao qual a propriedade será adicionada.</param>
+        /// <param name="propertyId">O identificador único da propriedade a ser adicionada.</param>
         /// <returns>Mensagem de feedback, notFound, BadRequest ou Ok</returns>
         [HttpPut("addProperty")]
         [Authorize]
@@ -1206,7 +1206,7 @@ namespace BookingBuddy.Server.Controllers
     /// Modelo que representa a criação de um grupo.
     /// </summary>
     /// <param name="Name">O nome do grupo.</param>
-    /// <param name="PropertyId">O ID da propriedade associada ao grupo (opcional).</param>
+    /// <param name="PropertyId">O identificador único da propriedade associada ao grupo (opcional).</param>
     /// <param name="MemberEmails">Uma lista de endereços de e-mail dos membros a serem adicionados ao grupo (opcional).</param>
     public record GroupInputModel(string Name, string? PropertyId, List<string>? MemberEmails);
 

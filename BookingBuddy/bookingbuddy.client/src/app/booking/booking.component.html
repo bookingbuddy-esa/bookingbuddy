@@ -71,7 +71,13 @@
                     Esta reserva ainda não se encontra paga por todos os membros do grupo.
                 </div>
 
-                <h2>Propriedade: {{selectedBooking.propertyName}}</h2>
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-outline-warning px-3 me-3" *ngIf="canRate" matTooltip="Classificar reserva" (click)="showRatingModal()">
+                        <i class="bi bi-star-half"></i>
+                    </button>
+                </div>
+
+                <h2>Propriedade: <a [routerLink]="['/property',selectedBooking.propertyId]">{{selectedBooking.propertyName}}</a></h2>
                 <p>Host: {{selectedBooking.host.name}}</p>
                 <p>Data de Check-In: {{formatDate(selectedBooking.checkIn)}}</p>
                 <p>Data de Check-Out: {{formatDate(selectedBooking.checkOut)}}</p>
@@ -88,7 +94,7 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
+                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage" (keydown.enter)="sendMessage()">
                     <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
                 </div>
             </div>

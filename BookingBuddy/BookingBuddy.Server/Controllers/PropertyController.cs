@@ -149,7 +149,6 @@ namespace BookingBuddy.Server.Controllers
             try
             {
                 var property = await _context.Property.FindAsync(propertyId);
-
                 if (property == null)
                 {
                     return NotFound();
@@ -364,6 +363,11 @@ namespace BookingBuddy.Server.Controllers
             if (user == null)
             {
                 return Unauthorized();
+            }
+
+            if (model.RoomsNumber > 100 || model.MaxGuestsNumber > 50)
+            {
+                return BadRequest();
             }
 
             List<Amenity> amenities = [];

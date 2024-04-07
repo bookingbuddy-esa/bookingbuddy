@@ -1,40 +1,21 @@
-<!--<div *ngIf="!submitting && property_list.length > 0" class="d-flex justify-content-end mt-3">
-    <div class="dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Número de propriedades
+<div *ngIf="!submitting && property_list.length > 0" class="row row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 p-4">
+    <div *ngFor="let property of property_list" class="col" style="height: 250px;">
+        <a class="h-100 w-100 text-decoration-none text-dark" href="/property/{{property.propertyId}}">
+            <div class="h-100 w-100 d-flex flex-column">
+                <img [ngSrc]="property.imagesUrl?.[0] ?? ''" class="h-75 w-100 object-fit-cover rounded-2" alt="Imagem de uma propriedade" height="280" width="190" />
+                <p class="text-truncate fs-6 fw-bolder mt-2 mb-1">{{ property.name }}</p>
+                <span><strong>{{ property.pricePerNight }}</strong>€ noite</span>
+            </div>
         </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDarkDropdownMenuLink">
-            <li *ngFor="let option of [10, 20, 30]">
-                <a class="dropdown-item" href="#" (click)="updateItemsPerPage(option)">{{ option }}</a>
-            </li>
-        </ul>
     </div>
-</div>-->
-
-
-<div *ngIf="!submitting && property_list.length > 0" class="d-flex p-3 w-100 flex-row flex-wrap align-content-start justify-content-start">
-    <app-homepage-property *ngFor="let property of property_list" [property]="property"></app-homepage-property>
 </div>
+<!-- TODO: tambem podemos usar o ratio class do bootstrap -->
 
-<!--<div *ngIf="!submitting && property_list.length > 0" class="d-flex p-3 w-100 flex-row align-content-center justify-content-center mt-5">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#" (click)="previousPage()">Anterior</a></li>
-            <li class="page-item" *ngFor="let page of getPages()">
-                <a class="page-link" [class.active]="startIndex === page - 1" href="#" (click)="setPage(page)">{{ page }}</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#" (click)="nextPage()">Seguinte</a></li>
-        </ul>
-    </nav>
-</div>-->
-
-<!-- TODO: necessário centrar isto -->
 <div *ngIf="!submitting && property_list.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
     <h5>Ainda não existem propriedades na plataforma!</h5>
     <h6>Seja o primeiro a <a href="/hosting/create">criar um novo anúncio</a> da sua propriedade.</h6>
 </div>
 
-<!-- TODO: centrar isto também pelo mesmo motivo -->
-<div *ngIf="submitting" class="d-flex w-100 h-100 flex-column align-self-center justify-content-center">
+<div *ngIf="submitting" class="m-auto h-100">
     <app-loader></app-loader>
 </div>

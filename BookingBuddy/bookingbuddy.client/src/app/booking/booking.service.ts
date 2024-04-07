@@ -15,7 +15,6 @@ export class BookingService {
   }
 
   public getBookingMessages(bookingId: string) {
-    console.log("BookingId: " + bookingId);
     return this.http.get(`${environment.apiUrl}/api/bookings/${bookingId}/messages`, { withCredentials: true });
   }
 
@@ -29,6 +28,19 @@ export class BookingService {
       responseType: 'text'
     }).pipe<boolean>(map((res: HttpResponse<string>) => {
       return res.ok;
+    }));
+  }
+
+  public sendRating(orderId: string, rating: number) {
+    return this.http.post(`${environment.apiUrl}/api/ratings`, {
+      orderId: orderId,
+      rating: rating
+    }, {
+      withCredentials: true,
+      observe: 'response',
+      responseType: 'text'
+    }).pipe(map((res: HttpResponse<string>) => {
+      return res.body;
     }));
   }
 }
