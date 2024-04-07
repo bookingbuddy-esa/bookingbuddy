@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
 import { CommonModule, NgIf, formatDate } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
+import { er } from '@fullcalendar/core/internal-common';
 
 @Component({
   selector: 'app-booking',
@@ -13,6 +14,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 })
 export class BookingComponent {
   private modalService: NgbModal = inject(NgbModal);
+  errors: string[] = [];
   bookings: any[] = [];
   messages: any[] = [];
   selectedBooking: any;
@@ -26,8 +28,10 @@ export class BookingComponent {
     this.bookingService.getBookings().forEach( response => {
       if (response) {
         this.bookings = response as any[];
-        this.selectBooking(this.bookings[0]);
-        //console.log(this.bookings);
+        this.bookings.sort((a, b) => new Date(a.checkIn) > new Date(b.checkIn) ? 1 : -1);
+        if(this.bookings.length > 0){
+          this.selectBooking(this.bookings[0]);
+        }
       }
     }).catch(error => {
       // TODO return error message
@@ -35,9 +39,16 @@ export class BookingComponent {
   }
 
   selectBooking(booking: any) {
+    this.errors = [];
     this.selectedBooking = booking;
-    console.log(booking);
-    this.canRate = new Date(this.selectedBooking.checkOut) < new Date();
+
+    // verifica se a data de check-out já passou
+      if(new Date(this.selectedBooking.checkOut) < new Date()){
+        this.canRate = 'isGroupOwner' in this.selectedBooking ? this.selectedBooking.isGroupOwner : true;
+      } else {
+        this.canRate = false;
+      }
+
     this.getBookingMessages();
   }
 
@@ -79,6 +90,11 @@ export class BookingComponent {
         centered: true,
       });
 
+    if(this.selectedBooking.rating !== 0){
+      modalRef.componentInstance.rating = this.selectedBooking.rating;
+      modalRef.componentInstance.alreadyRate = true;
+    }
+
     modalRef.componentInstance.sendRating = async () => {
       if(modalRef.componentInstance.rating === 0) {
         return;
@@ -86,14 +102,15 @@ export class BookingComponent {
 
       this.bookingService.sendRating(this.selectedBooking.orderId, modalRef.componentInstance.rating).forEach(response => {
         if (response) {
-          console.log(response);
           this.canRate = false;
-          //modalRef.close();
+          this.ngOnInit();
         }
       }).catch(error => {
         // TODO return error message
-        console.log(error.error);
+        this.errors.push(error.error);
       });
+
+      modalRef.close();
     }
   }
 }
@@ -116,11 +133,11 @@ export class BookingComponent {
           <i class="bi rating-color ms-2" matTooltip="Muito Boa" matTooltipPosition="above" (click)="rateBooking(4)" [ngClass]="{ 'bi-star-fill': rating >= 4, 'bi-star': rating < 4 }"></i>
           <i class="bi rating-color ms-2" matTooltip="Excelente" matTooltipPosition="above" (click)="rateBooking(5)" [ngClass]="{ 'bi-star-fill': rating >= 5, 'bi-star': rating < 5 }"></i>
         </div>
-        <button type="button" class="btn btn-success" aria-label="Accept" (click)="sendRating()" [disabled]="rating === 0">Enviar</button>
       </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" aria-label="Cancel" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-success" aria-label="Accept" (click)="sendRating()" [disabled]="alreadyRate">Enviar</button>
     </div>
   `,
 
@@ -135,6 +152,7 @@ export class BookingComponent {
 
 
 export class RatingModal {
+  alreadyRate: boolean = false;
   rating: number = 0;
   private activeModal: NgbActiveModal = inject(NgbActiveModal);
   protected onClose: Function = () => {

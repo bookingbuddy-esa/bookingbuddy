@@ -236,6 +236,8 @@ namespace BookingBuddy.Server.Controllers
                 })
                 .ToListAsync();
 
+            // TODO: em falta - contabilizar as reservas de grupo
+
             var bookingOrders = await _context.BookingOrder
                 .Include(bo => bo.Payment)
                 .Include(bo => bo.ApplicationUser)

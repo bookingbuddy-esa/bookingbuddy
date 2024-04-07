@@ -5,6 +5,7 @@ using BookingBuddy.Server.Models;
 using BookingBuddy.Server.Services;
 using BookingBuddy.Server.Controllers;
 using Microsoft.AspNetCore.DataProtection;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddDbContext<BookingBuddyServerContext>(options =>
 builder.Services.AddAuthorization().ConfigureApplicationCookie(options =>
 {
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.HttpOnly = true;
 });
 

@@ -29,7 +29,6 @@ namespace BookingBuddy.Server.Controllers
             _userManager = userManager;
         }
 
-        // post: api/ratings
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<Rating>> CreateRating([FromBody] RatingInputModel inputModel)
@@ -47,9 +46,39 @@ namespace BookingBuddy.Server.Controllers
                     return NotFound("Reserva não encontrada.");
                 }
 
-                // TODO: group booking classificaçao
                 if(order.Type == "Group-Booking"){
-                    Console.WriteLine("todo");
+                    var groupBookingOrder = await _context.GroupBookingOrder.FirstOrDefaultAsync(gbo => gbo.OrderId == inputModel.OrderId);
+                    if(groupBookingOrder == null)
+                    {
+                        return NotFound("Reserva não encontrada.");
+                    }
+
+                    if(groupBookingOrder.Group != null && groupBookingOrder.Group.GroupOwnerId != user.Id)
+                    {
+                        return Unauthorized("Não tem permissão para classificar esta propriedade.");
+                    }
+
+                    var ratingExists = await _context.Rating.AnyAsync(r => r.PropertyId == groupBookingOrder.PropertyId && r.ApplicationUserId == user.Id);
+                    if(ratingExists)
+                    {
+                        return BadRequest("Já classificou esta propriedade.");
+                    }
+
+                    if (inputModel.Rating < 1 || inputModel.Rating > 5)
+                    {
+                        return BadRequest("O valor da classificação deve ser um número entre 1 e 5.");
+                    }
+
+                    var rating = new Rating
+                    {
+                        RatingId = Guid.NewGuid().ToString(),
+                        PropertyId = groupBookingOrder.PropertyId,
+                        ApplicationUserId = user.Id,
+                        Value = inputModel.Rating
+                    };
+
+                    _context.Rating.Add(rating);
+                    await _context.SaveChangesAsync();
                 } else if(order.Type == "Booking"){
                     var bookingOrder = await _context.BookingOrder.FirstOrDefaultAsync(bo => bo.OrderId == inputModel.OrderId);
                     if(bookingOrder == null)
