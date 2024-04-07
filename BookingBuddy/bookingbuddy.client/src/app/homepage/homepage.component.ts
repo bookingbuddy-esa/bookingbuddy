@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Property} from '../models/property';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {FeedbackService} from "../auxiliary/feedback.service";
@@ -60,7 +60,6 @@ export class HomepageComponent implements OnInit {
       .pipe(timeout(10000))
       .forEach(response => {
         if (response) {
-          //this.property_list = this.generateRandomProperties(50);
           this.property_list = response as Property[];
           this.submitting = false;
         }

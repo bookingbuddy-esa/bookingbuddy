@@ -77,7 +77,7 @@
                     </button>
                 </div>
 
-                <h2>Propriedade: {{selectedBooking.propertyName}}</h2>
+                <h2>Propriedade: <a [routerLink]="['/property',selectedBooking.propertyId]">{{selectedBooking.propertyName}}</a></h2>
                 <p>Host: {{selectedBooking.host.name}}</p>
                 <p>Data de Check-In: {{formatDate(selectedBooking.checkIn)}}</p>
                 <p>Data de Check-Out: {{formatDate(selectedBooking.checkOut)}}</p>
@@ -94,7 +94,7 @@
                 </div>
 
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage">
+                    <input type="text" class="form-control" placeholder="Escreva a sua mensagem" [(ngModel)]="newMessage" (keydown.enter)="sendMessage()">
                     <button class="btn btn-outline-secondary" type="button" (click)="sendMessage()">Enviar</button>
                 </div>
             </div>
