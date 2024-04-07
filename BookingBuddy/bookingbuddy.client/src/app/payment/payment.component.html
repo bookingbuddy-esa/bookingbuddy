@@ -24,10 +24,10 @@
                     <li class="list-group-item mt-3" *ngIf="paymentMethod === 'multibanco'"><strong>Entidade:</strong> {{payment?.entity}}</li>
                     <li class="list-group-item" *ngIf="paymentMethod === 'multibanco'"><strong>Referência:</strong> {{payment?.reference}}</li>
                     <li class="list-group-item"><strong>Valor:</strong> {{payment?.amount}}€</li>
-                    <li class="list-group-item mt-4"><strong>Estado Pagamento:</strong> {{payment?.status}}</li>
+                    <li class="list-group-item mt-2"><strong>Estado Pagamento:</strong> {{payment?.status}}</li>
                 </ul>
 
-                <button class="btn btn-success mt-4 ms-1" type="button" (click)="confirmarPagamento()">Confirmar Pagamento (DEV)</button>
+                <button class="btn btn-success mt-4 ms-1" type="button" (click)="confirmarPagamento()">Confirmar Pagamento</button>
             </div>
         </div>
     </div>
@@ -38,9 +38,9 @@
         <div class="card text-center">
             <div class="card-body">
                 <h4 class="card-title">Pagamento Confirmado</h4>
-                <h5 *ngIf="data.orderType === 'booking'">A sua reserva está confirmada!</h5>
-                <h5 *ngIf="data.orderType === 'booking'">Entra em contacto com o host se precisares de informações adicionais através do Menu > Reservas Pessoais</h5>
-                <h5 *ngIf="data.orderType === 'booking'">ou clicando diretamente <a href="/bookings">aqui</a></h5>
+                <h5 *ngIf="data.orderType === 'promote'">A sua propriedade foi promovida e deverá aparecer no topo das pesquisas.</h5>
+                <h5 *ngIf="data.orderType === 'booking' || data.orderType === 'group-booking'">A sua reserva está confirmada!</h5>
+                <h5 *ngIf="data.orderType === 'booking' || data.orderType === 'group-booking'">Entra em contacto com o host se precisares de informações adicionais através do Menu > <a href="/bookings">Reservas Pessoais</a></h5>
             </div>
         </div>
     </div>

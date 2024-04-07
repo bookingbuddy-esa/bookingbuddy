@@ -67,6 +67,10 @@ export class BookingComponent {
     return new Date(date).toLocaleDateString('pt-PT');
   }
 
+  truncateText(text: string) {
+    return text.length > 20 ? text.substring(0, 20) + "..." : text;
+  }
+
   protected showRatingModal() {
     let modalRef = this.modalService.open(RatingModal,
       {
