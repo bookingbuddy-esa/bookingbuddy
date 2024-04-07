@@ -200,7 +200,6 @@ namespace BookingBuddy.Server.Controllers
             try
             {
                 var property = await _context.Property.FindAsync(propertyId);
-
                 if (property == null)
                 {
                     return NotFound();

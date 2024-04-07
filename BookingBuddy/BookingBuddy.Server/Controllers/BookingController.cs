@@ -48,6 +48,7 @@ namespace BookingBuddy.Server.Controllers
                     return Unauthorized();
                 }
 
+                // TODO: ir a tabela "Rating" e ir buscar o rating de cada reserva based on OrderId
                 var individualBookings = await _context.BookingOrder
                     .Include(booking => booking.Property)
                     .Include(booking => booking.Payment)
@@ -55,6 +56,7 @@ namespace BookingBuddy.Server.Controllers
                     .Select(booking => new
                     {
                         orderId = booking.OrderId,
+                        propertyId = booking.Property != null ? booking.Property.PropertyId : "Desconhecido",
                         propertyName = booking.Property != null ? booking.Property.Name : "Desconhecido",
                         host = new ReturnUser
                         {
@@ -78,6 +80,7 @@ namespace BookingBuddy.Server.Controllers
                     .Select(groupBooking => new
                     {
                         orderId = groupBooking.OrderId,
+                        propertyId = groupBooking.Property != null ? groupBooking.Property.PropertyId : "Desconhecido",
                         propertyName = groupBooking.Property != null ? groupBooking.Property.Name : "Desconhecido",
                         host = new ReturnUser
                         {
@@ -127,6 +130,8 @@ namespace BookingBuddy.Server.Controllers
             {
                 return Unauthorized();
             }
+
+            // TODO: adicionar as reservas de grupo tambem
 
             var bookingOrder = await _context.BookingOrder
                 .Include(o => o.ApplicationUser)

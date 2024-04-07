@@ -16,13 +16,13 @@
     </a>
   </div>
 </div>
+<!-- TODO: tambem podemos usar o ratio class do bootstrap -->
 
-<div *ngIf="!submitting && property_list.length === 0"
-     class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
-  <h5>Ainda não existem propriedades na plataforma!</h5>
-  <h6>Seja o primeiro a <a href="/hosting/create">criar um novo anúncio</a> da sua propriedade.</h6>
+<div *ngIf="!submitting && property_list.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
+    <h5>Ainda não existem propriedades na plataforma!</h5>
+    <h6>Seja o primeiro a <a href="/hosting/create">criar um novo anúncio</a> da sua propriedade.</h6>
 </div>
 
 <div *ngIf="submitting" class="m-auto h-100">
-  <app-loader></app-loader>
+    <app-loader></app-loader>
 </div>
