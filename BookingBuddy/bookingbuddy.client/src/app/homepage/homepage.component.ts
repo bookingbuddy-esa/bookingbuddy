@@ -74,12 +74,14 @@ export class HomepageComponent implements OnInit {
         .forEach(response => {
           if (response) {
             this.property_list = response as Property[];
+            
             this.submitting = false;
           }
         }).catch(error => {
           this.submitting = false;
           console.error("Erro ao carregar propriedades: " + error);
         });
+      console.log(this.property_list);
     } else {
       this.propertyService.getProperties(this.itemsPerPage, this.startIndex)
         .pipe(timeout(10000))
@@ -93,7 +95,9 @@ export class HomepageComponent implements OnInit {
           this.submitting = false;
           console.error("Erro ao carregar propriedades: " + error);
         });
+       
     }
+    
   }
 
   updateItemsPerPage(value: number) {
@@ -129,7 +133,7 @@ export class HomepageComponent implements OnInit {
   }
 
   showFilterModal() {
-    /*let modalRef = this.modalService.open(AddPropertyModal,
+    let modalRef = this.modalService.open(FiltersModal,
       {
         animation: true,
         size: 'lg',
@@ -137,8 +141,8 @@ export class HomepageComponent implements OnInit {
       });
     modalRef.componentInstance.onAccept = async () => {
       modalRef.close();
-      await this.router.navigate(['/']);
-    }*/
+      
+    }
   }
 
   getPages(): number[] {
@@ -273,31 +277,30 @@ export class HomepageComponent implements OnInit {
   selector: 'add-property-modal',
   template: `
     <div class="modal-header" aria-labelledby="acceptInviteLabel">
-      <h5 class="modal-title" id="acceptInviteLabel">Adicionar Propriedade</h5>
+      <h4 class="modal-title" id="acceptInviteLabel">Filtrar Propriedades</h4>
       <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
     </div>
     <div class="modal-body">
-      <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
-      <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
-      <ol class="list-group list-group-numbered list-group-flush mb-2">
-        <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a
-          explorar.
-        </li>
-        <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se
-          adeque às suas necessidades.
-        </li>
-        <li class="list-group-item"><strong>Adicionar ao Grupo:</strong> Selecione uma propriedade e clique em
-          "Adicionar ao Grupo de Reserva".
-        </li>
-        <li class="list-group-item"><strong>Selecionar Grupo:</strong> Escolha o grupo de reserva onde deseja
-          incluir a propriedade.
-        </li>
-        <li class="list-group-item"><strong>Concluir:</strong> A propriedade será automaticamente adicionada ao grupo
-          selecionado.
-        </li>
-      </ol>
-      <p class="mt-2"><strong>NOTA:</strong> Para cada grupo de reserva existe um máximo de 6 propriedades a escolher.
-      </p>
+      <h5><strong>Intervalo de Preços</strong></h5>
+      <div class="row">
+        <div class="col-md-6">
+          <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Preço Mínimo">
+        </div>
+        <div class="col-md-6">
+          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" placeholder="Preço Máximo">
+        </div>
+      </div>
+      <br>
+      <h5><strong>Espaço</strong></h5>
+      <h6><strong>Quartos</strong></h6>
+      <div class="row">
+    <div class="col">
+      <button type="button" class="btn btn-secondary" >Qualquer</button>
+    </div>
+    <div class="col" *ngFor="let e of [].constructor(6); let i = index">
+      <button type="button" class="btn btn-secondary" >{{ i }}</button>
+    </div>
+  </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
@@ -312,10 +315,13 @@ export class HomepageComponent implements OnInit {
   ]
 })
 export class FiltersModal {
+  lista: number[] = [0, 1, 2, 3, 4, 5, 6];
   private activeModal: NgbActiveModal = inject(NgbActiveModal);
   protected onClose: Function = () => {
     this.activeModal.dismiss();
   }
+
+
 
   protected onAccept: Function = () => {
     this.activeModal.close();
