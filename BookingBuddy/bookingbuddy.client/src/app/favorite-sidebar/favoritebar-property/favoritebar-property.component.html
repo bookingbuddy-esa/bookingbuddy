@@ -1,5 +1,5 @@
 <div class="property d-flex flex-column p-3 w-100 h-100 align-items-center mb-4">
-    <a class="w-100 h-75 m-1 text-decoration-none text-dark" [routerLink]='["property", property?.propertyId]' (click)="console.log('URL:' + property?.imagesUrl?.[0])">
+    <a class="w-100 h-75 m-1 text-decoration-none text-dark" href="property/{{property?.propertyId}}">
         <img class="w-100 h-100 rounded-3" src="{{property?.imagesUrl?.[0]}}" alt="">
         <p class="mt-2 text-truncate">{{ property?.name }}</p>
     </a>
