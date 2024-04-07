@@ -1,5 +1,8 @@
+
+<button class="btn px-3" (click)="showFilterModal()"><i class="bi bi-sliders2"></i></button>
 <div *ngIf="!submitting && property_list.length > 0"
      class="row row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 p-4">
+  
   <div *ngFor="let property of property_list" class="col" style="height: 250px;">
     <a class="h-100 w-100 text-decoration-none text-dark"
        href="/property/{{property.propertyId}}">

@@ -1,11 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, inject} from '@angular/core';
 import {AuthorizeService} from '../auth/authorize.service';
 import {UserInfo} from '../auth/authorize.dto';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import {Property} from '../models/property';
 import {PropertyAdService} from '../property-ad/property-ad.service';
 import {FeedbackService} from "../auxiliary/feedback.service";
 import {timeout} from "rxjs";
+import { NgbActiveModal, NgbDatepicker, NgbDatepickerModule, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-homepage',
@@ -21,6 +24,7 @@ export class HomepageComponent implements OnInit {
   startIndex: number = 0;
   itemsPerPage: number = 100;
   numberOfProperties: number = 0;
+  private modalService: NgbModal = inject(NgbModal);
 
   constructor(
     private authService: AuthorizeService,
@@ -64,6 +68,7 @@ export class HomepageComponent implements OnInit {
     var search = this.route.snapshot.queryParams['search'];
 
     if (search) {
+      this.submitting = true;
       this.propertyService.getPropertiesSearch(search, this.itemsPerPage, this.startIndex)
         .pipe(timeout(10000))
         .forEach(response => {
@@ -121,6 +126,19 @@ export class HomepageComponent implements OnInit {
       console.log("Depois: " + this.startIndex)
       this.loadProperties();
     }
+  }
+
+  showFilterModal() {
+    /*let modalRef = this.modalService.open(AddPropertyModal,
+      {
+        animation: true,
+        size: 'lg',
+        centered: true,
+      });
+    modalRef.componentInstance.onAccept = async () => {
+      modalRef.close();
+      await this.router.navigate(['/']);
+    }*/
   }
 
   getPages(): number[] {
@@ -245,4 +263,61 @@ export class HomepageComponent implements OnInit {
 
     return properties;
   }*/
+
+
+}
+
+
+@Component({
+  standalone: true,
+  selector: 'add-property-modal',
+  template: `
+    <div class="modal-header" aria-labelledby="acceptInviteLabel">
+      <h5 class="modal-title" id="acceptInviteLabel">Adicionar Propriedade</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+    </div>
+    <div class="modal-body">
+      <p class="text-muted">Leia cuidadosamente os seguintes procedimentos.</p>
+      <p>Para adicionar uma propriedade ao seu grupo de reserva deve:</p>
+      <ol class="list-group list-group-numbered list-group-flush mb-2">
+        <li class="list-group-item"><strong>Ir para a Página Inicial:</strong> Clique em "Aceitar" para começar a
+          explorar.
+        </li>
+        <li class="list-group-item"><strong>(Opcional) Pesquisar e Filtrar:</strong> Encontre uma propriedade que se
+          adeque às suas necessidades.
+        </li>
+        <li class="list-group-item"><strong>Adicionar ao Grupo:</strong> Selecione uma propriedade e clique em
+          "Adicionar ao Grupo de Reserva".
+        </li>
+        <li class="list-group-item"><strong>Selecionar Grupo:</strong> Escolha o grupo de reserva onde deseja
+          incluir a propriedade.
+        </li>
+        <li class="list-group-item"><strong>Concluir:</strong> A propriedade será automaticamente adicionada ao grupo
+          selecionado.
+        </li>
+      </ol>
+      <p class="mt-2"><strong>NOTA:</strong> Para cada grupo de reserva existe um máximo de 6 propriedades a escolher.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
+      <button type="button" class="btn btn-success" (click)="onAccept()">Aceitar</button>
+    </div>
+  `,
+
+  imports: [
+    RouterLink,
+    AuxiliaryModule,
+    NgIf
+  ]
+})
+export class FiltersModal {
+  private activeModal: NgbActiveModal = inject(NgbActiveModal);
+  protected onClose: Function = () => {
+    this.activeModal.dismiss();
+  }
+
+  protected onAccept: Function = () => {
+    this.activeModal.close();
+  }
 }
