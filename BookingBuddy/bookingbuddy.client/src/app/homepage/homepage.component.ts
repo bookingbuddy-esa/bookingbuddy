@@ -344,10 +344,10 @@ export class HomepageComponent implements OnInit {
       <h5><strong>Intervalo de Preços</strong></h5>
       <div class="row">
         <div class="col-md-6">
-          <input type="number" class="form-control" id="minPrice" name="minPrice" [(ngModel)]="minPrice" placeholder="Preço Mínimo">
+          <input type="number" class="form-control" id="minPrice" name="minPrice" [(ngModel)]="minPrice" min="0" max="9999" placeholder="Preço Mínimo">
         </div>
         <div class="col-md-6">
-          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" [(ngModel)]="maxPrice" placeholder="Preço Máximo">
+          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" [(ngModel)]="maxPrice" min="0" max="9999" placeholder="Preço Máximo">
         </div>
       </div>
       <br>
@@ -403,11 +403,21 @@ export class HomepageComponent implements OnInit {
       </div>
       <br>
       <h5><strong>Comodidades</strong></h5>
-      <div *ngFor="let amenity of AmenitiesHelper.getAmenities()" class="amenity w-100 m-3 p-2 rounded d-flex flex-row align-items-center"
-      (click)="selectAmenity(amenity)"  [ngClass]="{'amenity-selected': isSelected(amenity)}">
-        <span class="w-25 text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity) }}</span>
-        <span class="flex-grow-1 fw-bolder">{{ AmenitiesHelper.getAmenityDisplayName(amenity) }}</span>
+
+
+
+      <div class="row">
+        <div class="col-md-4" *ngFor="let amenity of AmenitiesHelper.getAmenities()">
+          <div class="amenity my-3 p-2 rounded d-flex flex-row align-items-center"
+            (click)="selectAmenity(amenity)" [ngClass]="{'amenity-selected': isSelected(amenity)}">
+            <span class="w-25 text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity) }}</span>
+            <span class="flex-grow-1 fw-bolder">{{ AmenitiesHelper.getAmenityDisplayName(amenity) }}</span>
+          </div>
+        </div>
       </div>
+
+
+
 
     </div>
     <div class="modal-footer">
