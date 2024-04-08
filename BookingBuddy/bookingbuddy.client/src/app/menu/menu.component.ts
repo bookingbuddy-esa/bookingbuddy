@@ -60,6 +60,18 @@ export class MenuComponent implements OnInit {
     this.isExpanded = false;
   }
 
+  search(event: any) {
+
+    if (event.key === 'Enter') {
+      const search = event.target.value.trim();
+      
+      if (search) {
+        this.router.navigate(['/'], { queryParams: { search: search } });
+      }
+    }
+
+  }
+
   toggle() {
     this.isExpanded = !this.isExpanded;
   }
