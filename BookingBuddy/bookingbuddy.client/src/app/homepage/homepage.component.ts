@@ -389,7 +389,7 @@ export class HomepageComponent implements OnInit {
 
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-dark text-white" (click)="onClose()">Limpar Filtros</button>
+      <button type="button" class="btn btn-dark text-white" (click)="clear()">Limpar Filtros</button>
       <button type="button" class="btn btn-success" (click)="onAccept()">Aplicar</button>
     </div>
   `,
@@ -419,6 +419,14 @@ export class FiltersModal {
 
   updateGuestsNumber(num: number | undefined) {
     this.guestsNumber = num;
+  }
+
+  clear() {
+    this.maxPrice = undefined;
+    this.minPrice = undefined;
+    this.roomsNumber = undefined;
+    this.guestsNumber = undefined;
+    this.onAccept();
   }
 
   protected onAccept: Function = () => {
