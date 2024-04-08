@@ -65,7 +65,7 @@ export class MenuComponent implements OnInit {
     if (event.key === 'Enter') {
       const search = event.target.value.trim();
       
-      if (search) {
+      if (search || search === "") {
         this.router.navigate(['/'], { queryParams: { search: search } });
       }
     }
