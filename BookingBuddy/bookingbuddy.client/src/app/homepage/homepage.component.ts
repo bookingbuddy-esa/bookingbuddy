@@ -8,7 +8,8 @@ import {FeedbackService} from "../auxiliary/feedback.service";
 import {timeout} from "rxjs";
 import { NgbActiveModal, NgbDatepicker, NgbDatepickerModule, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-homepage',
@@ -20,10 +21,16 @@ export class HomepageComponent implements OnInit {
   submitting: boolean = false;
   user: UserInfo | undefined;
   property_list: Property[] = [];
+  propertyFiltredList: Property[] = [];
   numberOfPages: number = 1;
   startIndex: number = 0;
   itemsPerPage: number = 100;
   numberOfProperties: number = 0;
+
+  roomsFilter: number | undefined;
+  guestsFilter: number | undefined;
+  minPriceFilter: number | undefined;
+  maxPriceFilter: number | undefined;
   private modalService: NgbModal = inject(NgbModal);
 
   constructor(
@@ -33,6 +40,7 @@ export class HomepageComponent implements OnInit {
     private route: ActivatedRoute,
     private FeedbackService: FeedbackService) {
     route.queryParams.subscribe(() => {
+      this.clearFilters();
       this.loadProperties();
     });
   }
@@ -74,7 +82,7 @@ export class HomepageComponent implements OnInit {
         .forEach(response => {
           if (response) {
             this.property_list = response as Property[];
-            
+            this.propertyFiltredList = response as Property[];
             this.submitting = false;
           }
         }).catch(error => {
@@ -89,6 +97,7 @@ export class HomepageComponent implements OnInit {
           if (response) {
             //this.property_list = this.generateRandomProperties(50);
             this.property_list = response as Property[];
+            this.propertyFiltredList = response as Property[];
             this.submitting = false;
           }
         }).catch(error => {
@@ -98,6 +107,13 @@ export class HomepageComponent implements OnInit {
        
     }
     
+  }
+
+  clearFilters() {
+    this.minPriceFilter = undefined;
+    this.maxPriceFilter = undefined;
+    this.roomsFilter = undefined;
+    this.guestsFilter = undefined;
   }
 
   updateItemsPerPage(value: number) {
@@ -139,9 +155,38 @@ export class HomepageComponent implements OnInit {
         size: 'lg',
         centered: true,
       });
+    modalRef.componentInstance.minPrice = this.minPriceFilter;
+    modalRef.componentInstance.maxPrice = this.maxPriceFilter;
+    modalRef.componentInstance.roomsNumber = this.roomsFilter;
+    modalRef.componentInstance.guestsNumber = this.guestsFilter;
     modalRef.componentInstance.onAccept = async () => {
       modalRef.close();
-      
+      this.roomsFilter = modalRef.componentInstance.roomsNumber;
+      this.guestsFilter = modalRef.componentInstance.guestsNumber;
+      this.minPriceFilter = modalRef.componentInstance.minPrice;
+      this.maxPriceFilter = modalRef.componentInstance.maxPrice;
+      this.applyFilters();
+    }
+  }
+
+
+  applyFilters() {
+    this.propertyFiltredList = this.property_list
+
+    if (this.roomsFilter) {
+      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.roomsNumber >= this.roomsFilter!);
+    }
+
+    if (this.guestsFilter) {
+      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.maxGuestsNumber >= this.guestsFilter!);
+    }
+
+    if (this.minPriceFilter) {
+      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.pricePerNight >= this.minPriceFilter!);
+    }
+
+    if (this.maxPriceFilter) {
+      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.pricePerNight <= this.maxPriceFilter!);
     }
   }
 
@@ -284,44 +329,97 @@ export class HomepageComponent implements OnInit {
       <h5><strong>Intervalo de Preços</strong></h5>
       <div class="row">
         <div class="col-md-6">
-          <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Preço Mínimo">
+          <input type="number" class="form-control" id="minPrice" name="minPrice" [(ngModel)]="minPrice" placeholder="Preço Mínimo">
         </div>
         <div class="col-md-6">
-          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" placeholder="Preço Máximo">
+          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" [(ngModel)]="maxPrice" placeholder="Preço Máximo">
         </div>
       </div>
       <br>
       <h5><strong>Espaço</strong></h5>
       <h6><strong>Quartos</strong></h6>
       <div class="row">
-    <div class="col">
-      <button type="button" class="btn btn-secondary" >Qualquer</button>
-    </div>
-    <div class="col" *ngFor="let e of [].constructor(6); let i = index">
-      <button type="button" class="btn btn-secondary" >{{ i }}</button>
-    </div>
-  </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === undefined, 'text-white': roomsNumber === undefined}" (click)="updateRoomsNumber(undefined)">Qualquer</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === 1, 'text-white': roomsNumber === 1}" (click)="updateRoomsNumber(1)">1</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === 2, 'text-white': roomsNumber === 2}" (click)="updateRoomsNumber(2)">2</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === 3, 'text-white': roomsNumber === 3}"(click)="updateRoomsNumber(3)">3</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === 4, 'text-white': roomsNumber === 4}" (click)="updateRoomsNumber(4)">4</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === 5, 'text-white': roomsNumber === 5}" (click)="updateRoomsNumber(5)">5</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': roomsNumber === 6, 'text-white': roomsNumber === 6}" (click)="updateRoomsNumber(6)">6+</button>
+        </div>
+      </div>
+      <br>
+       <h6><strong>Numero Máximo de Hóspedes</strong></h6>
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === undefined, 'text-white': guestsNumber=== undefined}"  (click)="updateGuestsNumber(undefined)">Qualquer</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 1, 'text-white': guestsNumber === 1}" (click)="updateGuestsNumber(1)">1</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 2, 'text-white': guestsNumber=== 2}" (click)="updateGuestsNumber(2)">2</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 3, 'text-white': guestsNumber === 3}" (click)="updateGuestsNumber(3)">3</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 4, 'text-white': guestsNumber === 4}" (click)="updateGuestsNumber(4)">4</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 5, 'text-white': guestsNumber === 5}" (click)="updateGuestsNumber(5)">5</button>
+        </div>
+        <div class="col">
+          <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 6, 'text-white': guestsNumber === 6}" (click)="updateGuestsNumber(6)">6+</button>
+        </div>
+      </div>
+
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="onClose()">Cancelar</button>
-      <button type="button" class="btn btn-success" (click)="onAccept()">Aceitar</button>
+      <button type="button" class="btn btn-dark text-white" (click)="onClose()">Limpar Filtros</button>
+      <button type="button" class="btn btn-success" (click)="onAccept()">Aplicar</button>
     </div>
   `,
 
   imports: [
     RouterLink,
     AuxiliaryModule,
+    FormsModule,
+    CommonModule,
     NgIf
   ]
 })
 export class FiltersModal {
-  lista: number[] = [0, 1, 2, 3, 4, 5, 6];
+  minPrice: number | undefined; 
+  maxPrice: number | undefined;
+  roomsNumber: number | undefined;
+  guestsNumber: number | undefined;
+
   private activeModal: NgbActiveModal = inject(NgbActiveModal);
   protected onClose: Function = () => {
     this.activeModal.dismiss();
   }
 
+  updateRoomsNumber(num: number | undefined) {
+    this.roomsNumber = num;
+  }
 
+  updateGuestsNumber(num: number | undefined) {
+    this.guestsNumber = num;
+  }
 
   protected onAccept: Function = () => {
     this.activeModal.close();

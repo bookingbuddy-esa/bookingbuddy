@@ -3,7 +3,7 @@
 <div *ngIf="!submitting && property_list.length > 0"
      class="row row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 p-4">
 
-  <div *ngFor="let property of property_list" class="col" style="height: 250px;">
+  <div *ngFor="let property of propertyFiltredList" class="col" style="height: 250px;">
     <a class="h-100 w-100 text-decoration-none text-dark"
        href="/property/{{property.propertyId}}">
       <div class="h-100 w-100 d-flex flex-column">
@@ -27,32 +27,5 @@
   <app-loader></app-loader>
 </div>
 
-<div class="modal-header" aria-labelledby="acceptInviteLabel">
-  <h4 class="modal-title" id="acceptInviteLabel">Filtrar Propriedades</h4>
-</div>
-<div class="modal-body">
-  <h5><strong>Intervalo de Preços</strong></h5>
-  <div class="row">
-    <div class="col-md-6">
-      <input type="number" class="form-control" id="minPrice" name="minPrice" placeholder="Preço Mínimo">
-    </div>
-    <div class="col-md-6">
-      <input type="number" class="form-control" id="maxPrice" name="maxPrice" placeholder="Preço Máximo">
-    </div>
-  </div>
-  <br>
-  <h5><strong>Espaço</strong></h5>
-  <h6><strong>Quartos</strong></h6>
-  <div class="row">
-    <div class="col">
-      <button type="button" class="btn btn-secondary">Qualquer</button>
-    </div>
-    <div class="col" *ngFor="let e of [].constructor(6); let i = index">
-      <button type="button" class="btn btn-secondary">{{ i }}</button>
-    </div>
-  </div>
-</div>
-<div class="modal-footer">
 
-</div>
   
