@@ -69,7 +69,7 @@ app.Use(async (context, next) => {
     context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     context.Response.Headers.Add("Referrer-Policy", "no-referrer");
     //context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; block-all-mixed-content;");
-    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self' https://accounts.google.com/gsi/; " +
+    /*context.Response.Headers.Add("Content-Security-Policy", "default-src 'self' https://accounts.google.com/gsi/; " +
         "connect-src 'self' https://accounts.google.com/gsi/; " +
         "frame-src 'self' https://accounts.google.com/gsi/; " +
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com/gsi/client; " +
@@ -81,7 +81,7 @@ app.Use(async (context, next) => {
         "base-uri 'self'; " +
         "form-action 'self'; " +
         "frame-ancestors 'none'; " +
-        "block-all-mixed-content;");
+        "block-all-mixed-content;");*/
     await next();
 });
 
