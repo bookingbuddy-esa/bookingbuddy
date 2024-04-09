@@ -10,6 +10,7 @@ import { NgbActiveModal, NgbDatepicker, NgbDatepickerModule, NgbModal } from "@n
 import { AuxiliaryModule } from '../auxiliary/auxiliary.module';
 import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AmenitiesHelper } from '../models/amenity-enum';
 
 @Component({
   selector: 'app-homepage',
@@ -27,6 +28,7 @@ export class HomepageComponent implements OnInit {
   itemsPerPage: number = 100;
   numberOfProperties: number = 0;
 
+  amenitiesFilter: string[] = [];
   roomsFilter: number | undefined;
   guestsFilter: number | undefined;
   minPriceFilter: number | undefined;
@@ -99,6 +101,7 @@ export class HomepageComponent implements OnInit {
             this.property_list = response as Property[];
             this.propertyFiltredList = response as Property[];
             this.submitting = false;
+            console.log(this.property_list);
           }
         }).catch(error => {
           this.submitting = false;
@@ -114,6 +117,7 @@ export class HomepageComponent implements OnInit {
     this.maxPriceFilter = undefined;
     this.roomsFilter = undefined;
     this.guestsFilter = undefined;
+    this.amenitiesFilter = [];
   }
 
   updateItemsPerPage(value: number) {
@@ -159,12 +163,14 @@ export class HomepageComponent implements OnInit {
     modalRef.componentInstance.maxPrice = this.maxPriceFilter;
     modalRef.componentInstance.roomsNumber = this.roomsFilter;
     modalRef.componentInstance.guestsNumber = this.guestsFilter;
+    modalRef.componentInstance.selectedAmenities = this.amenitiesFilter;
     modalRef.componentInstance.onAccept = async () => {
       modalRef.close();
       this.roomsFilter = modalRef.componentInstance.roomsNumber;
       this.guestsFilter = modalRef.componentInstance.guestsNumber;
       this.minPriceFilter = modalRef.componentInstance.minPrice;
       this.maxPriceFilter = modalRef.componentInstance.maxPrice;
+      this.amenitiesFilter = modalRef.componentInstance.selectedAmenities;
       this.applyFilters();
     }
   }
@@ -187,6 +193,14 @@ export class HomepageComponent implements OnInit {
 
     if (this.maxPriceFilter) {
       this.propertyFiltredList = this.propertyFiltredList.filter(property => property.pricePerNight <= this.maxPriceFilter!);
+    }
+
+    if (this.amenitiesFilter.length > 0) {
+      this.propertyFiltredList = this.propertyFiltredList.filter(property =>
+        this.amenitiesFilter.every(amenity =>
+          property.amenities!.some(propAmenity => propAmenity.name === amenity)
+        )
+      );
     }
   }
 
@@ -320,6 +334,7 @@ export class HomepageComponent implements OnInit {
 @Component({
   standalone: true,
   selector: 'add-property-modal',
+  styleUrl: 'homepage.component.css',
   template: `
     <div class="modal-header" aria-labelledby="acceptInviteLabel">
       <h4 class="modal-title" id="acceptInviteLabel">Filtrar Propriedades</h4>
@@ -329,10 +344,10 @@ export class HomepageComponent implements OnInit {
       <h5><strong>Intervalo de Preços</strong></h5>
       <div class="row">
         <div class="col-md-6">
-          <input type="number" class="form-control" id="minPrice" name="minPrice" [(ngModel)]="minPrice" placeholder="Preço Mínimo">
+          <input type="number" class="form-control" id="minPrice" name="minPrice" [(ngModel)]="minPrice" min="0" max="9999" placeholder="Preço Mínimo">
         </div>
         <div class="col-md-6">
-          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" [(ngModel)]="maxPrice" placeholder="Preço Máximo">
+          <input type="number" class="form-control" id="maxPrice"  name="maxPrice" [(ngModel)]="maxPrice" min="0" max="9999" placeholder="Preço Máximo">
         </div>
       </div>
       <br>
@@ -386,10 +401,27 @@ export class HomepageComponent implements OnInit {
           <button type="button" class="btn btn-outline-dark rounded-pill" [ngClass]="{'btn-dark': guestsNumber === 6, 'text-white': guestsNumber === 6}" (click)="updateGuestsNumber(6)">6+</button>
         </div>
       </div>
+      <br>
+      <h5><strong>Comodidades</strong></h5>
+
+
+
+      <div class="row">
+        <div class="col-md-4" *ngFor="let amenity of AmenitiesHelper.getAmenities()">
+          <div class="amenity my-3 p-2 rounded d-flex flex-row align-items-center"
+            (click)="selectAmenity(amenity)" [ngClass]="{'amenity-selected': isSelected(amenity)}">
+            <span class="w-25 text-center material-symbols-outlined">{{ AmenitiesHelper.getAmenityIcon(amenity) }}</span>
+            <span class="flex-grow-1 fw-bolder">{{ AmenitiesHelper.getAmenityDisplayName(amenity) }}</span>
+          </div>
+        </div>
+      </div>
+
+
+
 
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-dark text-white" (click)="onClose()">Limpar Filtros</button>
+      <button type="button" class="btn btn-dark text-white" (click)="clear()">Limpar Filtros</button>
       <button type="button" class="btn btn-success" (click)="onAccept()">Aplicar</button>
     </div>
   `,
@@ -408,6 +440,9 @@ export class FiltersModal {
   roomsNumber: number | undefined;
   guestsNumber: number | undefined;
 
+  protected readonly AmenitiesHelper = AmenitiesHelper;
+  protected selectedAmenities: string[] = [];
+
   private activeModal: NgbActiveModal = inject(NgbActiveModal);
   protected onClose: Function = () => {
     this.activeModal.dismiss();
@@ -419,6 +454,28 @@ export class FiltersModal {
 
   updateGuestsNumber(num: number | undefined) {
     this.guestsNumber = num;
+  }
+
+  selectAmenity(amenity: string) {
+    const index = this.selectedAmenities.indexOf(amenity);
+    if (index !== -1) {
+      this.selectedAmenities.splice(index, 1);
+    } else {
+      this.selectedAmenities.push(amenity);
+    }
+  }
+
+  isSelected(amenity: string) {
+    return this.selectedAmenities.includes(amenity);
+  }
+
+  clear() {
+    this.maxPrice = undefined;
+    this.minPrice = undefined;
+    this.roomsNumber = undefined;
+    this.guestsNumber = undefined;
+    this.selectedAmenities = [];
+    this.onAccept();
   }
 
   protected onAccept: Function = () => {
