@@ -20,9 +20,11 @@ import { AmenitiesHelper } from '../models/amenity-enum';
 export class HomepageComponent implements OnInit {
   signedIn: boolean = false;
   submitting: boolean = false;
+  propertiesFiltered: boolean = false;
+  searchResult: boolean = false;
   user: UserInfo | undefined;
   property_list: Property[] = [];
-  propertyFiltredList: Property[] = [];
+  propertyFilteredList: Property[] = [];
   numberOfPages: number = 1;
   startIndex: number = 0;
   itemsPerPage: number = 100;
@@ -83,25 +85,26 @@ export class HomepageComponent implements OnInit {
         .pipe(timeout(10000))
         .forEach(response => {
           if (response) {
-            this.property_list = response as Property[];
-            this.propertyFiltredList = response as Property[];
+            this.searchResult = true;
+            if(response.length != 0){
+              this.property_list = response as Property[];
+              this.propertyFilteredList = this.property_list;
+            }
+
             this.submitting = false;
           }
         }).catch(error => {
           this.submitting = false;
           console.error("Erro ao carregar propriedades: " + error);
         });
-      console.log(this.property_list);
     } else {
       this.propertyService.getProperties(this.itemsPerPage, this.startIndex)
         .pipe(timeout(10000))
         .forEach(response => {
           if (response) {
-            //this.property_list = this.generateRandomProperties(50);
             this.property_list = response as Property[];
-            this.propertyFiltredList = response as Property[];
+            this.propertyFilteredList = this.property_list;
             this.submitting = false;
-            console.log(this.property_list);
           }
         }).catch(error => {
           this.submitting = false;
@@ -177,30 +180,46 @@ export class HomepageComponent implements OnInit {
 
 
   applyFilters() {
-    this.propertyFiltredList = this.property_list
+    this.propertyFilteredList = this.property_list
 
     if (this.roomsFilter) {
-      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.roomsNumber >= this.roomsFilter!);
+      this.propertyFilteredList = this.propertyFilteredList.filter(property => property.roomsNumber >= this.roomsFilter!);
     }
 
     if (this.guestsFilter) {
-      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.maxGuestsNumber >= this.guestsFilter!);
+      this.propertyFilteredList = this.propertyFilteredList.filter(property => property.maxGuestsNumber >= this.guestsFilter!);
     }
 
     if (this.minPriceFilter) {
-      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.pricePerNight >= this.minPriceFilter!);
+      this.propertyFilteredList = this.propertyFilteredList.filter(property => property.pricePerNight >= this.minPriceFilter!);
     }
 
     if (this.maxPriceFilter) {
-      this.propertyFiltredList = this.propertyFiltredList.filter(property => property.pricePerNight <= this.maxPriceFilter!);
+      this.propertyFilteredList = this.propertyFilteredList.filter(property => property.pricePerNight <= this.maxPriceFilter!);
     }
 
     if (this.amenitiesFilter.length > 0) {
-      this.propertyFiltredList = this.propertyFiltredList.filter(property =>
+      this.propertyFilteredList = this.propertyFilteredList.filter(property =>
         this.amenitiesFilter.every(amenity =>
           property.amenities!.some(propAmenity => propAmenity.name === amenity)
         )
       );
+    }
+
+    /*if(this.propertyFilteredList != this.property_list){
+      this.propertiesFiltered = true;
+    }*/
+  }
+
+  orderAscending() {
+    if(this.propertyFilteredList.length > 0){
+      this.propertyFilteredList.sort((a, b) => a.pricePerNight - b.pricePerNight);
+    }
+  }
+
+  orderDescending() {
+    if(this.propertyFilteredList.length > 0){
+      this.propertyFilteredList.sort((a, b) => b.pricePerNight - a.pricePerNight);
     }
   }
 
