@@ -105,6 +105,7 @@ export class HomepageComponent implements OnInit {
             this.property_list = response as Property[];
             this.propertyFilteredList = this.property_list;
             this.submitting = false;
+            console.log(this.property_list);
           }
         }).catch(error => {
           this.submitting = false;
@@ -220,6 +221,14 @@ export class HomepageComponent implements OnInit {
   orderDescending() {
     if(this.propertyFilteredList.length > 0){
       this.propertyFilteredList.sort((a, b) => b.pricePerNight - a.pricePerNight);
+    }
+
+    if (this.amenitiesFilter.length > 0) {
+      this.propertyFiltredList = this.propertyFiltredList.filter(property =>
+        this.amenitiesFilter.every(amenity =>
+          property.amenities!.some(propAmenity => propAmenity.name === amenity)
+        )
+      );
     }
   }
 
