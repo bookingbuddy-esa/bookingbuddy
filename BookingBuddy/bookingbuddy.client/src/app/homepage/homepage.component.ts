@@ -224,7 +224,7 @@ export class HomepageComponent implements OnInit {
     }
 
     if (this.amenitiesFilter.length > 0) {
-      this.propertyFiltredList = this.propertyFiltredList.filter(property =>
+      this.propertyFilteredList = this.propertyFilteredList.filter(property =>
         this.amenitiesFilter.every(amenity =>
           property.amenities!.some(propAmenity => propAmenity.name === amenity)
         )
