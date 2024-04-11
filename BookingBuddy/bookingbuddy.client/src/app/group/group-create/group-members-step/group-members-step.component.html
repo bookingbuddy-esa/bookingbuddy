@@ -8,7 +8,7 @@
         </div>
     </div>
     <div class="fs-1 p-3 fw-bold text-center">Preencher informações sobre o grupo</div>
-    <div class="fs-6 p-2 text-center">Preencha o seguinte campo com a informação relativa aos emails dos membros. Assim que terminar pressione a tecla "Enter" para convidar um membro.</div>
+    <div class="fs-6 p-2 text-center">Preencha o seguinte campo com a informação relativa aos emails dos membros. Assim que terminar pressione a tecla <strong>"Enter"</strong>  para convidar um membro.</div>
     <form class="d-flex w-75 mt-3 h-50 flex-column align-items-center justify-content-center p5" [formGroup]="groupMembersForm">
         <div class="d-flex w-100 flex-column mb-3 flex-grow-1">
             <input type="text" name="members" class="form-control " [formControl]="emailControl" style="resize: none" placeholder="Introduza o email de um membro" (keydown)="save($event)" [ngClass]="{'is-valid': emailControl.valid && emailControl.dirty, 'is-invalid': emailControl.invalid && emailControl.dirty}"
