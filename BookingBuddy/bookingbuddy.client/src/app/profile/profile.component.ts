@@ -62,6 +62,8 @@ export class ProfileComponent {
           });
         });
       }
+
+      this.submitting = false;
     });
   }
 

@@ -1,35 +1,42 @@
-
-<button class="btn px-3" (click)="showFilterModal()"><i class="bi bi-sliders2 h3"></i></button>
-<div *ngIf="!submitting && property_list.length > 0"
-     class="row row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 p-4">
-
-  <div *ngFor="let property of propertyFiltredList" class="col" style="height: 250px;">
-    <a class="h-100 w-100 text-decoration-none text-dark"
-       href="/property/{{property.propertyId}}">
-      <div class="h-100 w-100 d-flex flex-column">
-        <img [ngSrc]="property.imagesUrl?.[0] ?? ''"
-             class="h-75 w-100 object-fit-cover rounded-2"
-             alt="Imagem de uma propriedade" height="280" width="190" />
-        <p class="text-truncate fs-6 fw-bolder mt-2 mb-1">{{ property.name }}</p>
-        <span><strong>{{ property.pricePerNight }}</strong>€ noite</span>
-      </div>
-    </a>
-  </div>
+<div class="d-flex flex-row">
+    <button class="btn px-3" (click)="showFilterModal()"><i class="bi bi-sliders2 h3"></i></button>
+  
+    <div class="dropdown ms-auto">
+        <button class="btn px-3 ms-auto" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-filter h3"></i></button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><button class="dropdown-item" (click)="orderAscending()">Preço ascendente<i class="bi bi-sort-numeric-up ms-2"></i></button></li>
+            <li><button class="dropdown-item" (click)="orderDescending()">Preço descendente<i class="bi bi-sort-numeric-down ms-2"></i></button></li>
+        </ul>
+    </div>
+</div>
+<div *ngIf="!submitting && property_list.length > 0" class="row row-cols-xxl-6 row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1 g-4 p-4">
+    <div *ngFor="let property of propertyFilteredList" class="col" style="height: 250px;">
+        <a class="h-100 w-100 text-decoration-none text-dark" href="/property/{{property.propertyId}}">
+            <div class="h-100 w-100 d-flex flex-column">
+                <img [ngSrc]="property.imagesUrl?.[0] ?? ''" class="h-75 w-100 object-fit-cover rounded-2" alt="Imagem de uma propriedade" height="280" width="190" />
+                <p class="text-truncate fs-6 fw-bolder mt-2 mb-1">{{ property.name }}</p>
+                <span><strong>{{ property.pricePerNight }}</strong>€ noite</span>
+            </div>
+        </a>
+    </div>
 </div>
 <!-- TODO: tambem podemos usar o ratio class do bootstrap -->
 
-<div *ngIf="!submitting && property_list.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
-  <h5>Ainda não existem propriedades na plataforma!</h5>
-  <h6>Seja o primeiro a <a href="/hosting/create">criar um novo anúncio</a> da sua propriedade.</h6>
+<div *ngIf="!submitting && !searchResult && property_list.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
+    <h5>Ainda não existem propriedades na plataforma!</h5>
+    <h6>Seja o primeiro a <a href="/hosting/create">criar um novo anúncio</a> da sua propriedade.</h6>
 </div>
-<div *ngIf="!submitting && property_list.length > 0 && propertyFiltredList.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
-  <h5>Não foram encontradas propriedades que correspondam aos filtros aplicados.</h5>
-  <h5>Tente ajustar os filtros ou explorar outras opções disponíveis</h5>
+
+<div *ngIf="!submitting && searchResult && property_list.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
+    <h5>Não foram encontradas propriedades que correspondam à sua pesquisa.</h5>
+    <h5>Tente ajustar a sua pesquisa para outras localizações.</h5>
+</div>
+
+<div *ngIf="!submitting && propertyFilteredList.length === 0" class="d-flex p-3 w-100 h-100 flex-column align-items-center justify-content-center">
+    <h5>Não foram encontradas propriedades que correspondam aos filtros aplicados.</h5>
+    <h5>Tente ajustar os filtros ou explorar outras opções disponíveis.</h5>
 </div>
 
 <div *ngIf="submitting" class="m-auto h-100">
-  <app-loader></app-loader>
+    <app-loader></app-loader>
 </div>
-
-
-  

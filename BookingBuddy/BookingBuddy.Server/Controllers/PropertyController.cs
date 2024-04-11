@@ -130,8 +130,8 @@ namespace BookingBuddy.Server.Controllers
                 .OrderByDescending(property => property.Clicks)
                 .ToList();
 
+            // TODO: retornar com AddRange em vez de Concat (como foi feito nas Bookings)    
             var orderedProperties = promotedProperties.Concat(otherProperties).Skip(startIndex).Take(itemsPerPage).ToList();
-
             return Ok(orderedProperties);
         }
 
@@ -181,8 +181,8 @@ namespace BookingBuddy.Server.Controllers
                 .OrderByDescending(property => property.Clicks)
                 .ToList();
 
+            // TODO: retornar com AddRange em vez de Concat (como foi feito nas Bookings
             var orderedProperties = promotedProperties.Concat(otherProperties).Skip(startIndex).Take(itemsPerPage).ToList();
-
             return Ok(properties);
         }
 

@@ -23,7 +23,7 @@ export class PropertyAdService {
   }
 
   public getPropertiesSearch(search: string,itemsPerPage: number, startIndex: number) {
-    return this.http.get(`${environment.apiUrl}/api/properties/search/?search=${search}&itemsPerPage=${itemsPerPage}&startIndex=${startIndex}`);
+    return this.http.get<Property[]>(`${environment.apiUrl}/api/properties/search/?search=${search}&itemsPerPage=${itemsPerPage}&startIndex=${startIndex}`);
   }
 
   public getPropertiesCount(){
