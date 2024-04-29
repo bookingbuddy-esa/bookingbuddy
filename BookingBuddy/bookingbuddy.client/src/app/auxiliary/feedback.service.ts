@@ -1,33 +1,25 @@
 import {Injectable} from '@angular/core';
+import {BehaviorSubject, Subject} from "rxjs";
+import {Feedback, FeedbackType} from "../models/feedback";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FeedbackService {
-
-  private _feedback: Map<string, string[]> = new Map<string, string[]>();
+  private currentFeedback: Subject<Feedback | undefined> = new Subject<Feedback | undefined>();
 
   constructor() {
-    this._feedback.set("homepage", ["Welcome to the homepage!"]);
   }
 
-  consumeFeedback(key: string): string[] {
-    return this._feedback.get(key) ?? [];
+  public getFeedback() {
+    return this.currentFeedback.asObservable();
   }
 
-  addFeedback(key: string, feedback: string): void {
-    if (this._feedback.has(key)) {
-      this._feedback.get(key)?.push(feedback);
-    } else {
-      this._feedback.set(key, [feedback]);
-    }
+  public setFeedback(feedback: Feedback) {
+    this.currentFeedback.next(feedback);
   }
 
-  setFeedback(key: string, feedback: string[]): void {
-    this._feedback.set(key, feedback);
-  }
-
-  getFeedback(key: string): string[] {
-    return this._feedback.get(key) ?? [];
+  public clear() {
+    this.currentFeedback.next(undefined);
   }
 }

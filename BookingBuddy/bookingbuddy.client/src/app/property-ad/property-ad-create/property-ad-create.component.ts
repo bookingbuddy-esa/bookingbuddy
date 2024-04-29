@@ -9,6 +9,8 @@ import {Property, PropertyCreate} from "../../models/property";
 import {MapLocation} from "./location-step/location-step.component";
 import {AdInfo} from "./ad-info-step/ad-info-step.component";
 import {FooterService} from "../../auxiliary/footer.service";
+import {FeedbackType} from "../../models/feedback";
+import {FeedbackService} from "../../auxiliary/feedback.service";
 
 @Component({
   selector: 'app-property-ad-create',
@@ -45,7 +47,8 @@ export class PropertyAdCreateComponent implements OnInit,OnDestroy {
   constructor(private authService: AuthorizeService,
               private router: Router,
               private footerService: FooterService,
-              private propertyService: PropertyAdService) {
+              private propertyService: PropertyAdService,
+              private feedbackService: FeedbackService) {
     this.errors = [];
     this.footerService.hideFooter();
   }
@@ -177,7 +180,9 @@ export class PropertyAdCreateComponent implements OnInit,OnDestroy {
         };
         this.propertyService.createPropertyAd(newProperty).forEach(success => {
             if (success) {
-              this.router.navigateByUrl('/');
+              this.router.navigate(['/']).then(() => {
+                this.feedbackService.setFeedback({feedback: 'Propriedade criada com sucesso.', type: FeedbackType.SUCCESS});
+              });
             }
           }
         ).catch(() => {

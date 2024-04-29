@@ -1,8 +1,8 @@
-import {ChangeDetectorRef, Component, Injectable, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, Injectable, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Property} from '../../models/property';
 import {AuthorizeService} from "../../auth/authorize.service";
-import { PropertyAdService } from '../property-ad.service';
+import {PropertyAdService} from '../property-ad.service';
 import {FavoriteService} from '../../favorite-sidebar/favorite.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AmenitiesHelper} from "../../models/amenity-enum";
@@ -16,6 +16,8 @@ import {GroupService} from '../../group/group.service';
 import {timeout} from 'rxjs';
 import {Discount} from "../../models/discount";
 import {DatePipe} from '@angular/common';
+import {FeedbackType} from "../../models/feedback";
+import {FeedbackService} from "../../auxiliary/feedback.service";
 
 @Component({
   selector: 'app-property-ad-retrieve',
@@ -49,9 +51,11 @@ export class PropertyAdRetrieveComponent implements OnInit {
   submitting: boolean = false;
   errors: string[] = [];
   selected_group_list: Group[] = [];
+  private feedbackService: FeedbackService = inject(FeedbackService);
   @ViewChild('myModalClose') modalClose: any;
+
   constructor(private datePipe: DatePipe, private cdref: ChangeDetectorRef, private groupService: GroupService, private appComponent: AppComponent, private propertyService: PropertyAdService,
-    private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router, private favoriteService: FavoriteService) {
+              private route: ActivatedRoute, private formBuilder: FormBuilder, private authService: AuthorizeService, private orderService: OrderService, private router: Router, private favoriteService: FavoriteService) {
     this.reservarPropriedadeFailed = false;
 
     this.reservarPropriedadeForm = this.formBuilder.group({
@@ -270,11 +274,18 @@ export class PropertyAdRetrieveComponent implements OnInit {
           if (response) {
             this.isPropertyInFavorites = true;
           }
-        }).catch(
-        error => {
-          console.error('Erro ao adicionar ao favoritos:', error);
-        }
-      );
+        })
+        .then(() => {
+          this.feedbackService.setFeedback({
+            feedback: 'Propriedade adicionada aos favoritos com sucesso.',
+            type: FeedbackType.INFO
+          });
+        })
+        .catch(
+          error => {
+            console.error('Erro ao adicionar ao favoritos:', error);
+          }
+        );
     }
   }
 
@@ -285,7 +296,14 @@ export class PropertyAdRetrieveComponent implements OnInit {
           if (response) {
             this.isPropertyInFavorites = false;
           }
-        }).catch(
+        })
+        .then(() => {
+          this.feedbackService.setFeedback({
+            feedback: 'Propriedade removida dos favoritos com sucesso.',
+            type: FeedbackType.INFO
+          });
+        })
+        .catch(
         error => {
           console.error('Erro ao adicionar ao favoritos:', error);
         }
@@ -303,7 +321,12 @@ export class PropertyAdRetrieveComponent implements OnInit {
           if (response) {
             //console.log(response);
           }
-        })
+        }).then(() => {
+          this.feedbackService.setFeedback({
+            feedback: 'Propriedade adicionada ao grupo com sucesso.',
+            type: FeedbackType.SUCCESS
+          });
+        });
       });
 
 
@@ -393,14 +416,14 @@ export class PropertyAdRetrieveComponent implements OnInit {
     console.log("Check-out: " + checkOutDate);
 
     // TODO: verificar se datas sao validas antes de fazer a order
-    this.router.navigate(['/transaction-handler'], { 
-        queryParams: {
-            propertyId: this.property?.propertyId,
-            startDate: this.datePipe.transform(checkInDate, 'yyyy-MM-dd'),
-            endDate: this.datePipe.transform(checkOutDate, 'yyyy-MM-dd'),
-            numberOfGuests: numberOfGuests,
-            orderType: 'booking'
-        }
+    this.router.navigate(['/transaction-handler'], {
+      queryParams: {
+        propertyId: this.property?.propertyId,
+        startDate: this.datePipe.transform(checkInDate, 'yyyy-MM-dd'),
+        endDate: this.datePipe.transform(checkOutDate, 'yyyy-MM-dd'),
+        numberOfGuests: numberOfGuests,
+        orderType: 'booking'
+      }
     });
   }
 }
