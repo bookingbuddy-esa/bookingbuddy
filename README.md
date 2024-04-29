@@ -1,23 +1,53 @@
-# Booking Buddy
-Projeto ESA 2023/2024
+<br/>
+<p align="center">
+  <a href="https://github.com/bookingbuddy-esa/bookingbuddy">
+    <img src="https://i.imgur.com/QQByIto.png" alt="Logo" width="80" height="80">
+  </a>
 
-# Git Guide
-O branch _main_ vai conter as implementações a cada Sprint. Só deve ser atualizado quando fecharmos um sprint e todos os testes passarem.
-O branch _dev_ vai conter as implementações atualizadas até a data.
+  <h3 align="center">Booking Buddy</h3>
 
-- Sempre que abrem o projeto é necessário fazer: `git pull` para obter o conteúdo atualizado do repositório;
-- Nova funcionalidade = novo branch com base no branch _dev_: `git checkout -b nova_funcionalidade dev` para criar um branch e mudar logo para o mesmo com base num branch de referência (neste caso _dev_)
-- Acabada a implementação: 
-  - `git status` para ver os ficheiros que foram modificados;
-  - `git add nome_do_ficheiro_que_quiserem_adicionar` (ou `git add .` com especial cuidado para não adicionarem coisas que não devem) para adicionarem os ficheiros alterados;
-  - `git commit -m "Mensagem explicativa como referido acima"` para adicionar mensagem ao commit;
-  - `git push` para enviar o commit para o branch.
+  <p align="center">
+    <a href="https://github.com/bookingbuddy-esa/bookingbuddy/issues">Reportar Problema</a>
+    .
+    <a href="https://github.com/bookingbuddy-esa/bookingbuddy/issues">Propor Funcionalidade</a>
+  </p>
+</p>
 
-- Agora é necessário colocar as alterações no branch _dev_: 
-  - `git checkout dev` para mudar de branch (em vez de _dev_ pode ser outro branch);
-  - `git merge nova_funcionalidade` para juntar o conteúdo do branch _nova_funcionalidade_ com o _dev_;
-  - `git push` para enviar estas novas alterações.
+![Contributors](https://img.shields.io/github/contributors/bookingbuddy-esa/bookingbuddy?color=dark-green) ![Issues](https://img.shields.io/github/issues/bookingbuddy-esa/bookingbuddy) ![Website](https://img.shields.io/website?url=https://booking-buddy.azurewebsites.net) ![Action Status](https://github.com/bookingbuddy-esa/bookingbuddy/actions/workflows/dev_test.yaml/badge.svg)
 
-- Agora o branch _dev_ já contém todas as alterações! Não esquecer de mudar de branch após este último passo.
+## Índice
 
-> Para passar de um branch para o anterior basta fazer `git checkout -` (git checkout seguido de um traço).
+* [Sobre o Projeto](#sobre-o-projeto)
+* [Desenvolvimento](#desenvolvimento)
+* [Roadmap](#roadmap)
+* [Autores](#autores)
+
+## Sobre o Projeto
+
+![Screenshot da Homepage do Website](https://i.imgur.com/Ha5mz6Z.png)
+
+A criação do Booking Buddy surge da necessidade de simplificar o processo de reserva de propriedades, proporcionando uma experiência intuitiva para viajantes individuais, proprietários de propriedades e grupos de viagem.
+
+Este projeto insere-se no setor de atividade de alojamento e turismo, focando-se na facilitação e centralização do processo de pesquisa e reserva de acomodações.
+
+## Desenvolvimento
+
+Tecnologias utilizadas para desenvolver o projeto:
+
+[![Angular](https://skillicons.dev/icons?i=angular)](https://angular.io/ "Angular") [![HTML](https://skillicons.dev/icons?i=html)](https://developer.mozilla.org/en-US/docs/Web/HTML "HTML") [![CSS](https://skillicons.dev/icons?i=css)](https://developer.mozilla.org/en-US/docs/Web/CSS "CSS") [![Typescript](https://skillicons.dev/icons?i=typescript)](https://www.typescriptlang.org/ "TypeScript") [![Dotnet](https://skillicons.dev/icons?i=dotnet)](https://dotnet.microsoft.com/ ".NET") [![CSharp](https://skillicons.dev/icons?i=cs)](https://learn.microsoft.com/en-us/dotnet/csharp/ "C#")
+
+## Roadmap
+
+Para uma lista de funcionalidades propostas (e problemas conhecidos), consulte os [open issues](https://github.com/bookingbuddy-esa/bookingbuddy/issues).
+
+## Autores
+
+* **André Meseiro** - *Estudante LEI* - [André Meseiro](https://github.com/andre-meseiro) - *Team member*
+
+* **Diogo Rosa** - *Estudante LEI* - [Diogo Rosa](https://github.com/DiogoRosaIPS) - *Team member*
+
+* **Eduardo Ervideira** - *Estudante LEI* - [Eduardo Ervideira](https://github.com/eduardoervideira) - *SCRUM Master*
+
+* **João Afonso** - *Estudante LEI* - [João Afonso](https://github.com/joaoafonso61) - *Team member*
+
+* **Pedro Anjos** - *Estudante LEI* - [Pedro Anjos](https://github.com/p3dro4) - *Team member*
