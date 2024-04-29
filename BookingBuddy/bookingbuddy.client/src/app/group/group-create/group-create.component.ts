@@ -11,6 +11,8 @@ import {GroupMembers} from "./group-members-step/group-members-step.component";
 
 import {PropertyAdService} from '../../property-ad/property-ad.service';
 import {FooterService} from "../../auxiliary/footer.service";
+import {FeedbackService} from "../../auxiliary/feedback.service";
+import {FeedbackType} from "../../models/feedback";
 
 @Component({
   selector: 'app-group-create',
@@ -45,7 +47,8 @@ export class GroupCreateComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router,
               private footerService: FooterService,
-              private groupService: GroupService) {
+              private groupService: GroupService,
+              private feedbackService: FeedbackService) {
     this.errors = [];
     this.footerService.hideFooter();
   }
@@ -144,6 +147,7 @@ export class GroupCreateComponent implements OnInit, OnDestroy {
           this.submitting = true;
           this.router.navigate(['/groups'], {queryParams: {groupId: group.groupId}}).then(() => {
               this.submitting = false;
+              this.feedbackService.setFeedback({feedback: 'Grupo criado com sucesso.', type: FeedbackType.SUCCESS});
             }
           );
         }

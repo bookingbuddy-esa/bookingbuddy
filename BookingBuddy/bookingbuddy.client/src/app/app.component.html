@@ -1,8 +1,30 @@
-<app-menu class="sticky-top"></app-menu>
-<main class="flex-grow-1 d-flex flex-column">
-    <app-favorite-sidebar></app-favorite-sidebar>
-    <div class="container-fluid d-flex flex-grow-1">
-        <router-outlet/>
+<div class="sticky-top">
+  <app-menu></app-menu>
+  <div *ngIf="currentFeedback" class="position-absolute w-100 text-center text-truncate mt-2">
+    <div class="alert alert-dismissible show fade mx-4 z-3" role="alert"
+         [ngClass]="{
+           'alert-success': currentFeedback.type === FeedbackType.SUCCESS,
+           'alert-danger': currentFeedback.type === FeedbackType.ERROR,
+           'alert-warning': currentFeedback.type === FeedbackType.WARNING,
+           'alert-info': currentFeedback.type === FeedbackType.INFO
+         }"
+    >
+      <i class="bi me-1" [ngClass]="{
+        'bi-check-circle-fill': currentFeedback.type === FeedbackType.SUCCESS,
+        'bi-exclamation-circle-fill': currentFeedback.type === FeedbackType.ERROR,
+        'bi-exclamation-triangle-fill': currentFeedback.type === FeedbackType.WARNING,
+        'bi-info-circle-fill': currentFeedback.type === FeedbackType.INFO
+      }"></i>
+      {{ currentFeedback.feedback }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+              (click)="feedbackService.clear()"></button>
     </div>
+  </div>
+</div>
+<main class="flex-grow-1 d-flex flex-column">
+  <app-favorite-sidebar></app-favorite-sidebar>
+  <div class="container-fluid d-flex flex-grow-1">
+    <router-outlet/>
+  </div>
 </main>
 <app-footer *ngIf="showFooter"></app-footer>

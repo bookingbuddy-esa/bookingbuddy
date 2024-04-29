@@ -23,6 +23,8 @@ import {MatInput} from "@angular/material/input";
 import {MatIcon} from "@angular/material/icon";
 import {OrderService} from "../payment/order.service";
 import {co} from "@fullcalendar/core/internal-common";
+import {FeedbackType} from "../models/feedback";
+import {FeedbackService} from "../auxiliary/feedback.service";
 
 @Component({
   selector: 'app-group',
@@ -38,6 +40,7 @@ export class GroupComponent implements OnInit, OnDestroy {
   private groupService: GroupService = inject(GroupService);
   private modalService: NgbModal = inject(NgbModal);
   private propertyService: PropertyAdService = inject(PropertyAdService);
+  private feedbackService: FeedbackService = inject(FeedbackService);
   private orderService: OrderService = inject(OrderService);
 
   // Responsividade
@@ -339,6 +342,7 @@ export class GroupComponent implements OnInit, OnDestroy {
         this.group_list = this.group_list.filter(g => g.groupId != this.currentGroup?.groupId);
         this.currentGroup = undefined;
         await this.router.navigate(['/groups']);
+        this.feedbackService.setFeedback({feedback: 'Grupo apagado com sucesso.', type: FeedbackType.SUCCESS});
       }
     }).catch(error => {
       console.error('Erro ao apagar grupo:', error);
